@@ -1,0 +1,2300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>English Study Tracker</title>
+<script>
+  (function(){
+    try{
+      if (localStorage.getItem('english-study-theme') === 'dark')
+        document.documentElement.setAttribute('data-theme','dark');
+    }catch(e){}
+  })();
+</script>
+<style>
+  :root{
+    --bg:#f6f6f7; --card:#fff; --line:#e5e5e8; --text:#18181b; --muted:#71717a;
+    --accent:#2563eb; --accent-soft:#eef4ff;
+    --hover:#fafafa; --soft:#f4f4f5; --icon:#a1a1aa;
+    --dot-border:#d4d4d8; --input-border:#dcdce0;
+    --entry-bg:#fcfcfd; --star:#d4d4d8; --star-on:#f59e0b;
+    --warn-bg:#fef3c7; --warn-text:#92400e;
+    --ok-bg:#d1fae5;   --ok-text:#065f46;
+    --mark-bg:#fff3b0; --mark-text:#713f12;
+    --due-bg:#fee2e2;  --due-text:#b91c1c;
+    --rec-bg:#fee2e2;  --rec-text:#b91c1c; --rec-border:#fca5a5;
+    --shadow:rgba(0,0,0,.08);
+  }
+  [data-theme="dark"]{
+    --bg:#0f1115; --card:#171a21; --line:#262b36; --text:#e6e8ee; --muted:#8b93a5;
+    --accent:#5b8dff; --accent-soft:#1a2540;
+    --hover:#1f2530; --soft:#222834; --icon:#6b7280;
+    --dot-border:#3a4252; --input-border:#2d3441;
+    --entry-bg:#1a1f29; --star:#4b5464; --star-on:#f59e0b;
+    --warn-bg:#3d2f10; --warn-text:#fcd34d;
+    --ok-bg:#0f3d2e;   --ok-text:#6ee7b7;
+    --mark-bg:#4a3410; --mark-text:#fcd34d;
+    --due-bg:#4a1818;  --due-text:#fca5a5;
+    --rec-bg:#4a1818;  --rec-text:#fca5a5; --rec-border:#7f1d1d;
+    --shadow:rgba(0,0,0,.45);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--bg); color:var(--text);
+    font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:0 18px}
+  header{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+  .topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:56px;padding:8px 0}
+  h1{font-size:15px;margin:0;font-weight:600;letter-spacing:-.01em;margin-right:auto}
+  h2{font-size:15px;margin:0;font-weight:600}
+  h3{font-size:14px;margin:0;font-weight:600}
+
+  nav.mainnav{display:flex;gap:2px;background:var(--bg);padding:3px;border-radius:10px}
+  nav.mainnav button{border:0;background:transparent;font:inherit;font-size:13.5px;
+    padding:6px 12px;border-radius:8px;color:var(--muted);cursor:pointer}
+  nav.mainnav button.active{background:var(--card);color:var(--text);box-shadow:0 1px 2px var(--shadow)}
+
+  .utils{display:flex;gap:6px;align-items:center}
+  .util{font:inherit;font-size:13px;padding:6px 11px;border-radius:8px;border:1px solid var(--line);
+    background:var(--card);color:var(--text);text-decoration:none;line-height:1.2;white-space:nowrap}
+  .util:hover{background:var(--hover)}
+  .theme-toggle{width:34px;height:34px;border:1px solid var(--line);background:var(--card);
+    color:var(--text);border-radius:8px;cursor:pointer;font-size:15px;line-height:1;padding:0;
+    display:flex;align-items:center;justify-content:center}
+  .theme-toggle:hover{background:var(--hover)}
+
+  main{padding:22px 18px 70px}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
+  .card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+  .muted{color:var(--muted)}
+  .small{font-size:12.5px}
+  .empty{color:var(--muted);font-size:13.5px;text-align:center;padding:26px}
+
+  code{background:var(--soft);padding:1px 5px;border-radius:4px;font-size:12.5px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--text)}
+
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .row.between{justify-content:space-between}
+  .grow{flex:1;min-width:0}
+  .mini{width:56px;padding:4px 6px;font-size:13px;text-align:center}
+
+  input,textarea,select{font:inherit;font-size:14px;padding:7px 10px;border:1px solid var(--input-border);
+    border-radius:8px;background:var(--card);color:inherit;outline:none;width:100%}
+  input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  textarea{resize:vertical;line-height:1.55}
+  input[type=checkbox]{width:auto;accent-color:var(--accent);cursor:pointer}
+  label.field{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted)}
+  label.inline{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);white-space:nowrap}
+
+  .btn{font:inherit;font-size:13.5px;padding:7px 12px;border-radius:8px;border:1px solid var(--line);
+    background:var(--card);color:var(--text);cursor:pointer}
+  .btn:hover{background:var(--hover)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.primary:hover{filter:brightness(1.06)}
+  .btn.small{padding:5px 10px;font-size:13px}
+  .btn.tiny{padding:3px 8px;font-size:12px}
+  .icon{border:0;background:transparent;color:var(--icon);cursor:pointer;font-size:13px;
+    padding:4px 6px;border-radius:6px;line-height:1}
+  .icon:hover{background:var(--soft);color:var(--text)}
+
+  /* dashboard */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .stat{border:1px solid var(--line);border-radius:10px;padding:12px}
+  .stat-label{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+  .stat-num{font-size:26px;font-weight:600;letter-spacing:-.02em;margin:2px 0 8px}
+  .stat-num .muted{font-size:14px;font-weight:500}
+  .stat-foot{font-size:11.5px;color:var(--muted);margin-top:8px;display:flex;align-items:center;gap:5px}
+  .bar{height:6px;border-radius:99px;background:var(--soft);overflow:hidden}
+  .bar>i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .25s}
+
+  .prow{display:grid;grid-template-columns:150px 1fr 62px;gap:12px;align-items:center;
+    margin-bottom:10px;font-size:13px}
+  .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center;
+    border-top:1px solid var(--line);margin-top:14px;padding-top:14px}
+  .facts b{display:block;font-size:19px;font-weight:600}
+  .facts span{font-size:11.5px;color:var(--muted)}
+
+  .review-item{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--line);cursor:pointer}
+  .review-item:first-of-type{border-top:0}
+  .review-item:hover .rlabel{text-decoration:underline}
+  .rlabel{font-size:13.5px}
+
+  /* grammar */
+  .lesson{padding:3px 0}
+  .lesson-main{display:flex;align-items:center;gap:8px}
+  .lesson-title{flex:1;text-align:left;border:0;background:none;font:inherit;font-size:14px;
+    cursor:pointer;padding:2px 0;color:inherit;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .lesson.done .lesson-title{color:var(--muted);text-decoration:line-through}
+  .dots{display:flex;gap:3px}
+  .dot{width:14px;height:14px;border-radius:50%;border:1px solid var(--dot-border);background:var(--card);padding:0;cursor:pointer}
+  .dot.on{background:var(--accent);border-color:var(--accent)}
+  .lesson-detail{padding:6px 0 8px 26px}
+  .lesson-list{border-left:2px solid var(--line);padding-left:12px;margin-top:10px}
+
+  .badge{font-size:11px;padding:2px 7px;border-radius:99px;background:var(--soft);color:var(--muted);
+    white-space:nowrap;display:inline-block}
+  .badge.warn{background:var(--warn-bg);color:var(--warn-text)}
+  .badge.ok{background:var(--ok-bg);color:var(--ok-text)}
+  .badge.ink{background:var(--accent-soft);color:var(--accent)}
+  .badge.srs-due{background:var(--due-bg);color:var(--due-text);font-weight:600}
+  .chip{display:inline-flex;align-items:center;gap:4px;background:var(--warn-bg);color:var(--warn-text);
+    font-size:12.5px;padding:3px 6px 3px 9px;border-radius:99px;margin:3px 4px 0 0}
+  .chip button{border:0;background:none;color:inherit;cursor:pointer;font-size:11px;padding:0 2px}
+
+  /* grammar writing practice */
+  .practice{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px}
+  .practice-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:7px}
+  .kindseg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .kindseg button{border:0;background:var(--card);font:inherit;font-size:12px;padding:4px 11px;cursor:pointer;color:var(--muted)}
+  .kindseg button.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+  .writing-entry{border:1px solid var(--line);border-radius:9px;padding:8px;margin-top:8px;background:var(--entry-bg)}
+  .writing-entry .row{margin-bottom:5px}
+  .writing-entry textarea{font-size:13.5px}
+
+  /* grammar in context */
+  .ctx-section{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px}
+  .ctx-section-head{display:flex;align-items:center;gap:8px;justify-content:space-between}
+  .ctx-toggle{border:0;background:none;font:inherit;font-size:13px;font-weight:600;color:var(--text);
+    cursor:pointer;display:flex;align-items:center;gap:7px;padding:3px 0;min-width:0}
+  .ctx-toggle:hover{color:var(--accent)}
+  .chev{font-size:10px;color:var(--muted);width:9px;display:inline-block;flex:none}
+  .ctx-body{margin-top:8px}
+  .hl-preview{font-size:13.5px;padding:8px 11px;border-radius:8px;background:var(--hover);
+    margin-top:7px;line-height:1.75;word-break:break-word;min-height:34px}
+  .hl-preview .muted{font-size:12.5px}
+  .ctx-block{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+  .ctx-block-head{display:flex;justify-content:space-between;align-items:center;gap:8px;
+    font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;
+    color:var(--muted);margin-bottom:6px}
+  .sentence-row{display:flex;gap:6px;align-items:flex-start;padding:6px 0;
+    border-top:1px solid var(--line);font-size:13.5px}
+  .sentence-row:first-of-type{border-top:0;padding-top:2px}
+  .sentence-preview{flex:1;line-height:1.75;word-break:break-word}
+  mark{background:var(--mark-bg);color:var(--mark-text);padding:1px 4px;border-radius:4px;font-weight:500}
+
+  /* SRS */
+  .srs-panel{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+  .srs-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}
+  .srs-title{font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  .srs-status{font-size:12.5px;color:var(--muted)}
+  .srs-status.due{color:var(--due-text);font-weight:600}
+  .srs-status.ok{color:var(--ok-text);font-weight:600}
+  .srs-stages{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
+  .srs-stage{font-size:11px;padding:3px 8px;border-radius:6px;
+    background:var(--soft);color:var(--muted);border:1px solid transparent}
+  .srs-stage.current{background:var(--accent-soft);color:var(--accent);
+    border-color:var(--accent);font-weight:600}
+  .srs-stage.done{background:var(--ok-bg);color:var(--ok-text)}
+  .srs-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+
+  .due-item{display:flex;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+  .due-item:first-of-type{border-top:0}
+  .due-info{flex:1;min-width:0}
+
+  /* writing */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .targets{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+  .tgroup{border:1px solid var(--line);border-radius:10px;padding:10px}
+  .tgroup-head{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11.5px;
+    font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:6px}
+  .titem{display:flex;align-items:center;gap:7px;font-size:13.5px;padding:2px 0}
+  .titem.used .ttext{color:var(--muted);text-decoration:line-through}
+  .ttext{flex:1;min-width:0;word-break:break-word}
+  .small-input{font-size:13px;padding:5px 8px;margin-top:5px}
+  .workspace{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+  .workspace textarea{margin-bottom:8px}
+  .versions{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+  .version{display:flex;align-items:center;gap:8px;font-size:13px;padding:3px 0}
+  .version .btn{margin-left:auto}
+
+  .bulk{margin-top:8px;border-top:1px dashed var(--line);padding-top:8px}
+  .bulk textarea{font-size:13px;padding:6px 9px}
+  .bulk .row{margin-top:5px}
+
+  /* pronunciation */
+  .pr-subnav{display:flex;gap:2px;background:var(--bg);padding:3px;border-radius:10px;flex-wrap:wrap}
+  .pr-subnav button{border:0;background:transparent;font:inherit;font-size:13px;
+    padding:7px 12px;border-radius:8px;color:var(--muted);cursor:pointer;
+    display:inline-flex;align-items:center;gap:6px}
+  .pr-subnav button:hover{color:var(--text)}
+  .pr-subnav button.active{background:var(--card);color:var(--text);box-shadow:0 1px 2px var(--shadow)}
+  .pr-subnav .count{font-size:11px;background:var(--soft);color:var(--muted);
+    padding:1px 6px;border-radius:99px}
+  .pr-subnav button.active .count{background:var(--accent-soft);color:var(--accent)}
+
+  .pr-add{background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:14px;margin-bottom:14px}
+  .pr-add-title{font-size:11.5px;font-weight:600;text-transform:uppercase;
+    letter-spacing:.04em;color:var(--muted);margin-bottom:8px}
+
+  .pr-card{border:1px solid var(--line);border-radius:10px;padding:13px;
+    margin-bottom:10px;background:var(--card)}
+  .pr-card:last-child{margin-bottom:0}
+  .pr-card-head{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px}
+  .pr-card-head .grow{min-width:0}
+  .pr-sound{font-size:22px;font-weight:600;font-family:ui-monospace,SFMono-Regular,monospace;
+    letter-spacing:.02em;line-height:1.1}
+  .pr-word{font-size:17px;font-weight:600;line-height:1.2}
+  .pr-ipa{font-family:ui-monospace,SFMono-Regular,monospace;color:var(--muted);
+    font-size:13.5px;margin-left:8px}
+  .pr-stress{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12.5px;
+    color:var(--muted);margin-top:2px}
+  .pr-text{font-size:15px;line-height:1.6;font-weight:500}
+
+  .pr-examples{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0;align-items:center}
+  .chip-ex{font-size:12.5px;background:var(--soft);color:var(--text);
+    padding:3px 4px 3px 9px;border-radius:99px;display:inline-flex;align-items:center;gap:2px}
+  .chip-ex button{border:0;background:none;color:var(--muted);cursor:pointer;
+    font-size:11px;padding:0 3px;line-height:1}
+  .chip-ex button:hover{color:var(--due-text)}
+
+  .pr-row{display:flex;align-items:center;gap:10px;margin:8px 0;flex-wrap:wrap}
+  .pr-label{font-size:11.5px;color:var(--muted);font-weight:600;
+    text-transform:uppercase;letter-spacing:.04em;min-width:78px;flex:none}
+
+  .pr-section-label{font-size:11.5px;color:var(--muted);font-weight:600;
+    text-transform:uppercase;letter-spacing:.04em;margin:12px 0 5px}
+
+  .pr-actions{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;align-items:center;
+    border-top:1px solid var(--line);padding-top:10px}
+  .pr-meta{font-size:12px;color:var(--muted);margin-left:auto}
+
+  .rec-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px}
+  .rec-btn{border:1px solid var(--line);background:var(--card);font:inherit;font-size:12.5px;
+    padding:5px 11px;border-radius:8px;cursor:pointer;text-decoration:none;
+    display:inline-flex;align-items:center;gap:5px;color:var(--text)}
+  .rec-btn:hover{background:var(--hover)}
+  label.rec-btn{cursor:pointer}
+  .rec-btn.recording{background:var(--rec-bg);border-color:var(--rec-border);
+    color:var(--rec-text);font-weight:600}
+  .rec-dot{display:inline-block;width:8px;height:8px;border-radius:50%;
+    background:currentColor;animation:pulse 1s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  audio{height:32px;max-width:220px;margin-top:4px}
+
+  /* YouTube embed */
+  .video-embed{position:relative;width:100%;max-width:420px;aspect-ratio:16/9;
+    margin:8px 0;border-radius:10px;overflow:hidden;
+    border:1px solid var(--line);background:#000}
+  .video-embed iframe{width:100%;height:100%;border:0;display:block}
+
+  .tag-badge{font-size:11px;padding:3px 9px;border-radius:99px;
+    background:var(--accent-soft);color:var(--accent);font-weight:600;display:inline-block}
+  .tag-select{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}
+  .tag-select button{border:1px solid var(--line);background:var(--card);font:inherit;
+    font-size:12px;padding:4px 10px;border-radius:99px;cursor:pointer;color:var(--muted)}
+  .tag-select button:hover{background:var(--hover)}
+  .tag-select button.on{background:var(--accent-soft);border-color:var(--accent);
+    color:var(--accent);font-weight:600}
+
+  /* connected-speech headline inputs */
+  .cs-original{font-size:15px;font-weight:600;padding:7px 10px}
+  .cs-form{font-size:15px;font-weight:500;font-style:italic;
+    padding:7px 10px;background:var(--accent-soft);
+    border-color:transparent;color:var(--accent)}
+  .cs-form::placeholder{color:var(--accent);opacity:.55;font-style:italic}
+
+  .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .seg button{border:0;background:var(--card);font:inherit;font-size:12px;padding:5px 10px;
+    cursor:pointer;color:var(--muted);border-right:1px solid var(--line);white-space:nowrap}
+  .seg button:last-child{border-right:0}
+  .seg button:hover{background:var(--hover)}
+  .seg button.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+
+  .star{border:0;background:none;cursor:pointer;font-size:17px;color:var(--star);
+    padding:0 4px;line-height:1;flex:none}
+  .star.on{color:var(--star-on)}
+
+  .filters{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+  .filters button{border:1px solid var(--line);background:var(--card);font:inherit;font-size:12.5px;
+    padding:4px 11px;border-radius:99px;cursor:pointer;color:var(--muted)}
+  .filters button:hover{background:var(--hover)}
+  .filters button.on{background:var(--text);border-color:var(--text);color:var(--bg)}
+
+  .source-badge{font-size:11px;padding:2px 7px;border-radius:99px;
+    background:var(--soft);color:var(--muted);display:inline-block}
+
+  .diff-section{display:inline-flex;align-items:center;gap:4px;
+    background:var(--warn-bg);color:var(--warn-text);font-size:12.5px;
+    padding:3px 6px 3px 9px;border-radius:99px;margin:3px 4px 0 0}
+  .diff-section button{border:0;background:none;color:inherit;cursor:pointer;
+    font-size:11px;padding:0 2px}
+
+  .rep-bar{display:flex;align-items:center;gap:8px;margin:8px 0}
+  .rep-count{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+  .rep-bar-fill{flex:1;height:6px;background:var(--soft);border-radius:99px;overflow:hidden}
+  .rep-bar-fill>i{display:block;height:100%;background:var(--accent);border-radius:99px;
+    transition:width .2s}
+
+  @media (max-width:720px){
+    h1{display:none}
+    nav.mainnav button{padding:6px 9px;font-size:12.5px}
+    .util{padding:6px 9px;font-size:12.5px}
+  }
+  @media (max-width:640px){
+    .stats,.targets,.grid2,.facts{grid-template-columns:1fr}
+    .prow{grid-template-columns:110px 1fr 58px}
+    .lesson-detail{padding-left:6px}
+    .lesson-list{padding-left:6px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap topbar">
+    <h1>English Study</h1>
+    <nav class="mainnav">
+      <button data-route="dashboard">Dashboard</button>
+      <button data-route="grammar">Grammar</button>
+      <button data-route="writing">Writing</button>
+      <button data-route="pronunciation">Pronunciation</button>
+    </nav>
+    <div class="utils">
+      <a class="util" href="Index.html">Home</a>
+      <a class="util" href="Pace.html">Pace</a>
+      <a class="util" href="Room.html">Room</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+
+<script>
+/* ============ constants ============ */
+const KEY = 'english-study-tracker-v1';
+const THEME_KEY = 'english-study-theme';
+const SRS_INTERVALS = [3, 5, 7, 14, 30, 60];
+const DAY_MS = 86400000;
+const AUDIO_FILE_WARN_BYTES = 2 * 1024 * 1024;  // 2 MB
+
+const CONNECTED_TAGS = [
+  ['linking', 'Linking'],
+  ['reduction', 'Reductions'],
+  ['flap', 'Flapping'],
+  ['glottal', 'Glottal stops'],
+  ['weak', 'Weak forms'],
+  ['contraction', 'Contractions'],
+  ['assimilation', 'Assimilation'],
+  ['rhythm', 'Rhythm']
+];
+const CONNECTED_TAG_MAP = Object.fromEntries(CONNECTED_TAGS);
+
+/* ============ helpers ============ */
+const uid = () => Math.random().toString(36).slice(2, 9);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
+  ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+const wordCount = t => (t || '').trim() ? t.trim().split(/\s+/).length : 0;
+
+function renderHighlight(text) {
+  return esc(text).replace(/\*\*([\s\S]+?)\*\*/g, '<mark>$1</mark>');
+}
+function parseList(text) {
+  return (text || '').split(/[\n,;]+/)
+    .map(s => s.trim().replace(/^(?:[-*•–—]|\d+[.)])\s*/, '').trim())
+    .filter(Boolean);
+}
+
+/* ---------- YouTube helpers ---------- */
+function youtubeId(url) {
+  if (!url) return '';
+  const m = String(url).match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|v\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/
+  );
+  return m ? m[1] : '';
+}
+function youtubeEmbed(url) {
+  const id = youtubeId(url);
+  return id ? `https://www.youtube.com/embed/${id}` : '';
+}
+
+/* ============ SRS ============ */
+function srsStart(l, baseTs) {
+  const base = baseTs || Date.now();
+  l.srs = { level: 0, nextReview: base + SRS_INTERVALS[0] * DAY_MS,
+            lastReview: null, reviews: 0 };
+}
+function srsReview(l) {
+  const s = l.srs;
+  if (!s || s.level < 0) { srsStart(l); return; }
+  if (s.level >= SRS_INTERVALS.length) return;
+  s.reviews = (s.reviews || 0) + 1;
+  s.lastReview = Date.now();
+  s.level++;
+  s.nextReview = s.level >= SRS_INTERVALS.length
+    ? null : Date.now() + SRS_INTERVALS[s.level] * DAY_MS;
+}
+function srsAgain(l) {
+  const s = l.srs; if (!s) return;
+  s.level = 0;
+  s.nextReview = Date.now() + SRS_INTERVALS[0] * DAY_MS;
+  s.lastReview = Date.now();
+}
+function srsReset(l) {
+  l.srs = { level: -1, nextReview: null, lastReview: null, reviews: 0 };
+}
+function srsStatus(l) {
+  const s = l.srs;
+  if (!s || s.level < 0) return { kind: 'none' };
+  if (s.level >= SRS_INTERVALS.length) return { kind: 'graduated' };
+  const now = Date.now();
+  if (s.nextReview !== null && s.nextReview <= now)
+    return { kind: 'due', overdue: Math.floor((now - s.nextReview) / DAY_MS) };
+  if (s.nextReview === null) return { kind: 'none' };
+  return { kind: 'waiting', days: Math.ceil((s.nextReview - now) / DAY_MS) };
+}
+
+/* ============ theme ============ */
+const themeBtn = document.getElementById('themeToggle');
+function syncThemeBtn(){
+  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  themeBtn.textContent = dark ? '☀️' : '🌙';
+  themeBtn.title = dark ? 'Switch to light mode' : 'Switch to dark mode';
+}
+themeBtn.addEventListener('click', () => {
+  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  if (dark) {
+    document.documentElement.removeAttribute('data-theme');
+    try{ localStorage.setItem(THEME_KEY, 'light'); }catch(e){}
+  } else {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    try{ localStorage.setItem(THEME_KEY, 'dark'); }catch(e){}
+  }
+  syncThemeBtn();
+});
+syncThemeBtn();
+
+/* ============ storage ============ */
+function defaults() {
+  return {
+    route: 'dashboard',
+    targets: { grammar: 3, writing: 2, pronunciation: 3 },
+    grammar: { books: [], sessions: [] },
+    writing: { projects: [], sessions: [] },
+    pronunciation: {
+      sounds: [], words: [], sentences: [], connected: [],
+      sessions: [], tab: 'sounds'
+    }
+  };
+}
+
+/* ---- pronunciation item normalizers ---- */
+function normCommon(it) {
+  if (typeof it.mastery !== 'string') it.mastery = 'new';
+  if (typeof it.notes !== 'string') it.notes = '';
+  it.difficult = !!it.difficult;
+  it.practices = it.practices || 0;
+  it.last = it.last || null;
+  /* shared media fields */
+  if (typeof it.videoUrl !== 'string')  it.videoUrl  = '';
+  if (typeof it.audioUrl !== 'string')  it.audioUrl  = '';
+  if (typeof it.audioFile !== 'string') it.audioFile = '';
+  if (typeof it.recording !== 'string') it.recording = '';
+  return it;
+}
+function normSound(it) {
+  normCommon(it);
+  if (typeof it.symbol !== 'string') it.symbol = '';
+  if (!Array.isArray(it.examples)) it.examples = [];
+  if (typeof it.difficulty !== 'number') it.difficulty = 0;
+  if (typeof it.mouthNotes !== 'string') it.mouthNotes = '';
+  return it;
+}
+function normWord(it) {
+  normCommon(it);
+  if (typeof it.word !== 'string') it.word = '';
+  if (typeof it.ipa !== 'string') it.ipa = '';
+  if (typeof it.stress !== 'string') it.stress = '';
+  if (it.mastery === 'new') it.mastery = 'practicing';
+  return it;
+}
+function normSentence(it) {
+  normCommon(it);
+  if (typeof it.text !== 'string') it.text = '';
+  if (typeof it.source !== 'string') it.source = '';
+  if (typeof it.sourceType !== 'string') it.sourceType = 'other';
+  if (typeof it.reps !== 'number') it.reps = 0;
+  if (typeof it.targetReps !== 'number') it.targetReps = 10;
+  if (!Array.isArray(it.difficultSections)) it.difficultSections = [];
+  return it;
+}
+function normConnected(it) {
+  normCommon(it);
+  /* migrate legacy single 'text' field into original */
+  if (typeof it.original !== 'string') {
+    it.original = (typeof it.text === 'string') ? it.text : '';
+  }
+  if (typeof it.connectedForm !== 'string') it.connectedForm = '';
+  delete it.text;
+  if (!Array.isArray(it.tags)) it.tags = [];
+  return it;
+}
+
+function normalize(st) {
+  /* ---- grammar books (flat, no units) ---- */
+  (st.grammar.books || []).forEach(b => {
+    if (Array.isArray(b.units)) {
+      const migrated = [];
+      const multiUnit = b.units.length > 1;
+      b.units.forEach(u => {
+        const unitTitle = (u.title || '').trim();
+        (u.lessons || []).forEach(l => {
+          if (multiUnit && unitTitle && !l.title.startsWith(unitTitle))
+            l.title = unitTitle + ' — ' + l.title;
+          migrated.push(l);
+        });
+      });
+      b.lessons = migrated;
+      delete b.units;
+    }
+    if (!Array.isArray(b.lessons)) b.lessons = [];
+
+    b.lessons.forEach(l => {
+      if (!Array.isArray(l.mistakes)) l.mistakes = [];
+      if (!Array.isArray(l.writings)) l.writings = [];
+
+      const ctx = (l.context && typeof l.context === 'object') ? l.context : {};
+      if (!Array.isArray(ctx.sentences)) ctx.sentences = [];
+      if (typeof ctx.explanation !== 'string') ctx.explanation = '';
+
+      if (Array.isArray(l.contexts) && l.contexts.length) {
+        const extra = [];
+        l.contexts.forEach(c => {
+          if (c && typeof c.explanation === 'string' && c.explanation) extra.push(c.explanation);
+          if (c && Array.isArray(c.sentences)) ctx.sentences.push(...c.sentences);
+        });
+        if (extra.length) ctx.explanation = [ctx.explanation, ...extra].filter(Boolean).join('\n\n');
+      }
+      delete l.contexts;
+      l.context = ctx;
+
+      if (!l.srs || typeof l.srs !== 'object')
+        l.srs = { level: -1, nextReview: null, lastReview: null, reviews: 0 };
+      if (typeof l.srs.level !== 'number') l.srs.level = -1;
+      if (typeof l.srs.reviews !== 'number') l.srs.reviews = 0;
+      if (l.srs.nextReview === undefined) l.srs.nextReview = null;
+      if (l.srs.lastReview === undefined) l.srs.lastReview = null;
+
+      if (l.done && l.srs.level < 0) {
+        const base = l.doneAt || Date.now();
+        l.srs.level = 0;
+        l.srs.nextReview = base + SRS_INTERVALS[0] * DAY_MS;
+      }
+    });
+  });
+
+  /* migrate legacy top-level grammar contexts (v1) */
+  if (Array.isArray(st.grammar.contexts) && st.grammar.contexts.length) {
+    const first = st.grammar.books[0]?.lessons[0];
+    if (first) {
+      const extra = [];
+      st.grammar.contexts.forEach(c => {
+        if (c && typeof c.explanation === 'string' && c.explanation) extra.push(c.explanation);
+        if (c && Array.isArray(c.sentences)) first.context.sentences.push(...c.sentences);
+      });
+      if (extra.length)
+        first.context.explanation =
+          [first.context.explanation, ...extra].filter(Boolean).join('\n\n');
+    }
+  }
+  delete st.grammar.contexts;
+
+  /* ---- pronunciation ---- */
+  const pr = st.pronunciation;
+  if (!Array.isArray(pr.sounds))     pr.sounds = [];
+  if (!Array.isArray(pr.words))      pr.words = [];
+  if (!Array.isArray(pr.sentences))  pr.sentences = [];
+  if (!Array.isArray(pr.connected))  pr.connected = [];
+  if (!Array.isArray(pr.sessions))   pr.sessions = [];
+  if (typeof pr.tab !== 'string')    pr.tab = 'sounds';
+
+  /* migrate legacy "items" array */
+  if (Array.isArray(pr.items)) {
+    pr.items.forEach(it => {
+      const base = {
+        id: it.id || uid(),
+        mastery: it.status === 'mastered' ? 'mastered'
+               : (it.status === 'practiced' ? 'practicing' : 'new'),
+        notes: it.notes || '',
+        difficult: !!it.difficult,
+        practices: it.practices || 0,
+        last: it.last || null,
+        videoUrl: '', audioUrl: '', audioFile: '', recording: ''
+      };
+      if (it.type === 'sound') {
+        pr.sounds.push(normSound({ ...base, symbol: it.text || '',
+          examples: [], difficulty: 0, mouthNotes: '' }));
+      } else if (it.type === 'word') {
+        pr.words.push(normWord({ ...base, word: it.text || '',
+          ipa: '', stress: '' }));
+      } else if (it.type === 'sentence') {
+        pr.sentences.push(normSentence({ ...base, text: it.text || '',
+          source: '', sourceType: 'other', reps: 0, targetReps: 10,
+          difficultSections: [] }));
+      }
+    });
+    delete pr.items;
+  }
+  pr.sounds.forEach(normSound);
+  pr.words.forEach(normWord);
+  pr.sentences.forEach(normSentence);
+  pr.connected.forEach(normConnected);
+
+  (st.writing.projects || []).forEach(p => {
+    ['targets','paths','versions','sessions'].forEach(k => { if (!Array.isArray(p[k])) p[k] = []; });
+  });
+
+  return st;
+}
+
+function load() {
+  const d = defaults();
+  let raw = null;
+  try { raw = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+  if (!raw) return d;
+  return normalize({
+    ...d, ...raw,
+    targets:       { ...d.targets,       ...(raw.targets || {}) },
+    grammar:       { ...d.grammar,       ...(raw.grammar || {}) },
+    writing:       { ...d.writing,       ...(raw.writing || {}) },
+    pronunciation: { ...d.pronunciation, ...(raw.pronunciation || {}) }
+  });
+}
+
+let state = load();
+const expanded = new Set();
+const ctxOpen  = new Set();
+let prFilter = 'all';
+let pendingFocus = null;
+let quotaWarned = false;
+
+const drafts = {};
+const draftKey = {
+  gw: id => 'gw:' + id, gk: id => 'gk:' + id,
+  bulk: (pid, type) => 'bulk:' + pid + ':' + type
+};
+
+const prDrafts = {
+  soundSymbol: '',
+  wordWord: '', wordIpa: '', wordStress: '',
+  sentenceText: '', sentenceSource: '', sentenceSourceType: 'book',
+  csOriginal: '', csForm: ''
+};
+
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(state)); }
+  catch (e) {
+    if (!quotaWarned && (e.name === 'QuotaExceededError' || e.code === 22)) {
+      quotaWarned = true;
+      alert('Storage is full. Consider removing old recordings or unused items.');
+    }
+  }
+}
+
+/* ============ lookups ============ */
+const getBook = id => state.grammar.books.find(b => b.id === id);
+const getProject = id => state.writing.projects.find(p => p.id === id);
+const allLessons = () => state.grammar.books.flatMap(b => b.lessons);
+
+function findLesson(id) {
+  for (const b of state.grammar.books)
+    for (const l of b.lessons) if (l.id === id) return l;
+  return null;
+}
+function findLessonBook(id) {
+  for (const b of state.grammar.books)
+    for (const l of b.lessons) if (l.id === id) return b;
+  return null;
+}
+
+const prCollections = {
+  sound: () => state.pronunciation.sounds,
+  word: () => state.pronunciation.words,
+  sentence: () => state.pronunciation.sentences,
+  connected: () => state.pronunciation.connected
+};
+function findPrItem(kind, id) {
+  const arr = prCollections[kind] ? prCollections[kind]() : null;
+  return arr ? arr.find(x => x.id === id) : null;
+}
+function allPrItems() {
+  const p = state.pronunciation;
+  return [...p.sounds, ...p.words, ...p.sentences, ...p.connected];
+}
+
+/* ============ week helpers ============ */
+function startOfWeek() {
+  const d = new Date(); d.setHours(0,0,0,0);
+  d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+  return d.getTime();
+}
+function weekLabel() {
+  const s = new Date(startOfWeek());
+  const e = new Date(s); e.setDate(e.getDate() + 6);
+  const o = { month:'short', day:'numeric' };
+  return s.toLocaleDateString(undefined, o) + ' – ' + e.toLocaleDateString(undefined, o);
+}
+const thisWeek = arr => arr.filter(s => s.ts >= startOfWeek()).length;
+
+const TTYPES = [
+  ['chunk','Chunks'], ['collocation','Collocations'], ['phrasal','Phrasal verbs'],
+  ['vocab','Vocabulary'], ['grammar','Grammar']
+];
+
+/* ============ shell ============ */
+const app = document.getElementById('app');
+
+function render() {
+  document.querySelectorAll('.mainnav button').forEach(b =>
+    b.classList.toggle('active', b.dataset.route === state.route));
+  if (state.route === 'grammar')            renderGrammar();
+  else if (state.route === 'writing')       renderWriting();
+  else if (state.route === 'pronunciation') renderPronunciation();
+  else                                      renderDashboard();
+  window.scrollTo({ top: 0 });
+  if (pendingFocus) {
+    const f = app.querySelector(pendingFocus);
+    if (f) f.focus();
+    pendingFocus = null;
+  }
+}
+
+/* ============ dashboard ============ */
+function statHTML(label, count, target, key) {
+  const pct = target ? Math.min(100, Math.round(count / target * 100)) : 0;
+  return `<div class="stat">
+    <div class="stat-label">${label}</div>
+    <div class="stat-num">${count}<span class="muted"> / ${target}</span></div>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    <div class="stat-foot">target <input class="mini" type="number" min="0" max="99"
+      value="${target}" data-action="set-target" data-key="${key}"> sessions/wk</div>
+  </div>`;
+}
+function progRow(label, val, total) {
+  const pct = total ? Math.round(val / total * 100) : 0;
+  return `<div class="prow">
+    <span>${label}</span>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    <span class="muted small" style="text-align:right">${val}/${total}</span>
+  </div>`;
+}
+
+function renderDashboard() {
+  const t = state.targets;
+  const gs = thisWeek(state.grammar.sessions);
+  const ws = thisWeek(state.writing.sessions);
+  const ps = thisWeek(state.pronunciation.sessions);
+
+  const lessons = allLessons();
+  const doneL = lessons.filter(l => l.done).length;
+  const gWritings = lessons.reduce((n, l) => n + (l.writings || []).length, 0);
+  const gContexts  = lessons.filter(l =>
+    l.context.explanation.trim() || l.context.sentences.length).length;
+  const gSentences = lessons.reduce((n, l) => n + l.context.sentences.length, 0);
+  const gMistakes  = lessons.reduce((n, l) => n + l.mistakes.length, 0);
+
+  const dueLessons = [];
+  const upcomingLessons = [];
+  state.grammar.books.forEach(b => b.lessons.forEach(l => {
+    if (!l.done) return;
+    const st = srsStatus(l);
+    if (st.kind === 'due') dueLessons.push({ b, l });
+    else if (st.kind === 'waiting') upcomingLessons.push({ b, l });
+  }));
+  dueLessons.sort((a, b) => a.l.srs.nextReview - b.l.srs.nextReview);
+  upcomingLessons.sort((a, b) => a.l.srs.nextReview - b.l.srs.nextReview);
+  const graduatedCount = lessons.filter(l =>
+    l.done && l.srs.level >= SRS_INTERVALS.length).length;
+
+  const prAll = allPrItems();
+  const prMastered = prAll.filter(i => i.mastery === 'mastered').length;
+
+  const proj = state.writing.projects;
+  const versions = proj.reduce((n, p) => n + p.versions.length, 0);
+  const words = proj.reduce((n, p) => n + wordCount(p.current), 0);
+  const tTotal = proj.reduce((n, p) => n + p.targets.length, 0);
+  const tUsed  = proj.reduce((n, p) => n + p.targets.filter(x => x.used).length, 0);
+
+  const review = [];
+  state.grammar.books.forEach(b => b.lessons.forEach(l => {
+    if (l.confidence > 0 && l.confidence <= 2) {
+      review.push({
+        route: 'grammar', type: 'Grammar', label: l.title,
+        meta: `${b.title} · confidence ${l.confidence}/5`
+      });
+    }
+  }));
+  prAll.forEach(i => {
+    if (!i.difficult) return;
+    let label = '', meta = '';
+    if (i.symbol !== undefined)      { label = i.symbol;   meta = `sound · ${i.mastery}`; }
+    else if (i.word !== undefined)   { label = i.word;     meta = `word · ${i.mastery}${i.ipa ? ' · ' + i.ipa : ''}`; }
+    else if (i.sourceType !== undefined) { label = i.text; meta = `sentence · ${i.sourceType} · ${i.reps}/${i.targetReps} reps`; }
+    else {
+      label = i.original || '';
+      meta = `connected speech${i.connectedForm ? ' → ' + i.connectedForm : ''} · ${(i.tags || []).map(k => CONNECTED_TAG_MAP[k] || k).join(', ')}`;
+    }
+    review.push({ route: 'pronunciation', type: 'Pronunciation', label, meta });
+  });
+
+  app.innerHTML = `
+  <section class="card">
+    <div class="card-head"><h2>This week</h2><span class="muted small">${weekLabel()}</span></div>
+    <div class="stats">
+      ${statHTML('Grammar', gs, t.grammar, 'grammar')}
+      ${statHTML('Writing', ws, t.writing, 'writing')}
+      ${statHTML('Pronunciation', ps, t.pronunciation, 'pronunciation')}
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>Spaced repetition</h2>
+        <span class="muted small">${dueLessons.length} due ·
+          ${upcomingLessons.length} scheduled · ${graduatedCount} graduated</span>
+      </div>
+    </div>
+    ${dueLessons.length ? dueLessons.map(({ b, l }) => {
+      const overdue = Math.max(0, Math.floor((Date.now() - l.srs.nextReview) / DAY_MS));
+      return `<div class="due-item">
+        <span class="badge srs-due">SRS</span>
+        <div class="due-info">
+          <div class="rlabel">${esc(l.title)}</div>
+          <div class="muted small">${esc(b.title)} · stage
+            ${l.srs.level + 1}/${SRS_INTERVALS.length} ·
+            ${overdue > 0 ? overdue + ' day' + (overdue === 1 ? '' : 's') + ' overdue' : 'due today'}</div>
+        </div>
+        <button class="btn tiny primary" data-action="srs-review" data-lesson="${l.id}">Review</button>
+      </div>`;
+    }).join('')
+    : `<p class="muted small" style="margin:0">Nothing due right now.
+        ${upcomingLessons.length
+          ? `Next review in ${srsStatus(upcomingLessons[0].l).days} day${
+              srsStatus(upcomingLessons[0].l).days === 1 ? '' : 's'}.`
+          : ''}</p>`}
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Overall progress</h2></div>
+    ${progRow('Grammar lessons', doneL, lessons.length)}
+    ${progRow('Pronunciation items', prMastered, prAll.length)}
+    ${progRow('Writing targets used', tUsed, tTotal)}
+    <div class="facts">
+      <div><b>${proj.length}</b><span>writing projects</span></div>
+      <div><b>${versions}</b><span>drafts &amp; revisions</span></div>
+      <div><b>${words}</b><span>words in progress</span></div>
+    </div>
+    <div class="facts" style="margin-top:10px;padding-top:10px">
+      <div><b>${state.pronunciation.sounds.length}</b><span>sounds</span></div>
+      <div><b>${state.pronunciation.words.length}</b><span>words</span></div>
+      <div><b>${state.pronunciation.sentences.length + state.pronunciation.connected.length}</b><span>sentences &amp; connected</span></div>
+    </div>
+    <div class="facts" style="margin-top:10px;padding-top:10px">
+      <div><b>${gWritings}</b><span>grammar practice pieces</span></div>
+      <div><b>${gMistakes}</b><span>logged mistakes</span></div>
+      <div><b>${prAll.filter(i=>i.difficult).length}</b><span>items on review list</span></div>
+    </div>
+    <div class="facts" style="margin-top:10px;padding-top:10px">
+      <div><b>${gContexts}</b><span>lessons with context</span></div>
+      <div><b>${gSentences}</b><span>example sentences</span></div>
+      <div><b>${state.grammar.books.length}</b><span>grammar books</span></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Needs review</h2><span class="muted small">${review.length}</span></div>
+    ${review.length ? review.map(r => `
+      <div class="review-item" data-action="goto" data-route="${r.route}">
+        <span class="badge">${r.type}</span>
+        <div>
+          <div class="rlabel">${esc(r.label)}</div>
+          <div class="muted small">${esc(r.meta)}</div>
+        </div>
+      </div>`).join('')
+      : `<p class="muted small" style="margin:0">Nothing flagged yet. Grammar lessons rated 1–2 and starred pronunciation items appear here.</p>`}
+  </section>`;
+}
+
+/* ============ grammar in context ============ */
+function contextPreviewInner(ctx) {
+  return ctx.explanation.includes('**')
+    ? renderHighlight(ctx.explanation)
+    : '<span class="muted">Tip: wrap the target structure with <code>**…**</code> to highlight it here.</span>';
+}
+function contextSectionHTML(l) {
+  const ctx = l.context;
+  const open = ctxOpen.has(l.id);
+  const hasContent = ctx.explanation.trim() || ctx.sentences.length || l.mistakes.length;
+
+  return `<div class="ctx-section">
+    <div class="ctx-section-head">
+      <button class="ctx-toggle" data-action="toggle-ctx" data-lesson="${l.id}">
+        <span class="chev">${open ? '▾' : '▸'}</span>
+        <span>Grammar in Context</span>
+        ${hasContent ? `<span class="badge ink">${ctx.sentences.length} ex${
+          l.mistakes.length ? ' · ' + l.mistakes.length + ' mistake' +
+          (l.mistakes.length > 1 ? 's' : '') : ''}</span>` : ''}
+      </button>
+    </div>
+    ${open ? `<div class="ctx-body">
+      <label class="field">
+        <span>Explanation <span class="muted">— wrap the pattern in <code>**…**</code></span></span>
+        <textarea rows="3" data-action="ctx-explanation" data-lesson="${l.id}"
+          placeholder="When do we use it? What's the form? Any rules or exceptions…">${esc(ctx.explanation)}</textarea>
+      </label>
+      <div class="hl-preview">${contextPreviewInner(ctx)}</div>
+      <div class="ctx-block">
+        <div class="ctx-block-head"><span>Example sentences</span><span>${ctx.sentences.length}</span></div>
+        ${ctx.sentences.map(s => `<div class="sentence-row">
+          <span class="sentence-preview">${renderHighlight(s.text)}</span>
+          <button class="icon" data-action="del-sentence" data-lesson="${l.id}"
+            data-sentence="${s.id}" title="Delete sentence">✕</button>
+        </div>`).join('')}
+        <input class="small-input" data-action="add-sentence" data-lesson="${l.id}"
+          placeholder="Add example sentence — wrap the target pattern in **…** + Enter">
+      </div>
+      <div class="ctx-block">
+        <div class="ctx-block-head"><span>Mistakes</span><span>${l.mistakes.length}</span></div>
+        ${l.mistakes.length ? `<div class="row" style="gap:4px;margin-bottom:6px">
+          ${l.mistakes.map((m, i) => `<span class="chip">${esc(m)}
+            <button data-action="del-mistake" data-lesson="${l.id}" data-idx="${i}" title="Remove">✕</button></span>`).join('')}
+        </div>` : ''}
+        <input class="small-input" data-action="add-mistake" data-lesson="${l.id}"
+          placeholder="Add a mistake + Enter…">
+      </div>
+    </div>` : ''}
+  </div>`;
+}
+
+/* ============ SRS panel ============ */
+function srsBadgeHTML(l) {
+  if (!l.done) return '';
+  const st = srsStatus(l);
+  if (st.kind === 'none') return '';
+  if (st.kind === 'graduated') return `<span class="badge ok" title="SRS complete">SRS ✓</span>`;
+  if (st.kind === 'due')       return `<span class="badge srs-due" title="Review due">SRS ●</span>`;
+  return `<span class="badge" title="Next in ${st.days}d">SRS ${st.days}d</span>`;
+}
+function srsPanelHTML(l) {
+  if (!l.done) return '';
+  const s = l.srs;
+  const active = s.level >= 0;
+  const graduated = s.level >= SRS_INTERVALS.length;
+  const st = srsStatus(l);
+
+  let statusText = '', statusCls = '';
+  if (graduated)      { statusText = `Graduated · ${s.reviews} review${s.reviews === 1 ? '' : 's'}`; statusCls = 'ok'; }
+  else if (!active)   { statusText = 'Not scheduled'; }
+  else if (st.kind === 'due') {
+    statusText = st.overdue > 0
+      ? `Due ${st.overdue} day${st.overdue === 1 ? '' : 's'} ago` : 'Due today';
+    statusCls = 'due';
+  } else { statusText = `Next in ${st.days} day${st.days === 1 ? '' : 's'}`; }
+
+  const stagesHTML = SRS_INTERVALS.map((days, i) => {
+    let cls = 'srs-stage';
+    if (graduated || s.level > i) cls += ' done';
+    else if (s.level === i) cls += ' current';
+    return `<span class="${cls}">${days}d</span>`;
+  }).join('');
+
+  return `<div class="srs-panel">
+    <div class="srs-head">
+      <span class="srs-title">Spaced repetition</span>
+      <span class="srs-status ${statusCls}">${statusText}</span>
+    </div>
+    ${active ? `<div class="srs-stages">${stagesHTML}<span class="srs-stage ${
+      graduated ? 'done' : ''}">✓</span></div>` : ''}
+    <div class="srs-actions">
+      ${!active ? `<button class="btn small primary" data-action="srs-start" data-lesson="${l.id}">Start schedule</button>`
+        : graduated ? `<span class="muted small">All intervals complete.</span>
+           <button class="btn small" data-action="srs-reset" data-lesson="${l.id}">Reset</button>`
+        : `<button class="btn small primary" data-action="srs-review" data-lesson="${l.id}">Review now ✓</button>
+           <button class="btn small" data-action="srs-again" data-lesson="${l.id}">Again</button>
+           <button class="btn small" data-action="srs-reset" data-lesson="${l.id}">Reset</button>`}
+    </div>
+  </div>`;
+}
+
+/* ============ grammar ============ */
+function practiceHTML(l) {
+  const writings = l.writings || [];
+  const sCount = writings.filter(w => w.kind === 'sentence').length;
+  const pCount = writings.filter(w => w.kind === 'paragraph').length;
+  const kind = drafts[draftKey.gk(l.id)] || 'sentence';
+  const draft = drafts[draftKey.gw(l.id)] || '';
+  const isPara = kind === 'paragraph';
+
+  return `<div class="practice">
+    <div class="practice-head">
+      <span class="muted small">Practice writing</span>
+      <span class="muted small">${writings.length
+        ? `${sCount} sentence${sCount === 1 ? '' : 's'} · ${pCount} paragraph${pCount === 1 ? '' : 's'}`
+        : 'write to make the rule stick'}</span>
+    </div>
+    <div class="row between" style="margin-bottom:6px">
+      <div class="kindseg">
+        <button class="${!isPara ? 'on' : ''}" data-action="gw-kind" data-lesson="${l.id}" data-val="sentence">Sentence</button>
+        <button class="${isPara ? 'on' : ''}" data-action="gw-kind" data-lesson="${l.id}" data-val="paragraph">Paragraph</button>
+      </div>
+    </div>
+    <textarea rows="${isPara ? 4 : 2}" data-action="gw-draft" data-lesson="${l.id}"
+      placeholder="${isPara ? 'Write a short paragraph using this grammar point…' : 'Write a sentence using this grammar point…'}">${esc(draft)}</textarea>
+    <div class="row between" style="margin-top:6px">
+      <span class="muted small">⌘/Ctrl + Enter to save</span>
+      <button class="btn small primary" data-action="gw-add" data-lesson="${l.id}">Save</button>
+    </div>
+    ${writings.map(w => `<div class="writing-entry">
+      <div class="row between">
+        <span class="badge ${w.kind === 'paragraph' ? 'ink' : ''}">${w.kind}</span>
+        <span class="row" style="gap:2px">
+          <span class="muted small wcount">${wordCount(w.text)}w</span>
+          <button class="icon" title="Delete" data-action="gw-del" data-lesson="${l.id}" data-writing="${w.id}">✕</button>
+        </span>
+      </div>
+      <textarea rows="${w.kind === 'paragraph' ? 4 : 2}" data-action="gw-edit" data-lesson="${l.id}" data-writing="${w.id}">${esc(w.text)}</textarea>
+    </div>`).join('')}
+  </div>`;
+}
+
+function lessonHTML(b, l) {
+  const open = expanded.has(l.id);
+  const writings = l.writings || [];
+  const ctx = l.context;
+  const hasCtx = ctx.explanation.trim() || ctx.sentences.length;
+  const dots = [1,2,3,4,5].map(n =>
+    `<button class="dot ${l.confidence >= n ? 'on' : ''}" title="Confidence ${n}"
+      data-action="set-conf" data-lesson="${l.id}" data-val="${n}"></button>`
+  ).join('');
+
+  return `<div class="lesson ${l.done ? 'done' : ''}">
+    <div class="lesson-main">
+      <input type="checkbox" ${l.done ? 'checked' : ''} data-action="toggle-lesson" data-lesson="${l.id}">
+      <button class="lesson-title" data-action="expand-lesson" data-lesson="${l.id}">${esc(l.title)}</button>
+      ${srsBadgeHTML(l)}
+      ${hasCtx ? `<span class="badge">◎ ${ctx.sentences.length}</span>` : ''}
+      ${writings.length ? `<span class="badge ink">✍ ${writings.length}</span>` : ''}
+      ${l.mistakes.length ? `<span class="badge warn">${l.mistakes.length}</span>` : ''}
+      <div class="dots">${dots}</div>
+      <button class="icon" title="Delete lesson" data-action="del-lesson" data-lesson="${l.id}">✕</button>
+    </div>
+    ${open ? `<div class="lesson-detail">
+      ${practiceHTML(l)}
+      ${contextSectionHTML(l)}
+      ${srsPanelHTML(l)}
+    </div>` : ''}
+  </div>`;
+}
+
+function bookHTML(b) {
+  const done = b.lessons.filter(l => l.done).length;
+  const due = b.lessons.filter(l => l.done && srsStatus(l).kind === 'due').length;
+  return `<section class="card">
+    <div class="card-head">
+      <div>
+        <h3>${esc(b.title)}</h3>
+        <span class="muted small">${done} / ${b.lessons.length} lessons completed${
+          due ? ` · <b style="color:var(--due-text)">${due} due</b>` : ''}</span>
+      </div>
+      <button class="icon" title="Delete book" data-action="del-book" data-book="${b.id}">✕</button>
+    </div>
+    <div class="row">
+      <input class="grow" placeholder="Add lesson (e.g. Present continuous)"
+        data-action="add-lesson" data-book="${b.id}">
+      <button class="btn" data-action="add-lesson" data-book="${b.id}">Add lesson</button>
+    </div>
+    ${b.lessons.length
+      ? `<div class="lesson-list">${b.lessons.map(l => lessonHTML(b, l)).join('')}</div>`
+      : `<p class="muted small" style="margin:10px 0 0">No lessons yet. Add one above — then
+           expand it to write practice, record <b>Grammar in Context</b>, and manage its
+           spaced-repetition schedule.</p>`}
+  </section>`;
+}
+
+function renderGrammar() {
+  const lessons = allLessons();
+  const done = lessons.filter(l => l.done).length;
+  const pieces = lessons.reduce((n, l) => n + (l.writings || []).length, 0);
+  const ctxLessons = lessons.filter(l =>
+    l.context.explanation.trim() || l.context.sentences.length).length;
+  const ctxSentences = lessons.reduce((n, l) => n + l.context.sentences.length, 0);
+  const mistakeCount = lessons.reduce((n, l) => n + l.mistakes.length, 0);
+  const dueCount = lessons.filter(l => l.done && srsStatus(l).kind === 'due').length;
+  const graduatedCount = lessons.filter(l =>
+    l.done && l.srs.level >= SRS_INTERVALS.length).length;
+
+  let html = `<section class="card">
+    <div class="card-head">
+      <div>
+        <h2>Grammar</h2>
+        <span class="muted small">${done} / ${lessons.length} lessons completed ·
+          ${pieces} practice ${pieces === 1 ? 'piece' : 'pieces'} ·
+          ${ctxLessons} with context · ${ctxSentences} examples ·
+          ${mistakeCount} mistake${mistakeCount === 1 ? '' : 's'}
+          ${dueCount ? ` · <b style="color:var(--due-text)">${dueCount} due for review</b>` : ''}
+          ${graduatedCount ? ` · ${graduatedCount} graduated` : ''}</span>
+      </div>
+      <button class="btn small" data-action="log-grammar-session">+ Log session</button>
+    </div>
+    <div class="row">
+      <input class="grow" id="new-book" placeholder="Add a book (e.g. English Grammar in Use)" data-action="add-book">
+      <button class="btn primary" data-action="add-book">Add book</button>
+    </div>
+  </section>`;
+
+  if (!state.grammar.books.length) {
+    html += `<section class="card empty">No books yet. Add one, then add lessons directly —
+      no units needed. Completing a lesson automatically starts a <b>spaced repetition</b>
+      schedule (3 → 5 → 7 → 14 → 30 → 60 days).</section>`;
+  }
+  html += state.grammar.books.map(bookHTML).join('');
+  app.innerHTML = html;
+}
+
+/* ============ writing ============ */
+function bulkHTML(p, type, label, hint) {
+  const key = draftKey.bulk(p.id, type);
+  const draft = drafts[key] || '';
+  const ready = parseList(draft).length;
+  return `<div class="bulk">
+    <textarea rows="2" data-action="bulk-draft" data-project="${p.id}" data-type="${type}"
+      placeholder="${hint}">${esc(draft)}</textarea>
+    <div class="row between">
+      <span class="muted small bulk-count">${ready ? ready + ' ready to add' : 'One per line, or separate with commas'}</span>
+      <button class="btn small" data-action="add-bulk" data-project="${p.id}" data-type="${type}">Add all</button>
+    </div>
+  </div>`;
+}
+function projectBody(p) {
+  return `
+  <div class="grid2">
+    <label class="field"><span>Topic</span>
+      <input value="${esc(p.topic)}" data-field="topic" data-project="${p.id}" placeholder="e.g. Should remote work be the default?"></label>
+    <label class="field"><span>Structure</span>
+      <textarea rows="3" data-field="structure" data-project="${p.id}" placeholder="Intro → 2 body paragraphs → conclusion">${esc(p.structure)}</textarea></label>
+  </div>
+  <div class="targets">
+    ${TTYPES.map(([type, label]) => {
+      const list = p.targets.filter(x => x.type === type);
+      return `<div class="tgroup">
+        <div class="tgroup-head"><span>${label}</span><span>${list.filter(x => x.used).length}/${list.length}</span></div>
+        ${list.map(x => `<div class="titem ${x.used ? 'used' : ''}">
+          <input type="checkbox" ${x.used ? 'checked' : ''} data-action="toggle-target" data-project="${p.id}" data-target="${x.id}">
+          <span class="ttext">${esc(x.text)}</span>
+          <button class="icon" data-action="del-target" data-project="${p.id}" data-target="${x.id}">✕</button>
+        </div>`).join('')}
+        ${bulkHTML(p, type, label, `Paste many ${label.toLowerCase()} at once — e.g. make a decision, take a risk`)}
+      </div>`;
+    }).join('')}
+  </div>
+  <div class="tgroup">
+    <div class="tgroup-head"><span>Sentence paths / options</span><span>${p.paths.length}</span></div>
+    ${p.paths.map(x => `<div class="titem">
+      <span class="ttext">${esc(x.text)}</span>
+      <button class="icon" data-action="del-path" data-project="${p.id}" data-path="${x.id}">✕</button>
+    </div>`).join('')}
+    ${bulkHTML(p, 'path', 'Paths', 'Alternative ways to say it — one per line')}
+  </div>
+  <div class="workspace">
+    <textarea rows="7" data-action="workspace" data-project="${p.id}" placeholder="Write your draft here…">${esc(p.current)}</textarea>
+    <div class="row between">
+      <div class="row">
+        <button class="btn small" data-action="save-version" data-project="${p.id}" data-kind="draft">Save draft</button>
+        <button class="btn small" data-action="save-version" data-project="${p.id}" data-kind="revision">Save revision</button>
+      </div>
+      <span class="muted small"><b class="wc">${wordCount(p.current)}</b> words</span>
+    </div>
+  </div>
+  ${p.versions.length ? `<div class="versions">
+    <div class="tgroup-head"><span>Versions</span></div>
+    ${p.versions.slice().reverse().map(v => `<div class="version">
+      <span class="badge ${v.kind === 'revision' ? 'ok' : ''}">${v.kind}</span>
+      <span class="muted small">${new Date(v.ts).toLocaleString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })}</span>
+      <span class="muted small">${wordCount(v.text)}w</span>
+      <button class="btn tiny" data-action="load-version" data-project="${p.id}" data-version="${v.id}">Load</button>
+      <button class="icon" data-action="del-version" data-project="${p.id}" data-version="${v.id}">✕</button>
+    </div>`).join('')}
+  </div>` : ''}
+  <div class="row between" style="margin-top:14px;border-top:1px solid var(--line);padding-top:12px">
+    <button class="btn" data-action="log-writing-session" data-project="${p.id}">+ Log writing session</button>
+    <span class="muted small">${p.sessions.length} session${p.sessions.length === 1 ? '' : 's'} logged</span>
+  </div>`;
+}
+function renderWriting() {
+  let html = `<section class="card">
+    <div class="card-head">
+      <div>
+        <h2>Writing</h2>
+        <span class="muted small">${thisWeek(state.writing.sessions)} sessions this week</span>
+      </div>
+    </div>
+    <div class="row">
+      <input class="grow" id="new-project" placeholder="New writing project (e.g. IELTS Task 2 essay)" data-action="add-project">
+      <button class="btn primary" data-action="add-project">Add project</button>
+    </div>
+  </section>`;
+  if (!state.writing.projects.length) {
+    html += `<section class="card empty">No projects yet. Create one to plan targets, draft and revise.</section>`;
+  }
+  for (const p of state.writing.projects) {
+    const open = expanded.has('p' + p.id);
+    const used = p.targets.filter(x => x.used).length;
+    const words = wordCount(p.current);
+    html += `<section class="card">
+      <div class="card-head">
+        <div>
+          <h3>${esc(p.title)}</h3>
+          <span class="muted small">${p.topic ? esc(p.topic) + ' · ' : ''}${used}/${p.targets.length} targets · ${p.versions.length} versions · ${words} words</span>
+        </div>
+        <div class="row" style="gap:4px">
+          <button class="btn small" data-action="expand-project" data-project="${p.id}">${open ? 'Close' : 'Open'}</button>
+          <button class="icon" title="Delete project" data-action="del-project" data-project="${p.id}">✕</button>
+        </div>
+      </div>
+      ${open ? projectBody(p) : ''}
+    </section>`;
+  }
+  app.innerHTML = html;
+}
+
+/* ============ pronunciation ============ */
+function prFilterChipsHTML() {
+  const chips = [
+    ['all', 'All'],
+    ['new', 'New'],
+    ['practicing', 'Practicing'],
+    ['improving', 'Improving'],
+    ['mastered', 'Mastered'],
+    ['starred', '★ Starred']
+  ];
+  return `<div class="filters">
+    ${chips.map(([key, label]) =>
+      `<button class="${prFilter === key ? 'on' : ''}" data-action="pr-filter" data-val="${key}">${label}</button>`
+    ).join('')}
+  </div>`;
+}
+function applyPrFilter(arr) {
+  if (prFilter === 'all') return arr;
+  if (prFilter === 'starred') return arr.filter(x => x.difficult);
+  return arr.filter(x => x.mastery === prFilter);
+}
+function starHTML(item, kind) {
+  return `<button class="star ${item.difficult ? 'on' : ''}" title="Star for review"
+    data-action="pr-star" data-kind="${kind}" data-id="${item.id}">★</button>`;
+}
+function delHTML(item, kind) {
+  return `<button class="icon" title="Delete"
+    data-action="pr-del" data-kind="${kind}" data-id="${item.id}">✕</button>`;
+}
+function masterySegHTML(item, kind, options) {
+  return `<div class="seg">
+    ${options.map(([val, label]) =>
+      `<button class="${item.mastery === val ? 'on' : ''}" data-action="pr-mastery"
+        data-kind="${kind}" data-id="${item.id}" data-val="${val}">${label}</button>`
+    ).join('')}
+  </div>`;
+}
+
+/* ---- unified media block (YouTube + MP3 URL + upload + record) ---- */
+function mediaBlockHTML(item, kind, hint) {
+  const embed = youtubeEmbed(item.videoUrl);
+  const isRec = activeRecording && activeRecording.kind === kind && activeRecording.id === item.id;
+  const playbackSrc = item.recording || item.audioFile || '';
+
+  return `<div class="pr-section-label">Media</div>
+
+    <div class="grid2">
+      <label class="field"><span>YouTube link</span>
+        <input value="${esc(item.videoUrl)}"
+          data-action="pr-media-field" data-kind="${kind}" data-id="${item.id}" data-field="videoUrl"
+          placeholder="https://youtube.com/watch?v=..."></label>
+      <label class="field"><span>External audio URL (MP3)</span>
+        <input value="${esc(item.audioUrl)}"
+          data-action="pr-media-field" data-kind="${kind}" data-id="${item.id}" data-field="audioUrl"
+          placeholder="https://.../clip.mp3"></label>
+    </div>
+
+    ${embed ? `<div class="video-embed">
+      <iframe src="${embed}" loading="lazy" title="YouTube embed"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
+    </div>` : ''}
+
+    <div class="rec-bar">
+      <label class="rec-btn">↑ Upload MP3
+        <input type="file" accept="audio/*" hidden
+          data-action="pr-audio-upload" data-kind="${kind}" data-id="${item.id}">
+      </label>
+      <button class="rec-btn ${isRec ? 'recording' : ''}"
+        data-action="pr-rec-toggle" data-kind="${kind}" data-id="${item.id}">
+        ${isRec ? '<span class="rec-dot"></span> Stop' : '● Record'}
+      </button>
+      ${item.audioUrl ? `<a class="rec-btn" href="${esc(item.audioUrl)}" target="_blank" rel="noopener">▶ Open link</a>` : ''}
+      ${playbackSrc ? `<audio controls src="${esc(playbackSrc)}"></audio>
+        <button class="btn tiny" data-action="pr-audio-clear" data-kind="${kind}" data-id="${item.id}">Clear</button>` : ''}
+    </div>
+
+    ${!playbackSrc && !item.audioUrl && !embed
+      ? `<p class="muted small" style="margin:5px 0 0">${hint
+          || 'Embed a YouTube clip, paste an MP3 URL, upload a file, or record your own voice.'}</p>`
+      : ''}`;
+}
+
+/* ---- SOUNDS ---- */
+function soundCardHTML(s) {
+  const diffDots = [1,2,3,4,5].map(n =>
+    `<button class="dot ${s.difficulty >= n ? 'on' : ''}" title="Difficulty ${n}"
+      data-action="pr-sound-difficulty" data-id="${s.id}" data-val="${n}"></button>`
+  ).join('');
+  return `<div class="pr-card">
+    <div class="pr-card-head">
+      <span class="pr-sound grow">${esc(s.symbol) || '<span class="muted small">(no symbol)</span>'}</span>
+      <span class="pr-meta">${s.practices ? s.practices + ' practice' + (s.practices === 1 ? '' : 's') : ''}</span>
+      ${starHTML(s, 'sound')}
+      ${delHTML(s, 'sound')}
+    </div>
+
+    <div class="pr-row">
+      <span class="pr-label">Examples</span>
+      <div class="pr-examples grow" style="margin:0">
+        ${s.examples.map((ex, i) => `<span class="chip-ex">${esc(ex)}
+          <button data-action="pr-sound-del-example" data-id="${s.id}" data-idx="${i}" title="Remove">✕</button>
+        </span>`).join('')}
+        ${!s.examples.length ? '<span class="muted small">No examples yet.</span>' : ''}
+      </div>
+    </div>
+    <input class="small-input" data-action="pr-sound-add-example" data-id="${s.id}"
+      placeholder="Add example word + Enter (e.g. red, around, worry)">
+
+    <div class="pr-row">
+      <span class="pr-label">Difficulty</span>
+      <div class="dots">${diffDots}</div>
+      <span class="muted small">${s.difficulty ? s.difficulty + '/5' : 'not rated'}</span>
+    </div>
+
+    <div class="pr-row">
+      <span class="pr-label">Mastery</span>
+      ${masterySegHTML(s, 'sound', [['new','New'],['practicing','Practicing'],['mastered','Mastered']])}
+    </div>
+
+    <div class="pr-section-label">Mouth / tongue position</div>
+    <textarea rows="2" data-action="pr-sound-mouth" data-id="${s.id}"
+      placeholder="How to shape the mouth, tongue, lips… e.g. tongue curled back, lips slightly rounded">${esc(s.mouthNotes)}</textarea>
+
+    <label class="field" style="margin-top:8px">
+      <span>Notes</span>
+      <input value="${esc(s.notes)}" data-action="pr-notes" data-kind="sound" data-id="${s.id}"
+        placeholder="Extra notes…">
+    </label>
+
+    ${mediaBlockHTML(s, 'sound', 'Add reference audio or a YouTube demo of this sound.')}
+
+    <div class="pr-actions">
+      <button class="btn small primary" data-action="pr-practice" data-kind="sound" data-id="${s.id}">+ Log practice</button>
+    </div>
+  </div>`;
+}
+function renderSoundsTab() {
+  const items = applyPrFilter(state.pronunciation.sounds);
+  return `
+  <section class="pr-add">
+    <div class="pr-add-title">Add a sound</div>
+    <div class="row">
+      <input class="grow" id="pr-sound-symbol" placeholder="Sound symbol, e.g. /r/ or /ɪ/ or /t/"
+        value="${esc(prDrafts.soundSymbol)}" data-action="pr-draft" data-key="soundSymbol">
+      <button class="btn primary" data-action="pr-add-sound">Add sound</button>
+    </div>
+    <p class="muted small" style="margin:8px 0 0">Track individual phonemes. Add example words
+      below each card, rate the difficulty, note how to shape the mouth, and mark mastery.</p>
+  </section>
+  <section class="card">
+    <div class="card-head">
+      <h3>Sounds</h3>
+      <span class="muted small">${items.length} shown · ${state.pronunciation.sounds.length} total</span>
+    </div>
+    ${prFilterChipsHTML()}
+    ${items.length ? items.map(soundCardHTML).join('')
+      : `<p class="muted small" style="margin:0">No sounds yet. Add one above to get started.</p>`}
+  </section>`;
+}
+
+/* ---- WORDS ---- */
+function wordCardHTML(w) {
+  return `<div class="pr-card">
+    <div class="pr-card-head">
+      <div class="grow">
+        <span class="pr-word">${esc(w.word) || '<span class="muted">(no word)</span>'}</span>
+        ${w.ipa ? `<span class="pr-ipa">${esc(w.ipa)}</span>` : ''}
+        ${w.stress ? `<div class="pr-stress">Stress: ${esc(w.stress)}</div>` : ''}
+      </div>
+      ${starHTML(w, 'word')}
+      ${delHTML(w, 'word')}
+    </div>
+
+    <div class="grid2">
+      <label class="field"><span>IPA</span>
+        <input value="${esc(w.ipa)}" data-action="pr-word-field" data-id="${w.id}" data-field="ipa"
+          placeholder="/ˈθʌr.ə/"></label>
+      <label class="field"><span>Stress pattern</span>
+        <input value="${esc(w.stress)}" data-action="pr-word-field" data-id="${w.id}" data-field="stress"
+          placeholder="THOR-ough · oO · first-syllable"></label>
+    </div>
+
+    <div class="pr-row" style="margin-top:10px">
+      <span class="pr-label">Status</span>
+      ${masterySegHTML(w, 'word', [['practicing','Practicing'],['improving','Improving'],['mastered','Mastered']])}
+    </div>
+
+    <label class="field" style="margin-top:8px">
+      <span>Notes</span>
+      <input value="${esc(w.notes)}" data-action="pr-notes" data-kind="word" data-id="${w.id}"
+        placeholder="Tricky syllable, common mistake…">
+    </label>
+
+    ${mediaBlockHTML(w, 'word', 'Embed a YouTube clip of the word in use, paste an MP3, or record yourself.')}
+
+    <div class="pr-actions">
+      <button class="btn small primary" data-action="pr-practice" data-kind="word" data-id="${w.id}">+ Log practice</button>
+      <span class="pr-meta">${w.practices ? w.practices + ' practice' + (w.practices === 1 ? '' : 's') : ''}</span>
+    </div>
+  </div>`;
+}
+function renderWordsTab() {
+  const items = applyPrFilter(state.pronunciation.words);
+  return `
+  <section class="pr-add">
+    <div class="pr-add-title">Add a difficult word</div>
+    <div class="row">
+      <input class="grow" style="flex:2;min-width:140px;" placeholder="Word, e.g. thorough"
+        value="${esc(prDrafts.wordWord)}" data-action="pr-draft" data-key="wordWord">
+      <input class="grow" placeholder="IPA (optional)"
+        value="${esc(prDrafts.wordIpa)}" data-action="pr-draft" data-key="wordIpa">
+      <input class="grow" placeholder="Stress (optional)"
+        value="${esc(prDrafts.wordStress)}" data-action="pr-draft" data-key="wordStress">
+      <button class="btn primary" data-action="pr-add-word">Add word</button>
+    </div>
+    <p class="muted small" style="margin:8px 0 0">Add IPA, stress pattern, then embed reference
+      media — YouTube clips, MP3 URLs, uploaded audio files, or your own recordings.</p>
+  </section>
+  <section class="card">
+    <div class="card-head">
+      <h3>Words</h3>
+      <span class="muted small">${items.length} shown · ${state.pronunciation.words.length} total</span>
+    </div>
+    ${prFilterChipsHTML()}
+    ${items.length ? items.map(wordCardHTML).join('')
+      : `<p class="muted small" style="margin:0">No words yet. Add one above.</p>`}
+  </section>`;
+}
+
+/* ---- SENTENCES ---- */
+const SOURCE_TYPES = [['book','Book'],['podcast','Podcast'],['tv','TV / film'],['other','Other']];
+const SOURCE_MAP = Object.fromEntries(SOURCE_TYPES);
+function sentenceCardHTML(s) {
+  const pct = s.targetReps ? Math.min(100, Math.round(s.reps / s.targetReps * 100)) : 0;
+  return `<div class="pr-card">
+    <div class="pr-card-head">
+      <div class="grow">
+        <div class="pr-text">"${esc(s.text)}"</div>
+        ${s.source ? `<div class="muted small" style="margin-top:4px">
+          <span class="source-badge">${esc(SOURCE_MAP[s.sourceType] || s.sourceType)}</span>
+          ${esc(s.source)}
+        </div>` : ''}
+      </div>
+      ${starHTML(s, 'sentence')}
+      ${delHTML(s, 'sentence')}
+    </div>
+
+    <div class="rep-bar">
+      <span class="rep-count">${s.reps}/${s.targetReps} reps</span>
+      <div class="rep-bar-fill"><i style="width:${pct}%"></i></div>
+      <button class="btn tiny" data-action="pr-sentence-rep" data-id="${s.id}">+ Rep</button>
+      <button class="btn tiny" data-action="pr-sentence-reset-reps" data-id="${s.id}">Reset</button>
+    </div>
+
+    <div class="pr-row">
+      <span class="pr-label">Target</span>
+      <input type="number" class="mini" min="1" max="99"
+        value="${s.targetReps}" data-action="pr-sentence-target" data-id="${s.id}">
+      <span class="muted small">reps</span>
+    </div>
+
+    <div class="pr-section-label">Difficult sections</div>
+    <div class="row" style="gap:4px">
+      ${s.difficultSections.map((d, i) => `<span class="diff-section">${esc(d.text)}
+        <button data-action="pr-sentence-del-section" data-id="${s.id}" data-idx="${i}" title="Remove">✕</button>
+      </span>`).join('')}
+    </div>
+    <input class="small-input" data-action="pr-sentence-add-section" data-id="${s.id}"
+      placeholder="Add a difficult part + Enter (e.g. 'want to do')">
+
+    <div class="pr-row" style="margin-top:10px">
+      <span class="pr-label">Mastery</span>
+      ${masterySegHTML(s, 'sentence', [['new','New'],['practicing','Practicing'],['mastered','Mastered']])}
+    </div>
+
+    <label class="field" style="margin-top:8px">
+      <span>Notes</span>
+      <input value="${esc(s.notes)}" data-action="pr-notes" data-kind="sentence" data-id="${s.id}"
+        placeholder="Where you heard it, why it's tricky…">
+    </label>
+
+    ${mediaBlockHTML(s, 'sentence', 'Embed the source clip, attach an audio file, or record a model reading.')}
+
+    <div class="pr-actions">
+      <button class="btn small primary" data-action="pr-practice" data-kind="sentence" data-id="${s.id}">+ Log practice</button>
+      <span class="pr-meta">${s.practices ? s.practices + ' practice' + (s.practices === 1 ? '' : 's') : ''}</span>
+    </div>
+  </div>`;
+}
+function renderSentencesTab() {
+  const items = applyPrFilter(state.pronunciation.sentences);
+  return `
+  <section class="pr-add">
+    <div class="pr-add-title">Add a sentence</div>
+    <textarea rows="2" placeholder="Sentence you want to master, e.g. I should have told her earlier."
+      data-action="pr-draft" data-key="sentenceText">${esc(prDrafts.sentenceText)}</textarea>
+    <div class="row" style="margin-top:6px">
+      <select style="width:auto" data-action="pr-draft" data-key="sentenceSourceType">
+        ${SOURCE_TYPES.map(([val, label]) =>
+          `<option value="${val}" ${prDrafts.sentenceSourceType === val ? 'selected' : ''}>${label}</option>`
+        ).join('')}
+      </select>
+      <input class="grow" placeholder="Source detail (title, episode, page…)"
+        value="${esc(prDrafts.sentenceSource)}" data-action="pr-draft" data-key="sentenceSource">
+      <button class="btn primary" data-action="pr-add-sentence">Add sentence</button>
+    </div>
+    <p class="muted small" style="margin:8px 0 0">Save sentences from books, podcasts, or TV.
+      Track repetitions, mark difficult sections, and embed the source clip.</p>
+  </section>
+  <section class="card">
+    <div class="card-head">
+      <h3>Sentences</h3>
+      <span class="muted small">${items.length} shown · ${state.pronunciation.sentences.length} total</span>
+    </div>
+    ${prFilterChipsHTML()}
+    ${items.length ? items.map(sentenceCardHTML).join('')
+      : `<p class="muted small" style="margin:0">No sentences yet. Add one above.</p>`}
+  </section>`;
+}
+
+/* ---- CONNECTED SPEECH ---- */
+function connectedCardHTML(c) {
+  return `<div class="pr-card">
+    <div class="pr-card-head">
+      <div class="grow">
+        <label class="field">
+          <span>Original</span>
+          <input class="cs-original" value="${esc(c.original)}"
+            data-action="pr-cs-field" data-id="${c.id}" data-field="original"
+            placeholder="What do you want to do?">
+        </label>
+        <label class="field" style="margin-top:8px">
+          <span>Connected-speech form</span>
+          <input class="cs-form" value="${esc(c.connectedForm)}"
+            data-action="pr-cs-field" data-id="${c.id}" data-field="connectedForm"
+            placeholder="Whaddya wanna do?">
+        </label>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+        ${starHTML(c, 'connected')}
+        ${delHTML(c, 'connected')}
+      </div>
+    </div>
+
+    <div class="pr-section-label">Features present</div>
+    <div class="tag-select">
+      ${CONNECTED_TAGS.map(([key, label]) =>
+        `<button class="${c.tags.includes(key) ? 'on' : ''}" data-action="pr-tag-toggle"
+          data-id="${c.id}" data-tag="${key}">${label}</button>`
+      ).join('')}
+    </div>
+
+    ${c.tags.length ? `<div class="row" style="gap:4px;margin-top:2px">
+      ${c.tags.map(k => `<span class="tag-badge">${esc(CONNECTED_TAG_MAP[k] || k)}</span>`).join('')}
+    </div>` : ''}
+
+    <div class="pr-row" style="margin-top:12px">
+      <span class="pr-label">Mastery</span>
+      ${masterySegHTML(c, 'connected', [['new','New'],['practicing','Practicing'],['mastered','Mastered']])}
+    </div>
+
+    <label class="field" style="margin-top:8px">
+      <span>Notes</span>
+      <input value="${esc(c.notes)}" data-action="pr-notes" data-kind="connected" data-id="${c.id}"
+        placeholder="How the words blend — e.g. 'wanna' for want to…">
+    </label>
+
+    ${mediaBlockHTML(c, 'connected', 'Embed a clip where this phrase occurs naturally, or record your own.')}
+
+    <div class="pr-actions">
+      <button class="btn small primary" data-action="pr-practice" data-kind="connected" data-id="${c.id}">+ Log practice</button>
+      <span class="pr-meta">${c.practices ? c.practices + ' practice' + (c.practices === 1 ? '' : 's') : ''}</span>
+    </div>
+  </div>`;
+}
+function renderConnectedTab() {
+  const items = applyPrFilter(state.pronunciation.connected);
+  return `
+  <section class="pr-add">
+    <div class="pr-add-title">Add a connected-speech phrase</div>
+    <div class="row">
+      <input class="grow" placeholder="Original — e.g. What do you want to do?"
+        value="${esc(prDrafts.csOriginal)}" data-action="pr-draft" data-key="csOriginal">
+    </div>
+    <div class="row" style="margin-top:6px">
+      <input class="grow" placeholder="Connected-speech form — e.g. Whaddya wanna do?"
+        value="${esc(prDrafts.csForm)}" data-action="pr-draft" data-key="csForm">
+      <button class="btn primary" data-action="pr-add-connected">Add phrase</button>
+    </div>
+    <p class="muted small" style="margin:8px 0 0">Add natural-speech phrases and their
+      real-world pronunciation, then tag the features at play — Linking, Reductions, Flapping,
+      Glottal stops, Weak forms, Contractions, Assimilation, Rhythm.
+      Example: <em>What do you want to do?</em> → <em>Whaddya wanna do?</em> (Linking + Reductions + Flapping).</p>
+  </section>
+  <section class="card">
+    <div class="card-head">
+      <h3>Connected Speech</h3>
+      <span class="muted small">${items.length} shown · ${state.pronunciation.connected.length} total</span>
+    </div>
+    ${prFilterChipsHTML()}
+    ${items.length ? items.map(connectedCardHTML).join('')
+      : `<p class="muted small" style="margin:0">No phrases yet. Add one above to start tracking connected speech.</p>`}
+  </section>`;
+}
+
+function renderPronunciation() {
+  const p = state.pronunciation;
+  const tab = p.tab || 'sounds';
+  const weekCount = thisWeek(p.sessions);
+  const all = allPrItems();
+  const mastered = all.filter(i => i.mastery === 'mastered').length;
+
+  const tabs = [
+    ['sounds', 'Sounds', p.sounds.length],
+    ['words', 'Words', p.words.length],
+    ['sentences', 'Sentences', p.sentences.length],
+    ['connected', 'Connected Speech', p.connected.length]
+  ];
+
+  app.innerHTML = `
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <h2>Pronunciation</h2>
+        <span class="muted small">${weekCount} sessions this week ·
+          ${all.length} item${all.length === 1 ? '' : 's'} ·
+          ${mastered} mastered</span>
+      </div>
+    </div>
+    <nav class="pr-subnav">
+      ${tabs.map(([key, label, n]) =>
+        `<button class="${tab === key ? 'active' : ''}" data-pr-tab="${key}">${label}
+          <span class="count">${n}</span></button>`).join('')}
+    </nav>
+  </section>
+  ${tab === 'sounds'    ? renderSoundsTab()    : ''}
+  ${tab === 'words'     ? renderWordsTab()     : ''}
+  ${tab === 'sentences' ? renderSentencesTab() : ''}
+  ${tab === 'connected' ? renderConnectedTab() : ''}`;
+}
+
+/* ============ recording ============ */
+let activeRecorder = null;
+let activeChunks = [];
+let activeRecording = null;   /* { kind, id } */
+
+async function startRecording(kind, id) {
+  if (!navigator.mediaDevices || !window.MediaRecorder) {
+    alert('Recording is not supported in this browser.');
+    return;
+  }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const rec = new MediaRecorder(stream);
+    activeChunks = [];
+    rec.ondataavailable = e => { if (e.data.size) activeChunks.push(e.data); };
+    rec.onstop = () => {
+      stream.getTracks().forEach(t => t.stop());
+      const blob = new Blob(activeChunks, { type: 'audio/webm' });
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const it = findPrItem(kind, id);
+        if (it) { it.recording = reader.result; save(); }
+        activeRecorder = null;
+        activeRecording = null;
+        render();
+      };
+      reader.readAsDataURL(blob);
+    };
+    rec.start();
+    activeRecorder = rec;
+    activeRecording = { kind, id };
+    render();
+  } catch (e) {
+    alert('Could not access microphone: ' + e.message);
+  }
+}
+function stopRecording() {
+  if (activeRecorder && activeRecorder.state !== 'inactive') activeRecorder.stop();
+}
+
+/* ============ actions ============ */
+function act(a, el) {
+  const d = el.dataset;
+  const isInput = el.tagName === 'INPUT' || el.tagName === 'TEXTAREA';
+
+  switch (a) {
+
+    case 'goto':
+      state.route = d.route;
+      break;
+
+    case 'set-target':
+      state.targets[d.key] = Math.max(0, +el.value || 0);
+      break;
+
+    /* ---------- pronunciation: add items ---------- */
+    case 'pr-add-sound': {
+      const v = (prDrafts.soundSymbol || '').trim(); if (!v) return;
+      state.pronunciation.sounds.unshift(normSound({
+        id: uid(), symbol: v, examples: [], difficulty: 0, mouthNotes: '',
+        mastery: 'new', notes: '', difficult: false, practices: 0, last: null
+      }));
+      prDrafts.soundSymbol = '';
+      break;
+    }
+    case 'pr-add-word': {
+      const v = (prDrafts.wordWord || '').trim(); if (!v) return;
+      state.pronunciation.words.unshift(normWord({
+        id: uid(), word: v, ipa: prDrafts.wordIpa || '', stress: prDrafts.wordStress || '',
+        mastery: 'practicing', notes: '', difficult: false, practices: 0, last: null
+      }));
+      prDrafts.wordWord = ''; prDrafts.wordIpa = ''; prDrafts.wordStress = '';
+      break;
+    }
+    case 'pr-add-sentence': {
+      const v = (prDrafts.sentenceText || '').trim(); if (!v) return;
+      state.pronunciation.sentences.unshift(normSentence({
+        id: uid(), text: v, source: prDrafts.sentenceSource || '',
+        sourceType: prDrafts.sentenceSourceType || 'other',
+        reps: 0, targetReps: 10, difficultSections: [],
+        mastery: 'new', notes: '', difficult: false, practices: 0, last: null
+      }));
+      prDrafts.sentenceText = ''; prDrafts.sentenceSource = '';
+      break;
+    }
+    case 'pr-add-connected': {
+      const orig = (prDrafts.csOriginal || '').trim();
+      const form = (prDrafts.csForm || '').trim();
+      if (!orig && !form) return;
+      state.pronunciation.connected.unshift(normConnected({
+        id: uid(), original: orig, connectedForm: form, tags: [],
+        mastery: 'new', notes: '', difficult: false, practices: 0, last: null
+      }));
+      prDrafts.csOriginal = ''; prDrafts.csForm = '';
+      break;
+    }
+
+    /* ---------- pronunciation: common item actions ---------- */
+    case 'pr-star': {
+      const it = findPrItem(d.kind, d.id); if (!it) return;
+      it.difficult = !it.difficult;
+      break;
+    }
+    case 'pr-del': {
+      const arr = prCollections[d.kind] && prCollections[d.kind]();
+      if (!arr) return;
+      if (!confirm('Delete this item?')) return;
+      const idx = arr.findIndex(x => x.id === d.id);
+      if (idx >= 0) arr.splice(idx, 1);
+      break;
+    }
+    case 'pr-mastery': {
+      const it = findPrItem(d.kind, d.id); if (!it) return;
+      it.mastery = d.val;
+      break;
+    }
+    case 'pr-practice': {
+      const it = findPrItem(d.kind, d.id); if (!it) return;
+      it.practices = (it.practices || 0) + 1;
+      it.last = Date.now();
+      state.pronunciation.sessions.push({
+        id: uid(), ts: Date.now(), kind: d.kind, itemId: it.id
+      });
+      break;
+    }
+
+    /* ---------- media ---------- */
+    case 'pr-audio-clear': {
+      const it = findPrItem(d.kind, d.id); if (!it) return;
+      it.recording = '';
+      it.audioFile = '';
+      break;
+    }
+    case 'pr-rec-toggle': {
+      if (activeRecording && activeRecording.kind === d.kind && activeRecording.id === d.id) {
+        stopRecording();
+        return;   // render happens in onstop
+      }
+      if (activeRecording) { stopRecording(); return; }
+      startRecording(d.kind, d.id);
+      return;    // render already handled
+    }
+
+    /* ---------- sounds ---------- */
+    case 'pr-sound-add-example': {
+      const s = findPrItem('sound', d.id); if (!s) return;
+      const v = el.value.trim(); if (!v) return;
+      parseList(v).forEach(ex => { if (!s.examples.includes(ex)) s.examples.push(ex); });
+      pendingFocus = `input[data-action="pr-sound-add-example"][data-id="${s.id}"]`;
+      break;
+    }
+    case 'pr-sound-del-example': {
+      const s = findPrItem('sound', d.id); if (!s) return;
+      s.examples.splice(+d.idx, 1);
+      break;
+    }
+    case 'pr-sound-difficulty': {
+      const s = findPrItem('sound', d.id); if (!s) return;
+      s.difficulty = (s.difficulty === +d.val) ? 0 : +d.val;
+      break;
+    }
+
+    /* ---------- sentences ---------- */
+    case 'pr-sentence-rep': {
+      const s = findPrItem('sentence', d.id); if (!s) return;
+      s.reps = (s.reps || 0) + 1;
+      s.last = Date.now();
+      state.pronunciation.sessions.push({
+        id: uid(), ts: Date.now(), kind: 'sentence', itemId: s.id
+      });
+      break;
+    }
+    case 'pr-sentence-reset-reps': {
+      const s = findPrItem('sentence', d.id); if (!s) return;
+      s.reps = 0;
+      break;
+    }
+    case 'pr-sentence-add-section': {
+      const s = findPrItem('sentence', d.id); if (!s) return;
+      const v = el.value.trim(); if (!v) return;
+      s.difficultSections.push({ id: uid(), text: v });
+      pendingFocus = `input[data-action="pr-sentence-add-section"][data-id="${s.id}"]`;
+      break;
+    }
+    case 'pr-sentence-del-section': {
+      const s = findPrItem('sentence', d.id); if (!s) return;
+      s.difficultSections.splice(+d.idx, 1);
+      break;
+    }
+
+    /* ---------- connected speech ---------- */
+    case 'pr-tag-toggle': {
+      const c = findPrItem('connected', d.id); if (!c) return;
+      const tag = d.tag;
+      const i = c.tags.indexOf(tag);
+      if (i >= 0) c.tags.splice(i, 1);
+      else c.tags.push(tag);
+      break;
+    }
+
+    /* ---------- SRS ---------- */
+    case 'srs-start':  { const l = findLesson(d.lesson); if (l) srsStart(l); break; }
+    case 'srs-review': { const l = findLesson(d.lesson); if (l) srsReview(l); break; }
+    case 'srs-again':  { const l = findLesson(d.lesson); if (l) srsAgain(l); break; }
+    case 'srs-reset':  {
+      const l = findLesson(d.lesson); if (!l) return;
+      if (!confirm('Reset spaced repetition for this lesson?')) return;
+      srsReset(l);
+      break;
+    }
+
+    /* ---------- grammar in context ---------- */
+    case 'toggle-ctx':
+      ctxOpen.has(d.lesson) ? ctxOpen.delete(d.lesson) : ctxOpen.add(d.lesson);
+      break;
+    case 'add-sentence': {
+      const l = findLesson(d.lesson); if (!l) return;
+      const v = el.value.trim(); if (!v) return;
+      l.context.sentences.push({ id: uid(), text: v });
+      pendingFocus = `input[data-action="add-sentence"][data-lesson="${l.id}"]`;
+      break;
+    }
+    case 'del-sentence': {
+      const l = findLesson(d.lesson); if (!l) return;
+      l.context.sentences = l.context.sentences.filter(s => s.id !== d.sentence);
+      break;
+    }
+    case 'add-mistake': {
+      const l = findLesson(d.lesson); if (!l) return;
+      const v = el.value.trim(); if (!v) return;
+      l.mistakes.push(v);
+      pendingFocus = `input[data-action="add-mistake"][data-lesson="${l.id}"]`;
+      break;
+    }
+    case 'del-mistake': {
+      const l = findLesson(d.lesson); if (!l) return;
+      l.mistakes.splice(+d.idx, 1);
+      break;
+    }
+
+    /* ---------- grammar books ---------- */
+    case 'add-book': {
+      const inp = isInput ? el : document.getElementById('new-book');
+      const v = inp.value.trim(); if (!v) return;
+      state.grammar.books.push({ id: uid(), title: v, lessons: [] });
+      break;
+    }
+    case 'del-book':
+      if (!confirm('Delete this book and all its lessons?')) return;
+      state.grammar.books = state.grammar.books.filter(b => b.id !== d.book);
+      break;
+    case 'add-lesson': {
+      const b = getBook(d.book); if (!b) return;
+      const inp = isInput ? el
+        : document.querySelector(`[data-action="add-lesson"][data-book="${d.book}"]`);
+      const v = inp.value.trim(); if (!v) return;
+      b.lessons.push({
+        id: uid(), title: v, done: false, doneAt: null,
+        confidence: 0, mistakes: [], writings: [],
+        context: { explanation: '', sentences: [] },
+        srs: { level: -1, nextReview: null, lastReview: null, reviews: 0 }
+      });
+      break;
+    }
+    case 'del-lesson': {
+      const b = findLessonBook(d.lesson); if (!b) return;
+      b.lessons = b.lessons.filter(l => l.id !== d.lesson);
+      state.grammar.sessions = state.grammar.sessions.filter(s => s.lessonId !== d.lesson);
+      break;
+    }
+    case 'toggle-lesson': {
+      const l = findLesson(d.lesson); if (!l) return;
+      l.done = el.checked;
+      l.doneAt = l.done ? Date.now() : null;
+      state.grammar.sessions = state.grammar.sessions.filter(s => s.lessonId !== l.id);
+      if (l.done) {
+        const b = findLessonBook(l.id);
+        state.grammar.sessions.push({
+          id: uid(), ts: Date.now(), lessonId: l.id,
+          label: `${b ? b.title + ' · ' : ''}${l.title}`
+        });
+        if (!l.srs || l.srs.level < 0) srsStart(l, Date.now());
+      }
+      break;
+    }
+    case 'set-conf': {
+      const l = findLesson(d.lesson); if (!l) return;
+      l.confidence = (l.confidence === +d.val) ? 0 : +d.val;
+      break;
+    }
+    case 'expand-lesson':
+      expanded.has(d.lesson) ? expanded.delete(d.lesson) : expanded.add(d.lesson);
+      break;
+    case 'log-grammar-session':
+      state.grammar.sessions.push({ id: uid(), ts: Date.now(), label: 'Study session' });
+      break;
+
+    /* ---------- grammar writing practice ---------- */
+    case 'gw-kind':
+      drafts[draftKey.gk(d.lesson)] = d.val;
+      break;
+    case 'gw-add': {
+      const l = findLesson(d.lesson); if (!l) return;
+      const ta = isInput ? el
+        : document.querySelector(`textarea[data-action="gw-draft"][data-lesson="${d.lesson}"]`);
+      const text = (ta ? ta.value : (drafts[draftKey.gw(d.lesson)] || '')).trim();
+      if (!text) return;
+      l.writings.push({
+        id: uid(), kind: drafts[draftKey.gk(d.lesson)] || 'sentence',
+        text, ts: Date.now()
+      });
+      delete drafts[draftKey.gw(d.lesson)];
+      break;
+    }
+    case 'gw-del': {
+      const l = findLesson(d.lesson); if (!l) return;
+      l.writings = l.writings.filter(w => w.id !== d.writing);
+      break;
+    }
+
+    /* ---------- writing ---------- */
+    case 'add-project': {
+      const inp = isInput ? el : document.getElementById('new-project');
+      const v = inp.value.trim(); if (!v) return;
+      const id = uid();
+      state.writing.projects.push({
+        id, title: v, topic: '', structure: '', current: '',
+        targets: [], paths: [], versions: [], sessions: []
+      });
+      expanded.add('p' + id);
+      break;
+    }
+    case 'del-project':
+      if (!confirm('Delete this project?')) return;
+      state.writing.projects = state.writing.projects.filter(p => p.id !== d.project);
+      break;
+    case 'expand-project':
+      expanded.has('p' + d.project) ? expanded.delete('p' + d.project) : expanded.add('p' + d.project);
+      break;
+    case 'add-bulk': {
+      const p = getProject(d.project); if (!p) return;
+      const type = d.type;
+      const key = draftKey.bulk(p.id, type);
+      const ta = document.querySelector(
+        `textarea[data-action="bulk-draft"][data-project="${p.id}"][data-type="${type}"]`);
+      const text = ta ? ta.value : (drafts[key] || '');
+      const items = parseList(text);
+      if (!items.length) return;
+      const target = type === 'path' ? p.paths : p.targets;
+      const seen = new Set(target.map(x => x.text.toLowerCase()));
+      items.forEach(t => {
+        const k = t.toLowerCase();
+        if (seen.has(k)) return;
+        seen.add(k);
+        target.push(type === 'path'
+          ? { id: uid(), text: t }
+          : { id: uid(), type, text: t, used: false });
+      });
+      delete drafts[key];
+      break;
+    }
+    case 'toggle-target': {
+      const p = getProject(d.project); if (!p) return;
+      const x = p.targets.find(t => t.id === d.target); if (!x) return;
+      x.used = el.checked;
+      break;
+    }
+    case 'del-target': {
+      const p = getProject(d.project); if (!p) return;
+      p.targets = p.targets.filter(t => t.id !== d.target);
+      break;
+    }
+    case 'del-path': {
+      const p = getProject(d.project); if (!p) return;
+      p.paths = p.paths.filter(x => x.id !== d.path);
+      break;
+    }
+    case 'save-version': {
+      const p = getProject(d.project); if (!p) return;
+      const ta = document.querySelector(`textarea[data-action="workspace"][data-project="${p.id}"]`);
+      const text = ta ? ta.value : p.current;
+      if (!text.trim()) return;
+      p.current = text;
+      p.versions.push({ id: uid(), kind: d.kind, text, ts: Date.now() });
+      break;
+    }
+    case 'load-version': {
+      const p = getProject(d.project); if (!p) return;
+      const v = p.versions.find(x => x.id === d.version); if (!v) return;
+      p.current = v.text;
+      break;
+    }
+    case 'del-version': {
+      const p = getProject(d.project); if (!p) return;
+      p.versions = p.versions.filter(x => x.id !== d.version);
+      break;
+    }
+    case 'log-writing-session': {
+      const p = getProject(d.project); if (!p) return;
+      const ts = Date.now();
+      p.sessions.push({ id: uid(), ts });
+      state.writing.sessions.push({ id: uid(), ts, projectId: p.id });
+      break;
+    }
+
+    case 'pr-filter':
+      prFilter = d.val;
+      break;
+
+    default:
+      return;
+  }
+  save();
+  render();
+}
+
+/* ============ events ============ */
+document.querySelector('.mainnav').addEventListener('click', e => {
+  const b = e.target.closest('button[data-route]');
+  if (!b) return;
+  state.route = b.dataset.route;
+  save();
+  render();
+});
+
+app.addEventListener('click', e => {
+  const tab = e.target.closest('[data-pr-tab]');
+  if (tab) {
+    if (activeRecording) stopRecording();
+    state.pronunciation.tab = tab.dataset.prTab;
+    save();
+    render();
+    return;
+  }
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  if (['INPUT','TEXTAREA','SELECT'].includes(el.tagName)) return;
+  act(el.dataset.action, el);
+});
+
+app.addEventListener('change', e => {
+  const el = e.target;
+  const a = el.dataset.action;
+
+  if (a === 'set-target') {
+    state.targets[el.dataset.key] = Math.max(0, +el.value || 0);
+    save(); render(); return;
+  }
+  if (a === 'toggle-lesson' || a === 'toggle-target') {
+    act(a, el);
+    return;
+  }
+  if (a === 'pr-sentence-target') {
+    const s = findPrItem('sentence', el.dataset.id); if (!s) return;
+    s.targetReps = Math.max(1, +el.value || 1);
+    save(); render(); return;
+  }
+  if (a === 'pr-draft' && el.tagName === 'SELECT') {
+    prDrafts[el.dataset.key] = el.value;
+    return;
+  }
+  if (a === 'pr-audio-upload') {
+    const file = el.files && el.files[0];
+    el.value = '';   // reset so the same file can be picked again later
+    if (!file) return;
+    const it = findPrItem(el.dataset.kind, el.dataset.id);
+    if (!it) return;
+    if (file.size > AUDIO_FILE_WARN_BYTES) {
+      const mb = (file.size / 1024 / 1024).toFixed(2);
+      if (!confirm(`This file is ${mb} MB. Large audio files may exceed browser storage limits. Continue anyway?`)) return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      it.audioFile = reader.result;
+      save();
+      render();
+    };
+    reader.onerror = () => alert('Could not read that file.');
+    reader.readAsDataURL(file);
+    return;
+  }
+});
+
+app.addEventListener('input', e => {
+  const el = e.target;
+  const a = el.dataset.action;
+
+  /* add-form drafts (survive re-renders) */
+  if (a === 'pr-draft') {
+    prDrafts[el.dataset.key] = el.value;
+    return;
+  }
+
+  /* live-saved pronunciation fields */
+  if (a === 'pr-sound-mouth') {
+    const s = findPrItem('sound', el.dataset.id); if (!s) return;
+    s.mouthNotes = el.value; save(); return;
+  }
+  if (a === 'pr-notes') {
+    const it = findPrItem(el.dataset.kind, el.dataset.id); if (!it) return;
+    it.notes = el.value; save(); return;
+  }
+  if (a === 'pr-word-field') {
+    const w = findPrItem('word', el.dataset.id); if (!w) return;
+    w[el.dataset.field] = el.value; save(); return;
+  }
+  if (a === 'pr-cs-field') {
+    const c = findPrItem('connected', el.dataset.id); if (!c) return;
+    c[el.dataset.field] = el.value; save(); return;
+  }
+  if (a === 'pr-media-field') {
+    const it = findPrItem(el.dataset.kind, el.dataset.id); if (!it) return;
+    it[el.dataset.field] = el.value;
+    save();
+    /* re-render only when the embed state flips */
+    if (el.dataset.field === 'videoUrl') {
+      const card = el.closest('.pr-card');
+      const hadEmbed = !!(card && card.querySelector('.video-embed'));
+      const willHave = !!youtubeEmbed(el.value);
+      if (hadEmbed !== willHave) {
+        pendingFocus = `input[data-action="pr-media-field"][data-kind="${el.dataset.kind}"][data-id="${el.dataset.id}"][data-field="videoUrl"]`;
+        render();
+      }
+    }
+    return;
+  }
+
+  if (a === 'ctx-explanation') {
+    const l = findLesson(el.dataset.lesson); if (!l) return;
+    l.context.explanation = el.value;
+    const preview = el.closest('.ctx-section')?.querySelector('.hl-preview');
+    if (preview) preview.innerHTML = contextPreviewInner(l.context);
+    save(); return;
+  }
+  if (a === 'workspace') {
+    const p = getProject(el.dataset.project); if (!p) return;
+    p.current = el.value;
+    const wc = el.closest('.workspace').querySelector('.wc');
+    if (wc) wc.textContent = wordCount(el.value);
+    save(); return;
+  }
+  if (a === 'gw-edit') {
+    const l = findLesson(el.dataset.lesson); if (!l) return;
+    const w = (l.writings || []).find(x => x.id === el.dataset.writing); if (!w) return;
+    w.text = el.value;
+    const wc = el.closest('.writing-entry')?.querySelector('.wcount');
+    if (wc) wc.textContent = wordCount(el.value) + 'w';
+    save(); return;
+  }
+  if (a === 'gw-draft') { drafts[draftKey.gw(el.dataset.lesson)] = el.value; return; }
+  if (a === 'bulk-draft') {
+    drafts[draftKey.bulk(el.dataset.project, el.dataset.type)] = el.value;
+    const c = el.parentElement.querySelector('.bulk-count');
+    if (c) {
+      const n = parseList(el.value).length;
+      c.textContent = n ? n + ' ready to add' : 'One per line, or separate with commas';
+    }
+    return;
+  }
+  if (el.dataset.field) {
+    const p = getProject(el.dataset.project); if (!p) return;
+    p[el.dataset.field] = el.value;
+    save();
+  }
+});
+
+app.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const el = e.target;
+  const a = el.dataset.action;
+  const mod = e.ctrlKey || e.metaKey;
+
+  if (a === 'gw-draft' || a === 'bulk-draft') {
+    if (!mod) return;
+    e.preventDefault();
+    act(a === 'gw-draft' ? 'gw-add' : 'add-bulk', el);
+    return;
+  }
+  if (mod || !a || !a.startsWith('add-')) return;
+  if (a === 'add-lesson' || a === 'add-sentence' || a === 'add-mistake' ||
+      a === 'pr-sound-add-example' || a === 'pr-sentence-add-section') {
+    e.preventDefault();
+    act(a, el);
+  }
+});
+
+/* ============ start ============ */
+render();
+</script>
+</body>
+</html>
