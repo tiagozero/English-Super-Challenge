@@ -16,6 +16,7 @@
     --reading-2:#D89A6C;
     --listening:#3F7A6E;
     --listening-2:#66A093;
+    --xp:#A9855C;
     --radius:16px;
     --shadow:0 1px 2px rgba(38,33,28,.04), 0 10px 26px -16px rgba(38,33,28,.28);
   }
@@ -57,6 +58,29 @@
   .brand-txt h1{font-size:15.5px;font-weight:650;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .brand-txt p{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .hdr-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+
+  /* Profile pill in header */
+  .profile-btn{
+    display:flex;align-items:center;gap:7px;
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:999px;padding:3px 12px 3px 3px;
+    cursor:pointer;transition:background .15s, border-color .15s;
+    font-family:inherit;color:var(--text);min-width:0;
+  }
+  .profile-btn:hover{background:var(--surface-2);border-color:#D6C7B4}
+  .profile-avatar-sm{
+    width:28px;height:28px;border-radius:50%;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:14px;font-weight:700;line-height:1;
+  }
+  .profile-name-sm{
+    font-size:13px;font-weight:600;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;max-width:110px;
+  }
+  @media(max-width:640px){
+    .profile-btn{padding:3px}
+    .profile-btn .profile-name-sm{display:none}
+  }
 
   .tabs{
     max-width:1080px;margin:0 auto;
@@ -119,6 +143,172 @@
     font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
   }
 
+  /* ---------- Countdown / period clock ---------- */
+  .mono{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+  .lb-clock{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    background:linear-gradient(90deg,rgba(194,112,61,.10),rgba(194,112,61,.02));
+    border:1px solid var(--line);border-radius:14px;padding:14px 16px;
+  }
+  .lb-clock .k{
+    display:block;font-size:10.5px;font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:3px;
+  }
+  .lb-clock-cell .v{font-size:16px;font-weight:650;letter-spacing:-.01em}
+  .lb-clock-main strong{
+    display:block;font-size:30px;font-weight:700;letter-spacing:-.02em;
+    line-height:1.05;color:var(--reading);
+  }
+  .lb-clock-side{text-align:right}
+  @media(max-width:520px){
+    .lb-clock{gap:12px}
+    .lb-clock-main strong{font-size:26px}
+    .lb-clock-side{text-align:left}
+  }
+
+  /* ---------- Profile page ---------- */
+  .profile-hero{
+    display:flex;gap:18px;align-items:flex-start;
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px;box-shadow:var(--shadow);margin-bottom:14px;flex-wrap:wrap;
+  }
+  .profile-avatar-lg{
+    width:84px;height:84px;border-radius:24px;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:38px;font-weight:700;line-height:1;
+    box-shadow:0 10px 22px -12px rgba(38,33,28,.5);
+  }
+  .profile-hero-main{flex:1;min-width:0}
+  .profile-hero-main h2{
+    font-size:22px;font-weight:680;letter-spacing:-.02em;line-height:1.2;
+  }
+  .profile-handle{
+    font-size:13.5px;color:var(--muted);margin-top:2px;font-weight:550;
+  }
+  .profile-bio{
+    font-size:13.5px;color:var(--text);margin-top:9px;line-height:1.55;max-width:560px;
+  }
+  .profile-meta{
+    display:flex;gap:14px;flex-wrap:wrap;margin-top:11px;
+    font-size:12.5px;color:var(--muted);
+  }
+  .profile-meta span{display:inline-flex;align-items:center;gap:5px}
+  .profile-hero-actions{
+    display:flex;gap:8px;flex:0 0 auto;flex-wrap:wrap;
+  }
+  .profile-empty{
+    text-align:center;padding:36px 20px;
+  }
+  .profile-empty .em-icon{font-size:34px;margin-bottom:14px;opacity:.6}
+
+  /* Profile completeness bar */
+  .completeness{
+    margin-top:14px;padding:12px 14px;
+    background:var(--surface-2);border-radius:12px;
+  }
+  .completeness-top{
+    display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+    font-size:12.5px;margin-bottom:8px;
+  }
+  .completeness-top b{font-weight:680;font-size:13.5px}
+  .completeness-bar{height:7px;background:#E5DCD0;border-radius:999px;overflow:hidden}
+  .completeness-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--reading-2),var(--reading));transition:width .4s ease}
+
+  /* Detail rows */
+  .det{
+    display:flex;align-items:flex-start;gap:11px;
+    padding:10px 0;border-bottom:1px solid var(--line);
+  }
+  .det:last-child{border-bottom:0;padding-bottom:0}
+  .det:first-child{padding-top:0}
+  .det-icon{
+    width:30px;height:30px;border-radius:9px;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--surface-2);font-size:14px;
+  }
+  .det-main{flex:1;min-width:0}
+  .det-k{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .det-v{font-size:13.5px;font-weight:550;margin-top:1px;word-break:break-word}
+  .det-v.muted{color:var(--muted);font-weight:500;font-style:italic}
+
+  /* Genre tags */
+  .tag-list{display:flex;flex-wrap:wrap;gap:7px}
+  .tag{
+    font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;
+    background:#F1E7DC;color:#8A5A2B;
+  }
+  .tag.empty{background:transparent;color:var(--muted);font-weight:500;font-style:italic;padding:0}
+
+  /* Social links */
+  .social-row{
+    display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);
+  }
+  .social-row:last-child{border-bottom:0;padding-bottom:0}
+  .social-row:first-child{padding-top:0}
+  .social-row .s-ic{
+    width:30px;height:30px;border-radius:9px;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--surface-2);font-size:14px;
+  }
+  .social-row .s-main{flex:1;min-width:0}
+  .social-row .s-k{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .social-row .s-v{font-size:13.5px;font-weight:550;color:var(--reading);text-decoration:none;word-break:break-all}
+  .social-row .s-v:hover{text-decoration:underline}
+
+  /* ---------- Avatar picker ---------- */
+  .avatar-preview-row{
+    display:flex;align-items:center;gap:14px;margin-bottom:16px;flex-wrap:wrap;
+  }
+  .avatar-preview{
+    width:72px;height:72px;border-radius:20px;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:32px;font-weight:700;line-height:1;
+  }
+  .avatar-preview-label{font-size:12.5px;color:var(--muted);max-width:220px}
+
+  .picker-label{
+    font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:8px;
+  }
+  .emoji-grid{
+    display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-bottom:14px;
+  }
+  .emoji-grid button{
+    aspect-ratio:1;border:1px solid var(--line);background:var(--surface);
+    border-radius:10px;font-size:18px;cursor:pointer;line-height:1;
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .08s ease, border-color .15s;
+    padding:0;
+  }
+  .emoji-grid button:hover{border-color:#D6C7B4;transform:scale(1.06)}
+  .emoji-grid button.active{border-color:var(--reading);box-shadow:0 0 0 2px rgba(194,112,61,.22)}
+  @media(max-width:520px){.emoji-grid{grid-template-columns:repeat(8,1fr)}}
+
+  .swatch-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .swatch{
+    width:30px;height:30px;border-radius:9px;border:2px solid transparent;
+    cursor:pointer;transition:transform .08s ease;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.05);
+  }
+  .swatch:hover{transform:scale(1.08)}
+  .swatch.active{border-color:var(--text);box-shadow:0 0 0 2px var(--bg)}
+
+  /* Section header inside modal */
+  .form-section{
+    margin-top:20px;padding-top:16px;border-top:1px solid var(--line);
+  }
+  .form-section:first-of-type{margin-top:6px;padding-top:0;border-top:0}
+  .form-section-title{
+    font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:12px;
+    display:flex;align-items:center;gap:7px;
+  }
+  .form-section-title .dotnum{
+    width:18px;height:18px;border-radius:50%;background:var(--surface-2);
+    display:flex;align-items:center;justify-content:center;
+    font-size:10px;color:var(--muted);letter-spacing:0;
+  }
+
   /* ---------- Progress cards ---------- */
   .progress-card .pct{font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
   .big-numbers{display:flex;align-items:baseline;gap:7px;margin-bottom:14px;flex-wrap:wrap}
@@ -174,7 +364,7 @@
   .filters .full{grid-column:1/-1}
   .field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
   .field > label{font-size:12px;font-weight:650;color:var(--muted);letter-spacing:.01em}
-  input[type=text],input[type=number],input[type=date],textarea,select{
+  input[type=text],input[type=number],input[type=date],input[type=time],input[type=url],textarea,select{
     width:100%;border:1px solid var(--line);background:var(--surface);
     border-radius:12px;padding:11px 13px;font-size:15px;font-family:inherit;
     color:var(--text);outline:none;transition:border-color .15s, box-shadow .15s;
@@ -224,11 +414,54 @@
   .cum-chart{width:100%;height:190px;display:block;border-radius:10px;overflow:visible}
   .chart-note{font-size:11.5px;color:var(--muted);margin-top:10px}
 
+  /* ---------- Challenges ---------- */
+  .chal{padding:14px 0;border-bottom:1px solid var(--line)}
+  .chal:last-child{border-bottom:0;padding-bottom:0}
+  .chal:first-child{padding-top:0}
+  .chal-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .chal-title{font-size:14.5px;font-weight:620;display:flex;align-items:center;gap:7px;flex-wrap:wrap;min-width:0}
+  .chal-actions{display:flex;gap:2px;flex:0 0 auto}
+  .badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase}
+  .badge.daily{background:#F1E7DC;color:#8A5A2B}
+  .badge.weekly{background:#E4EBF3;color:#3E5B78}
+  .badge.done{background:#E2F0E9;color:#2F6B54}
+  .chal-bar{height:8px;background:var(--surface-2);border-radius:999px;margin:11px 0 8px;overflow:hidden}
+  .chal-bar i{display:block;height:100%;border-radius:999px;transition:width .4s ease}
+  .chal-bar.reading i{background:linear-gradient(90deg,var(--reading-2),var(--reading))}
+  .chal-bar.listening i{background:linear-gradient(90deg,var(--listening-2),var(--listening))}
+  .chal-bar.xp i{background:linear-gradient(90deg,#D9C3A8,var(--xp))}
+  .chal-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;flex-wrap:wrap}
+  .chal-timer{
+    display:flex;align-items:center;gap:6px;margin-top:7px;
+    font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums;
+  }
+  .chal-timer b{color:var(--text);font-weight:650}
+
+  /* ---------- Leaderboard ---------- */
+  .lb-row{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .lb-row:last-child{border-bottom:0}
+  .lb-row.you{
+    background:linear-gradient(90deg,rgba(194,112,61,.10),rgba(194,112,61,0));
+    border-radius:12px;padding-left:8px;padding-right:8px;margin:0 -8px;border-bottom-color:transparent;
+  }
+  .lb-rank{width:26px;text-align:center;font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;flex:0 0 auto}
+  .lb-row.you .lb-rank{color:var(--reading)}
+  .lb-avatar{width:38px;height:38px;border-radius:12px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12.5px;font-weight:750;letter-spacing:.03em}
+  .lb-main{flex:1;min-width:0}
+  .lb-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+  .lb-name{font-size:13.5px;font-weight:620;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lb-handle{font-size:11.5px;color:var(--muted);font-weight:500}
+  .lb-xp{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .lb-bar{height:5px;background:var(--surface-2);border-radius:999px;margin:5px 0 4px;overflow:hidden}
+  .lb-bar i{display:block;height:100%;border-radius:999px;background:var(--reading-2);transition:width .4s ease}
+  .lb-row.you .lb-bar i{background:var(--reading)}
+  .lb-sub{font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+
   /* ---------- Modal ---------- */
   .modal-backdrop{position:fixed;inset:0;background:rgba(38,33,28,.34);z-index:100;animation:fade .16s ease}
   @keyframes fade{from{opacity:0}to{opacity:1}}
   .modal{
-    position:fixed;z-index:101;left:50%;bottom:0;width:100%;max-width:520px;
+    position:fixed;z-index:101;left:50%;bottom:0;width:100%;max-width:560px;
     transform:translateX(-50%);
     background:var(--surface);border-radius:22px 22px 0 0;
     max-height:93vh;overflow-y:auto;
@@ -246,6 +479,11 @@
   .modal-body{padding:18px 20px 22px}
   .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:6px;flex-wrap:wrap}
   .hint{font-size:12.5px;color:var(--muted);margin:-4px 0 12px}
+  .welcome-lead{
+    font-size:14px;line-height:1.6;color:var(--text);
+    background:var(--surface-2);border-radius:12px;padding:14px 16px;margin-bottom:18px;
+  }
+  .welcome-lead b{font-weight:650}
 
   .chips{display:flex;flex-wrap:wrap;gap:8px}
   .chip{
@@ -254,9 +492,10 @@
     transition:all .15s ease;
   }
   .chip:hover{border-color:#D6C7B4}
-  .chip.active{color:#fff;border-color:transparent}
+  .chip.active{background:var(--text);color:#fff;border-color:transparent}
   .chip.active[data-cat="reading"]{background:var(--reading)}
   .chip.active[data-cat="listening"]{background:var(--listening)}
+  .chip.active[data-cat="xp"]{background:var(--xp)}
 
   .ac{position:relative}
   .ac-list{
@@ -274,6 +513,9 @@
   .amount-row input{flex:1;font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
   .amount-row .seg{flex:0 0 auto;align-items:center}
 
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:520px){.two-col{grid-template-columns:1fr}}
+
   /* ---------- Data section (inside settings modal) ---------- */
   .data-block{
     margin-top:8px;padding-top:18px;border-top:1px solid var(--line);
@@ -288,7 +530,7 @@
   /* ---------- Empty state ---------- */
   .empty{text-align:center;padding:34px 16px}
   .empty .em-title{font-size:15px;font-weight:620;margin-bottom:5px}
-  .empty .em-sub{font-size:13.5px;color:var(--muted);max-width:320px;margin:0 auto 16px}
+  .empty .em-sub{font-size:13.5px;color:var(--muted);max-width:340px;margin:0 auto 16px}
   .empty .em-icon{font-size:26px;margin-bottom:12px;opacity:.5}
 
   /* ---------- FAB ---------- */
@@ -307,6 +549,8 @@
     .hdr-top{padding:12px 14px 8px}
     .tabs{padding:0 14px 9px}
     .card{padding:16px}
+    .profile-hero{padding:18px}
+    .profile-avatar-lg{width:70px;height:70px;font-size:32px;border-radius:20px}
   }
 </style>
 </head>
@@ -322,12 +566,19 @@
       </div>
     </div>
     <div class="hdr-actions">
+      <button class="profile-btn" data-action="open-profile" title="Your profile" aria-label="Profile" id="hdrProfileBtn">
+        <span class="profile-avatar-sm" id="hdrAvatar">?</span>
+        <span class="profile-name-sm" id="hdrName">Profile</span>
+      </button>
       <button class="icon-btn" data-action="open-settings" title="Challenge settings" aria-label="Settings">⚙</button>
       <button class="btn btn-primary" data-action="open-log">+ Log activity</button>
     </div>
   </div>
   <nav class="tabs" id="tabs">
     <button data-nav="dashboard" class="active">Dashboard</button>
+    <button data-nav="profile">Profile</button>
+    <button data-nav="challenges">Challenges</button>
+    <button data-nav="leaderboard">Leaderboard</button>
     <button data-nav="history">History</button>
     <button data-nav="progress">Progress</button>
     <button data-nav="materials">Materials</button>
@@ -349,6 +600,7 @@ const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const fmt  = n => Math.round(Number(n) || 0).toLocaleString('en-US');
 const fmt1 = n => (Math.round((Number(n) || 0) * 10) / 10).toLocaleString('en-US');
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+const pad2 = n => String(n).padStart(2, '0');
 
 function toISO(d){
   return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
@@ -381,6 +633,95 @@ function prettyDate(iso){
   if (iso === addDays(t, -1)) return 'Yesterday';
   return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 }
+function initialsOf(name){
+  const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return '?';
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+/* Deterministic pseudo-random helpers (used for the demo rivals) */
+function hashStr(s){
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++){
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+function mulberry32(a){
+  return function(){
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/* =========================================================
+   Countdown helpers
+   ========================================================= */
+function msUntilNextMidnight(){
+  const now = new Date();
+  const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
+  return Math.max(0, end - now);
+}
+function msUntilWeekEnd(){
+  const now = new Date();
+  const dow = (now.getDay() + 6) % 7;
+  const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (7 - dow), 0, 0, 0, 0);
+  return Math.max(0, end - now);
+}
+function msUntilChallengeEnd(){
+  const e = parseISO(state.challenge.end_date);
+  const end = new Date(e.getFullYear(), e.getMonth(), e.getDate() + 1, 0, 0, 0, 0);
+  return Math.max(0, end - new Date());
+}
+function msFor(kind){
+  if (kind === 'day')       return msUntilNextMidnight();
+  if (kind === 'week')      return msUntilWeekEnd();
+  if (kind === 'challenge') return msUntilChallengeEnd();
+  return 0;
+}
+function fmtCountdown(ms){
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return pad2(h) + ':' + pad2(m) + ':' + pad2(s);
+}
+function resetTimeLabel(kind){
+  const now = new Date();
+  if (kind === 'day') return '00:00';
+  if (kind === 'week'){
+    const dow = (now.getDay() + 6) % 7;
+    const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (7 - dow));
+    return end.toLocaleDateString('en-US', { weekday: 'short' }) + ' 00:00';
+  }
+  if (kind === 'challenge'){
+    const e = parseISO(state.challenge.end_date);
+    return e.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' 23:59';
+  }
+  return '—';
+}
+function nowClock(){
+  const d = new Date();
+  return pad2(d.getHours()) + ':' + pad2(d.getMinutes()) + ':' + pad2(d.getSeconds());
+}
+let tickTimer = null;
+function updateCountdowns(){
+  $$('[data-countdown]').forEach(el => {
+    el.textContent = fmtCountdown(msFor(el.dataset.countdown));
+  });
+  $$('[data-now]').forEach(el => {
+    el.textContent = nowClock();
+  });
+}
+function startTicker(){
+  if (tickTimer) clearInterval(tickTimer);
+  updateCountdowns();
+  tickTimer = setInterval(updateCountdowns, 1000);
+}
 
 /* =========================================================
    Constants
@@ -397,8 +738,76 @@ const TYPES = {
 };
 const TYPE_ORDER = ['kindle', 'book', 'article', 'other', 'audiobook', 'podcast', 'tv', 'film'];
 
-/* Storage key bumped so older demo data is not picked up */
 const STORAGE_KEY = 'english-super-challenge-v2-clean';
+const WELCOME_KEY = 'esc-welcome-shown';
+
+const XP_PER_UNIT = 5 / 10;
+function xpFrom(pages, minutes){
+  return (Number(pages) || 0) * XP_PER_UNIT + (Number(minutes) || 0) * XP_PER_UNIT;
+}
+
+const CHALLENGE_PRESETS = [
+  { title: 'Read 20 pages a day',        scope: 'daily',  category: 'reading',   target: 20  },
+  { title: 'Listen 30 minutes a day',    scope: 'daily',  category: 'listening', target: 30  },
+  { title: 'Read 150 pages this week',   scope: 'weekly', category: 'reading',   target: 150 },
+  { title: 'Listen 300 minutes a week',  scope: 'weekly', category: 'listening', target: 300 },
+  { title: 'Earn 100 XP a day',          scope: 'daily',  category: 'xp',        target: 100 },
+  { title: 'Earn 700 XP this week',      scope: 'weekly', category: 'xp',        target: 700 }
+];
+
+/* ---- Profile constants ---- */
+const AVATAR_EMOJIS = [
+  '📚','📖','🎧','🎬','🎓','🌟','🚀','🦉','🐉','🦊',
+  '🌙','☀️','🎯','🔥','💡','🌊','🏔️','🌸','🍀','⚡',
+  '🎨','🧠','🦁','🐼','🦅','🌿','🍄','🪐','💎','🎵'
+];
+const AVATAR_COLORS = [
+  '#C2703D','#3F7A6E','#7A5EA8','#B0563F','#2F6B54',
+  '#4A6FA5','#A8567A','#8A6420','#5D7A3F','#3E7C8A',
+  '#26211C','#9C4230','#6B5B95','#B08B3E','#3E5B78'
+];
+const LANGUAGES = [
+  'English','Spanish','French','German','Italian','Portuguese','Dutch','Swedish',
+  'Norwegian','Danish','Finnish','Polish','Czech','Greek','Turkish','Russian',
+  'Ukrainian','Arabic','Hebrew','Hindi','Bengali','Urdu','Persian','Japanese',
+  'Korean','Chinese (Mandarin)','Chinese (Cantonese)','Vietnamese','Thai',
+  'Indonesian','Malay','Filipino','Swahili','Other'
+];
+const LEVELS = [
+  { id: 'beginner',     label: 'Beginner',     sub: 'A1 – A2' },
+  { id: 'intermediate', label: 'Intermediate', sub: 'B1 – B2' },
+  { id: 'advanced',     label: 'Advanced',     sub: 'C1 – C2' },
+  { id: 'native',       label: 'Native',       sub: 'Fluent'  }
+];
+const GENRES = [
+  'Fiction','Non-fiction','Mystery','Sci-Fi','Fantasy','Romance','Thriller',
+  'Horror','Biography','History','Self-help','Business','Science','Philosophy',
+  'Poetry','Young Adult','Classics','Travel','Cooking','Art'
+];
+const COUNTRIES = [
+  'United States','United Kingdom','Canada','Australia','New Zealand','Ireland',
+  'Germany','France','Spain','Italy','Portugal','Netherlands','Belgium',
+  'Switzerland','Austria','Sweden','Norway','Denmark','Finland','Poland',
+  'Czech Republic','Greece','Turkey','Russia','Ukraine','Japan','South Korea',
+  'China','Taiwan','Hong Kong','Singapore','India','Pakistan','Bangladesh',
+  'Indonesia','Malaysia','Thailand','Vietnam','Philippines','Mexico','Brazil',
+  'Argentina','Chile','Colombia','Peru','Venezuela','Egypt','Morocco','Nigeria',
+  'Kenya','South Africa','Israel','Saudi Arabia','United Arab Emirates',
+  'Iran','Iraq','Other'
+];
+
+const RIVALS = [
+  { id: 'r1',  name: 'Luna Park',    handle: '@luna_reads',    color: '#C2703D', read: 48, listen: 55,  rest: 0.06, phase: 0 },
+  { id: 'r2',  name: 'Marco Silva',  handle: '@marco.listens', color: '#3F7A6E', read: 22, listen: 95,  rest: 0.10, phase: 2 },
+  { id: 'r3',  name: 'Aiko Tanaka',  handle: '@aiko_pages',    color: '#7A5EA8', read: 65, listen: 30,  rest: 0.04, phase: 4 },
+  { id: 'r4',  name: 'Diego Ramos',  handle: '@diego_r',       color: '#B0563F', read: 35, listen: 70,  rest: 0.14, phase: 6 },
+  { id: 'r5',  name: 'Nora Haddad',  handle: '@nora.reads',    color: '#2F6B54', read: 55, listen: 40,  rest: 0.08, phase: 1 },
+  { id: 'r6',  name: 'Felix Braun',  handle: '@felix_b',       color: '#4A6FA5', read: 30, listen: 80,  rest: 0.12, phase: 3 },
+  { id: 'r7',  name: 'Priya Nair',   handle: '@priya.pages',   color: '#A8567A', read: 70, listen: 25,  rest: 0.05, phase: 5 },
+  { id: 'r8',  name: 'Sam Okafor',   handle: '@sam_listens',   color: '#8A6420', read: 18, listen: 110, rest: 0.09, phase: 7 },
+  { id: 'r9',  name: 'Elena Rossi',  handle: '@elena_r',       color: '#5D7A3F', read: 42, listen: 62,  rest: 0.11, phase: 8 },
+  { id: 'r10', name: 'Kai Nakamura', handle: '@kai.n',         color: '#3E7C8A', read: 58, listen: 48,  rest: 0.07, phase: 9 }
+];
 
 /* =========================================================
    State
@@ -406,8 +815,10 @@ const STORAGE_KEY = 'english-super-challenge-v2-clean';
 let state = null;
 let currentView = 'dashboard';
 let progressMetric = 'reading';
+let leaderboardRange = 'all';
 let historyFilters = { from: '', to: '', category: 'all', type: 'all', material: 'all', q: '' };
 let searchTimer = null;
+let editingProfileId = null;   // tracks which profile id we're editing (for future multi-profile)
 
 /* =========================================================
    Fresh (empty) challenge
@@ -425,20 +836,35 @@ function freshData(){
       listening_target_minutes: 4500,
       created_at: new Date().toISOString()
     },
+    profile: null,
     materials: [],
-    activities: []
+    activities: [],
+    customChallenges: []
   };
 }
 
 /* =========================================================
    Persistence
    ========================================================= */
+function normalizeState(s){
+  if (!s || typeof s !== 'object') return null;
+  if (!Array.isArray(s.materials))    s.materials = [];
+  if (!Array.isArray(s.activities))   s.activities = [];
+  if (!Array.isArray(s.customChallenges)) s.customChallenges = [];
+  if (s.profile === undefined) s.profile = null;
+  if (s.profile && typeof s.profile !== 'object') s.profile = null;
+  if (s.profile){
+    if (!Array.isArray(s.profile.favorite_genres)) s.profile.favorite_genres = [];
+  }
+  return s;
+}
+
 function loadState(){
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw){
-      const parsed = JSON.parse(raw);
-      if (parsed && parsed.challenge && Array.isArray(parsed.activities) && Array.isArray(parsed.materials)){
+      const parsed = normalizeState(JSON.parse(raw));
+      if (parsed && parsed.challenge){
         state = parsed;
         return;
       }
@@ -452,9 +878,67 @@ function saveState(){
 }
 function resetAll(){
   localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(WELCOME_KEY);
   state = freshData();
   saveState();
   historyFilters = { from: '', to: '', category: 'all', type: 'all', material: 'all', q: '' };
+  leaderboardRange = 'all';
+}
+
+/* =========================================================
+   Profile helpers
+   ========================================================= */
+function getProfile(){ return state.profile; }
+
+function profileAvatarContent(p){
+  if (!p) return '?';
+  if (p.avatar_emoji) return p.avatar_emoji;
+  return initialsOf(p.display_name || 'You');
+}
+
+function profileDisplayName(){
+  const p = state.profile;
+  return (p && p.display_name && p.display_name.trim()) || 'You';
+}
+
+function profileHandle(){
+  const p = state.profile;
+  if (p && p.handle && p.handle.trim()){
+    return p.handle.startsWith('@') ? p.handle : '@' + p.handle;
+  }
+  return '@you';
+}
+
+function profileColor(){
+  const p = state.profile;
+  return (p && p.avatar_color) || '#26211C';
+}
+
+function profileCompleteness(){
+  const p = state.profile;
+  if (!p) return 0;
+  const checks = [
+    !!p.display_name && p.display_name.trim(),
+    !!p.handle && p.handle.trim(),
+    !!p.bio && p.bio.trim(),
+    !!p.country && p.country.trim(),
+    !!p.native_language,
+    !!p.target_language,
+    !!p.level,
+    !!p.goal && p.goal.trim(),
+    !!p.birthday,
+    (p.favorite_genres || []).length > 0,
+    !!(p.social_twitter || p.social_goodreads || p.social_website)
+  ];
+  const filled = checks.filter(Boolean).length;
+  return Math.round((filled / checks.length) * 100);
+}
+
+function profileLevelLabel(){
+  const p = state.profile;
+  if (!p || !p.level) return '';
+  const lv = LEVELS.find(l => l.id === p.level);
+  return lv ? lv.label : p.level;
 }
 
 /* =========================================================
@@ -474,11 +958,13 @@ function downloadBlob(blob, filename){
 function exportJSON(){
   const payload = {
     app: 'english-super-challenge',
-    version: 1,
+    version: 3,
     exported_at: new Date().toISOString(),
     challenge: state.challenge,
+    profile: state.profile,
     materials: state.materials,
-    activities: state.activities
+    activities: state.activities,
+    customChallenges: state.customChallenges
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   downloadBlob(blob, `esc-backup-${todayISO()}.json`);
@@ -492,7 +978,7 @@ function csvEscape(v){
 
 function exportCSV(){
   const rows = [];
-  rows.push(['date','category','type','material','creator','amount','unit','note'].join(','));
+  rows.push(['date','category','type','material','creator','amount','unit','xp','note'].join(','));
   state.activities
     .slice()
     .sort((a, b) => a.logged_on < b.logged_on ? -1 : a.logged_on > b.logged_on ? 1 : 0)
@@ -506,6 +992,7 @@ function exportCSV(){
         m ? (m.creator || '') : '',
         a.amount,
         a.unit,
+        (a.category === 'reading' ? xpFrom(a.amount, 0) : xpFrom(0, a.amount)).toFixed(1),
         a.note || ''
       ].map(csvEscape).join(','));
     });
@@ -524,7 +1011,6 @@ function importJSONFile(file){
       return;
     }
 
-    /* Accept a raw state object or our wrapped export payload */
     const candidate = (data && data.challenge && Array.isArray(data.activities) && Array.isArray(data.materials))
       ? data
       : (data && data.state) ? data.state : null;
@@ -536,19 +1022,25 @@ function importJSONFile(file){
 
     const actCount = candidate.activities.length;
     const matCount = candidate.materials.length;
+    const chCount  = Array.isArray(candidate.customChallenges) ? candidate.customChallenges.length : 0;
+    const hasProfile = !!(candidate.profile && candidate.profile.display_name);
     const ok = confirm(
       `Import this backup?\n\n` +
       `• ${actCount} activit${actCount === 1 ? 'y' : 'ies'}\n` +
-      `• ${matCount} material${matCount === 1 ? '' : 's'}\n\n` +
-      `This will replace your current activities, materials and settings.`
+      `• ${matCount} material${matCount === 1 ? '' : 's'}\n` +
+      `• ${chCount} challenge${chCount === 1 ? '' : 's'}\n` +
+      `• Profile: ${hasProfile ? 'included' : 'none'}\n\n` +
+      `This will replace your current data.`
     );
     if (!ok) return;
 
-    state = {
+    state = normalizeState({
       challenge: candidate.challenge,
+      profile: candidate.profile || null,
       materials: candidate.materials,
-      activities: candidate.activities
-    };
+      activities: candidate.activities,
+      customChallenges: candidate.customChallenges
+    });
     saveState();
     closeModal();
     render();
@@ -598,7 +1090,6 @@ function getStats(){
   const idealReadPct   = elapsed / totalDays * 100;
   const idealListenPct = elapsed / totalDays * 100;
 
-  // ---- This week ----
   const weekStart = maxISO(startOfWeekISO(today), ch.start_date);
   const weekEnd   = minISO(today, ch.end_date);
   const weekDays  = Math.max(0, diffDays(weekStart, weekEnd) + 1);
@@ -607,7 +1098,6 @@ function getStats(){
   const weekReadExp  = readDailyRate * weekDays;
   const weekListenExp = listenDailyRate * weekDays;
 
-  // ---- This challenge-month ----
   const dayIdx   = clamp(diffDays(ch.start_date, today) + 1, 1, totalDays);
   const monthIdx = Math.min(2, Math.floor((dayIdx - 1) / 30));
   const monthStart = addDays(ch.start_date, monthIdx * 30);
@@ -645,6 +1135,174 @@ function paceStateRatio(val, exp){
   if (r >= 0.97) return { cls: 'ok',   label: 'On pace' };
   if (r >= 0.85) return { cls: 'warn', label: 'Slightly behind' };
   return { cls: 'bad', label: 'Behind' };
+}
+
+/* =========================================================
+   Custom daily / weekly challenges
+   ========================================================= */
+function challengeUnit(cat){
+  if (cat === 'listening') return 'minutes';
+  if (cat === 'xp') return 'XP';
+  return 'pages';
+}
+function chalHintText(scope, cat){
+  const u = challengeUnit(cat);
+  return scope === 'daily'
+    ? `Resets every day at 00:00 — aim for ${u} per day.`
+    : `Runs Monday to Sunday — ends Monday 00:00.`;
+}
+function periodRange(scope){
+  const t = todayISO();
+  if (scope === 'weekly'){
+    const ws = startOfWeekISO(t);
+    return { from: ws, to: addDays(ws, 6) };
+  }
+  return { from: t, to: t };
+}
+function challengeValue(ch, from, to){
+  const list = actsInRange(from, to);
+  const p = sumCategory(list, 'reading');
+  const m = sumCategory(list, 'listening');
+  if (ch.category === 'listening') return m;
+  if (ch.category === 'xp')        return xpFrom(p, m);
+  return p;
+}
+function challengeStreak(ch){
+  const today = todayISO();
+  const chStart = state.challenge.start_date;
+  let streak = 0;
+
+  if (ch.scope === 'daily'){
+    for (let d = today; d >= chStart; d = addDays(d, -1)){
+      const ok = challengeValue(ch, d, d) >= ch.target;
+      if (ok) streak++;
+      else if (d === today) continue;
+      else break;
+    }
+  } else {
+    let ws = startOfWeekISO(today);
+    for (let i = 0; i < 52; i++){
+      const we = addDays(ws, 6);
+      if (we < chStart) break;
+      const from = maxISO(ws, chStart);
+      const to   = minISO(we, today);
+      const ok = challengeValue(ch, from, to) >= ch.target;
+      if (ok) streak++;
+      else if (i > 0) break;
+      ws = addDays(ws, -7);
+    }
+  }
+  return streak;
+}
+
+function challengeRowHTML(ch){
+  const { from, to } = periodRange(ch.scope);
+  const unit = challengeUnit(ch.category);
+  const value = challengeValue(ch, from, to);
+  const done = value >= ch.target;
+  const pct = clamp(ch.target ? value / ch.target * 100 : 0, 0, 100);
+  const streak = challengeStreak(ch);
+  const remaining = Math.max(0, ch.target - value);
+  const periodLabel = ch.scope === 'daily'
+    ? prettyDate(from)
+    : `Week of ${parseISO(from).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+
+  const cdKind = ch.scope === 'daily' ? 'day' : 'week';
+  const cdVerb = ch.scope === 'daily' ? 'until reset' : 'until week ends';
+  const finishesAt = resetTimeLabel(cdKind);
+
+  return `
+  <div class="chal">
+    <div class="chal-top">
+      <div class="chal-title">
+        ${escapeHtml(ch.title)}
+        <span class="badge ${ch.scope}">${ch.scope}</span>
+        ${done ? '<span class="badge done">✓ done</span>' : ''}
+      </div>
+      <div class="chal-actions">
+        <button class="link-btn" data-action="edit-challenge" data-id="${ch.id}">Edit</button>
+        <button class="link-btn danger" data-action="delete-challenge" data-id="${ch.id}">Delete</button>
+      </div>
+    </div>
+    <div class="chal-bar ${ch.category}"><i style="width:${pct}%"></i></div>
+    <div class="chal-meta">
+      <span>${fmt(value)} / ${fmt(ch.target)} ${unit} · ${escapeHtml(periodLabel)}</span>
+      <span>${done ? 'Complete' : fmt(remaining) + ' to go'}${streak ? ' · 🔥 ' + streak + (ch.scope === 'daily' ? 'd' : 'w') : ''}</span>
+    </div>
+    <div class="chal-timer">
+      ⏳ <b class="mono" data-countdown="${cdKind}">--:--:--</b>
+      ${cdVerb} · finishes ${escapeHtml(finishesAt)}
+    </div>
+  </div>`;
+}
+
+/* =========================================================
+   Leaderboard — you + 10 simulated rivals
+   ========================================================= */
+function lbRangeISO(){
+  const t = todayISO();
+  const ch = state.challenge;
+  if (leaderboardRange === 'today') return { from: t, to: t, label: 'Today' };
+  if (leaderboardRange === 'week')  return { from: startOfWeekISO(t), to: t, label: 'This week' };
+  return { from: ch.start_date, to: minISO(t, ch.end_date), label: 'Full challenge' };
+}
+function userStatsIn(from, to){
+  const ch = state.challenge;
+  const f = maxISO(from, ch.start_date);
+  const t = minISO(to, todayISO());
+  if (f > t) return { pages: 0, minutes: 0, xp: 0, days: 0 };
+  const list = actsInRange(f, t);
+  const pages = sumCategory(list, 'reading');
+  const minutes = sumCategory(list, 'listening');
+  return { pages, minutes, xp: xpFrom(pages, minutes), days: diffDays(f, t) + 1 };
+}
+function rivalStats(rival, from, to){
+  const ch = state.challenge;
+  const start = maxISO(from, ch.start_date);
+  const end   = minISO(to, todayISO());
+  if (start > end) return { pages: 0, minutes: 0, xp: 0, days: 0 };
+
+  let pages = 0, minutes = 0, days = 0;
+  for (let d = start; d <= end; d = addDays(d, 1)){
+    days++;
+    const idx = diffDays(ch.start_date, d);
+    const rng = mulberry32(hashStr(rival.id + '|' + d));
+    const r1 = rng(), r2 = rng(), r3 = rng();
+    if (r1 < rival.rest) continue;
+    const swing = 0.85 + 0.30 * Math.sin((idx + rival.phase) / 8);
+    pages   += Math.round(rival.read   * swing * (0.60 + r2 * 0.80));
+    minutes += Math.round(rival.listen * swing * (0.60 + r3 * 0.80));
+  }
+  return { pages, minutes, xp: xpFrom(pages, minutes), days };
+}
+function leaderboardEntries(){
+  const { from, to } = lbRangeISO();
+  const entries = [];
+
+  const u = userStatsIn(from, to);
+  const p = state.profile;
+  entries.push({
+    id: 'you',
+    name: profileDisplayName(),
+    handle: profileHandle(),
+    color: profileColor(),
+    initials: profileAvatarContent(p),
+    isEmoji: !!(p && p.avatar_emoji),
+    you: true,
+    pages: u.pages, minutes: u.minutes, xp: u.xp
+  });
+
+  RIVALS.forEach(r => {
+    const s = rivalStats(r, from, to);
+    entries.push({
+      id: r.id, name: r.name, handle: r.handle, color: r.color,
+      initials: initialsOf(r.name), isEmoji: false, you: false,
+      pages: s.pages, minutes: s.minutes, xp: s.xp
+    });
+  });
+
+  entries.sort((a, b) => b.xp - a.xp || b.pages - a.pages || a.name.localeCompare(b.name));
+  return entries;
 }
 
 /* =========================================================
@@ -737,16 +1395,46 @@ function activityRow(a, showActions){
   </div>`;
 }
 
+function dashboardChallengesCard(){
+  const list = state.customChallenges;
+  if (!list.length) return '';
+  return `
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-head">
+      <h2>Daily &amp; weekly challenges</h2>
+      <button class="link-btn" data-nav="challenges">Manage</button>
+    </div>
+    ${list.slice(0, 3).map(challengeRowHTML).join('')}
+    ${list.length > 3 ? `<div style="font-size:12.5px;color:var(--muted);margin-top:10px">+ ${list.length - 3} more…</div>` : ''}
+  </div>`;
+}
+
+function dashboardProfilePrompt(){
+  if (state.profile) return '';
+  return `
+  <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,rgba(194,112,61,.08),rgba(63,122,110,.06));border-color:#E4D6C5">
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(140deg,var(--reading-2),var(--reading));display:flex;align-items:center;justify-content:center;font-size:24px;flex:0 0 auto">👤</div>
+      <div style="flex:1;min-width:200px">
+        <div style="font-size:14.5px;font-weight:650;margin-bottom:2px">Create your profile</div>
+        <div style="font-size:13px;color:var(--muted)">Add your name, avatar, languages and goals — it personalizes the app and shows up on the leaderboard.</div>
+      </div>
+      <button class="btn btn-primary" data-action="open-profile">Create profile</button>
+    </div>
+  </div>`;
+}
+
 function viewDashboard(){
   const s = getStats();
   const recent = state.activities
     .slice()
     .sort((a, b) => a.logged_on < b.logged_on ? 1 : a.logged_on > b.logged_on ? -1 : (a.created_at < b.created_at ? 1 : -1))
     .slice(0, 6);
-
   const hasAny = state.activities.length > 0;
 
   return `
+  ${dashboardProfilePrompt()}
+
   <div class="grid cols-2">
     ${progressCard(s, 'reading')}
     ${progressCard(s, 'listening')}
@@ -775,6 +1463,8 @@ function viewDashboard(){
     ${paceCard('This month', `Month ${s.monthIdx + 1} · ${s.monthDays} day${s.monthDays === 1 ? '' : 's'} elapsed`, s.monthRead, s.monthReadExp, s.monthListen, s.monthListenExp)}
   </div>
 
+  ${dashboardChallengesCard()}
+
   <div class="card">
     <div class="card-head">
       <h2>Recent activity</h2>
@@ -788,6 +1478,412 @@ function viewDashboard(){
            <div class="em-sub">Log your first reading or listening session — it takes about 10 seconds.</div>
          </div>`}
     <button class="btn btn-primary btn-block" data-action="open-log">+ Log activity</button>
+  </div>`;
+}
+
+/* =========================================================
+   Views — Profile
+   ========================================================= */
+function viewProfile(){
+  const p = state.profile;
+  const s = getStats();
+
+  if (!p){
+    return `
+    <div class="card">
+      <div class="profile-empty">
+        <div class="em-icon">👤</div>
+        <div class="em-title" style="font-size:17px;font-weight:650;margin-bottom:6px">No profile yet</div>
+        <div class="em-sub" style="font-size:13.5px;color:var(--muted);max-width:380px;margin:0 auto 18px;line-height:1.55">
+          Create a profile to personalize your experience: pick an avatar, set your languages and level,
+          describe your goal, and choose the genres you love. Your profile also appears on the leaderboard.
+        </div>
+        <button class="btn btn-primary" data-action="open-profile">+ Create your profile</button>
+      </div>
+    </div>`;
+  }
+
+  /* Stats */
+  const entries = leaderboardEntries();
+  const youRank = entries.findIndex(e => e.you) + 1;
+  const totalXp = xpFrom(s.readingTotal, s.listeningTotal);
+  const activeDays = new Set(state.activities.map(a => a.logged_on)).size;
+
+  const completeness = profileCompleteness();
+
+  /* Meta row pieces */
+  const metas = [];
+  if (p.country) metas.push(`<span>📍 ${escapeHtml(p.country)}</span>`);
+  if (p.native_language && p.target_language){
+    metas.push(`<span>🗣️ ${escapeHtml(p.native_language)} → ${escapeHtml(p.target_language)}</span>`);
+  } else if (p.target_language){
+    metas.push(`<span>🗣️ Learning ${escapeHtml(p.target_language)}</span>`);
+  }
+  if (p.level){
+    const lv = LEVELS.find(l => l.id === p.level);
+    metas.push(`<span>🎓 ${escapeHtml(lv ? lv.label : p.level)}</span>`);
+  }
+  if (p.created_at){
+    const d = new Date(p.created_at);
+    metas.push(`<span>📅 Joined ${d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>`);
+  }
+
+  /* Genres */
+  const genres = (p.favorite_genres || []);
+  const genreHtml = genres.length
+    ? genres.map(g => `<span class="tag">${escapeHtml(g)}</span>`).join('')
+    : '<span class="tag empty">No genres selected yet</span>';
+
+  /* Social */
+  const socials = [];
+  if (p.social_twitter)   socials.push({ icon: '🐦', k: 'Twitter / X', v: p.social_twitter });
+  if (p.social_goodreads) socials.push({ icon: '📗', k: 'Goodreads',   v: p.social_goodreads });
+  if (p.social_website)   socials.push({ icon: '🌐', k: 'Website',     v: p.social_website });
+
+  const socialHtml = socials.length
+    ? socials.map(s => `
+        <div class="social-row">
+          <div class="s-ic">${s.icon}</div>
+          <div class="s-main">
+            <div class="s-k">${escapeHtml(s.k)}</div>
+            <a class="s-v" href="${/^https?:\/\//.test(s.v) ? escapeHtml(s.v) : '#'}" target="_blank" rel="noopener noreferrer">${escapeHtml(s.v)}</a>
+          </div>
+        </div>`).join('')
+    : `<p style="font-size:13px;color:var(--muted);font-style:italic;margin:0">No social links added yet.</p>`;
+
+  return `
+  <div class="profile-hero">
+    <div class="profile-avatar-lg" style="background:${escapeHtml(p.avatar_color || '#26211C')}">
+      ${escapeHtml(profileAvatarContent(p))}
+    </div>
+    <div class="profile-hero-main">
+      <h2>${escapeHtml(p.display_name || 'Unnamed')}</h2>
+      <div class="profile-handle">${escapeHtml(profileHandle())}</div>
+      ${p.bio ? `<div class="profile-bio">${escapeHtml(p.bio)}</div>` : ''}
+      ${metas.length ? `<div class="profile-meta">${metas.join('')}</div>` : ''}
+    </div>
+    <div class="profile-hero-actions">
+      <button class="btn btn-primary" data-action="open-profile">Edit profile</button>
+    </div>
+  </div>
+
+  ${completeness < 100 ? `
+  <div class="card" style="margin-bottom:14px">
+    <div class="completeness" style="margin-top:0">
+      <div class="completeness-top">
+        <span>Profile completeness</span>
+        <b>${completeness}%</b>
+      </div>
+      <div class="completeness-bar"><i style="width:${completeness}%"></i></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px">
+        Add a few more details to complete your profile — bio, goal, genres and social links make the biggest difference.
+      </div>
+    </div>
+  </div>` : ''}
+
+  <div class="grid cols-3" style="margin-bottom:14px">
+    <div class="card">
+      <div class="stat-label">Total XP</div>
+      <div class="stat-value">${fmt1(totalXp)} <small>XP</small></div>
+      <div class="stat-sub">${fmt(s.readingTotal)} pages · ${fmt(s.listeningTotal)} min</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">Leaderboard rank</div>
+      <div class="stat-value">#${youRank} <small>of ${entries.length}</small></div>
+      <div class="stat-sub">Full challenge standings</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">Active days</div>
+      <div class="stat-value">${activeDays} <small>days</small></div>
+      <div class="stat-sub">${state.activities.length} total ${state.activities.length === 1 ? 'entry' : 'entries'}</div>
+    </div>
+  </div>
+
+  <div class="grid cols-2">
+    <div class="card">
+      <div class="card-head"><h2>About</h2></div>
+      <div class="det">
+        <div class="det-icon">📍</div>
+        <div class="det-main">
+          <div class="det-k">Country</div>
+          <div class="det-v ${p.country ? '' : 'muted'}">${p.country ? escapeHtml(p.country) : 'Not set'}</div>
+        </div>
+      </div>
+      <div class="det">
+        <div class="det-icon">🕐</div>
+        <div class="det-main">
+          <div class="det-k">Timezone</div>
+          <div class="det-v ${p.timezone ? '' : 'muted'}">${p.timezone ? escapeHtml(p.timezone) : 'Not set'}</div>
+        </div>
+      </div>
+      <div class="det">
+        <div class="det-icon">🎂</div>
+        <div class="det-main">
+          <div class="det-k">Birthday</div>
+          <div class="det-v ${p.birthday ? '' : 'muted'}">${p.birthday ? escapeHtml(p.birthday) : 'Not set'}</div>
+        </div>
+      </div>
+      <div class="det">
+        <div class="det-icon">👁️</div>
+        <div class="det-main">
+          <div class="det-k">Visibility</div>
+          <div class="det-v">${p.visibility === 'public' ? 'Public — visible to others' : 'Private — only you'}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>Languages &amp; level</h2></div>
+      <div class="det">
+        <div class="det-icon">🏠</div>
+        <div class="det-main">
+          <div class="det-k">Native language</div>
+          <div class="det-v ${p.native_language ? '' : 'muted'}">${p.native_language ? escapeHtml(p.native_language) : 'Not set'}</div>
+        </div>
+      </div>
+      <div class="det">
+        <div class="det-icon">🎯</div>
+        <div class="det-main">
+          <div class="det-k">Target language</div>
+          <div class="det-v ${p.target_language ? '' : 'muted'}">${p.target_language ? escapeHtml(p.target_language) : 'Not set'}</div>
+        </div>
+      </div>
+      <div class="det">
+        <div class="det-icon">🎓</div>
+        <div class="det-main">
+          <div class="det-k">Level</div>
+          <div class="det-v">${(() => {
+            const lv = LEVELS.find(l => l.id === p.level);
+            if (!lv) return '<span class="muted">Not set</span>';
+            return `${escapeHtml(lv.label)} <span style="color:var(--muted);font-weight:500">· ${escapeHtml(lv.sub)}</span>`;
+          })()}</div>
+        </div>
+      </div>
+      <div class="det">
+        <div class="det-icon">⏰</div>
+        <div class="det-main">
+          <div class="det-k">Daily reminder</div>
+          <div class="det-v ${p.daily_reminder ? '' : 'muted'}">${p.daily_reminder ? escapeHtml(p.daily_reminder) : 'Not set'}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  ${p.goal ? `
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-head"><h2>My goal</h2></div>
+    <p style="font-size:14px;line-height:1.6;color:var(--text);margin:0">${escapeHtml(p.goal)}</p>
+  </div>` : ''}
+
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-head"><h2>Favorite genres</h2></div>
+    <div class="tag-list">${genreHtml}</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>Social links</h2></div>
+    ${socialHtml}
+  </div>`;
+}
+
+/* =========================================================
+   Views — Challenges
+   ========================================================= */
+function viewChallenges(){
+  const list = state.customChallenges;
+  const today = todayISO();
+  const dailyDone  = list.filter(c => c.scope === 'daily'  && challengeValue(c, today, today) >= c.target).length;
+  const dailyTotal = list.filter(c => c.scope === 'daily').length;
+  const weekFrom = startOfWeekISO(today);
+  const weekDone  = list.filter(c => c.scope === 'weekly' && challengeValue(c, weekFrom, today) >= c.target).length;
+  const weekTotal = list.filter(c => c.scope === 'weekly').length;
+  const bestStreak = list.reduce((m, c) => Math.max(m, challengeStreak(c)), 0);
+
+  return `
+  <div class="card" style="margin-bottom:14px">
+    <div class="lb-clock">
+      <div class="lb-clock-cell">
+        <span class="k">Now (24h)</span>
+        <span class="v mono" data-now>--:--:--</span>
+      </div>
+      <div class="lb-clock-main">
+        <span class="k">Today ends in</span>
+        <strong class="mono" data-countdown="day">--:--:--</strong>
+      </div>
+      <div class="lb-clock-cell lb-clock-side">
+        <span class="k">Daily reset at</span>
+        <span class="v mono">00:00</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid cols-3" style="margin-bottom:14px">
+    <div class="card">
+      <div class="stat-label">Daily challenges</div>
+      <div class="stat-value">${dailyTotal ? `${dailyDone}/${dailyTotal}` : '—'}</div>
+      <div class="stat-sub">${dailyTotal ? 'Completed today' : 'None set up yet'}</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">Weekly challenges</div>
+      <div class="stat-value">${weekTotal ? `${weekDone}/${weekTotal}` : '—'}</div>
+      <div class="stat-sub">${weekTotal ? 'Completed this week' : 'None set up yet'}</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">Best streak</div>
+      <div class="stat-value">${bestStreak || 0} <small>🔥</small></div>
+      <div class="stat-sub">Consecutive completed periods</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-head">
+      <h2>Your challenges</h2>
+      <button class="btn btn-ghost" data-action="new-challenge">+ New challenge</button>
+    </div>
+    ${list.length ? list.map(challengeRowHTML).join('') : `
+      <div class="empty">
+        <div class="em-icon">🎯</div>
+        <div class="em-title">No challenges yet</div>
+        <div class="em-sub">Set a daily or weekly target and it tracks itself automatically from the activities you log.</div>
+        <button class="btn btn-primary" data-action="new-challenge">+ Create your first challenge</button>
+      </div>`}
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>Quick add</h2></div>
+    <div class="chips">
+      ${CHALLENGE_PRESETS.map((p, i) => `
+        <button class="chip" data-action="add-preset" data-preset="${i}">${escapeHtml(p.title)}</button>
+      `).join('')}
+    </div>
+    <p class="hint" style="margin-top:14px">
+      <b>Daily</b> challenges reset every day at <b>00:00</b> (24-hour clock). <b>Weekly</b> challenges run
+      Monday to Sunday and finish at <b>Monday 00:00</b>. A streak counts consecutive completed periods
+      (today / the current week never breaks a streak while it's still in progress).
+    </p>
+  </div>`;
+}
+
+/* =========================================================
+   Views — Leaderboard
+   ========================================================= */
+function viewLeaderboard(){
+  const entries = leaderboardEntries();
+  const maxXp = Math.max(...entries.map(e => e.xp), 1);
+  const top = entries[0];
+  const you = entries.find(e => e.you);
+  const youRank = entries.indexOf(you) + 1;
+  const { from, to, label } = lbRangeISO();
+  const days = Math.max(1, diffDays(from, to) + 1);
+  const medals = ['🥇', '🥈', '🥉'];
+
+  const gapToLeader = top && !top.you ? top.xp - you.xp : 0;
+
+  const cdKind = leaderboardRange === 'today' ? 'day'
+               : leaderboardRange === 'week'  ? 'week'
+               : 'challenge';
+  const periodName = leaderboardRange === 'today' ? 'Today'
+                   : leaderboardRange === 'week'  ? 'This week'
+                   : 'This challenge';
+  const resetAt = resetTimeLabel(cdKind);
+  const resetVerb = leaderboardRange === 'today' ? 'Leaderboard resets at midnight'
+                  : leaderboardRange === 'week'  ? 'Leaderboard resets Monday 00:00'
+                  : 'Challenge finishes at the end date';
+
+  const youIsProfile = !!state.profile;
+
+  return `
+  <div class="card" style="margin-bottom:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px">
+      <div class="seg" id="lbSeg">
+        <button data-lbrange="today" class="${leaderboardRange === 'today' ? 'active' : ''}">Today</button>
+        <button data-lbrange="week"  class="${leaderboardRange === 'week'  ? 'active' : ''}">This week</button>
+        <button data-lbrange="all"   class="${leaderboardRange === 'all'   ? 'active' : ''}">Full challenge</button>
+      </div>
+      <div style="font-size:12.5px;color:var(--muted)">
+        ${escapeHtml(label)} · ${days} day${days === 1 ? '' : 's'} · 10 pages/min = 5 XP
+      </div>
+    </div>
+
+    <div class="lb-clock">
+      <div class="lb-clock-cell">
+        <span class="k">Now (24h)</span>
+        <span class="v mono" data-now>--:--:--</span>
+      </div>
+      <div class="lb-clock-main">
+        <span class="k">${periodName} ends in</span>
+        <strong class="mono" data-countdown="${cdKind}">--:--:--</strong>
+      </div>
+      <div class="lb-clock-cell lb-clock-side">
+        <span class="k">Finishes at</span>
+        <span class="v mono">${escapeHtml(resetAt)}</span>
+      </div>
+    </div>
+    <p class="hint" style="margin:10px 0 0">${escapeHtml(resetVerb)} — 24-hour clock.</p>
+  </div>
+
+  ${!youIsProfile ? `
+  <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,rgba(194,112,61,.08),rgba(63,122,110,.06));border-color:#E4D6C5">
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div style="width:44px;height:44px;border-radius:14px;background:linear-gradient(140deg,var(--reading-2),var(--reading));display:flex;align-items:center;justify-content:center;font-size:20px;flex:0 0 auto">👤</div>
+      <div style="flex:1;min-width:200px">
+        <div style="font-size:14px;font-weight:650;margin-bottom:2px">You're shown as "You · @you"</div>
+        <div style="font-size:13px;color:var(--muted)">Create a profile to display your name, avatar and handle on the board.</div>
+      </div>
+      <button class="btn btn-primary" data-action="open-profile">Create profile</button>
+    </div>
+  </div>` : ''}
+
+  <div class="grid cols-3" style="margin-bottom:14px">
+    <div class="card">
+      <div class="stat-label">Your rank</div>
+      <div class="stat-value">#${youRank} <small>of ${entries.length}</small></div>
+      <div class="stat-sub">${youRank === 1 ? 'Top of the board 🎉' : `${fmt1(gapToLeader)} XP behind the leader`}</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">Your XP</div>
+      <div class="stat-value">${fmt1(you.xp)} <small>XP</small></div>
+      <div class="stat-sub">${fmt(you.pages)} pages · ${fmt(you.minutes)} min</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">Leader</div>
+      <div class="stat-value">${fmt1(top.xp)} <small>XP</small></div>
+      <div class="stat-sub">${escapeHtml(top.name)}${top.you ? " · that's you!" : ''}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>Leaderboard</h2>
+      <span style="font-size:11.5px;color:var(--muted)">10 demo rivals · simulated daily logs</span>
+    </div>
+    ${entries.map((e, i) => `
+      <div class="lb-row ${e.you ? 'you' : ''}">
+        <div class="lb-rank">${i < 3 ? medals[i] : (i + 1)}</div>
+        <div class="lb-avatar" style="background:${e.color};font-size:${e.isEmoji ? '18px' : '12.5px'}">
+          ${escapeHtml(e.initials)}
+        </div>
+        <div class="lb-main">
+          <div class="lb-top">
+            <span class="lb-name">${escapeHtml(e.name)} <span class="lb-handle">${escapeHtml(e.handle)}</span></span>
+            <span class="lb-xp">${fmt1(e.xp)} XP</span>
+          </div>
+          <div class="lb-bar"><i style="width:${clamp(e.xp / maxXp * 100, 0, 100)}%"></i></div>
+          <div class="lb-sub">${fmt(e.pages)} pages · ${fmt(e.minutes)} min</div>
+        </div>
+      </div>`).join('')}
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="card-head"><h2>How XP &amp; timing work</h2></div>
+    <p style="font-size:13.5px;color:var(--muted);line-height:1.6">
+      Every <b>10 pages</b> read or <b>10 minutes</b> listened earns <b>5 XP</b> (1 unit = 0.5 XP).
+      Your XP comes from the activities you log yourself. The ten rivals are fictional demo characters —
+      their daily sessions are generated deterministically from their profile and the date, so they log
+      something every day and the board stays consistent between visits.<br><br>
+      The <b>Today</b> board runs for exactly <b>24 hours</b> and resets at <b>00:00</b> (midnight, 24-hour clock).
+      The <b>This week</b> board runs Monday to Sunday and resets at <b>Monday 00:00</b>.
+    </p>
   </div>`;
 }
 
@@ -892,11 +1988,12 @@ function viewHistory(){
     const parts = [];
     if (pages) parts.push(fmt(pages) + ' pages');
     if (mins)  parts.push(fmt(mins) + ' min');
+    parts.push(fmt1(xpFrom(pages, mins)) + ' XP');
     return `
     <div class="day-group">
       <div class="day-head">
         <span class="d">${escapeHtml(prettyDate(g.date))}</span>
-        <span class="tot">${parts.join(' · ') || '—'}</span>
+        <span class="tot">${parts.join(' · ')}</span>
       </div>
       ${g.items.map(a => activityRow(a, true)).join('')}
     </div>`;
@@ -970,7 +2067,6 @@ function weeklyChartHTML(metric){
   const max = Math.max(...weeks.map(w => Math.max(w.val, w.exp)), 1);
   const cls = metric === 'reading' ? 'reading' : 'listening';
   const CHART_H = 170, LABEL_H = 18, BAR_AREA = CHART_H - LABEL_H;
-
   const lastExp = weeks[weeks.length - 1].exp;
 
   return `
@@ -1206,13 +2302,17 @@ function viewMaterials(){
    ========================================================= */
 function render(){
   const app = $('#app');
-  if (currentView === 'dashboard')      app.innerHTML = viewDashboard();
-  else if (currentView === 'history')   app.innerHTML = viewHistory();
-  else if (currentView === 'progress')  app.innerHTML = viewProgress();
-  else                                  app.innerHTML = viewMaterials();
+  if (currentView === 'dashboard')        app.innerHTML = viewDashboard();
+  else if (currentView === 'profile')     app.innerHTML = viewProfile();
+  else if (currentView === 'challenges')  app.innerHTML = viewChallenges();
+  else if (currentView === 'leaderboard') app.innerHTML = viewLeaderboard();
+  else if (currentView === 'history')     app.innerHTML = viewHistory();
+  else if (currentView === 'progress')    app.innerHTML = viewProgress();
+  else                                    app.innerHTML = viewMaterials();
 
   updateHeader();
   updateTabs();
+  updateCountdowns();
 }
 
 function updateTabs(){
@@ -1223,7 +2323,22 @@ function updateTabs(){
 
 function updateHeader(){
   const s = getStats();
-  $('#hdrSub').textContent = `Day ${s.elapsed} of ${s.totalDays} · ${s.daysLeft} days left`;
+  $('#hdrSub').innerHTML =
+    `Day ${s.elapsed} of ${s.totalDays} · ${s.daysLeft} days left · ` +
+    `⏳ <span class="mono" data-countdown="day">--:--:--</span> until 00:00`;
+
+  const p = state.profile;
+  const av = $('#hdrAvatar');
+  const nm = $('#hdrName');
+  if (av){
+    av.textContent = profileAvatarContent(p);
+    av.style.background = profileColor();
+    av.style.fontSize = (p && p.avatar_emoji) ? '15px' : '11px';
+    av.style.fontWeight = (p && p.avatar_emoji) ? '400' : '750';
+  }
+  if (nm){
+    nm.textContent = (p && p.display_name) ? p.display_name : 'Profile';
+  }
 }
 
 function renderPreservingFocus(){
@@ -1256,6 +2371,353 @@ function openModal(html){
 function closeModal(){
   $('#modalRoot').innerHTML = '';
   document.body.style.overflow = '';
+}
+
+/* =========================================================
+   Profile modal (create / edit)
+   ========================================================= */
+function openProfileModal(mode){
+  const editing = mode === 'edit' && !!state.profile;
+  const p = state.profile || {};
+
+  const draft = {
+    avatar_emoji:  p.avatar_emoji  || '',
+    avatar_color:  p.avatar_color  || AVATAR_COLORS[0],
+    display_name:  p.display_name  || '',
+    handle:        p.handle        || '',
+    bio:           p.bio           || '',
+    country:       p.country       || '',
+    timezone:      p.timezone      || (Intl.DateTimeFormat().resolvedOptions().timeZone || ''),
+    native_language: p.native_language || 'English',
+    target_language: p.target_language || 'English',
+    level:         p.level         || 'intermediate',
+    goal:          p.goal          || '',
+    daily_reminder: p.daily_reminder || '19:00',
+    units:         p.units         || 'metric',
+    favorite_genres: Array.isArray(p.favorite_genres) ? p.favorite_genres.slice() : [],
+    social_twitter:   p.social_twitter   || '',
+    social_goodreads: p.social_goodreads || '',
+    social_website:   p.social_website   || '',
+    birthday:      p.birthday      || '',
+    visibility:    p.visibility    || 'private'
+  };
+
+  const countryOptions = ['<option value="">Select country…</option>']
+    .concat(COUNTRIES.map(c => `<option value="${escapeHtml(c)}" ${draft.country === c ? 'selected' : ''}>${escapeHtml(c)}</option>`))
+    .join('');
+
+  const langOptions = (sel) => LANGUAGES
+    .map(l => `<option value="${escapeHtml(l)}" ${sel === l ? 'selected' : ''}>${escapeHtml(l)}</option>`)
+    .join('');
+
+  openModal(`
+    <div class="modal-backdrop" data-action="close-modal"></div>
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h2>${editing ? 'Edit profile' : 'Create your profile'}</h2>
+        <button class="icon-btn" data-action="close-modal" aria-label="Close">✕</button>
+      </div>
+      <form id="profileForm" class="modal-body" autocomplete="off">
+
+        <div class="form-section">
+          <div class="form-section-title"><span class="dotnum">1</span> Avatar &amp; identity</div>
+
+          <div class="avatar-preview-row">
+            <div class="avatar-preview" id="avatarPreview" style="background:${escapeHtml(draft.avatar_color)}"></div>
+            <div class="avatar-preview-label">
+              Pick an emoji and a color — this is how you'll appear on the leaderboard and in the header.
+              Leave the emoji empty to use your initials instead.
+            </div>
+          </div>
+
+          <div class="picker-label">Emoji</div>
+          <div class="emoji-grid" id="emojiGrid">
+            <button type="button" data-emoji="" title="Use initials" class="${draft.avatar_emoji === '' ? 'active' : ''}" style="font-size:11px;font-weight:700;color:var(--muted)">A–Z</button>
+            ${AVATAR_EMOJIS.map(e => `
+              <button type="button" data-emoji="${e}" class="${draft.avatar_emoji === e ? 'active' : ''}">${e}</button>
+            `).join('')}
+          </div>
+
+          <div class="picker-label">Color</div>
+          <div class="swatch-row" id="swatchRow">
+            ${AVATAR_COLORS.map(c => `
+              <button type="button" class="swatch ${draft.avatar_color === c ? 'active' : ''}"
+                      data-color="${c}" style="background:${c}" aria-label="Color ${c}"></button>
+            `).join('')}
+          </div>
+
+          <div class="field">
+            <label for="pfName">Display name <span style="color:#B0563F">*</span></label>
+            <input type="text" id="pfName" required maxlength="40"
+                   placeholder="e.g. Alex Rivera" value="${escapeHtml(draft.display_name)}">
+          </div>
+
+          <div class="field">
+            <label for="pfHandle">Handle <span style="font-weight:500;text-transform:none">(optional)</span></label>
+            <input type="text" id="pfHandle" maxlength="24"
+                   placeholder="e.g. alex.reads" value="${escapeHtml(draft.handle)}">
+            <div style="font-size:11.5px;color:var(--muted);margin-top:-4px">Shown as @yourhandle on the leaderboard.</div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title"><span class="dotnum">2</span> About you</div>
+
+          <div class="field">
+            <label for="pfBio">Short bio <span style="font-weight:500;text-transform:none">(optional)</span></label>
+            <textarea id="pfBio" rows="3" maxlength="200"
+                      placeholder="A sentence or two about you and your reading / listening habits…">${escapeHtml(draft.bio)}</textarea>
+          </div>
+
+          <div class="two-col">
+            <div class="field">
+              <label for="pfCountry">Country</label>
+              <select id="pfCountry">${countryOptions}</select>
+            </div>
+            <div class="field">
+              <label for="pfBirthday">Birthday</label>
+              <input type="date" id="pfBirthday" value="${escapeHtml(draft.birthday)}">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="pfTimezone">Timezone</label>
+            <input type="text" id="pfTimezone" value="${escapeHtml(draft.timezone)}" placeholder="e.g. Europe/Lisbon">
+            <div style="font-size:11.5px;color:var(--muted);margin-top:-4px">Auto-detected — edit if needed.</div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title"><span class="dotnum">3</span> Languages &amp; level</div>
+
+          <div class="two-col">
+            <div class="field">
+              <label for="pfNative">Native language</label>
+              <select id="pfNative">${langOptions(draft.native_language)}</select>
+            </div>
+            <div class="field">
+              <label for="pfTarget">Target language</label>
+              <select id="pfTarget">${langOptions(draft.target_language)}</select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Level</label>
+            <div class="chips" id="levelChips">
+              ${LEVELS.map(l => `
+                <button type="button" class="chip ${draft.level === l.id ? 'active' : ''}" data-level="${l.id}">
+                  ${escapeHtml(l.label)} <span style="opacity:.7;font-weight:500">· ${escapeHtml(l.sub)}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title"><span class="dotnum">4</span> Goals &amp; routine</div>
+
+          <div class="field">
+            <label for="pfGoal">My goal <span style="font-weight:500;text-transform:none">(optional)</span></label>
+            <textarea id="pfGoal" rows="3" maxlength="200"
+                      placeholder="Why are you doing this challenge? e.g. Read 20 books this year and finish my first audiobook series.">${escapeHtml(draft.goal)}</textarea>
+          </div>
+
+          <div class="two-col">
+            <div class="field">
+              <label for="pfReminder">Daily reminder time</label>
+              <input type="time" id="pfReminder" value="${escapeHtml(draft.daily_reminder)}">
+            </div>
+            <div class="field">
+              <label for="pfUnits">Measurement units</label>
+              <select id="pfUnits">
+                <option value="metric"   ${draft.units === 'metric'   ? 'selected' : ''}>Metric (pages / minutes)</option>
+                <option value="imperial" ${draft.units === 'imperial' ? 'selected' : ''}>Imperial (pages / minutes)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title"><span class="dotnum">5</span> Favorite genres</div>
+          <div class="chips" id="genreChips">
+            ${GENRES.map(g => `
+              <button type="button" class="chip ${draft.favorite_genres.includes(g) ? 'active' : ''}" data-genre="${escapeHtml(g)}">${escapeHtml(g)}</button>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title"><span class="dotnum">6</span> Social &amp; privacy</div>
+
+          <div class="field">
+            <label for="pfTwitter">Twitter / X</label>
+            <input type="text" id="pfTwitter" placeholder="@username or full URL" value="${escapeHtml(draft.social_twitter)}">
+          </div>
+          <div class="field">
+            <label for="pfGoodreads">Goodreads</label>
+            <input type="text" id="pfGoodreads" placeholder="Profile URL or username" value="${escapeHtml(draft.social_goodreads)}">
+          </div>
+          <div class="field">
+            <label for="pfWebsite">Website / blog</label>
+            <input type="text" id="pfWebsite" placeholder="https://…" value="${escapeHtml(draft.social_website)}">
+          </div>
+
+          <div class="field">
+            <label>Profile visibility</label>
+            <div class="chips" id="visChips">
+              <button type="button" class="chip ${draft.visibility === 'private' ? 'active' : ''}" data-vis="private">Private</button>
+              <button type="button" class="chip ${draft.visibility === 'public' ? 'active' : ''}"  data-vis="public">Public</button>
+            </div>
+            <div style="font-size:11.5px;color:var(--muted);margin-top:6px">
+              Private means only you see the details. Public shows your bio, languages and social links on the profile page.
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions" style="margin-top:20px">
+          <button type="button" class="btn btn-ghost" data-action="close-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">${editing ? 'Save profile' : 'Create profile'}</button>
+        </div>
+      </form>
+    </div>
+  `);
+
+  /* --- live preview --- */
+  const preview = $('#avatarPreview');
+  function refreshPreview(){
+    const name = $('#pfName').value.trim() || 'You';
+    const emoji = draft.avatar_emoji;
+    preview.textContent = emoji || initialsOf(name);
+    preview.style.background = draft.avatar_color;
+    preview.style.fontSize = emoji ? '34px' : '26px';
+  }
+
+  /* --- emoji picker --- */
+  $('#emojiGrid').addEventListener('click', e => {
+    const b = e.target.closest('button[data-emoji]');
+    if (!b) return;
+    draft.avatar_emoji = b.dataset.emoji;
+    $$('#emojiGrid button').forEach(x => x.classList.toggle('active', x === b));
+    refreshPreview();
+  });
+
+  /* --- color picker --- */
+  $('#swatchRow').addEventListener('click', e => {
+    const b = e.target.closest('button[data-color]');
+    if (!b) return;
+    draft.avatar_color = b.dataset.color;
+    $$('#swatchRow .swatch').forEach(x => x.classList.toggle('active', x === b));
+    refreshPreview();
+  });
+
+  /* --- level chips --- */
+  $('#levelChips').addEventListener('click', e => {
+    const b = e.target.closest('.chip[data-level]');
+    if (!b) return;
+    draft.level = b.dataset.level;
+    $$('#levelChips .chip').forEach(x => x.classList.toggle('active', x === b));
+  });
+
+  /* --- genre chips --- */
+  $('#genreChips').addEventListener('click', e => {
+    const b = e.target.closest('.chip[data-genre]');
+    if (!b) return;
+    const g = b.dataset.genre;
+    const idx = draft.favorite_genres.indexOf(g);
+    if (idx >= 0) draft.favorite_genres.splice(idx, 1);
+    else draft.favorite_genres.push(g);
+    b.classList.toggle('active');
+  });
+
+  /* --- visibility chips --- */
+  $('#visChips').addEventListener('click', e => {
+    const b = e.target.closest('.chip[data-vis]');
+    if (!b) return;
+    draft.visibility = b.dataset.vis;
+    $$('#visChips .chip').forEach(x => x.classList.toggle('active', x === b));
+  });
+
+  /* --- live preview on name change --- */
+  $('#pfName').addEventListener('input', refreshPreview);
+
+  /* --- initial render --- */
+  refreshPreview();
+
+  /* --- submit --- */
+  $('#profileForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const display_name = $('#pfName').value.trim();
+    if (!display_name){ $('#pfName').focus(); return; }
+
+    let handle = $('#pfHandle').value.trim();
+    handle = handle.replace(/^@+/, '');
+
+    const now = new Date().toISOString();
+    const newProfile = {
+      id: (state.profile && state.profile.id) || uid('p'),
+      display_name,
+      handle,
+      avatar_emoji:  draft.avatar_emoji,
+      avatar_color:  draft.avatar_color,
+      bio:           $('#pfBio').value.trim(),
+      country:       $('#pfCountry').value,
+      timezone:      $('#pfTimezone').value.trim(),
+      native_language: $('#pfNative').value,
+      target_language: $('#pfTarget').value,
+      level:         draft.level,
+      goal:          $('#pfGoal').value.trim(),
+      daily_reminder: $('#pfReminder').value || '19:00',
+      units:         $('#pfUnits').value,
+      favorite_genres: draft.favorite_genres.slice(),
+      social_twitter:   $('#pfTwitter').value.trim(),
+      social_goodreads: $('#pfGoodreads').value.trim(),
+      social_website:   $('#pfWebsite').value.trim(),
+      birthday:      $('#pfBirthday').value,
+      visibility:    draft.visibility,
+      created_at:    (state.profile && state.profile.created_at) || now,
+      updated_at:    now
+    };
+
+    state.profile = newProfile;
+    saveState();
+    closeModal();
+
+    /* If the user had the profile tab open, keep it open — otherwise jump to profile on create */
+    if (!editing) currentView = 'profile';
+    render();
+  });
+
+  setTimeout(() => $('#pfName').focus(), 60);
+}
+
+/* =========================================================
+   Welcome modal (first launch)
+   ========================================================= */
+function maybeShowWelcome(){
+  if (state.profile) return;
+  if (localStorage.getItem(WELCOME_KEY)) return;
+
+  openModal(`
+    <div class="modal-backdrop" data-action="close-welcome"></div>
+    <div class="modal" role="dialog" aria-modal="true" style="max-width:480px">
+      <div class="modal-head">
+        <h2>Welcome to English Super Challenge 👋</h2>
+        <button class="icon-btn" data-action="close-welcome" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="welcome-lead">
+          <b>You're all set to start.</b> Everything is saved locally in your browser — no account, no sign-up.
+          <br><br>
+          Want to personalize the app? Create a profile to set your avatar, languages, level, goals and favorite genres.
+          Your profile also replaces the generic "You" on the leaderboard.
+        </div>
+        <div class="modal-actions" style="justify-content:space-between;margin-top:16px">
+          <button type="button" class="btn btn-ghost" data-action="close-welcome">Maybe later</button>
+          <button type="button" class="btn btn-primary" data-action="welcome-create">Create profile</button>
+        </div>
+      </div>
+    </div>
+  `);
 }
 
 /* =========================================================
@@ -1572,12 +3034,131 @@ function openMaterialModal(material){
 }
 
 /* =========================================================
+   Challenge modal (daily / weekly)
+   ========================================================= */
+function openChallengeModal(ch){
+  const editing = !!ch;
+  const draft = ch
+    ? { title: ch.title, scope: ch.scope, category: ch.category, target: ch.target }
+    : { title: '', scope: 'daily', category: 'reading', target: 20 };
+
+  openModal(`
+    <div class="modal-backdrop" data-action="close-modal"></div>
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h2>${editing ? 'Edit challenge' : 'New challenge'}</h2>
+        <button class="icon-btn" data-action="close-modal" aria-label="Close">✕</button>
+      </div>
+      <form id="chalForm" class="modal-body" autocomplete="off">
+        <div class="field">
+          <label for="chalTitle">Title</label>
+          <input type="text" id="chalTitle" required
+                 placeholder="e.g. Read 20 pages a day"
+                 value="${escapeHtml(draft.title)}">
+        </div>
+
+        <div class="field">
+          <label>Scope</label>
+          <div class="chips" id="chalScope">
+            <button type="button" class="chip ${draft.scope === 'daily' ? 'active' : ''}"  data-scope="daily">Daily</button>
+            <button type="button" class="chip ${draft.scope === 'weekly' ? 'active' : ''}" data-scope="weekly">Weekly</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Track</label>
+          <div class="chips" id="chalCat">
+            <button type="button" class="chip ${draft.category === 'reading' ? 'active' : ''}"   data-cat="reading">Reading (pages)</button>
+            <button type="button" class="chip ${draft.category === 'listening' ? 'active' : ''}" data-cat="listening">Listening (minutes)</button>
+            <button type="button" class="chip ${draft.category === 'xp' ? 'active' : ''}"        data-cat="xp">Any activity (XP)</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="chalTarget">Target</label>
+          <input type="number" id="chalTarget" min="1" step="1" value="${draft.target}">
+        </div>
+
+        <p class="hint" id="chalHint"></p>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-action="close-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">${editing ? 'Save changes' : 'Create challenge'}</button>
+        </div>
+      </form>
+    </div>
+  `);
+
+  const scopeWrap = $('#chalScope');
+  const catWrap   = $('#chalCat');
+  const targetInput = $('#chalTarget');
+  const hint = $('#chalHint');
+
+  function refresh(){
+    $$('.chip', scopeWrap).forEach(b => b.classList.toggle('active', b.dataset.scope === draft.scope));
+    $$('.chip', catWrap).forEach(b => b.classList.toggle('active', b.dataset.cat === draft.category));
+    hint.textContent = chalHintText(draft.scope, draft.category);
+    targetInput.placeholder = draft.category === 'reading' ? 'Pages'
+                            : draft.category === 'listening' ? 'Minutes' : 'XP';
+  }
+
+  scopeWrap.addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    draft.scope = b.dataset.scope;
+    if (!draft.title.trim()){
+      const u = challengeUnit(draft.category);
+      draft.title = draft.scope === 'daily' ? `Daily ${u} goal` : `Weekly ${u} goal`;
+      $('#chalTitle').value = draft.title;
+    }
+    refresh();
+  });
+
+  catWrap.addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    draft.category = b.dataset.cat;
+    refresh();
+  });
+
+  refresh();
+
+  $('#chalForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const title = $('#chalTitle').value.trim();
+    const target = Number(targetInput.value);
+    if (!title){ $('#chalTitle').focus(); return; }
+    if (!target || target <= 0){ targetInput.focus(); return; }
+
+    if (editing){
+      const t = state.customChallenges.find(x => x.id === ch.id);
+      if (t) Object.assign(t, { title, scope: draft.scope, category: draft.category, target });
+    } else {
+      state.customChallenges.push({
+        id: uid('c'),
+        title,
+        scope: draft.scope,
+        category: draft.category,
+        target,
+        created_at: new Date().toISOString()
+      });
+    }
+
+    saveState();
+    closeModal();
+    render();
+  });
+
+  setTimeout(() => $('#chalTitle').focus(), 60);
+}
+
+/* =========================================================
    Settings modal
    ========================================================= */
 function openSettings(){
   const ch = state.challenge;
   const actCount = state.activities.length;
   const matCount = state.materials.length;
+  const chCount  = state.customChallenges.length;
+  const hasProfile = !!state.profile;
 
   openModal(`
     <div class="modal-backdrop" data-action="close-modal"></div>
@@ -1606,6 +3187,18 @@ function openSettings(){
         </div>
 
         <div class="data-block">
+          <div class="data-title">Profile</div>
+          <p class="hint" style="margin:0 0 12px">
+            ${hasProfile
+              ? 'Your profile is active. You can edit it from the Profile tab at any time.'
+              : 'No profile yet — create one to personalize the app and appear on the leaderboard.'}
+          </p>
+          <button type="button" class="btn btn-ghost" data-action="open-profile">
+            ${hasProfile ? 'Edit profile' : 'Create profile'}
+          </button>
+        </div>
+
+        <div class="data-block">
           <div class="data-title">Data</div>
           <div class="data-btns">
             <button type="button" class="btn btn-ghost" data-action="export-json">⬇ Export JSON</button>
@@ -1613,9 +3206,9 @@ function openSettings(){
             <button type="button" class="btn btn-ghost" data-action="import-json">⬆ Import JSON</button>
           </div>
           <p class="hint" style="margin-top:12px">
-            Export JSON saves a full backup (${actCount} activit${actCount === 1 ? 'y' : 'ies'},
-            ${matCount} material${matCount === 1 ? '' : 's'}, and settings). Export CSV lists activities only.
-            Import replaces your current data.
+            Export JSON saves a full backup (profile, ${actCount} activit${actCount === 1 ? 'y' : 'ies'},
+            ${matCount} material${matCount === 1 ? '' : 's'}, ${chCount} challenge${chCount === 1 ? '' : 's'}, and settings).
+            Export CSV lists activities only. Import replaces your current data.
           </p>
           <input type="file" id="importFile" accept=".json,application/json" style="display:none">
         </div>
@@ -1660,6 +3253,13 @@ document.addEventListener('click', e => {
     return;
   }
 
+  const lbBtn = e.target.closest('[data-lbrange]');
+  if (lbBtn){
+    leaderboardRange = lbBtn.dataset.lbrange;
+    render();
+    return;
+  }
+
   const actionEl = e.target.closest('[data-action]');
   if (!actionEl) return;
   const action = actionEl.dataset.action;
@@ -1670,6 +3270,21 @@ document.addEventListener('click', e => {
       break;
 
     case 'close-modal':
+      closeModal();
+      break;
+
+    /* ---- Profile ---- */
+    case 'open-profile':
+      openProfileModal(state.profile ? 'edit' : 'create');
+      break;
+
+    case 'welcome-create':
+      localStorage.setItem(WELCOME_KEY, '1');
+      openProfileModal('create');
+      break;
+
+    case 'close-welcome':
+      localStorage.setItem(WELCOME_KEY, '1');
       closeModal();
       break;
 
@@ -1722,6 +3337,43 @@ document.addEventListener('click', e => {
       break;
     }
 
+    case 'new-challenge':
+      openChallengeModal(null);
+      break;
+
+    case 'edit-challenge': {
+      const c = state.customChallenges.find(x => x.id === actionEl.dataset.id);
+      if (c) openChallengeModal(c);
+      break;
+    }
+
+    case 'delete-challenge': {
+      const c = state.customChallenges.find(x => x.id === actionEl.dataset.id);
+      if (!c) break;
+      if (confirm(`Delete the challenge "${c.title}"?`)){
+        state.customChallenges = state.customChallenges.filter(x => x.id !== c.id);
+        saveState();
+        render();
+      }
+      break;
+    }
+
+    case 'add-preset': {
+      const p = CHALLENGE_PRESETS[Number(actionEl.dataset.preset)];
+      if (!p) break;
+      state.customChallenges.push({
+        id: uid('c'),
+        title: p.title,
+        scope: p.scope,
+        category: p.category,
+        target: p.target,
+        created_at: new Date().toISOString()
+      });
+      saveState();
+      render();
+      break;
+    }
+
     case 'clear-filters':
       historyFilters = { from: '', to: '', category: 'all', type: 'all', material: 'all', q: '' };
       render();
@@ -1742,7 +3394,7 @@ document.addEventListener('click', e => {
     }
 
     case 'reset-all':
-      if (confirm('Reset everything? All logged activities, materials, and settings will be permanently cleared.')){
+      if (confirm('Reset everything? Your profile, activities, materials, challenges and settings will be permanently cleared.')){
         resetAll();
         closeModal();
         render();
@@ -1762,7 +3414,7 @@ document.addEventListener('change', e => {
   else if (t.id === 'importFile'){
     const file = t.files && t.files[0];
     if (file) importJSONFile(file);
-    t.value = ''; /* allow re-importing the same file */
+    t.value = '';
   }
 });
 
@@ -1774,7 +3426,6 @@ document.addEventListener('input', e => {
   }
 });
 
-/* ---- Escape closes modal ---- */
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && $('#modalRoot').innerHTML) closeModal();
 });
@@ -1784,6 +3435,8 @@ document.addEventListener('keydown', e => {
    ========================================================= */
 loadState();
 render();
+startTicker();
+setTimeout(maybeShowWelcome, 700);
 </script>
 </body>
 </html>
