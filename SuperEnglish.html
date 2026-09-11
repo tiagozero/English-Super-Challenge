@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>English Super Challenge</title>
+<style>
+  :root{
+    --bg:#FAF7F3;
+    --surface:#FFFFFF;
+    --surface-2:#F4EFE9;
+    --line:#EAE2D8;
+    --text:#26211C;
+    --muted:#8A7F73;
+    --reading:#C2703D;
+    --reading-2:#D89A6C;
+    --listening:#3F7A6E;
+    --listening-2:#66A093;
+    --radius:16px;
+    --shadow:0 1px 2px rgba(38,33,28,.04), 0 10px 26px -16px rgba(38,33,28,.28);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    font-size:15px;
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  button{font-family:inherit}
+
+  /* ---------- Header ---------- */
+  .hdr{
+    position:sticky;top:0;z-index:50;
+    background:rgba(250,247,243,.88);
+    backdrop-filter:saturate(180%) blur(14px);
+    -webkit-backdrop-filter:saturate(180%) blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .hdr-top{
+    max-width:1080px;margin:0 auto;
+    padding:14px 20px 10px;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+  }
+  .brand{display:flex;align-items:center;gap:11px;min-width:0}
+  .mark{
+    width:36px;height:36px;flex:0 0 auto;border-radius:11px;
+    background:linear-gradient(140deg,var(--reading),#A85B2E);
+    color:#fff;font-size:11px;font-weight:800;letter-spacing:.06em;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 14px -6px rgba(194,112,61,.7);
+  }
+  .brand-txt{min-width:0}
+  .brand-txt h1{font-size:15.5px;font-weight:650;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .brand-txt p{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hdr-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+
+  .tabs{
+    max-width:1080px;margin:0 auto;
+    padding:0 20px 10px;
+    display:flex;gap:5px;overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs button,
+  .tabs a{
+    flex:0 0 auto;border:0;background:transparent;
+    padding:7px 14px;border-radius:999px;
+    font-size:13.5px;font-weight:550;color:var(--muted);
+    cursor:pointer;transition:background .15s,color .15s;
+    text-decoration:none;display:inline-block;line-height:1.45;
+    font-family:inherit;
+  }
+  .tabs button:hover,
+  .tabs a:hover{color:var(--text)}
+  .tabs button.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
+  .tabs a .ext{font-size:11px;opacity:.7;margin-left:1px}
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    border:1px solid transparent;border-radius:11px;
+    padding:10px 16px;font-size:14px;font-weight:600;cursor:pointer;
+    transition:transform .08s ease, filter .15s ease, background .15s ease;
+    white-space:nowrap;
+  }
+  .btn:active{transform:scale(.975)}
+  .btn-primary{background:var(--reading);color:#fff;box-shadow:0 6px 16px -8px rgba(194,112,61,.9)}
+  .btn-primary:hover{filter:brightness(1.05)}
+  .btn-ghost{background:transparent;color:var(--muted);border-color:var(--line)}
+  .btn-ghost:hover{background:var(--surface-2);color:var(--text)}
+  .btn-block{width:100%;margin-top:14px;padding:13px}
+  .icon-btn{
+    width:36px;height:36px;border-radius:10px;border:1px solid var(--line);
+    background:var(--surface);color:var(--muted);font-size:15px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s;
+  }
+  .icon-btn:hover{background:var(--surface-2);color:var(--text)}
+  .link-btn{background:none;border:0;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;padding:4px 6px;border-radius:8px}
+  .link-btn:hover{color:var(--text);background:var(--surface-2)}
+  .link-btn.danger:hover{color:#9C4230;background:#FBE6E1}
+
+  /* ---------- Layout ---------- */
+  main{max-width:1080px;margin:0 auto;padding:20px 20px 120px}
+  .grid{display:grid;gap:14px;margin-bottom:14px}
+  .cols-2,.cols-3{grid-template-columns:1fr}
+  @media(min-width:780px){
+    .cols-2{grid-template-columns:1fr 1fr}
+    .cols-3{grid-template-columns:repeat(3,1fr)}
+  }
+  .card{
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);
+  }
+  .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+  .card-head h2{
+    font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+  }
+
+  /* ---------- Progress cards ---------- */
+  .progress-card .pct{font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+  .big-numbers{display:flex;align-items:baseline;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+  .big-numbers strong{font-size:31px;font-weight:680;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+  .big-numbers span{font-size:13.5px;color:var(--muted)}
+  .bar{position:relative;height:10px;background:var(--surface-2);border-radius:999px}
+  .bar-fill{height:100%;border-radius:999px;transition:width .45s cubic-bezier(.4,0,.2,1)}
+  .reading .bar-fill{background:linear-gradient(90deg,var(--reading-2),var(--reading))}
+  .listening .bar-fill{background:linear-gradient(90deg,var(--listening-2),var(--listening))}
+  .bar-ideal{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--text);opacity:.22;border-radius:2px}
+  .bar-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;font-size:12.5px;color:var(--muted)}
+  .pace-tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+  .pace-tag.good{background:#E2F0E9;color:#2F6B54}
+  .pace-tag.ok{background:#EBF1E7;color:#4B6B36}
+  .pace-tag.warn{background:#FBF0DC;color:#8A6420}
+  .pace-tag.bad{background:#FBE6E1;color:#9C4230}
+
+  /* ---------- Stat cards ---------- */
+  .stat-label{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .stat-value{font-size:27px;font-weight:680;letter-spacing:-.025em;margin-top:7px;font-variant-numeric:tabular-nums}
+  .stat-value small{font-size:13px;font-weight:550;color:var(--muted);letter-spacing:0}
+  .stat-sub{font-size:12.5px;color:var(--muted);margin-top:3px}
+
+  /* ---------- Pace rows ---------- */
+  .pace-row{padding:11px 0;border-bottom:1px solid var(--line)}
+  .pace-row:last-child{border-bottom:0;padding-bottom:0}
+  .pace-row:first-child{padding-top:0}
+  .pace-row-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:8px}
+  .pace-row-top .lbl{font-size:13.5px;font-weight:600}
+  .pace-row-top .val{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .pace-row-top .val b{color:var(--text);font-weight:650}
+  .mini-bar{height:7px;background:var(--surface-2);border-radius:999px;overflow:hidden}
+  .mini-bar i{display:block;height:100%;border-radius:999px;transition:width .4s ease}
+  .reading .mini-bar i{background:var(--reading)}
+  .listening .mini-bar i{background:var(--listening)}
+
+  /* ---------- Activity list ---------- */
+  .act{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .act:last-of-type{border-bottom:0}
+  .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+  .dot.reading{background:var(--reading)}
+  .dot.listening{background:var(--listening)}
+  .act-main{flex:1;min-width:0}
+  .act-title{font-size:14px;font-weight:550;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .act-meta{font-size:12px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .act-amount{font-size:14px;font-weight:650;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .act-amount small{font-size:11.5px;font-weight:550;color:var(--muted)}
+  .act-actions{display:flex;gap:2px;flex:0 0 auto}
+
+  /* ---------- History ---------- */
+  .filters{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+  @media(min-width:780px){.filters{grid-template-columns:repeat(3,1fr)}}
+  .filters .full{grid-column:1/-1}
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+  .field > label{font-size:12px;font-weight:650;color:var(--muted);letter-spacing:.01em}
+  input[type=text],input[type=number],input[type=date],textarea,select{
+    width:100%;border:1px solid var(--line);background:var(--surface);
+    border-radius:12px;padding:11px 13px;font-size:15px;font-family:inherit;
+    color:var(--text);outline:none;transition:border-color .15s, box-shadow .15s;
+    -webkit-appearance:none;appearance:none;
+  }
+  select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' fill='none' stroke='%238A7F73' stroke-width='1.6' stroke-linecap='round'/></svg>");background-repeat:no-repeat;background-position:right 13px center;padding-right:34px}
+  input:focus,textarea:focus,select:focus{border-color:#CDBBA6;box-shadow:0 0 0 3px rgba(194,112,61,.10)}
+  textarea{resize:vertical;min-height:56px}
+  .day-group{margin-bottom:18px}
+  .day-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:0 2px 8px;border-bottom:1px solid var(--line);margin-bottom:4px}
+  .day-head .d{font-size:13.5px;font-weight:650}
+  .day-head .tot{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+  /* ---------- Materials ---------- */
+  .mat{display:flex;gap:13px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .mat:last-child{border-bottom:0}
+  .mat-icon{
+    width:40px;height:40px;border-radius:11px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:750;letter-spacing:.03em;color:#fff;
+  }
+  .mat-icon.reading{background:linear-gradient(140deg,var(--reading-2),var(--reading))}
+  .mat-icon.listening{background:linear-gradient(140deg,var(--listening-2),var(--listening))}
+  .mat-main{flex:1;min-width:0}
+  .mat-title{font-size:14.5px;font-weight:600;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  .mat-sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .pill{font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase}
+  .pill.active{background:#E2F0E9;color:#2F6B54}
+  .pill.completed{background:#EAEFF5;color:#3E5B78}
+  .pill.archived{background:#F0ECE6;color:#8A7F73}
+  .mat-tot{font-size:12.5px;color:var(--muted);margin-top:5px;font-variant-numeric:tabular-nums}
+
+  /* ---------- Charts ---------- */
+  .seg{display:inline-flex;background:var(--surface-2);border-radius:11px;padding:3px;gap:2px}
+  .seg button{border:0;background:transparent;padding:7px 14px;border-radius:9px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:background .15s,color .15s}
+  .seg button.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(38,33,28,.1)}
+  .chart{display:flex;gap:3px;height:170px;position:relative}
+  .chart .col{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}
+  .chart .bar-wrap{flex:1;display:flex;align-items:flex-end}
+  .chart .fill{width:100%;border-radius:4px;min-height:3px;transition:height .4s ease}
+  .chart .fill.reading{background:var(--reading)}
+  .chart .fill.listening{background:var(--listening)}
+  .chart .fill.muted{background:var(--surface-2)}
+  .chart .lbl{font-size:9.5px;color:var(--muted);text-align:center;flex:0 0 auto;height:12px;line-height:12px;white-space:nowrap;overflow:hidden}
+  .target-line{position:absolute;left:0;right:0;border-top:1.5px dashed #C9B9A6;pointer-events:none}
+  .chart-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin-top:12px}
+  .chart-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  .cum-chart{width:100%;height:190px;display:block;border-radius:10px;overflow:visible}
+  .chart-note{font-size:11.5px;color:var(--muted);margin-top:10px}
+
+  /* ---------- Modal ---------- */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(38,33,28,.34);z-index:100;animation:fade .16s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal{
+    position:fixed;z-index:101;left:50%;bottom:0;width:100%;max-width:520px;
+    transform:translateX(-50%);
+    background:var(--surface);border-radius:22px 22px 0 0;
+    max-height:93vh;overflow-y:auto;
+    box-shadow:0 -10px 40px -12px rgba(38,33,28,.35);
+  }
+  @media(min-width:640px){
+    .modal{top:50%;bottom:auto;transform:translate(-50%,-50%);border-radius:22px;max-height:88vh}
+  }
+  .modal-head{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:18px 20px 14px;border-bottom:1px solid var(--line);
+    position:sticky;top:0;background:var(--surface);border-radius:22px 22px 0 0;z-index:2;
+  }
+  .modal-head h2{font-size:16px;font-weight:650;letter-spacing:-.01em}
+  .modal-body{padding:18px 20px 22px}
+  .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:6px;flex-wrap:wrap}
+  .hint{font-size:12.5px;color:var(--muted);margin:-4px 0 12px}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    border:1px solid var(--line);background:var(--surface);color:var(--text);
+    padding:8px 13px;border-radius:999px;font-size:13.5px;font-weight:550;cursor:pointer;
+    transition:all .15s ease;
+  }
+  .chip:hover{border-color:#D6C7B4}
+  .chip.active{color:#fff;border-color:transparent}
+  .chip.active[data-cat="reading"]{background:var(--reading)}
+  .chip.active[data-cat="listening"]{background:var(--listening)}
+
+  .ac{position:relative}
+  .ac-list{
+    position:absolute;top:calc(100% + 5px);left:0;right:0;z-index:20;
+    background:var(--surface);border:1px solid var(--line);border-radius:13px;
+    box-shadow:0 14px 30px -14px rgba(38,33,28,.3);
+    max-height:210px;overflow-y:auto;display:none;
+  }
+  .ac-list.open{display:block}
+  .ac-item{padding:10px 13px;cursor:pointer;font-size:14px;display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+  .ac-item:hover{background:var(--surface-2)}
+  .ac-item small{color:var(--muted);font-size:11.5px;flex:0 0 auto}
+
+  .amount-row{display:flex;gap:10px;align-items:stretch}
+  .amount-row input{flex:1;font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
+  .amount-row .seg{flex:0 0 auto;align-items:center}
+
+  /* ---------- Data section (inside settings modal) ---------- */
+  .data-block{
+    margin-top:8px;padding-top:18px;border-top:1px solid var(--line);
+  }
+  .data-block .data-title{
+    font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:12px;
+  }
+  .data-btns{display:flex;gap:8px;flex-wrap:wrap}
+  .data-btns .btn{flex:1 1 auto;justify-content:center;display:inline-flex;align-items:center;gap:6px}
+
+  /* ---------- Empty state ---------- */
+  .empty{text-align:center;padding:34px 16px}
+  .empty .em-title{font-size:15px;font-weight:620;margin-bottom:5px}
+  .empty .em-sub{font-size:13.5px;color:var(--muted);max-width:320px;margin:0 auto 16px}
+  .empty .em-icon{font-size:26px;margin-bottom:12px;opacity:.5}
+
+  /* ---------- FAB ---------- */
+  .fab{
+    position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:60;
+    width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;
+    background:var(--reading);color:#fff;font-size:26px;line-height:1;
+    box-shadow:0 10px 24px -8px rgba(194,112,61,.85);
+    display:none;align-items:center;justify-content:center;
+  }
+  .fab:active{transform:scale(.95)}
+  @media(max-width:640px){
+    .fab{display:flex}
+    .hdr-actions .btn-primary{display:none}
+    main{padding:16px 14px 110px}
+    .hdr-top{padding:12px 14px 8px}
+    .tabs{padding:0 14px 9px}
+    .card{padding:16px}
+  }
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-top">
+    <div class="brand">
+      <div class="mark">ESC</div>
+      <div class="brand-txt">
+        <h1>English Super Challenge</h1>
+        <p id="hdrSub">—</p>
+      </div>
+    </div>
+    <div class="hdr-actions">
+      <button class="icon-btn" data-action="open-settings" title="Challenge settings" aria-label="Settings">⚙</button>
+      <button class="btn btn-primary" data-action="open-log">+ Log activity</button>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-nav="dashboard" class="active">Dashboard</button>
+    <button data-nav="history">History</button>
+    <button data-nav="progress">Progress</button>
+    <button data-nav="materials">Materials</button>
+    <a href="output.html">Output <span class="ext">↗</span></a>
+  </nav>
+</header>
+
+<main id="app"></main>
+<div id="modalRoot"></div>
+<button class="fab" data-action="open-log" aria-label="Log activity">+</button>
+
+<script>
+/* =========================================================
+   Utilities
+   ========================================================= */
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+
+const fmt  = n => Math.round(Number(n) || 0).toLocaleString('en-US');
+const fmt1 = n => (Math.round((Number(n) || 0) * 10) / 10).toLocaleString('en-US');
+const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+
+function toISO(d){
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function parseISO(s){
+  const [y, m, d] = s.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+function addDays(iso, n){
+  const d = parseISO(iso); d.setDate(d.getDate() + n); return toISO(d);
+}
+function diffDays(a, b){ return Math.round((parseISO(b) - parseISO(a)) / 86400000); }
+function todayISO(){ return toISO(new Date()); }
+function minISO(a, b){ return a < b ? a : b; }
+function maxISO(a, b){ return a > b ? a : b; }
+function uid(p){ return p + '_' + Math.random().toString(36).slice(2, 9); }
+function escapeHtml(s){
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function startOfWeekISO(iso){
+  const d = parseISO(iso);
+  const dow = (d.getDay() + 6) % 7; // Monday = 0
+  d.setDate(d.getDate() - dow);
+  return toISO(d);
+}
+function prettyDate(iso){
+  const d = parseISO(iso);
+  const t = todayISO();
+  if (iso === t) return 'Today';
+  if (iso === addDays(t, -1)) return 'Yesterday';
+  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+}
+
+/* =========================================================
+   Constants
+   ========================================================= */
+const TYPES = {
+  kindle:    { label: 'Kindle',        category: 'reading',   unit: 'pages'   },
+  book:      { label: 'Physical book', category: 'reading',   unit: 'pages'   },
+  article:   { label: 'Article',       category: 'reading',   unit: 'pages'   },
+  other:     { label: 'Other',         category: 'reading',   unit: 'pages'   },
+  audiobook: { label: 'Audiobook',     category: 'listening', unit: 'minutes' },
+  podcast:   { label: 'Podcast',       category: 'listening', unit: 'minutes' },
+  tv:        { label: 'TV',            category: 'listening', unit: 'minutes' },
+  film:      { label: 'Film',          category: 'listening', unit: 'minutes' }
+};
+const TYPE_ORDER = ['kindle', 'book', 'article', 'other', 'audiobook', 'podcast', 'tv', 'film'];
+
+/* Storage key bumped so older demo data is not picked up */
+const STORAGE_KEY = 'english-super-challenge-v2-clean';
+
+/* =========================================================
+   State
+   ========================================================= */
+let state = null;
+let currentView = 'dashboard';
+let progressMetric = 'reading';
+let historyFilters = { from: '', to: '', category: 'all', type: 'all', material: 'all', q: '' };
+let searchTimer = null;
+
+/* =========================================================
+   Fresh (empty) challenge
+   ========================================================= */
+function freshData(){
+  const start = todayISO();
+  const end = addDays(start, 89);
+  return {
+    challenge: {
+      id: 'challenge_1',
+      name: 'English Super Challenge',
+      start_date: start,
+      end_date: end,
+      reading_target_pages: 6000,
+      listening_target_minutes: 4500,
+      created_at: new Date().toISOString()
+    },
+    materials: [],
+    activities: []
+  };
+}
+
+/* =========================================================
+   Persistence
+   ========================================================= */
+function loadState(){
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw){
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.challenge && Array.isArray(parsed.activities) && Array.isArray(parsed.materials)){
+        state = parsed;
+        return;
+      }
+    }
+  } catch (e) { /* ignore */ }
+  state = freshData();
+  saveState();
+}
+function saveState(){
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+}
+function resetAll(){
+  localStorage.removeItem(STORAGE_KEY);
+  state = freshData();
+  saveState();
+  historyFilters = { from: '', to: '', category: 'all', type: 'all', material: 'all', q: '' };
+}
+
+/* =========================================================
+   Export / Import
+   ========================================================= */
+function downloadBlob(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function exportJSON(){
+  const payload = {
+    app: 'english-super-challenge',
+    version: 1,
+    exported_at: new Date().toISOString(),
+    challenge: state.challenge,
+    materials: state.materials,
+    activities: state.activities
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  downloadBlob(blob, `esc-backup-${todayISO()}.json`);
+}
+
+function csvEscape(v){
+  const s = String(v ?? '');
+  if (/[",\n\r]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+  return s;
+}
+
+function exportCSV(){
+  const rows = [];
+  rows.push(['date','category','type','material','creator','amount','unit','note'].join(','));
+  state.activities
+    .slice()
+    .sort((a, b) => a.logged_on < b.logged_on ? -1 : a.logged_on > b.logged_on ? 1 : 0)
+    .forEach(a => {
+      const m = materialById(a.material_id);
+      rows.push([
+        a.logged_on,
+        a.category,
+        a.input_type,
+        m ? m.title : '',
+        m ? (m.creator || '') : '',
+        a.amount,
+        a.unit,
+        a.note || ''
+      ].map(csvEscape).join(','));
+    });
+  const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8' });
+  downloadBlob(blob, `esc-activities-${todayISO()}.csv`);
+}
+
+function importJSONFile(file){
+  const reader = new FileReader();
+  reader.onload = e => {
+    let data;
+    try {
+      data = JSON.parse(e.target.result);
+    } catch (err){
+      alert('Could not read that file. Please choose a valid JSON backup.');
+      return;
+    }
+
+    /* Accept a raw state object or our wrapped export payload */
+    const candidate = (data && data.challenge && Array.isArray(data.activities) && Array.isArray(data.materials))
+      ? data
+      : (data && data.state) ? data.state : null;
+
+    if (!candidate || !candidate.challenge || !Array.isArray(candidate.activities) || !Array.isArray(candidate.materials)){
+      alert('This file does not look like a valid English Super Challenge backup.');
+      return;
+    }
+
+    const actCount = candidate.activities.length;
+    const matCount = candidate.materials.length;
+    const ok = confirm(
+      `Import this backup?\n\n` +
+      `• ${actCount} activit${actCount === 1 ? 'y' : 'ies'}\n` +
+      `• ${matCount} material${matCount === 1 ? '' : 's'}\n\n` +
+      `This will replace your current activities, materials and settings.`
+    );
+    if (!ok) return;
+
+    state = {
+      challenge: candidate.challenge,
+      materials: candidate.materials,
+      activities: candidate.activities
+    };
+    saveState();
+    closeModal();
+    render();
+    alert('Import complete.');
+  };
+  reader.onerror = () => alert('Could not read that file.');
+  reader.readAsText(file);
+}
+
+/* =========================================================
+   Stats
+   ========================================================= */
+function actsInRange(from, to){
+  return state.activities.filter(a =>
+    (!from || a.logged_on >= from) && (!to || a.logged_on <= to)
+  );
+}
+function sumCategory(list, category){
+  return list.filter(a => a.category === category)
+             .reduce((s, a) => s + (Number(a.amount) || 0), 0);
+}
+function materialById(id){ return state.materials.find(m => m.id === id) || null; }
+
+function getStats(){
+  const ch = state.challenge;
+  const today = todayISO();
+
+  const totalDays   = Math.max(1, diffDays(ch.start_date, ch.end_date) + 1);
+  const elapsed     = clamp(diffDays(ch.start_date, today) + 1, 0, totalDays);
+  const daysLeft    = Math.max(1, totalDays - elapsed + 1);
+
+  const readingTotal   = sumCategory(state.activities, 'reading');
+  const listeningTotal = sumCategory(state.activities, 'listening');
+
+  const readTarget   = Number(ch.reading_target_pages) || 1;
+  const listenTarget = Number(ch.listening_target_minutes) || 1;
+
+  const readPct   = readingTotal / readTarget * 100;
+  const listenPct = listeningTotal / listenTarget * 100;
+
+  const readDailyRate   = readTarget / totalDays;
+  const listenDailyRate = listenTarget / totalDays;
+
+  const readRequired   = Math.max(0, readTarget - readingTotal) / daysLeft;
+  const listenRequired = Math.max(0, listenTarget - listeningTotal) / daysLeft;
+
+  const idealReadPct   = elapsed / totalDays * 100;
+  const idealListenPct = elapsed / totalDays * 100;
+
+  // ---- This week ----
+  const weekStart = maxISO(startOfWeekISO(today), ch.start_date);
+  const weekEnd   = minISO(today, ch.end_date);
+  const weekDays  = Math.max(0, diffDays(weekStart, weekEnd) + 1);
+  const weekRead     = sumCategory(actsInRange(weekStart, weekEnd), 'reading');
+  const weekListen   = sumCategory(actsInRange(weekStart, weekEnd), 'listening');
+  const weekReadExp  = readDailyRate * weekDays;
+  const weekListenExp = listenDailyRate * weekDays;
+
+  // ---- This challenge-month ----
+  const dayIdx   = clamp(diffDays(ch.start_date, today) + 1, 1, totalDays);
+  const monthIdx = Math.min(2, Math.floor((dayIdx - 1) / 30));
+  const monthStart = addDays(ch.start_date, monthIdx * 30);
+  const monthEnd   = minISO(addDays(ch.start_date, monthIdx * 30 + 29), ch.end_date);
+  const monthCut   = minISO(today, monthEnd);
+  const monthDays  = monthStart <= monthCut ? diffDays(monthStart, monthCut) + 1 : 0;
+  const monthRead     = sumCategory(actsInRange(monthStart, monthCut), 'reading');
+  const monthListen   = sumCategory(actsInRange(monthStart, monthCut), 'listening');
+  const monthReadExp  = readDailyRate * monthDays;
+  const monthListenExp = listenDailyRate * monthDays;
+
+  return {
+    ch, today, totalDays, elapsed, daysLeft,
+    readingTotal, listeningTotal, readTarget, listenTarget,
+    readPct, listenPct, readRequired, listenRequired,
+    readDailyRate, listenDailyRate, idealReadPct, idealListenPct,
+    monthIdx, monthStart, monthEnd, monthDays,
+    weekStart, weekEnd, weekDays,
+    weekRead, weekListen, weekReadExp, weekListenExp,
+    monthRead, monthListen, monthReadExp, monthListenExp
+  };
+}
+
+function paceStatePct(actualPct, idealPct){
+  const d = actualPct - idealPct;
+  if (d >= 2)  return { cls: 'good', label: 'Ahead of pace' };
+  if (d >= -3) return { cls: 'ok',   label: 'On pace' };
+  if (d >= -10) return { cls: 'warn', label: 'Slightly behind' };
+  return { cls: 'bad', label: 'Behind pace' };
+}
+function paceStateRatio(val, exp){
+  if (!exp) return { cls: 'ok', label: '—' };
+  const r = val / exp;
+  if (r >= 1.02) return { cls: 'good', label: 'Ahead' };
+  if (r >= 0.97) return { cls: 'ok',   label: 'On pace' };
+  if (r >= 0.85) return { cls: 'warn', label: 'Slightly behind' };
+  return { cls: 'bad', label: 'Behind' };
+}
+
+/* =========================================================
+   Views — Dashboard
+   ========================================================= */
+function progressCard(s, kind){
+  const isRead = kind === 'reading';
+  const value  = isRead ? s.readingTotal : s.listeningTotal;
+  const target = isRead ? s.readTarget : s.listenTarget;
+  const unit   = isRead ? 'pages' : 'minutes';
+  const rawPct = isRead ? s.readPct : s.listenPct;
+  const ideal  = isRead ? s.idealReadPct : s.idealListenPct;
+  const st     = paceStatePct(rawPct, ideal);
+  const barPct = clamp(rawPct, 0, 100);
+  const remaining = Math.max(0, target - value);
+
+  return `
+  <div class="card progress-card ${kind}">
+    <div class="card-head">
+      <h2>${isRead ? 'Reading' : 'Listening'}</h2>
+      <span class="pct">${rawPct.toFixed(1)}%</span>
+    </div>
+    <div class="big-numbers">
+      <strong>${fmt(value)}</strong>
+      <span>/ ${fmt(target)} ${unit}</span>
+    </div>
+    <div class="bar">
+      <div class="bar-fill" style="width:${barPct}%"></div>
+      <div class="bar-ideal" style="left:${clamp(ideal, 0, 99)}%" title="Where you should be today"></div>
+    </div>
+    <div class="bar-meta">
+      <span>${fmt(remaining)} ${unit} to go</span>
+      <span class="pace-tag ${st.cls}">${st.label}</span>
+    </div>
+  </div>`;
+}
+
+function paceCard(title, sub, readVal, readExp, listenVal, listenExp){
+  const rs = paceStateRatio(readVal, readExp);
+  const ls = paceStateRatio(listenVal, listenExp);
+  return `
+  <div class="card">
+    <div class="card-head">
+      <h2>${title}</h2>
+      <span style="font-size:11.5px;color:var(--muted)">${sub}</span>
+    </div>
+    <div class="pace-row reading">
+      <div class="pace-row-top">
+        <span class="lbl">Reading</span>
+        <span class="val"><b>${fmt(readVal)}</b> / ${fmt(readExp)} pages</span>
+      </div>
+      <div class="mini-bar"><i style="width:${clamp(readExp ? readVal / readExp * 100 : 0, 0, 100)}%"></i></div>
+      <div class="bar-meta" style="margin-top:7px">
+        <span>${readVal >= readExp ? fmt(readVal - readExp) + ' ahead' : fmt(readExp - readVal) + ' behind'}</span>
+        <span class="pace-tag ${rs.cls}">${rs.label}</span>
+      </div>
+    </div>
+    <div class="pace-row listening">
+      <div class="pace-row-top">
+        <span class="lbl">Listening</span>
+        <span class="val"><b>${fmt(listenVal)}</b> / ${fmt(listenExp)} min</span>
+      </div>
+      <div class="mini-bar"><i style="width:${clamp(listenExp ? listenVal / listenExp * 100 : 0, 0, 100)}%"></i></div>
+      <div class="bar-meta" style="margin-top:7px">
+        <span>${listenVal >= listenExp ? fmt(listenVal - listenExp) + ' ahead' : fmt(listenExp - listenVal) + ' behind'}</span>
+        <span class="pace-tag ${ls.cls}">${ls.label}</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function activityRow(a, showActions){
+  const m = materialById(a.material_id);
+  const title = m ? m.title : (TYPES[a.input_type] || { label: 'Activity' }).label;
+  const typeLabel = (TYPES[a.input_type] || { label: 'Other' }).label;
+  const unitShort = a.unit === 'pages' ? 'pg' : 'min';
+  return `
+  <div class="act">
+    <span class="dot ${a.category}"></span>
+    <div class="act-main">
+      <div class="act-title">${escapeHtml(title)}</div>
+      <div class="act-meta">${escapeHtml(typeLabel)} · ${escapeHtml(prettyDate(a.logged_on))}${a.note ? ' · ' + escapeHtml(a.note) : ''}</div>
+    </div>
+    <div class="act-amount">${fmt(a.amount)} <small>${unitShort}</small></div>
+    ${showActions ? `
+      <div class="act-actions">
+        <button class="link-btn" data-action="edit-activity" data-id="${a.id}">Edit</button>
+        <button class="link-btn danger" data-action="delete-activity" data-id="${a.id}">Delete</button>
+      </div>` : ''}
+  </div>`;
+}
+
+function viewDashboard(){
+  const s = getStats();
+  const recent = state.activities
+    .slice()
+    .sort((a, b) => a.logged_on < b.logged_on ? 1 : a.logged_on > b.logged_on ? -1 : (a.created_at < b.created_at ? 1 : -1))
+    .slice(0, 6);
+
+  const hasAny = state.activities.length > 0;
+
+  return `
+  <div class="grid cols-2">
+    ${progressCard(s, 'reading')}
+    ${progressCard(s, 'listening')}
+  </div>
+
+  <div class="grid cols-3">
+    <div class="card">
+      <div class="stat-label">Days remaining</div>
+      <div class="stat-value">${s.daysLeft} <small>days</small></div>
+      <div class="stat-sub">Day ${s.elapsed} of ${s.totalDays}</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">Reading pace needed</div>
+      <div class="stat-value">${fmt1(s.readRequired)} <small>pages/day</small></div>
+      <div class="stat-sub">From today to finish on time</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">Listening pace needed</div>
+      <div class="stat-value">${fmt1(s.listenRequired)} <small>min/day</small></div>
+      <div class="stat-sub">From today to finish on time</div>
+    </div>
+  </div>
+
+  <div class="grid cols-2">
+    ${paceCard('This week', `${s.weekDays} day${s.weekDays === 1 ? '' : 's'} elapsed`, s.weekRead, s.weekReadExp, s.weekListen, s.weekListenExp)}
+    ${paceCard('This month', `Month ${s.monthIdx + 1} · ${s.monthDays} day${s.monthDays === 1 ? '' : 's'} elapsed`, s.monthRead, s.monthReadExp, s.monthListen, s.monthListenExp)}
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>Recent activity</h2>
+      ${hasAny ? '<button class="link-btn" data-nav="history">View all</button>' : ''}
+    </div>
+    ${hasAny
+      ? recent.map(a => activityRow(a, false)).join('')
+      : `<div class="empty">
+           <div class="em-icon">📖</div>
+           <div class="em-title">No activity logged yet</div>
+           <div class="em-sub">Log your first reading or listening session — it takes about 10 seconds.</div>
+         </div>`}
+    <button class="btn btn-primary btn-block" data-action="open-log">+ Log activity</button>
+  </div>`;
+}
+
+/* =========================================================
+   Views — History
+   ========================================================= */
+function filteredActivities(){
+  const f = historyFilters;
+  let list = state.activities.slice();
+
+  if (f.from) list = list.filter(a => a.logged_on >= f.from);
+  if (f.to)   list = list.filter(a => a.logged_on <= f.to);
+  if (f.category !== 'all') list = list.filter(a => a.category === f.category);
+  if (f.type !== 'all')     list = list.filter(a => a.input_type === f.type);
+  if (f.material !== 'all') list = list.filter(a => a.material_id === f.material);
+  if (f.q.trim()){
+    const q = f.q.trim().toLowerCase();
+    list = list.filter(a => {
+      const m = materialById(a.material_id);
+      return (m && m.title.toLowerCase().includes(q)) || (a.note || '').toLowerCase().includes(q);
+    });
+  }
+
+  list.sort((a, b) =>
+    a.logged_on < b.logged_on ? 1 :
+    a.logged_on > b.logged_on ? -1 :
+    (a.created_at < b.created_at ? 1 : -1)
+  );
+  return list;
+}
+
+function viewHistory(){
+  const list = filteredActivities();
+
+  const groups = [];
+  const map = new Map();
+  list.forEach(a => {
+    if (!map.has(a.logged_on)){ const g = { date: a.logged_on, items: [] }; map.set(a.logged_on, g); groups.push(g); }
+    map.get(a.logged_on).items.push(a);
+  });
+
+  const materialOptions = state.materials
+    .slice()
+    .sort((a, b) => a.title.localeCompare(b.title))
+    .map(m => `<option value="${m.id}" ${historyFilters.material === m.id ? 'selected' : ''}>${escapeHtml(m.title)}</option>`)
+    .join('');
+
+  const typeOptions = TYPE_ORDER
+    .map(t => `<option value="${t}" ${historyFilters.type === t ? 'selected' : ''}>${TYPES[t].label}</option>`)
+    .join('');
+
+  const hasFilters =
+    historyFilters.from || historyFilters.to || historyFilters.category !== 'all' ||
+    historyFilters.type !== 'all' || historyFilters.material !== 'all' || historyFilters.q.trim();
+
+  return `
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-head"><h2>Filters</h2>
+      ${hasFilters ? '<button class="link-btn" data-action="clear-filters">Clear</button>' : ''}
+    </div>
+    <div class="filters">
+      <div class="field" style="margin-bottom:0">
+        <label for="histFrom">From</label>
+        <input type="date" id="histFrom" value="${historyFilters.from}">
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label for="histTo">To</label>
+        <input type="date" id="histTo" value="${historyFilters.to}">
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label for="histCategory">Category</label>
+        <select id="histCategory">
+          <option value="all" ${historyFilters.category === 'all' ? 'selected' : ''}>All</option>
+          <option value="reading" ${historyFilters.category === 'reading' ? 'selected' : ''}>Reading</option>
+          <option value="listening" ${historyFilters.category === 'listening' ? 'selected' : ''}>Listening</option>
+        </select>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label for="histType">Type</label>
+        <select id="histType">
+          <option value="all" ${historyFilters.type === 'all' ? 'selected' : ''}>All types</option>
+          ${typeOptions}
+        </select>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label for="histMaterial">Material</label>
+        <select id="histMaterial">
+          <option value="all" ${historyFilters.material === 'all' ? 'selected' : ''}>All materials</option>
+          ${materialOptions}
+        </select>
+      </div>
+      <div class="field full" style="margin-bottom:0">
+        <label for="histSearch">Search</label>
+        <input type="text" id="histSearch" placeholder="Title or note…" value="${escapeHtml(historyFilters.q)}" autocomplete="off">
+      </div>
+    </div>
+  </div>
+
+  ${groups.length ? groups.map(g => {
+    const pages = sumCategory(g.items, 'reading');
+    const mins  = sumCategory(g.items, 'listening');
+    const parts = [];
+    if (pages) parts.push(fmt(pages) + ' pages');
+    if (mins)  parts.push(fmt(mins) + ' min');
+    return `
+    <div class="day-group">
+      <div class="day-head">
+        <span class="d">${escapeHtml(prettyDate(g.date))}</span>
+        <span class="tot">${parts.join(' · ') || '—'}</span>
+      </div>
+      ${g.items.map(a => activityRow(a, true)).join('')}
+    </div>`;
+  }).join('') : `
+    <div class="card">
+      <div class="empty">
+        <div class="em-icon">${state.activities.length ? '🔍' : '📖'}</div>
+        <div class="em-title">${state.activities.length ? 'No activities match' : 'No activity yet'}</div>
+        <div class="em-sub">${state.activities.length
+          ? 'Try widening the date range or clearing the filters.'
+          : 'Your logged reading and listening sessions will appear here, grouped by day.'}</div>
+        ${state.activities.length
+          ? '<button class="btn btn-ghost" data-action="clear-filters">Clear filters</button>'
+          : '<button class="btn btn-primary" data-action="open-log">+ Log activity</button>'}
+      </div>
+    </div>`}
+  `;
+}
+
+/* =========================================================
+   Views — Progress
+   ========================================================= */
+function dailyChartHTML(metric, days){
+  const ch = state.challenge;
+  const today = todayISO();
+  const items = [];
+  for (let i = days - 1; i >= 0; i--){
+    const date = addDays(today, -i);
+    const inChallenge = date >= ch.start_date && date <= ch.end_date;
+    const val = inChallenge ? sumCategory(actsInRange(date, date), metric) : 0;
+    items.push({ date, val, inChallenge });
+  }
+  const max = Math.max(...items.map(i => i.val), 1);
+  const cls = metric === 'reading' ? 'reading' : 'listening';
+
+  return `
+  <div class="chart">
+    ${items.map((it, idx) => `
+      <div class="col" title="${it.date}: ${fmt(it.val)} ${metric === 'reading' ? 'pages' : 'min'}">
+        <div class="bar-wrap">
+          <div class="fill ${it.val ? cls : 'muted'}" style="height:${it.val ? Math.max(3, it.val / max * 100) : 2}%"></div>
+        </div>
+        <span class="lbl">${idx % 3 === 0 ? parseISO(it.date).getDate() : ''}</span>
+      </div>`).join('')}
+  </div>
+  <div class="chart-legend">
+    <span><i class="${cls}" style="background:${metric === 'reading' ? 'var(--reading)' : 'var(--listening)'}"></i>${metric === 'reading' ? 'Pages read' : 'Minutes listened'}</span>
+    <span>Last ${days} days · peak ${fmt(max)}</span>
+  </div>`;
+}
+
+function weeklyChartHTML(metric){
+  const ch = state.challenge;
+  const today = todayISO();
+  const rate = metric === 'reading'
+    ? (Number(ch.reading_target_pages) || 0) / Math.max(1, diffDays(ch.start_date, ch.end_date) + 1)
+    : (Number(ch.listening_target_minutes) || 0) / Math.max(1, diffDays(ch.start_date, ch.end_date) + 1);
+
+  const thisWeekStart = startOfWeekISO(today);
+  const weeks = [];
+  for (let i = 5; i >= 0; i--){
+    const ws = addDays(thisWeekStart, -7 * i);
+    const we = addDays(ws, 6);
+    const from = maxISO(ws, ch.start_date);
+    const to   = minISO(minISO(we, today), ch.end_date);
+    const daysIn = from <= to ? diffDays(from, to) + 1 : 0;
+    const val = daysIn ? sumCategory(actsInRange(from, to), metric) : 0;
+    weeks.push({ ws, val, exp: rate * daysIn, daysIn, active: from <= to });
+  }
+
+  const max = Math.max(...weeks.map(w => Math.max(w.val, w.exp)), 1);
+  const cls = metric === 'reading' ? 'reading' : 'listening';
+  const CHART_H = 170, LABEL_H = 18, BAR_AREA = CHART_H - LABEL_H;
+
+  const lastExp = weeks[weeks.length - 1].exp;
+
+  return `
+  <div class="chart">
+    <div class="target-line" style="bottom:${LABEL_H + (lastExp / max) * BAR_AREA}px"></div>
+    ${weeks.map(w => `
+      <div class="col" title="${w.ws}: ${fmt(w.val)} vs ${fmt(w.exp)} expected">
+        <div class="bar-wrap">
+          <div class="fill ${w.val ? cls : 'muted'}" style="height:${w.val ? Math.max(3, w.val / max * 100) : 2}%"></div>
+        </div>
+        <span class="lbl">${parseISO(w.ws).getDate()}/${parseISO(w.ws).getMonth() + 1}</span>
+      </div>`).join('')}
+  </div>
+  <div class="chart-legend">
+    <span><i style="background:${metric === 'reading' ? 'var(--reading)' : 'var(--listening)'}"></i>Weekly total</span>
+    <span><i style="background:transparent;border-top:1.5px dashed #C9B9A6;width:14px;height:0;border-radius:0"></i>Pace target</span>
+  </div>`;
+}
+
+function monthlyChartHTML(metric){
+  const ch = state.challenge;
+  const today = todayISO();
+  const totalDays = Math.max(1, diffDays(ch.start_date, ch.end_date) + 1);
+  const rate = metric === 'reading'
+    ? (Number(ch.reading_target_pages) || 0) / totalDays
+    : (Number(ch.listening_target_minutes) || 0) / totalDays;
+
+  const months = [];
+  for (let i = 0; i < 3; i++){
+    const ms = addDays(ch.start_date, i * 30);
+    const me = minISO(addDays(ch.start_date, i * 30 + 29), ch.end_date);
+    const cut = minISO(today, me);
+    const daysIn = ms <= cut ? diffDays(ms, cut) + 1 : 0;
+    const val = daysIn ? sumCategory(actsInRange(ms, cut), metric) : 0;
+    months.push({ ms, me, val, exp: rate * daysIn, daysIn });
+  }
+
+  const max = Math.max(...months.map(m => Math.max(m.val, m.exp)), 1);
+  const cls = metric === 'reading' ? 'reading' : 'listening';
+
+  return `
+  <div class="chart">
+    ${months.map((m, i) => `
+      <div class="col" title="Month ${i + 1}: ${fmt(m.val)} vs ${fmt(m.exp)} expected">
+        <div class="bar-wrap">
+          <div class="fill ${m.val ? cls : 'muted'}" style="height:${m.val ? Math.max(3, m.val / max * 100) : 2}%"></div>
+        </div>
+        <span class="lbl">Month ${i + 1}</span>
+      </div>`).join('')}
+  </div>
+  <div class="chart-legend">
+    <span><i style="background:${metric === 'reading' ? 'var(--reading)' : 'var(--listening)'}"></i>Month total</span>
+    <span>Expected shown on hover</span>
+  </div>
+  <div class="chart-note">
+    ${months.map((m, i) => `Month ${i + 1}: ${fmt(m.val)} / ${fmt(m.exp)}`).join(' &nbsp;·&nbsp; ')}
+  </div>`;
+}
+
+function cumulativeSVG(metric){
+  const ch = state.challenge;
+  const today = todayISO();
+  const totalDays = Math.max(1, diffDays(ch.start_date, ch.end_date) + 1);
+  const target = metric === 'reading'
+    ? Number(ch.reading_target_pages) || 1
+    : Number(ch.listening_target_minutes) || 1;
+  const elapsed = clamp(diffDays(ch.start_date, today) + 1, 0, totalDays);
+
+  const daily = new Array(totalDays + 1).fill(0);
+  state.activities.forEach(a => {
+    if (a.category !== metric) return;
+    const idx = diffDays(ch.start_date, a.logged_on) + 1;
+    if (idx >= 1 && idx <= totalDays) daily[idx] += Number(a.amount) || 0;
+  });
+
+  let cum = 0;
+  const pts = [[0, 0]];
+  for (let i = 1; i <= totalDays; i++){
+    cum += daily[i];
+    if (i <= elapsed) pts.push([i, cum]);
+  }
+  const maxY = Math.max(target, cum, 1);
+  const x = d => (d / totalDays) * 100;
+  const y = v => 100 - (v / maxY) * 100;
+
+  const linePath = pts.map((p, i) => (i ? 'L' : 'M') + x(p[0]).toFixed(2) + ' ' + y(p[1]).toFixed(2)).join(' ');
+  const areaPath = linePath + ` L ${x(pts[pts.length - 1][0]).toFixed(2)} 100 L 0 100 Z`;
+  const idealPath = `M 0 100 L 100 ${y(target).toFixed(2)}`;
+
+  const color = metric === 'reading' ? '#C2703D' : '#3F7A6E';
+  const fillColor = metric === 'reading' ? 'rgba(194,112,61,.10)' : 'rgba(63,122,110,.10)';
+
+  return `
+  <svg class="cum-chart" viewBox="0 0 100 100" preserveAspectRatio="none" aria-label="Cumulative progress">
+    <line x1="0" y1="100" x2="100" y2="100" stroke="#EAE2D8" stroke-width="1" vector-effect="non-scaling-stroke"/>
+    <path d="${areaPath}" fill="${fillColor}" stroke="none"/>
+    <path d="${idealPath}" fill="none" stroke="#C9B9A6" stroke-width="1.5" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/>
+    <path d="${linePath}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+  </svg>
+  <div class="chart-legend">
+    <span><i style="background:${color}"></i>Your cumulative total</span>
+    <span><i style="background:transparent;border-top:1.5px dashed #C9B9A6;width:14px;height:0;border-radius:0"></i>Ideal pace line</span>
+    <span>Day ${elapsed} of ${totalDays}</span>
+  </div>`;
+}
+
+function viewProgress(){
+  const ch = state.challenge;
+  const totalDays = Math.max(1, diffDays(ch.start_date, ch.end_date) + 1);
+  const elapsed = clamp(diffDays(ch.start_date, todayISO()) + 1, 0, totalDays);
+  const metric = progressMetric;
+  const unit = metric === 'reading' ? 'pages' : 'minutes';
+  const target = metric === 'reading' ? Number(ch.reading_target_pages) || 0 : Number(ch.listening_target_minutes) || 0;
+  const total = sumCategory(state.activities, metric);
+  const idealNow = target / totalDays * elapsed;
+  const delta = total - idealNow;
+  const noData = state.activities.length === 0;
+
+  return `
+  <div class="card" style="margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <div class="seg" id="metricSeg">
+      <button data-metric="reading" class="${metric === 'reading' ? 'active' : ''}">Reading (pages)</button>
+      <button data-metric="listening" class="${metric === 'listening' ? 'active' : ''}">Listening (minutes)</button>
+    </div>
+    <div style="font-size:12.5px;color:var(--muted)">
+      ${fmt(total)} / ${fmt(target)} ${unit} ·
+      <b style="color:${delta >= 0 ? '#2F6B54' : '#9C4230'}">${delta >= 0 ? '+' : ''}${fmt(delta)}</b> vs ideal
+    </div>
+  </div>
+
+  ${noData ? `
+  <div class="card" style="margin-bottom:14px">
+    <div class="empty">
+      <div class="em-icon">📈</div>
+      <div class="em-title">No data to chart yet</div>
+      <div class="em-sub">Log a few reading or listening sessions and your daily, weekly, monthly, and cumulative progress will appear here.</div>
+      <button class="btn btn-primary" data-action="open-log">+ Log activity</button>
+    </div>
+  </div>` : ''}
+
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-head"><h2>Cumulative progress vs ideal pace</h2></div>
+    ${cumulativeSVG(metric)}
+  </div>
+
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-head"><h2>Daily totals</h2><span style="font-size:11.5px;color:var(--muted)">Last 21 days</span></div>
+    ${dailyChartHTML(metric, 21)}
+  </div>
+
+  <div class="grid cols-2">
+    <div class="card">
+      <div class="card-head"><h2>Weekly totals</h2><span style="font-size:11.5px;color:var(--muted)">vs pace</span></div>
+      ${weeklyChartHTML(metric)}
+    </div>
+    <div class="card">
+      <div class="card-head"><h2>Monthly totals</h2><span style="font-size:11.5px;color:var(--muted)">vs pace</span></div>
+      ${monthlyChartHTML(metric)}
+    </div>
+  </div>`;
+}
+
+/* =========================================================
+   Views — Materials
+   ========================================================= */
+function materialTotals(id){
+  const list = state.activities.filter(a => a.material_id === id);
+  return {
+    pages: sumCategory(list, 'reading'),
+    minutes: sumCategory(list, 'listening'),
+    count: list.length
+  };
+}
+
+function viewMaterials(){
+  const statusRank = { active: 0, completed: 1, archived: 2 };
+  const mats = state.materials.slice().sort((a, b) => {
+    const r = (statusRank[a.status] ?? 3) - (statusRank[b.status] ?? 3);
+    return r !== 0 ? r : a.title.localeCompare(b.title);
+  });
+
+  return `
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-head">
+      <h2>Materials</h2>
+      <button class="btn btn-ghost" data-action="add-material">+ Add material</button>
+    </div>
+    ${mats.length ? mats.map(m => {
+      const t = materialTotals(m.id);
+      const parts = [];
+      if (t.pages)   parts.push(fmt(t.pages) + ' pages');
+      if (t.minutes) parts.push(fmt(t.minutes) + ' min');
+      const totalTxt = parts.length ? parts.join(' · ') : 'Nothing logged yet';
+      const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
+      const initials = m.title.trim().slice(0, 2).toUpperCase();
+      return `
+      <div class="mat">
+        <div class="mat-icon ${m.default_category}">${escapeHtml(initials)}</div>
+        <div class="mat-main">
+          <div class="mat-title">
+            ${escapeHtml(m.title)}
+            <span class="pill ${m.status}">${m.status}</span>
+          </div>
+          <div class="mat-sub">${escapeHtml(m.creator || '—')} · ${escapeHtml(typeLabel)}</div>
+          <div class="mat-tot">${totalTxt}${t.count ? ` · ${t.count} entr${t.count === 1 ? 'y' : 'ies'}` : ''}</div>
+        </div>
+        <div class="act-actions">
+          <button class="link-btn" data-action="edit-material" data-id="${m.id}">Edit</button>
+          <button class="link-btn danger" data-action="delete-material" data-id="${m.id}">Delete</button>
+        </div>
+      </div>`;
+    }).join('') : `
+      <div class="empty">
+        <div class="em-icon">📚</div>
+        <div class="em-title">No materials yet</div>
+        <div class="em-sub">Materials are created automatically when you log an activity with a new title, or you can add one manually.</div>
+        <button class="btn btn-primary" data-action="add-material">+ Add material</button>
+      </div>`}
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>How materials work</h2></div>
+    <p style="font-size:13.5px;color:var(--muted);line-height:1.6">
+      Every activity can be linked to a material — a book, audiobook, podcast, show or article.
+      Type a title when logging and it's saved here automatically for one-tap reuse next time.
+      Set a material to <b>completed</b> or <b>archived</b> to keep the list tidy; its history stays intact.
+    </p>
+  </div>`;
+}
+
+/* =========================================================
+   Render
+   ========================================================= */
+function render(){
+  const app = $('#app');
+  if (currentView === 'dashboard')      app.innerHTML = viewDashboard();
+  else if (currentView === 'history')   app.innerHTML = viewHistory();
+  else if (currentView === 'progress')  app.innerHTML = viewProgress();
+  else                                  app.innerHTML = viewMaterials();
+
+  updateHeader();
+  updateTabs();
+}
+
+function updateTabs(){
+  $$('#tabs button[data-nav]').forEach(b => {
+    b.classList.toggle('active', b.dataset.nav === currentView);
+  });
+}
+
+function updateHeader(){
+  const s = getStats();
+  $('#hdrSub').textContent = `Day ${s.elapsed} of ${s.totalDays} · ${s.daysLeft} days left`;
+}
+
+function renderPreservingFocus(){
+  const active = document.activeElement;
+  const id = active && active.id;
+  let selStart = null, selEnd = null;
+  if (active && typeof active.selectionStart === 'number'){
+    selStart = active.selectionStart;
+    selEnd = active.selectionEnd;
+  }
+  render();
+  if (id){
+    const el = document.getElementById(id);
+    if (el){
+      el.focus();
+      if (selStart !== null && el.setSelectionRange){
+        try { el.setSelectionRange(selStart, selEnd); } catch (e) { /* ignore */ }
+      }
+    }
+  }
+}
+
+/* =========================================================
+   Modal helpers
+   ========================================================= */
+function openModal(html){
+  $('#modalRoot').innerHTML = html;
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(){
+  $('#modalRoot').innerHTML = '';
+  document.body.style.overflow = '';
+}
+
+/* =========================================================
+   Log activity modal
+   ========================================================= */
+function openLogModal(activity){
+  const ch = state.challenge;
+  const editing = !!activity;
+
+  const draft = editing
+    ? {
+        id: activity.id,
+        logged_on: activity.logged_on,
+        input_type: activity.input_type,
+        category: activity.category,
+        material_id: activity.material_id,
+        amount: activity.amount,
+        unit: activity.unit,
+        note: activity.note || ''
+      }
+    : {
+        id: null,
+        logged_on: todayISO(),
+        input_type: 'kindle',
+        category: 'reading',
+        material_id: null,
+        amount: '',
+        unit: 'pages',
+        note: ''
+      };
+
+  const mat = draft.material_id ? materialById(draft.material_id) : null;
+  const titleVal = mat ? mat.title : '';
+
+  openModal(`
+    <div class="modal-backdrop" data-action="close-modal"></div>
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h2>${editing ? 'Edit activity' : 'Log activity'}</h2>
+        <button class="icon-btn" data-action="close-modal" aria-label="Close">✕</button>
+      </div>
+      <form id="logForm" class="modal-body" autocomplete="off">
+        <div class="field">
+          <label for="logDate">Date</label>
+          <input type="date" id="logDate" value="${draft.logged_on}" required>
+        </div>
+
+        <div class="field">
+          <label>Type</label>
+          <div class="chips" id="typeChips">
+            ${TYPE_ORDER.map(t => `
+              <button type="button" class="chip ${draft.input_type === t ? 'active' : ''}"
+                      data-type="${t}" data-cat="${TYPES[t].category}">${TYPES[t].label}</button>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="logTitle">Material</label>
+          <div class="ac">
+            <input type="text" id="logTitle" placeholder="Title (optional)" value="${escapeHtml(titleVal)}">
+            <div class="ac-list" id="acList"></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="logAmount">Amount</label>
+          <div class="amount-row">
+            <input type="number" id="logAmount" min="1" step="1" inputmode="numeric"
+                   placeholder="${draft.unit === 'pages' ? 'Pages' : 'Minutes'}"
+                   value="${draft.amount === '' ? '' : draft.amount}">
+            <div class="seg" id="unitSeg">
+              <button type="button" data-unit="pages" class="${draft.unit === 'pages' ? 'active' : ''}">Pages</button>
+              <button type="button" data-unit="minutes" class="${draft.unit === 'minutes' ? 'active' : ''}">Minutes</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="logNote">Note <span style="font-weight:500;text-transform:none">(optional)</span></label>
+          <textarea id="logNote" rows="2" placeholder="Anything worth remembering…">${escapeHtml(draft.note)}</textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-action="close-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">${editing ? 'Save changes' : 'Save activity'}</button>
+        </div>
+      </form>
+    </div>
+  `);
+
+  const typeChips = $('#typeChips');
+  const unitSeg   = $('#unitSeg');
+  const titleInput = $('#logTitle');
+  const acList    = $('#acList');
+  const amountInput = $('#logAmount');
+
+  function applyType(t){
+    draft.input_type = t;
+    draft.category = TYPES[t].category;
+    draft.unit = TYPES[t].unit;
+    $$('.chip', typeChips).forEach(c => c.classList.toggle('active', c.dataset.type === t));
+    $$('button', unitSeg).forEach(b => b.classList.toggle('active', b.dataset.unit === draft.unit));
+    amountInput.placeholder = draft.unit === 'pages' ? 'Pages' : 'Minutes';
+  }
+
+  function updateAC(){
+    const q = titleInput.value.trim().toLowerCase();
+    const matches = state.materials
+      .filter(m => m.status !== 'archived' || m.id === draft.material_id)
+      .filter(m => !q || m.title.toLowerCase().includes(q))
+      .slice(0, 6);
+
+    if (!matches.length){ acList.classList.remove('open'); acList.innerHTML = ''; return; }
+
+    acList.innerHTML = matches.map(m => `
+      <div class="ac-item" data-mat="${m.id}">
+        <span>${escapeHtml(m.title)}</span>
+        <small>${escapeHtml(m.creator || (TYPES[m.default_input_type] || { label: '' }).label)}</small>
+      </div>`).join('');
+    acList.classList.add('open');
+  }
+
+  typeChips.addEventListener('click', e => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    applyType(chip.dataset.type);
+  });
+
+  unitSeg.addEventListener('click', e => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    draft.unit = btn.dataset.unit;
+    $$('button', unitSeg).forEach(b => b.classList.toggle('active', b.dataset.unit === draft.unit));
+    amountInput.placeholder = draft.unit === 'pages' ? 'Pages' : 'Minutes';
+  });
+
+  titleInput.addEventListener('input', () => {
+    draft.material_id = null;
+    updateAC();
+  });
+  titleInput.addEventListener('focus', updateAC);
+  titleInput.addEventListener('blur', () => setTimeout(() => acList.classList.remove('open'), 160));
+
+  acList.addEventListener('mousedown', e => {
+    const item = e.target.closest('.ac-item');
+    if (!item) return;
+    e.preventDefault();
+    const m = materialById(item.dataset.mat);
+    if (!m) return;
+    titleInput.value = m.title;
+    draft.material_id = m.id;
+    applyType(m.default_input_type);
+    acList.classList.remove('open');
+    amountInput.focus();
+  });
+
+  $('#logForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const amount = Number(amountInput.value);
+    if (!amount || amount <= 0){ amountInput.focus(); return; }
+
+    const loggedOn = $('#logDate').value || todayISO();
+    const note = $('#logNote').value.trim();
+    const title = titleInput.value.trim();
+
+    let materialId = draft.material_id;
+    if (title){
+      const current = materialId ? materialById(materialId) : null;
+      if (!current || current.title.toLowerCase() !== title.toLowerCase()){
+        const byTitle = state.materials.find(m => m.title.toLowerCase() === title.toLowerCase());
+        if (byTitle){
+          materialId = byTitle.id;
+        } else {
+          const nm = {
+            id: uid('m'),
+            challenge_id: ch.id,
+            title,
+            creator: '',
+            default_input_type: draft.input_type,
+            default_category: draft.category,
+            status: 'active',
+            cover_url: ''
+          };
+          state.materials.push(nm);
+          materialId = nm.id;
+        }
+      }
+    } else {
+      materialId = null;
+    }
+
+    const nowIso = new Date().toISOString();
+
+    if (editing){
+      const idx = state.activities.findIndex(a => a.id === activity.id);
+      if (idx >= 0){
+        state.activities[idx] = {
+          ...state.activities[idx],
+          logged_on: loggedOn,
+          category: draft.category,
+          input_type: draft.input_type,
+          material_id: materialId,
+          amount,
+          unit: draft.unit,
+          note,
+          updated_at: nowIso
+        };
+      }
+    } else {
+      state.activities.push({
+        id: uid('a'),
+        challenge_id: ch.id,
+        logged_on: loggedOn,
+        category: draft.category,
+        input_type: draft.input_type,
+        material_id: materialId,
+        amount,
+        unit: draft.unit,
+        note,
+        created_at: nowIso,
+        updated_at: nowIso
+      });
+    }
+
+    saveState();
+    closeModal();
+    render();
+  });
+
+  setTimeout(() => amountInput.focus(), 60);
+}
+
+/* =========================================================
+   Material modal
+   ========================================================= */
+function openMaterialModal(material){
+  const ch = state.challenge;
+  const editing = !!material;
+  const m = material || {
+    title: '', creator: '', default_input_type: 'kindle',
+    default_category: 'reading', status: 'active'
+  };
+
+  openModal(`
+    <div class="modal-backdrop" data-action="close-modal"></div>
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h2>${editing ? 'Edit material' : 'New material'}</h2>
+        <button class="icon-btn" data-action="close-modal" aria-label="Close">✕</button>
+      </div>
+      <form id="matForm" class="modal-body" autocomplete="off">
+        <div class="field">
+          <label for="matTitle">Title</label>
+          <input type="text" id="matTitle" value="${escapeHtml(m.title)}" required placeholder="e.g. Project Hail Mary">
+        </div>
+        <div class="field">
+          <label for="matCreator">Creator <span style="font-weight:500;text-transform:none">(optional)</span></label>
+          <input type="text" id="matCreator" value="${escapeHtml(m.creator || '')}" placeholder="Author, host or studio">
+        </div>
+        <div class="field">
+          <label for="matType">Default input type</label>
+          <select id="matType">
+            ${TYPE_ORDER.map(t => `<option value="${t}" ${m.default_input_type === t ? 'selected' : ''}>${TYPES[t].label} (${TYPES[t].category})</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label for="matStatus">Status</label>
+          <select id="matStatus">
+            <option value="active" ${m.status === 'active' ? 'selected' : ''}>Active</option>
+            <option value="completed" ${m.status === 'completed' ? 'selected' : ''}>Completed</option>
+            <option value="archived" ${m.status === 'archived' ? 'selected' : ''}>Archived</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-action="close-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">${editing ? 'Save changes' : 'Add material'}</button>
+        </div>
+      </form>
+    </div>
+  `);
+
+  $('#matForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const title = $('#matTitle').value.trim();
+    if (!title) return;
+    const type = $('#matType').value;
+    const payload = {
+      title,
+      creator: $('#matCreator').value.trim(),
+      default_input_type: type,
+      default_category: TYPES[type].category,
+      status: $('#matStatus').value
+    };
+
+    if (editing){
+      const target = state.materials.find(x => x.id === material.id);
+      if (target) Object.assign(target, payload);
+    } else {
+      state.materials.push({
+        id: uid('m'),
+        challenge_id: ch.id,
+        ...payload,
+        cover_url: ''
+      });
+    }
+
+    saveState();
+    closeModal();
+    render();
+  });
+
+  setTimeout(() => $('#matTitle').focus(), 60);
+}
+
+/* =========================================================
+   Settings modal
+   ========================================================= */
+function openSettings(){
+  const ch = state.challenge;
+  const actCount = state.activities.length;
+  const matCount = state.materials.length;
+
+  openModal(`
+    <div class="modal-backdrop" data-action="close-modal"></div>
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h2>Challenge settings</h2>
+        <button class="icon-btn" data-action="close-modal" aria-label="Close">✕</button>
+      </div>
+      <form id="setForm" class="modal-body" autocomplete="off">
+        <div class="field">
+          <label for="setName">Challenge name</label>
+          <input type="text" id="setName" value="${escapeHtml(ch.name)}">
+        </div>
+        <div class="field">
+          <label for="setStart">Start date</label>
+          <input type="date" id="setStart" value="${ch.start_date}">
+        </div>
+        <p class="hint">The challenge is 90 days long — the end date is set automatically.</p>
+        <div class="field">
+          <label for="setRead">Reading target (pages)</label>
+          <input type="number" id="setRead" min="1" step="1" value="${ch.reading_target_pages}">
+        </div>
+        <div class="field">
+          <label for="setListen">Listening target (minutes)</label>
+          <input type="number" id="setListen" min="1" step="1" value="${ch.listening_target_minutes}">
+        </div>
+
+        <div class="data-block">
+          <div class="data-title">Data</div>
+          <div class="data-btns">
+            <button type="button" class="btn btn-ghost" data-action="export-json">⬇ Export JSON</button>
+            <button type="button" class="btn btn-ghost" data-action="export-csv">⬇ Export CSV</button>
+            <button type="button" class="btn btn-ghost" data-action="import-json">⬆ Import JSON</button>
+          </div>
+          <p class="hint" style="margin-top:12px">
+            Export JSON saves a full backup (${actCount} activit${actCount === 1 ? 'y' : 'ies'},
+            ${matCount} material${matCount === 1 ? '' : 's'}, and settings). Export CSV lists activities only.
+            Import replaces your current data.
+          </p>
+          <input type="file" id="importFile" accept=".json,application/json" style="display:none">
+        </div>
+
+        <div class="modal-actions" style="justify-content:space-between">
+          <button type="button" class="btn btn-ghost" data-action="reset-all">Reset all data</button>
+          <button type="submit" class="btn btn-primary">Save settings</button>
+        </div>
+      </form>
+    </div>
+  `);
+
+  $('#setForm').addEventListener('submit', e => {
+    e.preventDefault();
+    ch.name = $('#setName').value.trim() || 'English Super Challenge';
+    ch.start_date = $('#setStart').value || ch.start_date;
+    ch.end_date = addDays(ch.start_date, 89);
+    ch.reading_target_pages = Math.max(1, Number($('#setRead').value) || 6000);
+    ch.listening_target_minutes = Math.max(1, Number($('#setListen').value) || 4500);
+    saveState();
+    closeModal();
+    render();
+  });
+}
+
+/* =========================================================
+   Event handling
+   ========================================================= */
+document.addEventListener('click', e => {
+  const navBtn = e.target.closest('[data-nav]');
+  if (navBtn){
+    currentView = navBtn.dataset.nav;
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
+  const metricBtn = e.target.closest('[data-metric]');
+  if (metricBtn){
+    progressMetric = metricBtn.dataset.metric;
+    render();
+    return;
+  }
+
+  const actionEl = e.target.closest('[data-action]');
+  if (!actionEl) return;
+  const action = actionEl.dataset.action;
+
+  switch (action){
+    case 'open-log':
+      openLogModal(null);
+      break;
+
+    case 'close-modal':
+      closeModal();
+      break;
+
+    case 'open-settings':
+      openSettings();
+      break;
+
+    case 'edit-activity': {
+      const a = state.activities.find(x => x.id === actionEl.dataset.id);
+      if (a) openLogModal(a);
+      break;
+    }
+
+    case 'delete-activity': {
+      const id = actionEl.dataset.id;
+      const a = state.activities.find(x => x.id === id);
+      if (!a) break;
+      if (confirm(`Delete this ${fmt(a.amount)} ${a.unit === 'pages' ? 'page' : 'minute'} entry?`)){
+        state.activities = state.activities.filter(x => x.id !== id);
+        saveState();
+        render();
+      }
+      break;
+    }
+
+    case 'add-material':
+      openMaterialModal(null);
+      break;
+
+    case 'edit-material': {
+      const m = materialById(actionEl.dataset.id);
+      if (m) openMaterialModal(m);
+      break;
+    }
+
+    case 'delete-material': {
+      const id = actionEl.dataset.id;
+      const m = materialById(id);
+      if (!m) break;
+      const count = state.activities.filter(a => a.material_id === id).length;
+      const msg = count
+        ? `Delete "${m.title}"? Its ${count} logged entr${count === 1 ? 'y' : 'ies'} will be kept but unlinked.`
+        : `Delete "${m.title}"?`;
+      if (confirm(msg)){
+        state.materials = state.materials.filter(x => x.id !== id);
+        state.activities.forEach(a => { if (a.material_id === id) a.material_id = null; });
+        saveState();
+        render();
+      }
+      break;
+    }
+
+    case 'clear-filters':
+      historyFilters = { from: '', to: '', category: 'all', type: 'all', material: 'all', q: '' };
+      render();
+      break;
+
+    case 'export-json':
+      exportJSON();
+      break;
+
+    case 'export-csv':
+      exportCSV();
+      break;
+
+    case 'import-json': {
+      const fileInput = document.getElementById('importFile');
+      if (fileInput) fileInput.click();
+      break;
+    }
+
+    case 'reset-all':
+      if (confirm('Reset everything? All logged activities, materials, and settings will be permanently cleared.')){
+        resetAll();
+        closeModal();
+        render();
+      }
+      break;
+  }
+});
+
+/* ---- Filter inputs & file import ---- */
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.id === 'histFrom'){ historyFilters.from = t.value; render(); }
+  else if (t.id === 'histTo'){ historyFilters.to = t.value; render(); }
+  else if (t.id === 'histCategory'){ historyFilters.category = t.value; render(); }
+  else if (t.id === 'histType'){ historyFilters.type = t.value; render(); }
+  else if (t.id === 'histMaterial'){ historyFilters.material = t.value; render(); }
+  else if (t.id === 'importFile'){
+    const file = t.files && t.files[0];
+    if (file) importJSONFile(file);
+    t.value = ''; /* allow re-importing the same file */
+  }
+});
+
+document.addEventListener('input', e => {
+  if (e.target.id === 'histSearch'){
+    historyFilters.q = e.target.value;
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(renderPreservingFocus, 220);
+  }
+});
+
+/* ---- Escape closes modal ---- */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && $('#modalRoot').innerHTML) closeModal();
+});
+
+/* =========================================================
+   Boot
+   ========================================================= */
+loadState();
+render();
+</script>
+</body>
+</html>
