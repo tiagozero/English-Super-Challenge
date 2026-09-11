@@ -1,0 +1,2064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>30 Words a Day — Vocabulary Challenge</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+    background:#f6f7f9;color:#14161c;font-size:15px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:0 18px}
+  .topbar{background:#fff;border-bottom:1px solid #e9ebef;position:sticky;top:0;z-index:40}
+  .topbar-in{display:flex;align-items:center;justify-content:space-between;height:56px}
+  .brand{font-weight:700;letter-spacing:-.02em;font-size:16.5px}
+  .brand em{font-style:normal;color:#9aa0ad;font-weight:500}
+  .streak{font-size:13.5px;font-weight:600;background:#fff7ed;color:#c2410c;padding:5px 11px;border-radius:999px}
+  .tabs{display:flex;gap:4px;overflow-x:auto;padding:10px 18px 0;max-width:900px;margin:0 auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{border:0;background:transparent;padding:7px 12px;border-radius:9px;font:inherit;font-size:13.5px;font-weight:600;
+       color:#6b7280;cursor:pointer;white-space:nowrap;display:flex;gap:6px;align-items:center;transition:.15s}
+  .tab:hover{background:#eceef2;color:#14161c}
+  .tab.active{background:#14161c;color:#fff}
+  .tab .b{background:#4f46e5;color:#fff;border-radius:999px;font-size:11px;padding:0 6px;min-width:17px;text-align:center;line-height:17px;font-weight:700}
+  .tab.active .b{background:#fff;color:#14161c}
+  main{padding-top:18px;padding-bottom:90px}
+  .card{background:#fff;border:1px solid #e9ebef;border-radius:14px;padding:18px;margin-bottom:14px}
+  .card h2{margin:0 0 2px;font-size:16px;letter-spacing:-.01em}
+  .card h3{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:#9aa0ad}
+  .muted{color:#6b7280}
+  .small{font-size:13px}
+  .tiny{font-size:12px}
+  .row{display:flex;align-items:center;gap:10px}
+  .between{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .wrapflex{display:flex;flex-wrap:wrap;gap:8px}
+  .mt{margin-top:14px}
+  .mb{margin-bottom:12px}
+  .btn{border:1px solid #e2e5ea;background:#fff;color:#14161c;padding:8px 13px;border-radius:9px;font:inherit;
+       font-size:13.5px;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap}
+  .btn:hover{background:#f3f4f7}
+  .btn.primary{background:#4f46e5;border-color:#4f46e5;color:#fff}
+  .btn.primary:hover{background:#4338ca}
+  .btn.ghost{border-color:transparent;background:transparent;color:#6b7280}
+  .btn.ghost:hover{background:#eceef2;color:#14161c}
+  .btn.sm{padding:5px 10px;font-size:12.5px;border-radius:8px}
+  .btn.danger{color:#b91c1c;border-color:#fecaca}
+  .btn.danger:hover{background:#fef2f2}
+  .btn:disabled{opacity:.45;cursor:default}
+  .pill{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:999px;font-size:11.5px;
+        font-weight:700;background:#f1f2f5;color:#5b6270;letter-spacing:.01em}
+  .pill.collocation{background:#eef2ff;color:#4338ca}
+  .pill.phrasal{background:#e0f2fe;color:#0369a1}
+  .pill.chunk{background:#fef3c7;color:#b45309}
+  .pill.vocab{background:#d1fae5;color:#047857}
+  .pill.new{background:#f1f2f5;color:#6b7280}
+  .pill.studied{background:#e0e7ff;color:#3730a3}
+  .pill.practicing{background:#fef3c7;color:#b45309}
+  .pill.active{background:#d1fae5;color:#047857}
+  .pill.mastered{background:#ede9fe;color:#6d28d9}
+  .bar{height:9px;background:#eceef2;border-radius:999px;overflow:hidden}
+  .bar>i{display:block;height:100%;background:#4f46e5;border-radius:999px;transition:width .35s}
+  .bar.green>i{background:#10b981}
+  .bignum{font-size:30px;font-weight:750;letter-spacing:-.03em;line-height:1}
+  .item{display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid #f2f3f6;cursor:pointer}
+  .item:last-child{border-bottom:0}
+  .item:hover{background:#fafbfc}
+  .item.sel{background:#f5f5ff}
+  .item.sel:hover{background:#eef0ff}
+  .item .term{font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .item .term small{display:block;font-weight:400;color:#9aa0ad;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cbx{width:20px;height:20px;border:1.5px solid #d1d5db;border-radius:6px;display:flex;align-items:center;
+       justify-content:center;font-size:12px;font-weight:800;color:#fff;background:#fff;flex-shrink:0;line-height:1}
+  .cbx.on{background:#4f46e5;border-color:#4f46e5}
+  label.f{display:block;font-size:12px;font-weight:700;color:#6b7280;margin:0 0 5px;letter-spacing:.03em;text-transform:uppercase}
+  input[type=text],input[type=number],textarea,select{
+    width:100%;border:1px solid #e2e5ea;border-radius:10px;padding:10px 12px;font:inherit;font-size:14px;
+    background:#fff;color:#14161c;outline:none;transition:.15s;resize:vertical}
+  input:focus,textarea:focus,select:focus{border-color:#4f46e5;box-shadow:0 0 0 3px rgba(79,70,229,.12)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:620px){.grid2{grid-template-columns:1fr}}
+  .chip{border:1px solid #e2e5ea;background:#fff;padding:6px 12px;border-radius:999px;font:inherit;font-size:13px;
+        font-weight:600;cursor:pointer;transition:.15s;color:#4b5563}
+  .chip:hover{background:#f3f4f7}
+  .chip.on{background:#14161c;border-color:#14161c;color:#fff}
+  #modal{position:fixed;inset:0;display:none;z-index:100}
+  #modal.open{display:block}
+  .modal-back{position:absolute;inset:0;background:rgba(15,17,22,.45);backdrop-filter:blur(2px)}
+  .modal-card{position:relative;background:#fff;max-width:640px;margin:40px auto;border-radius:16px;
+              max-height:calc(100vh - 80px);overflow-y:auto;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.25)}
+  @media(max-width:620px){.modal-card{margin:0;border-radius:0;max-height:100vh;height:100vh}}
+  .big-q{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:8px 0 4px}
+  .opt{display:block;width:100%;text-align:left;border:1px solid #e2e5ea;background:#fff;padding:12px 14px;
+       border-radius:11px;font:inherit;font-size:14px;cursor:pointer;margin-bottom:8px;transition:.15s;font-weight:500}
+  .opt:hover{background:#f7f8fa;border-color:#c9ced8}
+  .opt.correct{background:#ecfdf5;border-color:#10b981;color:#047857;font-weight:600}
+  .opt.wrong{background:#fef2f2;border-color:#ef4444;color:#b91c1c}
+  .fb{padding:12px 14px;border-radius:11px;font-size:14px;margin-top:10px}
+  .fb.ok{background:#ecfdf5;color:#047857}
+  .fb.no{background:#fef2f2;color:#b91c1c}
+  /* Memory game */
+  .mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  @media(max-width:520px){.mem-grid{grid-template-columns:repeat(3,1fr);gap:6px}}
+  .mem-card{aspect-ratio:1;border-radius:12px;display:flex;align-items:center;justify-content:center;
+            padding:8px;text-align:center;font-size:12.5px;font-weight:600;cursor:pointer;
+            background:#14161c;color:#fff;border:2px solid transparent;transition:.2s;
+            word-break:break-word;overflow:hidden;user-select:none;-webkit-tap-highlight-color:transparent}
+  .mem-card:hover{transform:translateY(-2px)}
+  .mem-card.flipped{background:#eef2ff;color:#3730a3;border-color:#c7d2fe;cursor:default;transform:none}
+  .mem-card.matched{background:#ecfdf5;color:#047857;border-color:#10b981;cursor:default;opacity:.7;transform:none}
+  .mem-card .mem-back{font-size:22px;opacity:.5;font-weight:800}
+  .mem-card .mem-face{font-size:12px;line-height:1.25;max-height:100%;overflow:hidden;
+                      display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical}
+  @media(max-width:520px){.mem-card .mem-face{font-size:11px;-webkit-line-clamp:5}}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:#9aa0ad;padding:8px 6px;border-bottom:1px solid #e9ebef}
+  td{padding:9px 6px;border-bottom:1px solid #f2f3f6}
+  th.n,td.n{text-align:right;font-variant-numeric:tabular-nums}
+  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+  .cal .dow{font-size:11px;font-weight:700;color:#9aa0ad;text-align:center;padding:4px 0}
+  .cal .day{aspect-ratio:1;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+            font-size:12px;font-weight:600;color:#6b7280;background:#f4f5f8}
+  .cal .day.today{outline:2px solid #14161c;outline-offset:1px}
+  .cal .day.l1{background:#e0e7ff;color:#3730a3}
+  .cal .day.l2{background:#c7d2fe;color:#312e81}
+  .cal .day.l3{background:#818cf8;color:#fff}
+  .cal .day.l4{background:#4f46e5;color:#fff}
+  .cal .day.empty{background:transparent}
+  mark{background:#fde68a;border-radius:4px;padding:0 2px;color:#78350f;font-weight:600}
+  .empty{padding:26px 0;text-align:center;color:#9aa0ad;font-size:13.5px}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#14161c;color:#fff;
+         padding:11px 18px;border-radius:11px;font-size:13.5px;font-weight:600;z-index:200;opacity:0;
+         transition:.25s;pointer-events:none}
+  .toast.show{opacity:1;bottom:34px}
+  .sep{height:1px;background:#f2f3f6;margin:14px 0}
+  .statbox{background:#fafbfc;border:1px solid #eef0f3;border-radius:11px;padding:12px 14px}
+  .statbox .v{font-size:21px;font-weight:750;letter-spacing:-.02em}
+  .statbox .k{font-size:11.5px;color:#9aa0ad;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:620px){.grid3,.grid4{grid-template-columns:repeat(2,1fr)}}
+  .csv-preview{max-height:220px;overflow-y:auto;border:1px solid #e9ebef;border-radius:10px;padding:8px;background:#fafbfc}
+  .csv-preview table{font-size:12.5px}
+  .csv-preview th,.csv-preview td{padding:5px 8px}
+  .selbar{background:#f5f5ff;border:1px solid #c7d2fe;border-radius:10px;padding:10px 14px;margin-top:12px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap topbar-in">
+    <div class="brand">30 words <em>a day</em></div>
+    <div class="streak">🔥 <b id="streakNum">0</b> day streak</div>
+  </div>
+</div>
+<nav class="tabs" id="tabs"></nav>
+<main class="wrap" id="app"></main>
+<div id="modal"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   CONSTANTS
+   ============================================================ */
+const CATS = ['collocation','phrasal','chunk','vocab'];
+const CAT_LABEL = {collocation:'Collocation',phrasal:'Phrasal Verb',chunk:'Chunk',vocab:'Vocabulary'};
+const CAT_SHORT = {collocation:'Colloc',phrasal:'Phrasal',chunk:'Chunk',vocab:'Vocab'};
+const STATUS_LABEL = {new:'New',studied:'Studying',practicing:'Practicing',active:'Active',mastered:'Mastered'};
+/* INTERVALS[stage] = days until next review after reaching that stage.
+   Stage 0 = 0 so "Again" keeps the item due today. */
+const INTERVALS = [0,1,3,7,14,30,60];
+const SCHEDULE  = ['Day 0','Day 1','Day 3','Day 7','Day 14','Day 30','Mastered'];
+const WRITE_REQ = {collocation:2,phrasal:1,chunk:1,vocab:2};
+const LS_KEY = 'words30.v1';
+const MEM_PAIRS = 6;   /* number of pairs per memory game */
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const $  = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+const uid = ()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3);
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const escRe = s => String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+const norm = s => String(s||'').toLowerCase().replace(/[^a-z0-9' ]/g,'').replace(/\s+/g,' ').trim();
+const shuffle = a => { for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];} return a; };
+
+function iso(d=new Date()){ const t=new Date(d.getTime()-d.getTimezoneOffset()*6e4); return t.toISOString().slice(0,10); }
+function parseISO(s){ const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+function addDays(s,n){ const d=parseISO(s); d.setDate(d.getDate()+n); return iso(d); }
+function fmtDate(s){ return parseISO(s).toLocaleDateString(undefined,{month:'short',day:'numeric'}); }
+function fmtLong(s){ return parseISO(s).toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'}); }
+function daysAgo(s){ return Math.round((parseISO(iso())-parseISO(s))/864e5); }
+
+function toast(msg){
+  const t=$('#toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1900);
+}
+
+/* Map a CSV category string to an internal category key. */
+function mapCategory(raw){
+  const s = String(raw||'').trim().toLowerCase().replace(/[_-]+/g,' ');
+  if(!s) return '';
+  if(s === 'collocation' || s === 'collocations' || s === 'colloc' || s === 'col') return 'collocation';
+  if(s === 'phrasal verb' || s === 'phrasal verbs' || s === 'phrasal' || s === 'pv' || s === 'phrasalverb') return 'phrasal';
+  if(s === 'chunk' || s === 'chunks') return 'chunk';
+  if(s === 'vocabulary' || s === 'vocab' || s === 'word' || s === 'words') return 'vocab';
+  return '';
+}
+
+/* ============================================================
+   CSV PARSER
+   ============================================================ */
+function parseCSV(text){
+  if(text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+  const rows = [];
+  let row = [];
+  let field = '';
+  let inQuotes = false;
+  let i = 0;
+  while(i < text.length){
+    const c = text[i];
+    if(inQuotes){
+      if(c === '"'){
+        if(text[i+1] === '"'){ field += '"'; i += 2; continue; }
+        inQuotes = false; i++; continue;
+      }
+      field += c; i++; continue;
+    }
+    if(c === '"'){ inQuotes = true; i++; continue; }
+    if(c === ','){ row.push(field); field=''; i++; continue; }
+    if(c === '\r'){ i++; continue; }
+    if(c === '\n'){ row.push(field); rows.push(row); row=[]; field=''; i++; continue; }
+    field += c; i++;
+  }
+  if(field.length || row.length){ row.push(field); rows.push(row); }
+  return rows.filter(r => r.some(cell => String(cell).trim().length));
+}
+
+/* Term, Meaning, Example Sentence, Category */
+function csvToItems(rows){
+  if(!rows.length) return { items:[], skipped:0, headerUsed:false, uncategorized:0 };
+
+  const header = rows[0].map(h => String(h||'').trim().toLowerCase());
+  const aliases = {
+    term:     ['term','word','expression','phrase','item','vocabulary','entry'],
+    meaning:  ['meaning','definition','translation','explanation','sense','gloss'],
+    example:  ['example sentence','example','sentence','sample sentence','sample','usage','context'],
+    category: ['category','type','kind','class','group','cat']
+  };
+  const findCol = key => header.findIndex(h => aliases[key].includes(h));
+
+  let ti = findCol('term');
+  let mi = findCol('meaning');
+  let ei = findCol('example');
+  let ci = findCol('category');
+  const headerUsed = ti !== -1 || mi !== -1 || ei !== -1 || ci !== -1;
+
+  if(!headerUsed){ ti = 0; mi = 1; ei = 2; ci = 3; }
+  if(ti === -1) ti = 0;
+  if(mi === -1) mi = 1;
+  if(ei === -1) ei = 2;
+
+  const body = headerUsed ? rows.slice(1) : rows;
+  const items = [];
+  let skipped = 0;
+  let uncategorized = 0;
+
+  for(const r of body){
+    const term = String(r[ti]||'').trim();
+    if(!term){ skipped++; continue; }
+    const rawCat = ci >= 0 ? String(r[ci]||'').trim() : '';
+    const category = mapCategory(rawCat);
+    if(!category) uncategorized++;
+    items.push({
+      term,
+      meaning: mi >= 0 ? String(r[mi]||'').trim() : '',
+      example: ei >= 0 ? String(r[ei]||'').trim() : '',
+      category,
+      rawCategory: rawCat
+    });
+  }
+  return { items, skipped, headerUsed, uncategorized };
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let S = null;
+let view = 'today';
+let ui = {};
+let modalId = null;
+
+function defaultSettings(){
+  return { target:30, dist:{collocation:10,phrasal:5,chunk:5,vocab:10} };
+}
+
+function mk(term,category,meaning,example,source,extra){
+  return Object.assign({
+    id:uid(), term, category, meaning, example,
+    personal:'', source:source||'', difficulty:2, notes:'', pronunciation:'', related:'',
+    inbox:false, dateAdded:iso(), challengeDate:null,
+    studiedAt:null, practicedAt:null, activeAt:null, masteredAt:null,
+    reviews:[], stage:0, nextReview:iso()
+  }, extra||{});
+}
+
+function emptyState(){
+  return { settings: defaultSettings(), items: [], days: {} };
+}
+
+function load(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(raw){ const p=JSON.parse(raw); if(p && Array.isArray(p.items)) return p; }
+  }catch(e){}
+  return emptyState();
+}
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){} }
+
+/* ============================================================
+   DERIVED HELPERS
+   ============================================================ */
+function dayOf(d){ return S.days[d] || {target:S.settings.target, dist:{...S.settings.dist}, writing:'', writeSel:[]}; }
+function ensureDay(d){
+  if(!S.days[d]) S.days[d] = {target:S.settings.target, dist:{...S.settings.dist}, writing:'', writeSel:[]};
+  return S.days[d];
+}
+
+function statusOf(it){
+  if(it.masteredAt || it.stage>=6) return 'mastered';
+  if(it.stage>=3 || it.activeAt)  return 'active';
+  if(it.practicedAt)              return 'practicing';
+  if(it.studiedAt)                return 'studied';
+  return 'new';
+}
+
+function dueItems(){ const T=iso(); return S.items.filter(i=>!i.inbox && i.nextReview<=T); }
+function inboxItems(){ return S.items.filter(i=>i.inbox); }
+function todayChallenge(){ const T=iso(); return S.items.filter(i=>i.challengeDate===T); }
+function activeCount(){ return S.items.filter(i=>['active','mastered'].includes(statusOf(i))).length; }
+function masteredCount(){ return S.items.filter(i=>statusOf(i)==='mastered').length; }
+
+function dayStats(d){
+  const items = S.items;
+  return {
+    collected: items.filter(i=>i.dateAdded===d).length,
+    studied:   items.filter(i=>i.studiedAt===d).length,
+    practiced: items.filter(i=>i.practicedAt===d).length,
+    active:    items.filter(i=>i.activeAt===d).length,
+    mastered:  items.filter(i=>i.masteredAt===d).length,
+    target:    dayOf(d).target
+  };
+}
+function dayActive(d){
+  return S.items.some(i=>i.dateAdded===d||i.studiedAt===d||i.practicedAt===d||i.activeAt===d);
+}
+function streak(){
+  let n=0, d=iso();
+  if(!dayActive(d)) d=addDays(d,-1);
+  let guard=0;
+  while(dayActive(d) && guard++<400){ n++; d=addDays(d,-1); }
+  return n;
+}
+
+/* ============================================================
+   SELECTION HELPERS
+   ============================================================ */
+function clearSelection(){ ui.selectMode = false; ui.selected = new Set(); }
+
+function filteredLibrary(){
+  ui.lib = ui.lib || {cat:'all', status:'all', q:''};
+  let list = S.items.filter(i=>!i.inbox);
+  if(ui.lib.cat!=='all')    list = list.filter(i=>i.category===ui.lib.cat);
+  if(ui.lib.status!=='all') list = list.filter(i=>statusOf(i)===ui.lib.status);
+  if(ui.lib.q){
+    const q = ui.lib.q.toLowerCase();
+    list = list.filter(i=>(i.term+' '+i.meaning+' '+i.example).toLowerCase().includes(q));
+  }
+  return list.slice().sort((a,b)=> b.dateAdded.localeCompare(a.dateAdded) || a.term.localeCompare(b.term));
+}
+
+function deleteSelected(){
+  const ids = [...ui.selected];
+  if(!ids.length){ toast('Nothing selected'); return; }
+  if(!confirm(`Delete ${ids.length} item${ids.length===1?'':'s'}? This cannot be undone.`)) return;
+
+  const idSet = new Set(ids);
+  S.items = S.items.filter(i=>!idSet.has(i.id));
+
+  Object.values(S.days).forEach(d=>{
+    if(Array.isArray(d.writeSel)) d.writeSel = d.writeSel.filter(id=>!idSet.has(id));
+  });
+
+  if(modalId && idSet.has(modalId)) modalId = null;
+
+  const count = ids.length;
+  clearSelection();
+  save();
+  render();
+  toast(`Deleted ${count} item${count===1?'':'s'}`);
+}
+
+/* ============================================================
+   MUTATIONS
+   ============================================================ */
+function markStudied(it){
+  const T=iso();
+  if(!it.studiedAt) it.studiedAt = T;
+  if(it.inbox){ it.inbox=false; }
+  save();
+}
+function markPracticed(it){
+  const T=iso();
+  if(!it.practicedAt) it.practicedAt = T;
+  if(!it.studiedAt)   it.studiedAt   = T;
+  save();
+}
+
+/* Apply a review rating and update stage/nextReview. */
+function rate(it, rating){
+  const T = iso();
+  let s = it.stage;
+  if(rating==='again')      s = 0;
+  else if(rating==='hard')  s = Math.max(0, s);
+  else if(rating==='good')  s = s + 1;
+  else if(rating==='easy')  s = s + 2;
+  s = Math.min(s, 6);
+  it.stage = s;
+  it.nextReview = addDays(T, INTERVALS[s]);
+  it.reviews.push({date:T, rating});
+  if(!it.studiedAt) it.studiedAt = T;
+  if(!it.practicedAt) it.practicedAt = T;
+  if(s>=3 && !it.activeAt) it.activeAt = T;
+  if(s>=6 && !it.masteredAt) it.masteredAt = T;
+  save();
+}
+
+function buildFromInbox(){
+  const T = iso();
+  const day = ensureDay(T);
+  const current = todayChallenge();
+  const have = {}; CATS.forEach(c=>have[c]=0);
+  current.forEach(i=>{ if(have[i.category]!==undefined) have[i.category]++; });
+
+  let added = 0;
+  CATS.forEach(c=>{
+    let need = day.dist[c] - have[c];
+    if(need<=0) return;
+    let pool = S.items.filter(i=>i.inbox && i.category===c);
+    if(pool.length < need){
+      pool = pool.concat(S.items.filter(i=>i.inbox && !i.category));
+    }
+    for(const it of pool){
+      if(need<=0) break;
+      it.inbox = false;
+      it.category = c;
+      it.challengeDate = T;
+      it.dateAdded = T;
+      it.nextReview = T;
+      need--; added++;
+    }
+  });
+  save();
+  toast(added ? `Added ${added} item${added>1?'s':''} to today's challenge` : 'No matching items in your inbox');
+  render();
+}
+
+/* ============================================================
+   JSON EXPORT / IMPORT
+   ============================================================ */
+function exportData(){
+  const data = JSON.stringify(S, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const aEl = document.createElement('a');
+  aEl.href = url;
+  aEl.download = 'words30-backup-'+iso()+'.json';
+  document.body.appendChild(aEl);
+  aEl.click();
+  document.body.removeChild(aEl);
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+  toast('Data exported');
+}
+
+function importData(){
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json,application/json';
+  input.style.display = 'none';
+  document.body.appendChild(input);
+
+  input.addEventListener('change', ev=>{
+    const file = ev.target.files && ev.target.files[0];
+    document.body.removeChild(input);
+    if(!file) return;
+
+    const reader = new FileReader();
+    reader.onload = re=>{
+      try{
+        const parsed = JSON.parse(re.target.result);
+        if(!parsed || typeof parsed !== 'object') throw new Error('Not an object');
+        if(!Array.isArray(parsed.items)) throw new Error('Missing items array');
+
+        const cleanItems = parsed.items.map(raw=>{
+          return mk(
+            String(raw.term||'').trim(),
+            CATS.includes(raw.category) ? raw.category : (raw.category||''),
+            raw.meaning||'', raw.example||'', raw.source||'',
+            {
+              id: raw.id || uid(),
+              personal: raw.personal||'',
+              difficulty: Number(raw.difficulty)||2,
+              notes: raw.notes||'',
+              pronunciation: raw.pronunciation||'',
+              related: raw.related||'',
+              inbox: !!raw.inbox,
+              dateAdded: raw.dateAdded || iso(),
+              challengeDate: raw.challengeDate || null,
+              studiedAt: raw.studiedAt || null,
+              practicedAt: raw.practicedAt || null,
+              activeAt: raw.activeAt || null,
+              masteredAt: raw.masteredAt || null,
+              reviews: Array.isArray(raw.reviews) ? raw.reviews : [],
+              stage: Number(raw.stage)||0,
+              nextReview: raw.nextReview || iso()
+            }
+          );
+        });
+
+        const cleanSettings = (parsed.settings && typeof parsed.settings==='object')
+          ? {
+              target: Number(parsed.settings.target)||30,
+              dist: Object.assign({collocation:10,phrasal:5,chunk:5,vocab:10},
+                        (parsed.settings.dist && typeof parsed.settings.dist==='object') ? parsed.settings.dist : {})
+            }
+          : defaultSettings();
+
+        const cleanDays = (parsed.days && typeof parsed.days==='object') ? parsed.days : {};
+
+        const apply = ()=>{
+          S = { settings: cleanSettings, items: cleanItems, days: cleanDays };
+          save();
+          ui = {};
+          ui.lib = {cat:'all', status:'all', q:''};
+          ui.addCat = '';
+          clearSelection();
+          nav('today');
+          toast(`Imported ${cleanItems.length} item${cleanItems.length===1?'':'s'}`);
+        };
+
+        if(S.items.length){
+          if(confirm(`Importing will replace your current ${S.items.length} item(s). Continue?`)) apply();
+        } else {
+          apply();
+        }
+      } catch(err){
+        console.error(err);
+        toast('Import failed — invalid backup file');
+      }
+    };
+    reader.onerror = ()=> toast('Could not read the file');
+    reader.readAsText(file);
+  });
+
+  input.click();
+}
+
+/* ============================================================
+   CSV UPLOAD
+   ============================================================ */
+function openCSVUpload(){
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.csv,text/csv';
+  input.style.display = 'none';
+  document.body.appendChild(input);
+
+  input.addEventListener('change', ev=>{
+    const file = ev.target.files && ev.target.files[0];
+    document.body.removeChild(input);
+    if(!file) return;
+    readCSVFile(file);
+  });
+
+  input.click();
+}
+
+function readCSVFile(file){
+  const reader = new FileReader();
+  reader.onload = re=>{
+    try{
+      const text = re.target.result;
+      const rows = parseCSV(text);
+      const parsed = csvToItems(rows);
+      if(!parsed.items.length){
+        toast('No usable rows found in the CSV');
+        return;
+      }
+      ui.csvDraft = {
+        fileName: file.name,
+        items: parsed.items,
+        skipped: parsed.skipped,
+        headerUsed: parsed.headerUsed,
+        uncategorized: parsed.uncategorized
+      };
+      render();
+    } catch(err){
+      console.error(err);
+      toast('Could not parse the CSV file');
+    }
+  };
+  reader.onerror = ()=> toast('Could not read the file');
+  reader.readAsText(file);
+}
+
+function commitCSVImport(){
+  const draft = ui.csvDraft;
+  if(!draft || !draft.items.length){ toast('Nothing to import'); return; }
+  const T = iso();
+  let added = 0;
+  let uncategorized = 0;
+  for(const d of draft.items){
+    S.items.push(mk(d.term, d.category || '', d.meaning, d.example, '', {
+      inbox:true, dateAdded:T, nextReview:T
+    }));
+    if(!d.category) uncategorized++;
+    added++;
+  }
+  save();
+  ui.csvDraft = null;
+  const msg = uncategorized
+    ? `Added ${added} item${added>1?'s':''} to Inbox · ${uncategorized} without category`
+    : `Added ${added} item${added>1?'s':''} to your Inbox`;
+  toast(msg);
+  nav('inbox');
+}
+
+function cancelCSVImport(){
+  ui.csvDraft = null;
+  render();
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+const TABS = [
+  {id:'today',    label:'Today'},
+  {id:'inbox',    label:'Inbox'},
+  {id:'library',  label:'Library'},
+  {id:'practice', label:'Practice'},
+  {id:'writing',  label:'Write'},
+  {id:'review',   label:'Review'},
+  {id:'history',  label:'History'},
+  {id:'stats',    label:'Stats'}
+];
+
+function nav(id){
+  view = id;
+  ui.practice = null;
+  clearSelection();
+  render();
+  window.scrollTo(0,0);
+}
+
+function badge(id){
+  if(id==='inbox'){ const n=inboxItems().length; return n?`<span class="b">${n}</span>`:''; }
+  if(id==='review'){ const n=dueItems().length; return n?`<span class="b">${n}</span>`:''; }
+  return '';
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+const app = $('#app');
+const modal = $('#modal');
+
+function render(){
+  $('#streakNum').textContent = streak();
+  $('#tabs').innerHTML = TABS.map(t=>
+    `<button class="tab ${view===t.id?'active':''}" data-nav="${t.id}">${t.label}${badge(t.id)}</button>`
+  ).join('');
+
+  const fns = {
+    today:viewToday, inbox:viewInbox, library:viewLibrary, practice:viewPractice,
+    writing:viewWriting, review:viewReview, history:viewHistory, stats:viewStats,
+    add:viewAdd
+  };
+  app.innerHTML = (fns[view]||viewToday)();
+  if(view==='writing') bindWriting();
+  renderModal();
+}
+
+/* ============================================================
+   VIEW: TODAY
+   ============================================================ */
+function viewToday(){
+  const T = iso();
+  const day = dayOf(T);
+  const target = day.target;
+  const items = todayChallenge();
+  const collected = items.length;
+  const studied  = items.filter(i=>i.studiedAt).length;
+  const practiced= items.filter(i=>i.practicedAt).length;
+  const active   = items.filter(i=>statusOf(i)==='active'||statusOf(i)==='mastered').length;
+  const pct  = Math.min(100, Math.round(collected/target*100));
+  const pctP = Math.min(100, Math.round(practiced/target*100));
+
+  const byCat = {}; CATS.forEach(c=>byCat[c]=0);
+  items.forEach(i=>{ if(byCat[i.category]!==undefined) byCat[i.category]++; });
+  const missing = CATS.filter(c=>byCat[c] < day.dist[c])
+                      .map(c=>`${day.dist[c]-byCat[c]} ${CAT_LABEL[c]}${day.dist[c]-byCat[c]>1?'s':''}`);
+
+  const due = dueItems().length;
+  const inboxN = inboxItems().length;
+  const writingDone = !!(day.writing && day.writing.trim().length>40);
+
+  const list = items.length
+    ? items.map(rowItem).join('')
+    : `<div class="empty">No items in today's challenge yet.<br>Add vocabulary or build it from your inbox.</div>`;
+
+  return `
+  <div class="card">
+    <div class="between mb">
+      <div>
+        <div class="tiny muted" style="font-weight:600;text-transform:uppercase;letter-spacing:.06em">${fmtLong(T)}</div>
+        <h2 style="margin-top:2px">Today's challenge</h2>
+      </div>
+      <button class="btn sm" data-act="editDist">Distribution</button>
+    </div>
+
+    <div class="between" style="align-items:flex-end">
+      <div class="bignum">${collected}<span style="color:#c3c8d2;font-size:20px">/${target}</span></div>
+      <div class="small muted">collected today</div>
+    </div>
+    <div class="bar mt" style="margin-top:10px"><i style="width:${pct}%"></i></div>
+
+    <div class="grid4 mt">
+      ${stat('Studied', studied)}
+      ${stat('Practiced', practiced)}
+      ${stat('Active', active)}
+      ${stat('Review due', due)}
+    </div>
+
+    <div class="bar green mt" style="margin-top:14px"><i style="width:${pctP}%"></i></div>
+    <div class="tiny muted" style="margin-top:6px">Practice progress · ${practiced}/${target}</div>
+
+    ${missing.length ? `<div class="sep"></div>
+      <div class="tiny" style="font-weight:700;color:#9aa0ad;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Still missing</div>
+      <div class="wrapflex">${missing.map(m=>`<span class="pill">${esc(m)}</span>`).join('')}</div>` :
+      (collected>0 ? `<div class="sep"></div><div class="small" style="color:#047857;font-weight:600">✓ Today's challenge is complete</div>` : '')}
+
+    <div class="wrapflex mt">
+      <button class="btn primary" data-act="smartBuild" ${inboxN?'':'disabled'}>⚡ Build from Inbox (${inboxN})</button>
+      <button class="btn" data-nav="inbox">Open Inbox</button>
+      <button class="btn" data-nav="review">Review (${due})</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="between mb">
+      <h2>Today's items</h2>
+      <button class="btn sm primary" data-nav="add">+ Add item</button>
+    </div>
+    ${list}
+  </div>
+
+  <div class="card">
+    <div class="between">
+      <div>
+        <h2>Writing challenge</h2>
+        <div class="small muted">Use 2 collocations · 1 phrasal verb · 1 chunk · 2 vocabulary items</div>
+      </div>
+      <span class="pill ${writingDone?'active':''}">${writingDone?'Done':'Pending'}</span>
+    </div>
+    <div class="wrapflex mt">
+      <button class="btn ${writingDone?'':'primary'}" data-nav="writing">${writingDone?'Edit paragraph':'Start writing'}</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Quick capture</h3>
+    <div class="row">
+      <input type="text" id="quickTerm" placeholder="Type an expression you just met…" autocomplete="off">
+      <button class="btn primary" data-act="quickAdd">Save</button>
+    </div>
+    <div class="tiny muted" style="margin-top:8px">It goes straight to your Inbox — you can complete the details later.</div>
+  </div>`;
+}
+
+function stat(k,v){
+  return `<div class="statbox"><div class="v">${v}</div><div class="k">${k}</div></div>`;
+}
+
+function rowItem(it){
+  const st = statusOf(it);
+  const selectableView = view==='library' || view==='inbox';
+  if(selectableView && ui.selectMode){
+    const checked = ui.selected.has(it.id);
+    return `<div class="item ${checked?'sel':''}" data-toggle="${it.id}">
+      <span class="cbx ${checked?'on':''}">${checked?'✓':''}</span>
+      <span class="pill ${it.category}">${esc(CAT_SHORT[it.category]||'—')}</span>
+      <span class="term">${esc(it.term)}<small>${esc(it.meaning||'No meaning yet')}</small></span>
+      <span class="pill ${st}">${STATUS_LABEL[st]}</span>
+    </div>`;
+  }
+  return `<div class="item" data-open="${it.id}">
+    <span class="pill ${it.category}">${esc(CAT_SHORT[it.category]||'—')}</span>
+    <span class="term">${esc(it.term)}<small>${esc(it.meaning||'No meaning yet')}</small></span>
+    <span class="pill ${st}">${STATUS_LABEL[st]}</span>
+  </div>`;
+}
+
+function selectionBar(visibleCount){
+  const selCount = ui.selected ? ui.selected.size : 0;
+  if(!ui.selectMode) return '';
+  return `
+  <div class="selbar between">
+    <div class="small" style="font-weight:700;color:#4338ca">
+      ${selCount} selected <span class="muted" style="font-weight:500">· of ${visibleCount} shown</span>
+    </div>
+    <div class="wrapflex">
+      <button class="btn sm" data-act="selectAll">Select all</button>
+      <button class="btn sm" data-act="deselectAll" ${selCount?'':'disabled'}>Deselect</button>
+      <button class="btn sm danger" data-act="deleteSelected" ${selCount?'':'disabled'}>Delete (${selCount})</button>
+      <button class="btn sm ghost" data-act="exitSelect">Cancel</button>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   VIEW: INBOX
+   ============================================================ */
+function viewInbox(){
+  const list = inboxItems();
+  const rows = list.length ? list.map(rowItem).join('')
+    : `<div class="empty">Your inbox is empty.</div>`;
+
+  let csvPanel = '';
+  if(ui.csvDraft){
+    const d = ui.csvDraft;
+    const preview = d.items.slice(0,8).map(it=>`
+      <tr>
+        <td style="font-weight:600">${esc(it.term)}</td>
+        <td>${esc(it.meaning || '—')}</td>
+        <td class="muted">${esc(it.example || '—')}</td>
+        <td>${it.category
+              ? `<span class="pill ${it.category}">${esc(CAT_LABEL[it.category])}</span>`
+              : (it.rawCategory
+                  ? `<span class="pill" title="Unrecognized category">${esc(it.rawCategory)}</span>`
+                  : '<span class="muted">—</span>')}</td>
+      </tr>`).join('');
+    csvPanel = `
+    <div class="card" style="border-color:#c7d2fe;background:#f8faff">
+      <div class="between mb">
+        <div>
+          <h2>Ready to import</h2>
+          <div class="small muted">
+            ${esc(d.fileName)} · ${d.items.length} item${d.items.length===1?'':'s'} detected
+            ${d.headerUsed ? ' · header row detected' : ' · assumed columns: Term, Meaning, Example Sentence, Category'}
+            ${d.skipped ? ` · ${d.skipped} empty row${d.skipped===1?'':'s'} skipped` : ''}
+            ${d.uncategorized ? ` · ${d.uncategorized} without a valid category` : ''}
+          </div>
+        </div>
+        <span class="pill">${d.items.length}</span>
+      </div>
+      <div class="csv-preview">
+        <table>
+          <thead><tr><th>Term</th><th>Meaning</th><th>Example</th><th>Category</th></tr></thead>
+          <tbody>${preview}</tbody>
+        </table>
+        ${d.items.length>8?`<div class="tiny muted" style="padding:6px 8px">… and ${d.items.length-8} more</div>`:''}
+      </div>
+      <div class="tiny muted" style="margin-top:8px">
+        Accepted categories: <b>Collocation</b>, <b>Phrasal Verb</b>, <b>Chunk</b>, <b>Vocabulary</b>.
+        Items with an unrecognized or empty category will still import — you can categorize them later in the Inbox.
+      </div>
+      <div class="wrapflex mt">
+        <button class="btn primary" data-act="csvConfirm">Import ${d.items.length} to Inbox</button>
+        <button class="btn ghost" data-act="csvCancel">Cancel</button>
+      </div>
+    </div>`;
+  }
+
+  return `
+  ${csvPanel}
+  <div class="card">
+    <div class="between mb">
+      <div>
+        <h2>Vocabulary Inbox</h2>
+        <div class="small muted">${list.length} item${list.length===1?'':'s'} waiting to be processed</div>
+      </div>
+      <div class="wrapflex">
+        ${ui.selectMode
+          ? ''
+          : (list.length ? `<button class="btn sm" data-act="enterSelect">Select</button>` : '')}
+        <button class="btn primary" data-act="smartBuild" ${list.length?'':'disabled'}>⚡ Build today's 30</button>
+      </div>
+    </div>
+    <div class="row">
+      <input type="text" id="quickTerm" placeholder="Capture a word or expression…" autocomplete="off">
+      <button class="btn primary" data-act="quickAdd">Add</button>
+    </div>
+    <div class="sep"></div>
+    <div class="between">
+      <div>
+        <div class="small" style="font-weight:700">Bulk upload from CSV</div>
+        <div class="tiny muted">Columns: Term, Meaning, Example Sentence, Category.</div>
+      </div>
+      <button class="btn" data-act="csvUpload">⭱ Upload CSV</button>
+    </div>
+    ${selectionBar(list.length)}
+  </div>
+  <div class="card">${rows}</div>`;
+}
+
+/* ============================================================
+   VIEW: ADD
+   ============================================================ */
+function viewAdd(){
+  return `
+  <div class="card">
+    <h2>Add an item</h2>
+    <div class="small muted mb">Only <b>Term</b> and <b>Category</b> are required. Fill the rest later — speed first.</div>
+
+    <label class="f">Term</label>
+    <input type="text" id="f_term" placeholder="e.g. come up with" autocomplete="off" autofocus>
+
+    <div class="mt mb">
+      <label class="f">Category</label>
+      <div class="wrapflex" id="catPick">
+        ${CATS.map(c=>`<button class="chip" data-cat="${c}">${CAT_LABEL[c]}</button>`).join('')}
+      </div>
+    </div>
+
+    <label class="f">Meaning</label>
+    <input type="text" id="f_meaning" placeholder="Short definition" autocomplete="off">
+
+    <div class="grid2 mt">
+      <div><label class="f">Example sentence</label><input type="text" id="f_example" placeholder="From the source"></div>
+      <div><label class="f">Source</label><input type="text" id="f_source" placeholder="Book, podcast, series…"></div>
+    </div>
+
+    <div class="mt">
+      <button class="btn ghost sm" data-act="toggleMore" id="moreBtn">Show more fields ▾</button>
+    </div>
+
+    <div id="moreFields" style="display:none">
+      <div class="grid2 mt">
+        <div><label class="f">Personal example</label><input type="text" id="f_personal" placeholder="Your own sentence"></div>
+        <div><label class="f">Pronunciation</label><input type="text" id="f_pronunciation" placeholder="/kʌm ʌp wɪð/"></div>
+      </div>
+      <div class="grid2 mt">
+        <div><label class="f">Related expressions</label><input type="text" id="f_related" placeholder="think up, come up against"></div>
+        <div><label class="f">Difficulty (1–5)</label><input type="number" id="f_difficulty" min="1" max="5" value="2"></div>
+      </div>
+      <div class="mt"><label class="f">Notes</label><textarea id="f_notes" rows="2" placeholder="Anything worth remembering"></textarea></div>
+    </div>
+
+    <div class="wrapflex mt">
+      <button class="btn primary" data-act="saveAdd">Add &amp; next</button>
+      <button class="btn" data-act="saveAddOpen">Add &amp; open</button>
+      <button class="btn ghost" data-nav="today">Cancel</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Or bulk upload</h3>
+    <div class="between">
+      <div>
+        <div class="small" style="font-weight:700">Upload a CSV</div>
+        <div class="tiny muted">Term, Meaning, Example Sentence, Category — imported straight to your Inbox.</div>
+      </div>
+      <button class="btn primary" data-act="csvUpload">⭱ Upload CSV</button>
+    </div>
+  </div>`;
+}
+
+function readAddForm(){
+  const g = id => ($('#'+id) ? $('#'+id).value.trim() : '');
+  const cat = ui.addCat || '';
+  return {
+    term: g('f_term'), category: cat, meaning: g('f_meaning'), example: g('f_example'),
+    source: g('f_source'), personal: g('f_personal'), pronunciation: g('f_pronunciation'),
+    related: g('f_related'), notes: g('f_notes'), difficulty: Number(g('f_difficulty'))||2
+  };
+}
+function clearAddForm(){
+  ['f_term','f_meaning','f_example','f_source','f_personal','f_pronunciation','f_related','f_notes']
+    .forEach(id=>{ const e=$('#'+id); if(e) e.value=''; });
+}
+
+function doAdd(openIt){
+  const d = readAddForm();
+  if(!d.term){ toast('Enter a term first'); return; }
+  const T = iso();
+  const it = mk(d.term, d.category, d.meaning, d.example, d.source, {
+    personal:d.personal, pronunciation:d.pronunciation, related:d.related,
+    notes:d.notes, difficulty:d.difficulty,
+    dateAdded:T, nextReview:T, challengeDate:T
+  });
+  S.items.push(it);
+  save();
+  if(openIt){ openItem(it.id); }
+  else { clearAddForm(); toast('Added · '+it.term); render(); }
+}
+
+/* ============================================================
+   VIEW: LIBRARY
+   ============================================================ */
+function viewLibrary(){
+  const list = filteredLibrary();
+  const total = S.items.filter(i=>!i.inbox).length;
+
+  const rows = list.length ? list.map(rowItem).join('') : `<div class="empty">No items match.</div>`;
+
+  return `
+  <div class="card">
+    <div class="between mb">
+      <h2>Library <span class="muted" style="font-weight:500;font-size:14px">· ${total} items</span></h2>
+      <div class="wrapflex">
+        ${ui.selectMode
+          ? ''
+          : (total ? `<button class="btn sm" data-act="enterSelect">Select</button>` : '')}
+        <button class="btn sm primary" data-nav="add">+ Add</button>
+      </div>
+    </div>
+    <input type="text" id="libSearch" placeholder="Search term, meaning or example…" value="${esc(ui.lib.q)}" autocomplete="off">
+    <div class="wrapflex mt">
+      <button class="chip ${ui.lib.cat==='all'?'on':''}" data-libcat="all">All</button>
+      ${CATS.map(c=>`<button class="chip ${ui.lib.cat===c?'on':''}" data-libcat="${c}">${CAT_LABEL[c]}</button>`).join('')}
+    </div>
+    <div class="wrapflex mt">
+      <button class="chip ${ui.lib.status==='all'?'on':''}" data-libst="all">Any status</button>
+      ${Object.keys(STATUS_LABEL).map(s=>`<button class="chip ${ui.lib.status===s?'on':''}" data-libst="${s}">${STATUS_LABEL[s]}</button>`).join('')}
+    </div>
+    ${selectionBar(list.length)}
+  </div>
+  <div class="card">${rows}</div>`;
+}
+
+/* ============================================================
+   VIEW: PRACTICE
+   ============================================================ */
+function viewPractice(){
+  const T = iso();
+  if(!ui.practice){
+    const pool = S.items.filter(i=>!i.inbox && i.meaning);
+    const dueN = dueItems().length;
+    return `
+    <div class="card">
+      <h2>Practice</h2>
+      <div class="small muted mb">Active recall beats re-reading. Choose a mode — 10 items per round.</div>
+      <div class="wrapflex">
+        ${modeCard('recognition','Recognition','See the expression, choose the meaning.','👁')}
+        ${modeCard('recall','Recall','Read the meaning, produce the expression.','🧠')}
+        ${modeCard('memory','Memory Game','Flip cards and match each term with its meaning.','🎴')}
+        ${modeCard('production','Production','Write your own sentence using the item.','✍️')}
+      </div>
+      <div class="sep"></div>
+      <div class="small muted">${pool.length} items available · ${dueN} due for review</div>
+    </div>`;
+  }
+
+  const p = ui.practice;
+
+  /* Memory game has its own view — check first because it doesn't use p.q/p.idx */
+  if(p.mode === 'memory') return viewMemory();
+
+  if(p.idx >= p.q.length) return practiceSummary();
+
+  const it = S.items.find(x=>x.id===p.q[p.idx]);
+  if(!it) { ui.practice=null; return viewPractice(); }
+
+  const progress = `<div class="tiny muted mb">Item ${p.idx+1} of ${p.q.length} · ${p.correct} correct</div>`;
+
+  if(p.fb){
+    return `<div class="card">
+      ${progress}
+      ${practiceHead(it)}
+      <div class="fb ${p.fb.ok?'ok':'no'}">${p.fb.msg}</div>
+      ${it.personal ? `<div class="small muted mt">Your example: ${esc(it.personal)}</div>`:''}
+      <div class="wrapflex mt">
+        <button class="btn primary" data-act="pracNext">Next →</button>
+        <button class="btn ghost" data-act="pracStop">End session</button>
+      </div>
+    </div>`;
+  }
+
+  if(p.mode==='recognition'){
+    const opts = p.opts.map(o=>`
+      <button class="opt" data-pick="${esc(o)}">${esc(o)}</button>`).join('');
+    return `<div class="card">
+      ${progress}
+      <div class="tiny muted" style="text-transform:uppercase;letter-spacing:.06em;font-weight:700">What does this mean?</div>
+      <div class="big-q">${esc(it.term)}</div>
+      ${it.pronunciation?`<div class="small muted mb">${esc(it.pronunciation)}</div>`:'<div style="height:8px"></div>'}
+      ${opts}
+      <button class="btn ghost sm mt" data-act="pracStop">End session</button>
+    </div>`;
+  }
+
+  if(p.mode==='recall'){
+    return `<div class="card">
+      ${progress}
+      <div class="tiny muted" style="text-transform:uppercase;letter-spacing:.06em;font-weight:700">Which expression means…</div>
+      <div class="big-q" style="font-size:20px">${esc(it.meaning)}</div>
+      <div style="height:12px"></div>
+      <input type="text" id="pracInput" placeholder="Type the expression…" autocomplete="off" autofocus>
+      <div class="wrapflex mt">
+        <button class="btn primary" data-act="pracCheck">Check</button>
+        <button class="btn ghost" data-act="pracReveal">I don't know</button>
+        <button class="btn ghost" data-act="pracStop">End session</button>
+      </div>
+    </div>`;
+  }
+
+  /* production */
+  return `<div class="card">
+    ${progress}
+    ${practiceHead(it)}
+    <label class="f mt">Write your own sentence using it</label>
+    <textarea id="pracInput" rows="3" placeholder="Use it in a real situation from your life…"></textarea>
+    <div class="wrapflex mt">
+      <button class="btn primary" data-act="pracProduce">Save sentence</button>
+      <button class="btn ghost" data-act="pracStop">End session</button>
+    </div>
+  </div>`;
+}
+
+/* ---------- Memory game ---------- */
+function viewMemory(){
+  const p = ui.practice;
+
+  if(p.pairsFound === p.totalPairs){
+    return `<div class="card" style="text-align:center;padding:34px 18px">
+      <div style="font-size:34px">🎉</div>
+      <h2 style="margin-top:8px">All pairs matched!</h2>
+      <div class="muted small">${p.moves} move${p.moves===1?'':'s'} · ${p.totalPairs} pair${p.totalPairs===1?'':'s'}</div>
+      <div class="wrapflex mt" style="justify-content:center">
+        <button class="btn primary" data-act="startPrac" data-mode="memory">New game</button>
+        <button class="btn" data-act="pracStop">Back to modes</button>
+      </div>
+    </div>`;
+  }
+
+  const grid = p.cards.map((c, i)=>{
+    const isUp = c.flipped || c.matched;
+    const cls  = c.matched ? 'matched' : (c.flipped ? 'flipped' : '');
+    const face = isUp
+      ? `<span class="mem-face">${esc(c.text)}</span>`
+      : `<span class="mem-back">?</span>`;
+    return `<div class="mem-card ${cls}" data-act="memFlip" data-idx="${i}">${face}</div>`;
+  }).join('');
+
+  return `<div class="card">
+    <div class="between mb">
+      <div class="tiny muted">Moves: <b>${p.moves}</b> · Pairs: <b>${p.pairsFound}/${p.totalPairs}</b></div>
+      <button class="btn ghost sm" data-act="pracStop">End session</button>
+    </div>
+    <div class="mem-grid">${grid}</div>
+    <div class="tiny muted mt" style="text-align:center">Match each term with its meaning.</div>
+  </div>`;
+}
+
+function startMemoryGame(){
+  const T = iso();
+  const rank = i => (i.challengeDate===T?0:2) + (i.nextReview<=T?0:1);
+  let pool = S.items.filter(i=>!i.inbox && i.meaning);
+  pool.sort((a,b)=> rank(a)-rank(b) || a.stage-b.stage);
+  pool = pool.slice(0, MEM_PAIRS);
+  if(pool.length < 2){ toast('Need at least 2 items with meanings'); return; }
+
+  const cards = [];
+  pool.forEach(it=>{
+    cards.push({id: uid(), itemId: it.id, type:'term',    text: it.term,    flipped:false, matched:false});
+    cards.push({id: uid(), itemId: it.id, type:'meaning', text: it.meaning, flipped:false, matched:false});
+  });
+  shuffle(cards);
+
+  ui.practice = {
+    mode: 'memory',
+    cards,
+    flipped: [],
+    locked: false,
+    moves: 0,
+    pairsFound: 0,
+    totalPairs: pool.length
+  };
+  render();
+}
+
+function practiceHead(it){
+  const st = statusOf(it);
+  return `<div class="row" style="gap:8px;margin-bottom:2px">
+    <span class="pill ${it.category}">${esc(CAT_SHORT[it.category]||'—')}</span>
+    <span class="pill ${st}">${STATUS_LABEL[st]}</span>
+  </div>
+  <div class="big-q">${esc(it.term)}</div>
+  ${it.pronunciation?`<div class="small muted">${esc(it.pronunciation)}</div>`:''}
+  <div class="small muted mt">${esc(it.meaning||'')}</div>`;
+}
+
+function modeCard(id,title,desc,icon){
+  return `<button class="btn" style="flex:1;min-width:190px;text-align:left;padding:14px" data-act="startPrac" data-mode="${id}">
+    <div style="font-size:19px;margin-bottom:4px">${icon}</div>
+    <div style="font-size:14px;font-weight:700">${title}</div>
+    <div class="tiny muted" style="font-weight:500;margin-top:2px;white-space:normal">${desc}</div>
+  </button>`;
+}
+
+function practiceSummary(){
+  const p = ui.practice;
+  const total = p.q.length;
+  return `<div class="card" style="text-align:center;padding:34px 18px">
+    <div style="font-size:34px">🎯</div>
+    <h2 style="margin-top:8px">Session complete</h2>
+    <div class="muted small">${p.correct} of ${total} answered correctly</div>
+    <div class="wrapflex mt" style="justify-content:center">
+      <button class="btn primary" data-act="startPrac" data-mode="${p.mode}">Another round</button>
+      <button class="btn" data-act="pracStop">Back to modes</button>
+    </div>
+  </div>`;
+}
+
+function startPractice(mode){
+  if(mode === 'memory'){ startMemoryGame(); return; }
+
+  const T = iso();
+  const rank = i => (i.challengeDate===T?0:2) + (i.nextReview<=T?0:1);
+  let pool = S.items.filter(i=>!i.inbox && i.meaning);
+  pool.sort((a,b)=> rank(a)-rank(b) || a.stage-b.stage);
+  pool = pool.slice(0,10);
+  if(!pool.length){ toast('Add some items with meanings first'); return; }
+  ui.practice = {mode, q:pool.map(i=>i.id), idx:0, correct:0, fb:null, opts:null};
+  makeQuestion();
+  render();
+}
+
+function makeQuestion(){
+  const p = ui.practice;
+  if(!p) return;
+  const it = S.items.find(x=>x.id===p.q[p.idx]);
+  p.fb = null;
+  if(!it) return;
+  if(p.mode==='recognition'){
+    const others = shuffle(S.items.filter(x=>x.id!==it.id && x.meaning && x.meaning!==it.meaning).map(x=>x.meaning));
+    p.opts = shuffle([it.meaning, ...others.slice(0,3)]);
+  } else {
+    p.opts = null;
+  }
+}
+
+function pracAnswer(given){
+  const p = ui.practice;
+  const it = S.items.find(x=>x.id===p.q[p.idx]);
+  const ok = norm(given) === norm(it.term);
+  if(ok) p.correct++;
+  markPracticed(it);
+  p.fb = {
+    ok,
+    msg: ok
+      ? `✓ Correct — <b>${esc(it.term)}</b>`
+      : `✗ The answer is <b>${esc(it.term)}</b>`
+  };
+  render();
+}
+
+/* ============================================================
+   VIEW: WRITING CHALLENGE
+   ============================================================ */
+function viewWriting(){
+  const T = iso();
+  const day = ensureDay(T);
+  const items = todayChallenge().filter(i=>i.meaning);
+  const sel = new Set(day.writeSel || []);
+
+  const pool = items.length ? items : S.items.filter(i=>!i.inbox).slice(0,30);
+
+  const chips = pool.map(it=>{
+    const on = sel.has(it.id);
+    return `<button class="chip ${on?'on':''}" data-wsel="${it.id}" title="${esc(it.meaning)}">
+      ${esc(it.term)} <span style="opacity:.5">· ${CAT_SHORT[it.category]||'—'}</span>
+    </button>`;
+  }).join('') || `<div class="empty">No items to write with yet.</div>`;
+
+  return `
+  <div class="card">
+    <h2>Writing challenge</h2>
+    <div class="small muted mb">Write a short paragraph using at least:</div>
+    <div class="wrapflex mb" id="wreq">
+      ${Object.entries(WRITE_REQ).map(([c,n])=>
+        `<span class="pill ${c}">${n} × ${CAT_LABEL[c]}</span>`).join('')}
+    </div>
+    <div class="sep"></div>
+    <div class="tiny" style="font-weight:700;color:#9aa0ad;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Pick the items you'll use</div>
+    <div class="wrapflex" id="wpool">${chips}</div>
+  </div>
+
+  <div class="card">
+    <label class="f">Your paragraph</label>
+    <textarea id="wtext" rows="7" placeholder="Write about your day, your work, anything — but use the expressions you picked.">${esc(day.writing||'')}</textarea>
+    <div class="mt">
+      <div class="tiny" style="font-weight:700;color:#9aa0ad;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Requirements</div>
+      <div id="wcheck"></div>
+    </div>
+    <div class="sep"></div>
+    <div class="tiny" style="font-weight:700;color:#9aa0ad;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Preview</div>
+    <div id="wpreview" class="small" style="white-space:pre-wrap;min-height:44px;color:#4b5563"></div>
+    <div class="wrapflex mt">
+      <button class="btn primary" data-act="saveWriting">Save paragraph</button>
+      <button class="btn ghost" data-act="clearWriting">Clear</button>
+    </div>
+  </div>`;
+}
+
+function bindWriting(){
+  const ta = $('#wtext');
+  if(ta){
+    ta.addEventListener('input', ()=>{
+      const T = iso();
+      ensureDay(T).writing = ta.value;
+      save();
+      updateWritePreview();
+    });
+    setTimeout(()=>ta.focus(), 30);
+  }
+  updateWritePreview();
+}
+
+function updateWritePreview(){
+  const T = iso();
+  const day = dayOf(T);
+  const text = day.writing || '';
+  const selIds = day.writeSel || [];
+  const sel = selIds.map(id=>S.items.find(i=>i.id===id)).filter(Boolean);
+
+  const counts = {};
+  CATS.forEach(c=>counts[c]=0);
+  sel.forEach(it=>{
+    if(text.toLowerCase().includes(it.term.toLowerCase()) && counts[it.category]!==undefined){
+      counts[it.category]++;
+    }
+  });
+  const el = $('#wcheck');
+  if(el){
+    el.innerHTML = Object.entries(WRITE_REQ).map(([c,n])=>{
+      const have = counts[c];
+      const ok = have>=n;
+      return `<div class="row" style="justify-content:space-between;padding:5px 0;font-size:13.5px">
+        <span><span class="pill ${c}">${CAT_LABEL[c]}</span></span>
+        <span style="font-weight:700;color:${ok?'#047857':'#9aa0ad'}">${ok?'✓':'·'} ${have}/${n}</span>
+      </div>`;
+    }).join('');
+  }
+
+  const pv = $('#wpreview');
+  if(pv){
+    if(!text.trim()){ pv.innerHTML = '<span class="muted">Your paragraph will appear here with the required vocabulary highlighted.</span>'; return; }
+    let out = esc(text);
+    sel.forEach(it=>{
+      const re = new RegExp('('+escRe(esc(it.term))+')','gi');
+      out = out.replace(re,'<mark>$1</mark>');
+    });
+    pv.innerHTML = out;
+  }
+}
+
+/* ============================================================
+   VIEW: REVIEW
+   ============================================================ */
+function viewReview(){
+  const T = iso();
+  const due = dueItems().sort((a,b)=> a.nextReview.localeCompare(b.nextReview) || a.stage-b.stage);
+
+  if(!ui.reviewCard){
+    if(!due.length){
+      return `<div class="card" style="text-align:center;padding:38px 18px">
+        <div style="font-size:34px">🌿</div>
+        <h2 style="margin-top:8px">Nothing due today</h2>
+        <div class="small muted">Your review queue is clear. Come back tomorrow.</div>
+        <div class="wrapflex mt" style="justify-content:center">
+          <button class="btn" data-nav="practice">Practice anyway</button>
+        </div>
+      </div>`;
+    }
+    const preview = due.slice(0,12).map(it=>`
+      <div class="item" data-open="${it.id}">
+        <span class="pill ${it.category}">${esc(CAT_SHORT[it.category]||'—')}</span>
+        <span class="term">${esc(it.term)}<small>${SCHEDULE[it.stage]||''} · next ${fmtDate(it.nextReview)}</small></span>
+      </div>`).join('');
+    return `
+    <div class="card">
+      <div class="between">
+        <div>
+          <h2>Review queue</h2>
+          <div class="small muted">${due.length} item${due.length===1?'':'s'} due today</div>
+        </div>
+        <button class="btn primary" data-act="reviewStart">Start review</button>
+      </div>
+      <div class="tiny muted mt">Schedule: Day 0 → 1 → 3 → 7 → 14 → 30</div>
+    </div>
+    <div class="card">${preview}${due.length>12?`<div class="tiny muted" style="padding-top:10px">+${due.length-12} more</div>`:''}</div>`;
+  }
+
+  const it = S.items.find(x=>x.id===ui.reviewCard);
+  if(!it){ ui.reviewCard=null; return viewReview(); }
+
+  if(!ui.reviewReveal){
+    return `<div class="card" style="text-align:center;padding:36px 18px">
+      <div class="tiny muted" style="text-transform:uppercase;letter-spacing:.06em;font-weight:700">Do you remember it?</div>
+      <div class="big-q" style="font-size:30px;margin-top:14px">${esc(it.term)}</div>
+      ${it.pronunciation?`<div class="small muted">${esc(it.pronunciation)}</div>`:''}
+      <div class="wrapflex mt" style="justify-content:center">
+        <button class="btn primary" data-act="reviewReveal">Show answer</button>
+      </div>
+      <div class="tiny muted mt">${dueItems().length} remaining today</div>
+    </div>`;
+  }
+
+  return `<div class="card">
+    <div class="row" style="gap:8px">
+      <span class="pill ${it.category}">${esc(CAT_LABEL[it.category]||'—')}</span>
+      <span class="pill ${statusOf(it)}">${STATUS_LABEL[statusOf(it)]}</span>
+      <span class="pill">${SCHEDULE[it.stage]||''}</span>
+    </div>
+    <div class="big-q">${esc(it.term)}</div>
+    ${it.pronunciation?`<div class="small muted">${esc(it.pronunciation)}</div>`:''}
+    <div class="mt"><b>Meaning.</b> ${esc(it.meaning||'—')}</div>
+    ${it.example?`<div class="small muted mt">“${esc(it.example)}”</div>`:''}
+    ${it.personal?`<div class="small mt"><b>You wrote:</b> ${esc(it.personal)}</div>`:''}
+    ${it.related?`<div class="small muted mt">Related: ${esc(it.related)}</div>`:''}
+    <div class="sep"></div>
+    <div class="tiny" style="font-weight:700;color:#9aa0ad;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">How did it feel?</div>
+    <div class="wrapflex">
+      <button class="btn" data-act="rate" data-r="again" style="flex:1;min-width:110px;color:#b91c1c">Again</button>
+      <button class="btn" data-act="rate" data-r="hard"  style="flex:1;min-width:110px;color:#b45309">Hard</button>
+      <button class="btn primary" data-act="rate" data-r="good" style="flex:1;min-width:110px">Good</button>
+      <button class="btn" data-act="rate" data-r="easy"  style="flex:1;min-width:110px;color:#047857">Easy</button>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   VIEW: HISTORY
+   ============================================================ */
+function viewHistory(){
+  const T = iso();
+  const rows = [];
+  for(let i=0;i<14;i++){
+    const d = addDays(T,-i);
+    const s = dayStats(d);
+    rows.push(`<tr>
+      <td>${fmtDate(d)}${i===0?' <span class="tiny muted">today</span>':''}</td>
+      <td class="n">${s.target}</td>
+      <td class="n">${s.collected}</td>
+      <td class="n">${s.studied}</td>
+      <td class="n">${s.practiced}</td>
+      <td class="n">${s.active}</td>
+      <td class="n">${s.mastered}</td>
+    </tr>`);
+  }
+
+  const now = parseISO(T);
+  const y = now.getFullYear(), m = now.getMonth();
+  const first = new Date(y,m,1);
+  const lead = (first.getDay()+6)%7;
+  const daysInMonth = new Date(y,m+1,0).getDate();
+  let cal = ['M','T','W','T','F','S','S'].map(d=>`<div class="dow">${d}</div>`).join('');
+  for(let i=0;i<lead;i++) cal += `<div class="day empty"></div>`;
+  for(let d=1; d<=daysInMonth; d++){
+    const ds = iso(new Date(y,m,d));
+    const s = dayStats(ds);
+    const ratio = s.collected / (s.target||30);
+    const lvl = ratio>=1?4 : ratio>=.66?3 : ratio>=.33?2 : ratio>0?1 : 0;
+    cal += `<div class="day ${lvl?'l'+lvl:''} ${ds===T?'today':''}" title="${fmtDate(ds)} · ${s.collected}/${s.target}">
+      ${d}${s.collected?`<span style="font-size:9px;opacity:.8">${s.collected}</span>`:''}
+    </div>`;
+  }
+
+  return `
+  <div class="card">
+    <h2>This month</h2>
+    <div class="small muted mb">${now.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</div>
+    <div class="cal">${cal}</div>
+  </div>
+  <div class="card">
+    <h3>Last 14 days</h3>
+    <table>
+      <thead><tr>
+        <th>Date</th><th class="n">Target</th><th class="n">Collected</th><th class="n">Studied</th>
+        <th class="n">Practiced</th><th class="n">Active</th><th class="n">Mastered</th>
+      </tr></thead>
+      <tbody>${rows.join('')}</tbody>
+    </table>
+  </div>`;
+}
+
+/* ============================================================
+   VIEW: STATS
+   ============================================================ */
+function viewStats(){
+  const T = iso();
+  const weekStart = addDays(T,-6);
+  const monthStart = T.slice(0,8)+'01';
+  const all = S.items.filter(i=>!i.inbox);
+
+  const total = all.length;
+  const thisWeek = all.filter(i=>i.dateAdded>=weekStart).length;
+  const thisMonth = all.filter(i=>i.dateAdded>=monthStart).length;
+  const activeV = activeCount();
+  const masteredV = masteredCount();
+  const due = dueItems().length;
+  const inboxN = inboxItems().length;
+
+  let done=0;
+  for(let i=0;i<14;i++){
+    const d = addDays(T,-i);
+    if(dayStats(d).collected >= dayOf(d).target) done++;
+  }
+  const rate = Math.round(done/14*100);
+
+  const byCat = {}; CATS.forEach(c=>byCat[c]=0);
+  all.forEach(i=>{ if(byCat[i.category]!==undefined) byCat[i.category]++; });
+  const maxCat = Math.max(1, ...Object.values(byCat));
+
+  const bySrc = {};
+  all.forEach(i=>{ const s = (i.source||'').trim() || 'No source'; bySrc[s]=(bySrc[s]||0)+1; });
+  const srcRows = Object.entries(bySrc).sort((a,b)=>b[1]-a[1]).slice(0,8);
+
+  return `
+  <div class="card">
+    <h2>Statistics</h2>
+    <div class="grid4 mt">
+      ${stat('Total collected', total)}
+      ${stat('This week', thisWeek)}
+      ${stat('This month', thisMonth)}
+      ${stat('Streak', streak())}
+    </div>
+    <div class="grid4 mt">
+      ${stat('Active', activeV)}
+      ${stat('Mastered', masteredV)}
+      ${stat('Awaiting review', due)}
+      ${stat('In inbox', inboxN)}
+    </div>
+    <div class="mt">
+      <div class="between small"><span class="muted">Daily completion rate (14 days)</span><b>${rate}%</b></div>
+      <div class="bar mt" style="margin-top:6px"><i style="width:${rate}%"></i></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>By category</h3>
+    ${CATS.map(c=>`
+      <div style="margin-bottom:10px">
+        <div class="between small"><span><span class="pill ${c}">${CAT_LABEL[c]}</span></span><b>${byCat[c]}</b></div>
+        <div class="bar mt" style="margin-top:6px;height:6px"><i style="width:${Math.round(byCat[c]/maxCat*100)}%"></i></div>
+      </div>`).join('')}
+  </div>
+
+  <div class="card">
+    <h3>By source</h3>
+    ${srcRows.length ? srcRows.map(([s,n])=>`
+      <div class="between" style="padding:6px 0;border-bottom:1px solid #f2f3f6;font-size:13.5px">
+        <span>${esc(s)}</span><b>${n}</b>
+      </div>`).join('') : '<div class="empty">No sources yet.</div>'}
+  </div>
+
+  <div class="card">
+    <h3>Data</h3>
+    <div class="small muted mb">Everything is stored locally in your browser.</div>
+    <div class="wrapflex">
+      <button class="btn" data-act="exportData">⭳ Export JSON</button>
+      <button class="btn" data-act="importData">⭱ Import JSON</button>
+      <button class="btn" data-act="csvUpload">⭱ Upload CSV</button>
+      <button class="btn danger" data-act="resetData">Reset all data</button>
+    </div>
+    <div class="tiny muted" style="margin-top:10px">
+      ${S.items.length} item${S.items.length===1?'':'s'} stored · ${Object.keys(S.days).length} day record${Object.keys(S.days).length===1?'':'s'}
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+function openItem(id){ modalId = id; renderModal(); }
+function closeModal(){ modalId = null; renderModal(); }
+
+function renderModal(){
+  if(!modalId){ modal.innerHTML=''; modal.classList.remove('open'); return; }
+  const it = S.items.find(i=>i.id===modalId);
+  if(!it){ modalId=null; modal.innerHTML=''; modal.classList.remove('open'); return; }
+  const st = statusOf(it);
+
+  const history = it.reviews.length
+    ? it.reviews.slice().reverse().map(r=>`<div class="between small" style="padding:5px 0;border-bottom:1px solid #f2f3f6">
+        <span class="muted">${fmtDate(r.date)}</span>
+        <b style="color:${r.rating==='again'?'#b91c1c':r.rating==='hard'?'#b45309':r.rating==='easy'?'#047857':'#4f46e5'}">${r.rating}</b>
+      </div>`).join('')
+    : '<div class="small muted">No reviews yet.</div>';
+
+  modal.classList.add('open');
+  modal.innerHTML = `
+  <div class="modal-back" data-act="closeModal"></div>
+  <div class="modal-card">
+    <div class="between mb">
+      <div class="row" style="gap:8px">
+        <span class="pill ${it.category}">${esc(CAT_LABEL[it.category]||'Uncategorized')}</span>
+        <span class="pill ${st}">${STATUS_LABEL[st]}</span>
+        ${it.inbox?'<span class="pill">Inbox</span>':''}
+      </div>
+      <button class="btn ghost sm" data-act="closeModal">✕</button>
+    </div>
+
+    <input type="text" data-field="term" value="${esc(it.term)}"
+      style="font-size:20px;font-weight:700;border:0;padding:4px 0;box-shadow:none;background:transparent" />
+
+    <div class="wrapflex mt">
+      ${CATS.map(c=>`<button class="chip ${it.category===c?'on':''}" data-mcat="${c}">${CAT_LABEL[c]}</button>`).join('')}
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="grid2">
+      <div><label class="f">Meaning</label><input type="text" data-field="meaning" value="${esc(it.meaning)}" placeholder="Definition"></div>
+      <div><label class="f">Pronunciation</label><input type="text" data-field="pronunciation" value="${esc(it.pronunciation)}" placeholder="/…/"></div>
+    </div>
+    <div class="mt"><label class="f">Example sentence</label><input type="text" data-field="example" value="${esc(it.example)}"></div>
+    <div class="mt"><label class="f">Personal example</label><input type="text" data-field="personal" value="${esc(it.personal)}" placeholder="Your own sentence"></div>
+    <div class="grid2 mt">
+      <div><label class="f">Source</label><input type="text" data-field="source" value="${esc(it.source)}"></div>
+      <div><label class="f">Related expressions</label><input type="text" data-field="related" value="${esc(it.related)}"></div>
+    </div>
+    <div class="grid2 mt">
+      <div><label class="f">Difficulty (1–5)</label><input type="number" min="1" max="5" data-field="difficulty" value="${it.difficulty||2}"></div>
+      <div><label class="f">Date added</label><input type="text" value="${fmtDate(it.dateAdded)}" disabled></div>
+    </div>
+    <div class="mt"><label class="f">Notes</label><textarea rows="2" data-field="notes">${esc(it.notes)}</textarea></div>
+
+    <div class="sep"></div>
+
+    <div class="between small">
+      <span class="muted">Review stage</span>
+      <b>${SCHEDULE[it.stage]||'Day 0'} · next ${fmtDate(it.nextReview)}</b>
+    </div>
+    <div class="between small mt">
+      <span class="muted">Reviews</span><b>${it.reviews.length}</b>
+    </div>
+
+    <div class="mt">
+      <div class="tiny" style="font-weight:700;color:#9aa0ad;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Review history</div>
+      ${history}
+    </div>
+
+    <div class="wrapflex mt">
+      ${it.inbox?`<button class="btn primary" data-act="processInbox">Process → add to today</button>`:''}
+      ${!it.studiedAt?`<button class="btn" data-act="markStudied">Mark as studied</button>`:''}
+      <button class="btn" data-act="openPrac">Practice this</button>
+      <button class="btn danger" data-act="deleteItem">Delete</button>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   EVENTS
+   ============================================================ */
+document.addEventListener('click', e=>{
+  const navEl = e.target.closest('[data-nav]');
+  if(navEl){ e.preventDefault(); nav(navEl.dataset.nav); return; }
+
+  const toggleEl = e.target.closest('[data-toggle]');
+  if(toggleEl){
+    const id = toggleEl.dataset.toggle;
+    if(ui.selected.has(id)) ui.selected.delete(id); else ui.selected.add(id);
+    render();
+    return;
+  }
+
+  const openEl = e.target.closest('[data-open]');
+  if(openEl){ openItem(openEl.dataset.open); return; }
+
+  const act = e.target.closest('[data-act]');
+  if(act){ handleAction(act, e); return; }
+
+  const incat = e.target.closest('[data-incat]');
+  if(incat){
+    const [id,c] = incat.dataset.incat.split('|');
+    const it = S.items.find(i=>i.id===id);
+    if(it){ it.category = it.category===c ? '' : c; save(); render(); }
+    return;
+  }
+
+  const mcat = e.target.closest('[data-mcat]');
+  if(mcat){
+    const it = S.items.find(i=>i.id===modalId);
+    if(it){ it.category = mcat.dataset.mcat; save(); renderModal(); render(); }
+    return;
+  }
+
+  const libcat = e.target.closest('[data-libcat]');
+  if(libcat){ ui.lib.cat = libcat.dataset.libcat; render(); return; }
+
+  const libst = e.target.closest('[data-libst]');
+  if(libst){ ui.lib.status = libst.dataset.libst; render(); return; }
+
+  const wsel = e.target.closest('[data-wsel]');
+  if(wsel){
+    const T = iso(); const day = ensureDay(T);
+    const id = wsel.dataset.wsel;
+    const set = new Set(day.writeSel||[]);
+    set.has(id) ? set.delete(id) : set.add(id);
+    day.writeSel = [...set];
+    save(); render();
+    return;
+  }
+
+  const catBtn = e.target.closest('[data-cat]');
+  if(catBtn){
+    ui.addCat = catBtn.dataset.cat;
+    $$('#catPick .chip').forEach(c=>c.classList.toggle('on', c.dataset.cat===ui.addCat));
+    return;
+  }
+
+  const pick = e.target.closest('[data-pick]');
+  if(pick){
+    const p = ui.practice;
+    const it = S.items.find(x=>x.id===p.q[p.idx]);
+    const ok = pick.dataset.pick === it.meaning;
+    if(ok) p.correct++;
+    markPracticed(it);
+    p.fb = {ok, msg: ok ? `✓ Correct — <b>${esc(it.term)}</b> means “${esc(it.meaning)}”`
+                        : `✗ <b>${esc(it.term)}</b> means “${esc(it.meaning)}”`};
+    render();
+    return;
+  }
+});
+
+function handleAction(el, e){
+  const a = el.dataset.act;
+  const T = iso();
+
+  switch(a){
+    case 'closeModal': closeModal(); break;
+
+    case 'toggleMore': {
+      const box = $('#moreFields');
+      const open = box.style.display === 'none';
+      box.style.display = open ? 'block' : 'none';
+      el.textContent = open ? 'Hide extra fields ▴' : 'Show more fields ▾';
+      break;
+    }
+
+    case 'saveAdd':      doAdd(false); break;
+    case 'saveAddOpen':  doAdd(true);  break;
+
+    case 'quickAdd': {
+      const inp = $('#quickTerm');
+      const v = inp ? inp.value.trim() : '';
+      if(!v){ toast('Type something first'); return; }
+      S.items.push(mk(v, '', '', '', '', {inbox:true, dateAdded:T, nextReview:T}));
+      save();
+      if(inp) inp.value='';
+      toast('Saved to Inbox · '+v);
+      render();
+      const again = $('#quickTerm'); if(again) again.focus();
+      break;
+    }
+
+    case 'smartBuild': buildFromInbox(); break;
+
+    case 'editDist': {
+      const day = ensureDay(T);
+      const html = prompt(
+        'Daily distribution — enter 4 numbers separated by commas\n(collocations, phrasal verbs, chunks, vocabulary)',
+        CATS.map(c=>day.dist[c]).join(', ')
+      );
+      if(!html) return;
+      const nums = html.split(',').map(s=>parseInt(s.trim(),10));
+      if(nums.length!==4 || nums.some(n=>isNaN(n)||n<0)){ toast('Enter four valid numbers'); return; }
+      CATS.forEach((c,i)=> day.dist[c]=nums[i]);
+      day.target = nums.reduce((x,y)=>x+y,0);
+      S.settings.dist = {...day.dist};
+      S.settings.target = day.target;
+      save(); render();
+      toast('Target updated: '+day.target);
+      break;
+    }
+
+    case 'markStudied': {
+      const it = S.items.find(i=>i.id===modalId);
+      if(it){ markStudied(it); renderModal(); render(); toast('Marked as studying'); }
+      break;
+    }
+
+    case 'processInbox': {
+      const it = S.items.find(i=>i.id===modalId);
+      if(it){
+        if(!it.category){ toast('Pick a category first'); return; }
+        it.inbox = false;
+        it.challengeDate = T;
+        it.dateAdded = T;
+        it.nextReview = T;
+        save(); closeModal(); render();
+        toast('Added to today\'s challenge');
+      }
+      break;
+    }
+
+    case 'openPrac': {
+      const it = S.items.find(i=>i.id===modalId);
+      closeModal();
+      if(it){ nav('practice'); startPractice('recognition'); }
+      break;
+    }
+
+    case 'deleteItem': {
+      const it = S.items.find(i=>i.id===modalId);
+      if(it && confirm('Delete “'+it.term+'”?')){
+        const id = it.id;
+        S.items = S.items.filter(x=>x.id!==id);
+        Object.values(S.days).forEach(d=>{
+          if(Array.isArray(d.writeSel)) d.writeSel = d.writeSel.filter(x=>x!==id);
+        });
+        save(); closeModal(); render();
+      }
+      break;
+    }
+
+    /* selection mode */
+    case 'enterSelect':
+      ui.selectMode = true;
+      ui.selected = new Set();
+      render();
+      break;
+
+    case 'exitSelect':
+      clearSelection();
+      render();
+      break;
+
+    case 'selectAll': {
+      const visible = (view==='library') ? filteredLibrary() : inboxItems();
+      ui.selected = new Set(visible.map(i=>i.id));
+      render();
+      break;
+    }
+
+    case 'deselectAll':
+      ui.selected = new Set();
+      render();
+      break;
+
+    case 'deleteSelected':
+      deleteSelected();
+      break;
+
+    /* practice */
+    case 'startPrac': startPractice(el.dataset.mode); break;
+    case 'pracStop':  ui.practice = null; render(); break;
+    case 'pracNext': {
+      const p = ui.practice;
+      p.idx++;
+      if(p.idx < p.q.length) makeQuestion();
+      render();
+      break;
+    }
+    case 'pracCheck': {
+      const inp = $('#pracInput');
+      pracAnswer(inp ? inp.value : '');
+      break;
+    }
+    case 'pracReveal': {
+      const p = ui.practice;
+      const it = S.items.find(x=>x.id===p.q[p.idx]);
+      markPracticed(it);
+      p.fb = {ok:false, msg:`The answer is <b>${esc(it.term)}</b> — ${esc(it.meaning)}`};
+      render();
+      break;
+    }
+    case 'pracProduce': {
+      const p = ui.practice;
+      const it = S.items.find(x=>x.id===p.q[p.idx]);
+      const inp = $('#pracInput');
+      const txt = inp ? inp.value.trim() : '';
+      if(!txt){ toast('Write something first'); return; }
+      it.personal = txt;
+      markPracticed(it);
+      p.correct++;
+      p.fb = {ok:true, msg:'✓ Saved as your personal example.'};
+      save(); render();
+      break;
+    }
+
+    /* memory game */
+    case 'memFlip': {
+      const p = ui.practice;
+      if(!p || p.mode !== 'memory' || p.locked) break;
+      const idx = Number(el.dataset.idx);
+      const card = p.cards[idx];
+      if(!card || card.flipped || card.matched) break;
+
+      card.flipped = true;
+      p.flipped.push(idx);
+
+      if(p.flipped.length === 2){
+        p.moves++;
+        const [a, b] = p.flipped;
+        const ca = p.cards[a], cb = p.cards[b];
+
+        if(ca.itemId === cb.itemId && ca.type !== cb.type){
+          /* Match */
+          ca.matched = true;
+          cb.matched = true;
+          p.pairsFound++;
+          p.flipped = [];
+          const it = S.items.find(x=>x.id===ca.itemId);
+          if(it) markPracticed(it);
+          render();
+        } else {
+          /* No match — lock briefly, then flip both back */
+          p.locked = true;
+          render();
+          setTimeout(()=>{
+            if(!ui.practice || ui.practice !== p) return;
+            ca.flipped = false;
+            cb.flipped = false;
+            p.flipped = [];
+            p.locked = false;
+            render();
+          }, 850);
+        }
+        break;
+      }
+      render();
+      break;
+    }
+
+    /* review */
+    case 'reviewStart': {
+      const due = dueItems();
+      if(!due.length){ toast('Nothing due'); return; }
+      ui.reviewCard = due[0].id;
+      ui.reviewReveal = false;
+      render();
+      break;
+    }
+    case 'reviewReveal': ui.reviewReveal = true; render(); break;
+
+    case 'rate': {
+      const it = S.items.find(x=>x.id===ui.reviewCard);
+      if(!it){ ui.reviewCard = null; render(); return; }
+      rate(it, el.dataset.r);
+      ui.reviewCard = null;
+      ui.reviewReveal = false;
+      const next = dueItems();
+      if(next.length) ui.reviewCard = next[0].id;
+      render();
+      break;
+    }
+
+    /* writing */
+    case 'saveWriting': {
+      const day = ensureDay(T);
+      const ta = $('#wtext');
+      day.writing = ta ? ta.value : '';
+      (day.writeSel||[]).forEach(id=>{
+        const it = S.items.find(i=>i.id===id);
+        if(it && day.writing.toLowerCase().includes(it.term.toLowerCase())) markPracticed(it);
+      });
+      save(); toast('Paragraph saved'); render();
+      break;
+    }
+    case 'clearWriting': {
+      const day = ensureDay(T);
+      day.writing = '';
+      save(); render();
+      break;
+    }
+
+    /* CSV */
+    case 'csvUpload':   openCSVUpload(); break;
+    case 'csvConfirm':  commitCSVImport(); break;
+    case 'csvCancel':   cancelCSVImport(); break;
+
+    /* data */
+    case 'exportData': exportData(); break;
+    case 'importData': importData(); break;
+    case 'resetData': {
+      if(confirm('Delete all data and start fresh? This cannot be undone.')){
+        localStorage.removeItem(LS_KEY);
+        S = emptyState();
+        save(); ui = {};
+        ui.lib = {cat:'all', status:'all', q:''};
+        ui.addCat = '';
+        clearSelection();
+        nav('today');
+        toast('All data cleared');
+      }
+      break;
+    }
+  }
+}
+
+/* typing into live inputs */
+document.addEventListener('input', e=>{
+  if(e.target.id === 'libSearch'){
+    ui.lib = ui.lib || {cat:'all',status:'all',q:''};
+    ui.lib.q = e.target.value;
+    const pos = e.target.selectionStart;
+    render();
+    const el = $('#libSearch');
+    if(el){ el.focus(); el.setSelectionRange(pos,pos); }
+    return;
+  }
+  const f = e.target.dataset.field;
+  if(f && modalId){
+    const it = S.items.find(i=>i.id===modalId);
+    if(it){
+      it[f] = (f==='difficulty') ? Number(e.target.value)||1 : e.target.value;
+      save();
+    }
+  }
+});
+
+/* keyboard */
+document.addEventListener('keydown', e=>{
+  if(e.key === 'Escape'){
+    if(ui.selectMode){ clearSelection(); render(); return; }
+    closeModal();
+    return;
+  }
+  if(e.key === 'Enter'){
+    if(e.target.id === 'quickTerm'){
+      e.preventDefault();
+      const card = e.target.closest('.card');
+      const btn = card && card.querySelector('[data-act="quickAdd"]');
+      if(btn) handleAction(btn);
+      return;
+    }
+    if(e.target.id === 'f_term' || e.target.id === 'f_meaning'){ e.preventDefault(); doAdd(false); return; }
+    if(e.target.id === 'pracInput' && ui.practice){
+      const p = ui.practice;
+      if(p.mode==='production') handleAction({dataset:{act:'pracProduce'}});
+      else handleAction({dataset:{act:'pracCheck'}});
+      return;
+    }
+  }
+});
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+S = load();
+ui.lib = {cat:'all', status:'all', q:''};
+ui.addCat = '';
+ui.selectMode = false;
+ui.selected = new Set();
+render();
+</script>
+</body>
+</html>
