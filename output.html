@@ -13,265 +13,428 @@
   })();
 </script>
 <style>
+  /* ============================================================
+     TOKENS
+     ============================================================ */
   :root{
-    --bg:#f6f6f7; --card:#fff; --line:#e5e5e8; --text:#18181b; --muted:#71717a;
-    --accent:#2563eb; --accent-soft:#eef4ff;
-    --hover:#fafafa; --soft:#f4f4f5; --icon:#a1a1aa;
-    --dot-border:#d4d4d8; --input-border:#dcdce0;
-    --entry-bg:#fcfcfd; --star:#d4d4d8; --star-on:#f59e0b;
-    --warn-bg:#fef3c7; --warn-text:#92400e;
-    --ok-bg:#d1fae5;   --ok-text:#065f46;
-    --mark-bg:#fff3b0; --mark-text:#713f12;
-    --due-bg:#fee2e2;  --due-text:#b91c1c;
-    --rec-bg:#fee2e2;  --rec-text:#b91c1c; --rec-border:#fca5a5;
-    --tint-sound:#2563eb;
-    --tint-word:#059669;
-    --tint-sentence:#7c3aed;
-    --tint-connected:#ea580c;
+    --bg:#f6f7f9;
+    --card:#ffffff;
+    --line:#e6e7eb;
+    --text:#15161a;
+    --muted:#6b7280;
+    --accent:#2f6bff;
+    --accent-soft:#eef3ff;
+    --hover:#f5f6f8;
+    --soft:#f1f2f5;
+    --icon:#a3a7b0;
+    --dot-border:#d5d7dd;
+    --input-border:#e2e3e8;
+    --entry-bg:#fafbfc;
+    --star:#d5d7dd;
+    --star-on:#f59e0b;
+    --warn-bg:#fef3c7;   --warn-text:#92400e;
+    --ok-bg:#d9f7e8;     --ok-text:#046c4e;
+    --mark-bg:#fff2b8;   --mark-text:#6b4d0a;
+    --due-bg:#fee2e2;    --due-text:#b91c1c;
+    --rec-bg:#fee2e2;    --rec-text:#b91c1c; --rec-border:#fca5a5;
+    --tint-sound:#2f6bff;
+    --tint-word:#0ea472;
+    --tint-sentence:#8b5cf6;
+    --tint-connected:#f97316;
     --tint-writing:#0891b2;
-    --shadow:rgba(0,0,0,.08);
+    --shadow:0 1px 2px rgba(16,18,27,.05), 0 1px 3px rgba(16,18,27,.04);
+    --radius:16px;
+    --radius-sm:11px;
   }
   [data-theme="dark"]{
-    --bg:#0f1115; --card:#171a21; --line:#262b36; --text:#e6e8ee; --muted:#8b93a5;
-    --accent:#5b8dff; --accent-soft:#1a2540;
-    --hover:#1f2530; --soft:#222834; --icon:#6b7280;
-    --dot-border:#3a4252; --input-border:#2d3441;
-    --entry-bg:#1a1f29; --star:#4b5464; --star-on:#f59e0b;
-    --warn-bg:#3d2f10; --warn-text:#fcd34d;
-    --ok-bg:#0f3d2e;   --ok-text:#6ee7b7;
-    --mark-bg:#4a3410; --mark-text:#fcd34d;
-    --due-bg:#4a1818;  --due-text:#fca5a5;
-    --rec-bg:#4a1818;  --rec-text:#fca5a5; --rec-border:#7f1d1d;
-    --tint-sound:#5b8dff;
+    --bg:#0d0f14;
+    --card:#161923;
+    --line:#252a36;
+    --text:#e8eaf0;
+    --muted:#8b93a5;
+    --accent:#6a9bff;
+    --accent-soft:#1b2742;
+    --hover:#1d222d;
+    --soft:#212733;
+    --icon:#6b7280;
+    --dot-border:#39404f;
+    --input-border:#2b323f;
+    --entry-bg:#1a1f2a;
+    --star:#4b5464;
+    --star-on:#f59e0b;
+    --warn-bg:#3b2e11;   --warn-text:#fcd34d;
+    --ok-bg:#0e3a2c;     --ok-text:#6ee7b7;
+    --mark-bg:#48340f;   --mark-text:#fcd34d;
+    --due-bg:#471818;    --due-text:#fca5a5;
+    --rec-bg:#471818;    --rec-text:#fca5a5; --rec-border:#7f1d1d;
+    --tint-sound:#6a9bff;
     --tint-word:#34d399;
     --tint-sentence:#a78bfa;
     --tint-connected:#fb923c;
     --tint-writing:#22d3ee;
-    --shadow:rgba(0,0,0,.45);
+    --shadow:0 1px 2px rgba(0,0,0,.4);
   }
 
-  *{box-sizing:border-box}
+  /* ============================================================
+     BASE
+     ============================================================ */
+  *,*::before,*::after{box-sizing:border-box}
   html,body{margin:0}
   body{
     background:var(--bg); color:var(--text);
-    font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
   }
-  .wrap{max-width:1100px;margin:0 auto;padding:0 18px}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+  /* ============================================================
+     HEADER
+     ============================================================ */
   header{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
-  .topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:56px;padding:8px 0}
-  h1{font-size:15px;margin:0;font-weight:600;letter-spacing:-.01em;margin-right:auto}
-  h2{font-size:15px;margin:0;font-weight:600}
-  h3{font-size:14px;margin:0;font-weight:600}
+  .topbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;min-height:66px;padding:10px 0}
 
-  nav.mainnav{display:flex;gap:2px;background:var(--bg);padding:3px;border-radius:10px}
-  nav.mainnav button{border:0;background:transparent;font:inherit;font-size:13.5px;
-    padding:6px 12px;border-radius:8px;color:var(--muted);cursor:pointer}
-  nav.mainnav button.active{background:var(--card);color:var(--text);box-shadow:0 1px 2px var(--shadow)}
+  h1{font-size:16px;font-weight:650;letter-spacing:-.01em;margin:0 auto 0 0}
+  h2{font-size:19px;font-weight:650;letter-spacing:-.015em;margin:0}
+  h3{font-size:16px;font-weight:600;letter-spacing:-.005em;margin:0}
 
-  .utils{display:flex;gap:6px;align-items:center}
-  .util{font:inherit;font-size:13px;padding:6px 11px;border-radius:8px;border:1px solid var(--line);
-    background:var(--card);color:var(--text);text-decoration:none;line-height:1.2;white-space:nowrap}
+  nav.mainnav{display:flex;gap:3px;background:var(--soft);padding:4px;border-radius:11px}
+  nav.mainnav button{
+    border:0;background:transparent;font:inherit;font-size:14.5px;font-weight:500;
+    padding:8px 14px;border-radius:8px;color:var(--muted);cursor:pointer;
+    transition:color .15s, background .15s;
+  }
+  nav.mainnav button:hover{color:var(--text)}
+  nav.mainnav button.active{background:var(--card);color:var(--text);box-shadow:var(--shadow)}
+
+  .utils{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .util{
+    font:inherit;font-size:14px;font-weight:500;padding:8px 13px;border-radius:9px;
+    border:1px solid var(--line);background:var(--card);color:var(--text);
+    text-decoration:none;line-height:1.2;white-space:nowrap;
+    transition:background .15s;
+  }
   .util:hover{background:var(--hover)}
-  .theme-toggle{width:34px;height:34px;border:1px solid var(--line);background:var(--card);
-    color:var(--text);border-radius:8px;cursor:pointer;font-size:15px;line-height:1;padding:0;
-    display:flex;align-items:center;justify-content:center}
+  .theme-toggle{
+    width:38px;height:38px;border:1px solid var(--line);background:var(--card);
+    color:var(--text);border-radius:9px;cursor:pointer;font-size:16px;line-height:1;
+    padding:0;display:flex;align-items:center;justify-content:center;
+    transition:background .15s;
+  }
   .theme-toggle:hover{background:var(--hover)}
 
-  main{padding:22px 18px 70px}
+  /* ============================================================
+     12-COLUMN GRID SHELL
+     ============================================================ */
+  main.wrap{
+    display:grid;
+    grid-template-columns:repeat(12,minmax(0,1fr));
+    gap:16px;
+    align-content:start;
+    padding-top:26px;
+    padding-bottom:96px;
+  }
+  main.wrap > *{grid-column:1 / -1;min-width:0}
+  @media (min-width:900px){
+    main.wrap > .half{grid-column:span 6}
+  }
 
-  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
-  .card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+  /* ============================================================
+     CARD
+     ============================================================ */
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:20px;
+    box-shadow:var(--shadow);
+    min-width:0;
+  }
+  .card-head{
+    display:flex;align-items:flex-start;justify-content:space-between;
+    gap:14px;margin-bottom:16px;flex-wrap:wrap;
+  }
+
   .muted{color:var(--muted)}
-  .small{font-size:12.5px}
-  .empty{color:var(--muted);font-size:13.5px;text-align:center;padding:26px}
+  .small{font-size:13.5px}
+  .empty{color:var(--muted);font-size:14.5px;text-align:center;padding:34px 20px}
 
-  code{background:var(--soft);padding:1px 5px;border-radius:4px;font-size:12.5px;
-    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--text)}
+  code{
+    background:var(--soft);padding:1px 6px;border-radius:5px;font-size:13.5px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--text);
+  }
 
-  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  /* ============================================================
+     ROWS / UTILITIES
+     ============================================================ */
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
   .row.between{justify-content:space-between}
   .grow{flex:1;min-width:0}
-  .mini{width:56px;padding:4px 6px;font-size:13px;text-align:center}
+  .mini{width:64px;padding:5px 8px;font-size:14px;text-align:center}
 
-  input,textarea,select{font:inherit;font-size:14px;padding:7px 10px;border:1px solid var(--input-border);
-    border-radius:8px;background:var(--card);color:inherit;outline:none;width:100%}
-  input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-  textarea{resize:vertical;line-height:1.55}
+  /* ============================================================
+     FORM CONTROLS
+     ============================================================ */
+  input,textarea,select{
+    font:inherit;font-size:15px;padding:9px 12px;border:1px solid var(--input-border);
+    border-radius:10px;background:var(--card);color:inherit;outline:none;width:100%;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  input:focus,textarea:focus,select:focus{
+    border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  textarea{resize:vertical;line-height:1.6}
   input[type=checkbox]{width:auto;accent-color:var(--accent);cursor:pointer}
-  label.field{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted)}
-  label.inline{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);white-space:nowrap}
+  label.field{display:flex;flex-direction:column;gap:6px;font-size:13.5px;color:var(--muted)}
+  label.inline{display:flex;align-items:center;gap:7px;font-size:14px;color:var(--muted);white-space:nowrap}
 
-  .btn{font:inherit;font-size:13.5px;padding:7px 12px;border-radius:8px;border:1px solid var(--line);
-    background:var(--card);color:var(--text);cursor:pointer}
+  /* ============================================================
+     BUTTONS
+     ============================================================ */
+  .btn{
+    font:inherit;font-size:14.5px;font-weight:500;padding:9px 15px;border-radius:10px;
+    border:1px solid var(--line);background:var(--card);color:var(--text);cursor:pointer;
+    transition:background .15s, border-color .15s, filter .15s;white-space:nowrap;
+  }
   .btn:hover{background:var(--hover)}
   .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-  .btn.primary:hover{filter:brightness(1.06)}
-  .btn.small{padding:5px 10px;font-size:13px}
-  .btn.tiny{padding:3px 8px;font-size:12px}
-  .icon{border:0;background:transparent;color:var(--icon);cursor:pointer;font-size:13px;
-    padding:4px 6px;border-radius:6px;line-height:1}
+  .btn.primary:hover{filter:brightness(1.07)}
+  .btn.small{padding:6px 12px;font-size:13.5px}
+  .btn.tiny{padding:4px 10px;font-size:12.5px;border-radius:8px}
+
+  .icon{
+    border:0;background:transparent;color:var(--icon);cursor:pointer;font-size:14px;
+    padding:5px 7px;border-radius:7px;line-height:1;transition:background .15s,color .15s;
+  }
   .icon:hover{background:var(--soft);color:var(--text)}
 
-  /* dashboard */
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-  .stat{border:1px solid var(--line);border-radius:10px;padding:12px}
-  .stat-label{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
-  .stat-num{font-size:26px;font-weight:600;letter-spacing:-.02em;margin:2px 0 8px}
-  .stat-num .muted{font-size:14px;font-weight:500}
-  .stat-foot{font-size:11.5px;color:var(--muted);margin-top:8px;display:flex;align-items:center;gap:5px}
-  .bar{height:6px;border-radius:99px;background:var(--soft);overflow:hidden}
-  .bar>i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .25s}
+  /* ============================================================
+     DASHBOARD
+     ============================================================ */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+  .stat{
+    border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px;
+    background:var(--entry-bg);min-width:0;
+  }
+  .stat-label{
+    font-size:12.5px;color:var(--muted);text-transform:uppercase;
+    letter-spacing:.06em;font-weight:650;
+  }
+  .stat-num{font-size:30px;font-weight:650;letter-spacing:-.03em;margin:6px 0 12px;line-height:1}
+  .stat-num .muted{font-size:15px;font-weight:500}
+  .stat-foot{font-size:13px;color:var(--muted);margin-top:12px;display:flex;align-items:center;gap:6px}
+  .bar{height:6px;border-radius:999px;background:var(--soft);overflow:hidden}
+  .bar>i{display:block;height:100%;background:var(--accent);border-radius:999px;transition:width .25s}
 
-  .prow{display:grid;grid-template-columns:150px 1fr 62px;gap:12px;align-items:center;
-    margin-bottom:10px;font-size:13px}
-  .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center;
-    border-top:1px solid var(--line);margin-top:14px;padding-top:14px}
-  .facts b{display:block;font-size:19px;font-weight:600}
-  .facts span{font-size:11.5px;color:var(--muted)}
+  .prow{
+    display:grid;grid-template-columns:minmax(110px,150px) 1fr 66px;gap:14px;
+    align-items:center;margin-bottom:12px;font-size:14.5px;
+  }
+  .facts{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;
+    text-align:center;border-top:1px solid var(--line);margin-top:16px;padding-top:16px;
+  }
+  .facts b{display:block;font-size:22px;font-weight:650;letter-spacing:-.02em}
+  .facts span{font-size:13px;color:var(--muted)}
 
-  .review-item{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--line);cursor:pointer}
-  .review-item:first-of-type{border-top:0}
+  .review-item{
+    display:flex;gap:12px;align-items:flex-start;padding:10px 0;
+    border-top:1px solid var(--line);cursor:pointer;
+  }
+  .review-item:first-of-type{border-top:0;padding-top:0}
   .review-item:hover .rlabel{text-decoration:underline}
-  .rlabel{font-size:13.5px}
+  .rlabel{font-size:14.5px;font-weight:500}
 
-  /* grammar */
-  .lesson{padding:3px 0}
-  .lesson-main{display:flex;align-items:center;gap:8px}
-  .lesson-title{flex:1;text-align:left;border:0;background:none;font:inherit;font-size:14px;
-    cursor:pointer;padding:2px 0;color:inherit;min-width:0;overflow:hidden;text-overflow:ellipsis}
-  .lesson.done .lesson-title{color:var(--muted);text-decoration:line-through}
-  .dots{display:flex;gap:3px}
-  .dot{width:14px;height:14px;border-radius:50%;border:1px solid var(--dot-border);background:var(--card);padding:0;cursor:pointer}
-  .dot.on{background:var(--accent);border-color:var(--accent)}
-  .lesson-detail{padding:6px 0 8px 26px}
-  .lesson-list{border-left:2px solid var(--line);padding-left:12px;margin-top:10px}
-
-  .badge{font-size:11px;padding:2px 7px;border-radius:99px;background:var(--soft);color:var(--muted);
-    white-space:nowrap;display:inline-block}
+  /* ============================================================
+     BADGES / CHIPS
+     ============================================================ */
+  .badge{
+    font-size:12px;padding:3px 9px;border-radius:999px;background:var(--soft);
+    color:var(--muted);white-space:nowrap;display:inline-block;font-weight:500;
+  }
   .badge.warn{background:var(--warn-bg);color:var(--warn-text)}
   .badge.ok{background:var(--ok-bg);color:var(--ok-text)}
   .badge.ink{background:var(--accent-soft);color:var(--accent)}
-  .badge.srs-due{background:var(--due-bg);color:var(--due-text);font-weight:600}
-  .chip{display:inline-flex;align-items:center;gap:4px;background:var(--warn-bg);color:var(--warn-text);
-    font-size:12.5px;padding:3px 6px 3px 9px;border-radius:99px;margin:3px 4px 0 0}
-  .chip button{border:0;background:none;color:inherit;cursor:pointer;font-size:11px;padding:0 2px}
+  .badge.srs-due{background:var(--due-bg);color:var(--due-text);font-weight:650}
+  .chip{
+    display:inline-flex;align-items:center;gap:5px;background:var(--warn-bg);
+    color:var(--warn-text);font-size:13.5px;padding:4px 8px 4px 11px;
+    border-radius:999px;margin:4px 5px 0 0;
+  }
+  .chip button{border:0;background:none;color:inherit;cursor:pointer;font-size:12px;padding:0 2px}
 
-  /* grammar writing practice */
-  .practice{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px}
-  .practice-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:7px}
-  .kindseg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-  .kindseg button{border:0;background:var(--card);font:inherit;font-size:12px;padding:4px 11px;cursor:pointer;color:var(--muted)}
+  /* ============================================================
+     GRAMMAR
+     ============================================================ */
+  .lesson{padding:6px 0}
+  .lesson-main{display:flex;align-items:center;gap:10px;min-width:0}
+  .lesson-title{
+    flex:1;text-align:left;border:0;background:none;font:inherit;font-size:15px;
+    font-weight:500;cursor:pointer;padding:4px 0;color:inherit;min-width:0;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .lesson.done .lesson-title{color:var(--muted);text-decoration:line-through}
+  .dots{display:flex;gap:4px}
+  .dot{
+    width:15px;height:15px;border-radius:50%;border:1px solid var(--dot-border);
+    background:var(--card);padding:0;cursor:pointer;transition:background .15s, border-color .15s;
+  }
+  .dot.on{background:var(--accent);border-color:var(--accent)}
+  .lesson-detail{padding:12px 0 14px 29px}
+  .lesson-list{border-left:2px solid var(--line);padding-left:16px;margin-top:14px;display:grid;gap:2px}
+
+  /* ---- grammar writing practice ---- */
+  .practice{margin-top:12px;border-top:1px dashed var(--line);padding-top:14px}
+  .practice-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+  .kindseg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .kindseg button{
+    border:0;background:var(--card);font:inherit;font-size:13px;font-weight:500;
+    padding:6px 14px;cursor:pointer;color:var(--muted);
+  }
   .kindseg button.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
-  .writing-entry{border:1px solid var(--line);border-radius:9px;padding:8px;margin-top:8px;background:var(--entry-bg)}
-  .writing-entry .row{margin-bottom:5px}
-  .writing-entry textarea{font-size:13.5px}
+  .writing-entry{
+    border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px;
+    margin-top:10px;background:var(--entry-bg);
+  }
+  .writing-entry .row{margin-bottom:8px}
+  .writing-entry textarea{font-size:14.5px}
 
-  /* grammar in context */
-  .ctx-section{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px}
-  .ctx-section-head{display:flex;align-items:center;gap:8px;justify-content:space-between}
-  .ctx-toggle{border:0;background:none;font:inherit;font-size:13px;font-weight:600;color:var(--text);
-    cursor:pointer;display:flex;align-items:center;gap:7px;padding:3px 0;min-width:0}
+  /* ---- grammar in context ---- */
+  .ctx-section{margin-top:12px;border-top:1px dashed var(--line);padding-top:14px}
+  .ctx-section-head{display:flex;align-items:center;gap:10px;justify-content:space-between}
+  .ctx-toggle{
+    border:0;background:none;font:inherit;font-size:14.5px;font-weight:600;
+    color:var(--text);cursor:pointer;display:flex;align-items:center;gap:9px;
+    padding:4px 0;min-width:0;
+  }
   .ctx-toggle:hover{color:var(--accent)}
-  .chev{font-size:10px;color:var(--muted);width:9px;display:inline-block;flex:none}
-  .ctx-body{margin-top:8px}
-  .hl-preview{font-size:13.5px;padding:8px 11px;border-radius:8px;background:var(--hover);
-    margin-top:7px;line-height:1.75;word-break:break-word;min-height:34px}
-  .hl-preview .muted{font-size:12.5px}
-  .ctx-block{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
-  .ctx-block-head{display:flex;justify-content:space-between;align-items:center;gap:8px;
-    font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;
-    color:var(--muted);margin-bottom:6px}
-  .sentence-row{display:flex;gap:6px;align-items:flex-start;padding:6px 0;
-    border-top:1px solid var(--line);font-size:13.5px}
+  .chev{font-size:11px;color:var(--muted);width:10px;display:inline-block;flex:none}
+  .ctx-body{margin-top:12px}
+  .hl-preview{
+    font-size:14.5px;padding:12px 14px;border-radius:var(--radius-sm);
+    background:var(--hover);margin-top:10px;line-height:1.8;
+    word-break:break-word;min-height:44px;
+  }
+  .hl-preview .muted{font-size:13.5px}
+  .ctx-block{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
+  .ctx-block-head{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+    font-size:12.5px;font-weight:650;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--muted);margin-bottom:10px;
+  }
+  .sentence-row{
+    display:flex;gap:8px;align-items:flex-start;padding:8px 0;
+    border-top:1px solid var(--line);font-size:14.5px;
+  }
   .sentence-row:first-of-type{border-top:0;padding-top:2px}
-  .sentence-preview{flex:1;line-height:1.75;word-break:break-word}
-  mark{background:var(--mark-bg);color:var(--mark-text);padding:1px 4px;border-radius:4px;font-weight:500}
+  .sentence-preview{flex:1;line-height:1.8;word-break:break-word}
+  mark{background:var(--mark-bg);color:var(--mark-text);padding:1px 5px;border-radius:5px;font-weight:500}
 
-  /* SRS */
-  .srs-panel{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
-  .srs-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}
-  .srs-title{font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
-  .srs-status{font-size:12.5px;color:var(--muted)}
-  .srs-status.due{color:var(--due-text);font-weight:600}
-  .srs-status.ok{color:var(--ok-text);font-weight:600}
-  .srs-stages{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
-  .srs-stage{font-size:11px;padding:3px 8px;border-radius:6px;
-    background:var(--soft);color:var(--muted);border:1px solid transparent}
-  .srs-stage.current{background:var(--accent-soft);color:var(--accent);
-    border-color:var(--accent);font-weight:600}
+  /* ============================================================
+     SRS
+     ============================================================ */
+  .srs-panel{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
+  .srs-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+  .srs-title{font-size:12.5px;font-weight:650;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .srs-status{font-size:13.5px;color:var(--muted)}
+  .srs-status.due{color:var(--due-text);font-weight:650}
+  .srs-status.ok{color:var(--ok-text);font-weight:650}
+  .srs-stages{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+  .srs-stage{
+    font-size:12px;padding:4px 10px;border-radius:7px;background:var(--soft);
+    color:var(--muted);border:1px solid transparent;
+  }
+  .srs-stage.current{background:var(--accent-soft);color:var(--accent);border-color:var(--accent);font-weight:650}
   .srs-stage.done{background:var(--ok-bg);color:var(--ok-text)}
-  .srs-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .srs-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
-  .due-item{display:flex;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
-  .due-item:first-of-type{border-top:0}
+  .due-item{display:flex;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}
+  .due-item:first-of-type{border-top:0;padding-top:0}
   .due-info{flex:1;min-width:0}
 
-  /* writing */
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .targets{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
-  .tgroup{border:1px solid var(--line);border-radius:10px;padding:10px}
-  .tgroup-head{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11.5px;
-    font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:6px}
-  .titem{display:flex;align-items:center;gap:7px;font-size:13.5px;padding:2px 0}
+  /* ============================================================
+     WRITING
+     ============================================================ */
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  .targets{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:16px 0}
+  .tgroup{border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px;background:var(--entry-bg)}
+  .tgroup-head{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+    font-size:12.5px;font-weight:650;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--muted);margin-bottom:10px;
+  }
+  .titem{display:flex;align-items:center;gap:9px;font-size:14.5px;padding:3px 0}
   .titem.used .ttext{color:var(--muted);text-decoration:line-through}
   .ttext{flex:1;min-width:0;word-break:break-word}
-  .small-input{font-size:13px;padding:5px 8px;margin-top:5px}
-  .workspace{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
-  .workspace textarea{margin-bottom:8px}
-  .versions{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
-  .version{display:flex;align-items:center;gap:8px;font-size:13px;padding:3px 0}
+  .small-input{font-size:14px;padding:7px 10px;margin-top:8px}
+  .workspace{margin-top:16px;border-top:1px solid var(--line);padding-top:16px}
+  .workspace textarea{margin-bottom:10px}
+  .versions{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
+  .version{display:flex;align-items:center;gap:10px;font-size:14px;padding:4px 0}
   .version .btn{margin-left:auto}
 
-  .bulk{margin-top:8px;border-top:1px dashed var(--line);padding-top:8px}
-  .bulk textarea{font-size:13px;padding:6px 9px}
-  .bulk .row{margin-top:5px}
+  .bulk{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px}
+  .bulk textarea{font-size:14px;padding:8px 11px}
+  .bulk .row{margin-top:7px}
 
-  /* pronunciation */
-  .pr-subnav{display:flex;gap:2px;background:var(--bg);padding:3px;border-radius:10px;flex-wrap:wrap}
-  .pr-subnav button{border:0;background:transparent;font:inherit;font-size:13px;
-    padding:7px 12px;border-radius:8px;color:var(--muted);cursor:pointer;
-    display:inline-flex;align-items:center;gap:6px}
+  /* ============================================================
+     PRONUNCIATION — SUB NAV
+     ============================================================ */
+  .pr-subnav{display:flex;gap:3px;background:var(--soft);padding:4px;border-radius:12px;flex-wrap:wrap}
+  .pr-subnav button{
+    border:0;background:transparent;font:inherit;font-size:14.5px;font-weight:500;
+    padding:9px 15px;border-radius:9px;color:var(--muted);cursor:pointer;
+    display:inline-flex;align-items:center;gap:8px;transition:color .15s,background .15s;
+  }
   .pr-subnav button:hover{color:var(--text)}
-  .pr-subnav button.active{background:var(--card);color:var(--text);box-shadow:0 1px 2px var(--shadow)}
-  .pr-subnav .count{font-size:11px;background:var(--soft);color:var(--muted);
-    padding:1px 6px;border-radius:99px}
+  .pr-subnav button.active{background:var(--card);color:var(--text);box-shadow:var(--shadow)}
+  .pr-subnav .count{
+    font-size:12px;background:var(--soft);color:var(--muted);
+    padding:1px 8px;border-radius:999px;font-weight:600;
+  }
   .pr-subnav button.active .count{background:var(--accent-soft);color:var(--accent)}
 
-  .pr-add{background:var(--card);border:1px solid var(--line);border-radius:12px;
-    padding:14px;margin-bottom:14px}
-  .pr-add-title{font-size:11.5px;font-weight:600;text-transform:uppercase;
-    letter-spacing:.04em;color:var(--muted);margin-bottom:8px}
+  /* ============================================================
+     PRONUNCIATION — ADD FORM
+     ============================================================ */
+  .pr-add{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px;box-shadow:var(--shadow);
+  }
+  .pr-add-title{
+    font-size:12.5px;font-weight:650;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--muted);margin-bottom:12px;
+  }
 
-  /* ---- MOSAIC GRID ---- */
-  .pr-mosaic-section{padding:14px}
+  /* ============================================================
+     PRONUNCIATION — MOSAIC GRID
+     ============================================================ */
+  .pr-mosaic-section{padding:20px}
   .pr-mosaic{
-    columns: 2;
-    column-gap: 14px;
-  }
-  .pr-mosaic > .pr-card{
-    break-inside: avoid;
-    -webkit-column-break-inside: avoid;
-    page-break-inside: avoid;
-    margin: 0 0 14px 0;
-    display: block;
-    width: 100%;
-  }
-  @media (min-width: 960px){
-    .pr-mosaic{ columns: 2; }
-  }
-  @media (max-width: 720px){
-    .pr-mosaic{ columns: 1; }
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),1fr));
+    gap:16px;
+    align-items:start;
   }
 
-  .pr-card{border:1px solid var(--line);border-radius:12px;padding:13px;
-    background:var(--card);position:relative;
-    transition:border-color .15s, box-shadow .15s}
-  .pr-card:hover{border-color:var(--tint,var(--line));box-shadow:0 2px 8px var(--shadow)}
+  /* ============================================================
+     PRONUNCIATION — CARD
+     ============================================================ */
+  .pr-card{
+    position:relative;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px;
+    background:var(--card);
+    box-shadow:var(--shadow);
+    transition:border-color .15s, box-shadow .15s;
+    min-width:0;
+  }
+  .pr-card:hover{border-color:var(--tint,var(--line))}
   .pr-card::before{
-    content:'';position:absolute;top:0;left:0;width:100%;height:3px;
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
     background:var(--tint,var(--accent));
-    border-radius:12px 12px 0 0;
+    border-radius:var(--radius) var(--radius) 0 0;
   }
   .pr-card.tint-sound     { --tint: var(--tint-sound); }
   .pr-card.tint-word      { --tint: var(--tint-word); }
@@ -279,128 +442,192 @@
   .pr-card.tint-connected { --tint: var(--tint-connected); }
   .pr-card.tint-writing   { --tint: var(--tint-writing); }
 
-  .pr-card.standalone{margin-bottom:14px}
-
-  .pr-card.collapsed{padding-bottom:10px}
-  .pr-card-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-top:3px}
+  .pr-card.collapsed{padding-bottom:14px}
+  .pr-card-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-top:4px}
   .pr-card.collapsed .pr-card-head{margin-bottom:0}
   .pr-card-head .grow{min-width:0}
   .pr-card-head-actions{display:flex;align-items:center;gap:2px;flex:none}
-  .pr-card-head-actions .star{width:24px;height:24px;padding:0;
-    display:flex;align-items:center;justify-content:center}
-  .pr-card-head-actions .icon{width:24px;height:24px;padding:0;
-    display:flex;align-items:center;justify-content:center}
+  .pr-card-head-actions .star,
+  .pr-card-head-actions .icon{
+    width:28px;height:28px;padding:0;
+    display:flex;align-items:center;justify-content:center;
+  }
 
-  .pr-card-collapse{border:0;background:none;color:var(--icon);cursor:pointer;
-    font-size:11px;width:24px;height:24px;border-radius:6px;line-height:1;flex:none;
-    display:flex;align-items:center;justify-content:center}
+  .pr-card-collapse{
+    border:0;background:none;color:var(--icon);cursor:pointer;font-size:12px;
+    width:28px;height:28px;border-radius:8px;line-height:1;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s,color .15s;
+  }
   .pr-card-collapse:hover{background:var(--soft);color:var(--text)}
 
-  .pr-card-summary{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;
-    font-size:12.5px;color:var(--muted);margin-top:4px}
-  .pr-card-summary .badge{margin:0}
-  .pr-sound{font-size:24px;font-weight:600;font-family:ui-monospace,SFMono-Regular,monospace;
-    letter-spacing:.02em;line-height:1.1}
-  .pr-word{font-size:18px;font-weight:600;line-height:1.2;word-break:break-word}
-  .pr-ipa{font-family:ui-monospace,SFMono-Regular,monospace;color:var(--muted);
-    font-size:13px;margin-left:8px;white-space:nowrap}
-  .pr-stress{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;
-    color:var(--muted);margin-top:2px}
-  .pr-text{font-size:14.5px;line-height:1.55;font-weight:500}
+  .pr-card-body{margin-top:0}
 
-  .pr-examples{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0;align-items:center}
-  .chip-ex{font-size:12px;background:var(--soft);color:var(--text);
-    padding:3px 4px 3px 9px;border-radius:99px;display:inline-flex;align-items:center;gap:2px}
-  .chip-ex button{border:0;background:none;color:var(--muted);cursor:pointer;
-    font-size:11px;padding:0 3px;line-height:1}
+  .pr-card-summary{
+    display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;
+    font-size:13.5px;color:var(--muted);margin-top:6px;
+  }
+  .pr-card-summary .badge{margin:0}
+
+  .pr-sound{
+    font-size:28px;font-weight:650;line-height:1.1;
+    font-family:ui-monospace,SFMono-Regular,monospace;letter-spacing:.01em;
+  }
+  .pr-word{font-size:20px;font-weight:650;line-height:1.25;word-break:break-word}
+  .pr-ipa{
+    font-family:ui-monospace,SFMono-Regular,monospace;color:var(--muted);
+    font-size:14px;margin-left:9px;white-space:nowrap;
+  }
+  .pr-stress{
+    font-family:ui-monospace,SFMono-Regular,monospace;font-size:13.5px;
+    color:var(--muted);margin-top:3px;
+  }
+  .pr-text{font-size:15.5px;line-height:1.6;font-weight:500}
+
+  .pr-examples{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;align-items:center}
+  .chip-ex{
+    font-size:13px;background:var(--soft);color:var(--text);
+    padding:4px 5px 4px 11px;border-radius:999px;
+    display:inline-flex;align-items:center;gap:3px;
+  }
+  .chip-ex button{
+    border:0;background:none;color:var(--muted);cursor:pointer;
+    font-size:12px;padding:0 4px;line-height:1;
+  }
   .chip-ex button:hover{color:var(--due-text)}
 
-  .pr-row{display:flex;align-items:center;gap:10px;margin:8px 0;flex-wrap:wrap}
-  .pr-label{font-size:11px;color:var(--muted);font-weight:600;
-    text-transform:uppercase;letter-spacing:.04em;min-width:70px;flex:none}
+  .pr-row{display:flex;align-items:center;gap:12px;margin:10px 0;flex-wrap:wrap}
+  .pr-label{
+    font-size:12px;color:var(--muted);font-weight:650;text-transform:uppercase;
+    letter-spacing:.05em;min-width:76px;flex:none;
+  }
+  .pr-section-label{
+    font-size:12px;color:var(--muted);font-weight:650;text-transform:uppercase;
+    letter-spacing:.05em;margin:14px 0 8px;
+  }
+  .pr-actions{
+    display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;align-items:center;
+    border-top:1px solid var(--line);padding-top:14px;
+  }
+  .pr-meta{font-size:13.5px;color:var(--muted);margin-left:auto}
 
-  .pr-section-label{font-size:11px;color:var(--muted);font-weight:600;
-    text-transform:uppercase;letter-spacing:.04em;margin:11px 0 5px}
-
-  .pr-actions{display:flex;gap:6px;margin-top:11px;flex-wrap:wrap;align-items:center;
-    border-top:1px solid var(--line);padding-top:10px}
-  .pr-meta{font-size:12px;color:var(--muted);margin-left:auto}
-
-  .rec-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px}
-  .rec-btn{border:1px solid var(--line);background:var(--card);font:inherit;font-size:12px;
-    padding:5px 10px;border-radius:8px;cursor:pointer;text-decoration:none;
-    display:inline-flex;align-items:center;gap:5px;color:var(--text)}
+  /* ============================================================
+     MEDIA / RECORDER
+     ============================================================ */
+  .rec-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+  .rec-btn{
+    border:1px solid var(--line);background:var(--card);font:inherit;font-size:13.5px;
+    font-weight:500;padding:7px 13px;border-radius:9px;cursor:pointer;text-decoration:none;
+    display:inline-flex;align-items:center;gap:6px;color:var(--text);
+    transition:background .15s;
+  }
   .rec-btn:hover{background:var(--hover)}
   label.rec-btn{cursor:pointer}
-  .rec-btn.recording{background:var(--rec-bg);border-color:var(--rec-border);
-    color:var(--rec-text);font-weight:600}
-  .rec-dot{display:inline-block;width:8px;height:8px;border-radius:50%;
-    background:currentColor;animation:pulse 1s infinite}
+  .rec-btn.recording{
+    background:var(--rec-bg);border-color:var(--rec-border);
+    color:var(--rec-text);font-weight:650;
+  }
+  .rec-dot{
+    display:inline-block;width:9px;height:9px;border-radius:50%;
+    background:currentColor;animation:pulse 1s infinite;
+  }
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-  audio{height:32px;max-width:100%;margin-top:4px;width:100%}
+  audio{height:36px;max-width:100%;margin-top:6px;width:100%}
 
-  .video-embed{position:relative;width:100%;aspect-ratio:16/9;
-    margin:8px 0;border-radius:10px;overflow:hidden;
-    border:1px solid var(--line);background:#000}
+  .video-embed{
+    position:relative;width:100%;aspect-ratio:16/9;margin:10px 0;
+    border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--line);background:#000;
+  }
   .video-embed iframe{width:100%;height:100%;border:0;display:block}
 
-  .tag-badge{font-size:11px;padding:3px 9px;border-radius:99px;
-    background:var(--accent-soft);color:var(--accent);font-weight:600;display:inline-block}
-  .tag-select{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}
-  .tag-select button{border:1px solid var(--line);background:var(--card);font:inherit;
-    font-size:11.5px;padding:4px 9px;border-radius:99px;cursor:pointer;color:var(--muted)}
+  /* ============================================================
+     TAGS / SEGMENTS / STARS / FILTERS
+     ============================================================ */
+  .tag-badge{
+    font-size:12px;padding:4px 11px;border-radius:999px;
+    background:var(--accent-soft);color:var(--accent);font-weight:600;display:inline-block;
+  }
+  .tag-select{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+  .tag-select button{
+    border:1px solid var(--line);background:var(--card);font:inherit;font-size:13px;
+    padding:5px 11px;border-radius:999px;cursor:pointer;color:var(--muted);
+    transition:background .15s;
+  }
   .tag-select button:hover{background:var(--hover)}
-  .tag-select button.on{background:var(--accent-soft);border-color:var(--accent);
-    color:var(--accent);font-weight:600}
+  .tag-select button.on{
+    background:var(--accent-soft);border-color:var(--accent);
+    color:var(--accent);font-weight:600;
+  }
 
-  .cs-original{font-size:14.5px;font-weight:600;padding:7px 10px}
-  .cs-form{font-size:14.5px;font-weight:500;font-style:italic;
-    padding:7px 10px;background:var(--accent-soft);
-    border-color:transparent;color:var(--accent)}
+  .cs-original{font-size:15.5px;font-weight:600;padding:9px 12px}
+  .cs-form{
+    font-size:15.5px;font-weight:500;font-style:italic;padding:9px 12px;
+    background:var(--accent-soft);border-color:transparent;color:var(--accent);
+  }
   .cs-form::placeholder{color:var(--accent);opacity:.55;font-style:italic}
 
-  .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-  .seg button{border:0;background:var(--card);font:inherit;font-size:11.5px;padding:5px 9px;
-    cursor:pointer;color:var(--muted);border-right:1px solid var(--line);white-space:nowrap}
+  .seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .seg button{
+    border:0;background:var(--card);font:inherit;font-size:12.5px;font-weight:500;
+    padding:6px 12px;cursor:pointer;color:var(--muted);
+    border-right:1px solid var(--line);white-space:nowrap;
+    transition:background .15s;
+  }
   .seg button:last-child{border-right:0}
   .seg button:hover{background:var(--hover)}
-  .seg button.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+  .seg button.on{background:var(--accent-soft);color:var(--accent);font-weight:650}
 
-  .star{border:0;background:none;cursor:pointer;font-size:17px;color:var(--star);
-    padding:0 4px;line-height:1;flex:none}
+  .star{
+    border:0;background:none;cursor:pointer;font-size:18px;color:var(--star);
+    padding:0 5px;line-height:1;flex:none;transition:color .15s;
+  }
   .star.on{color:var(--star-on)}
 
-  .filters{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
-  .filters button{border:1px solid var(--line);background:var(--card);font:inherit;font-size:12.5px;
-    padding:4px 11px;border-radius:99px;cursor:pointer;color:var(--muted)}
+  .filters{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap}
+  .filters button{
+    border:1px solid var(--line);background:var(--card);font:inherit;font-size:13.5px;
+    font-weight:500;padding:6px 14px;border-radius:999px;cursor:pointer;color:var(--muted);
+    transition:background .15s,color .15s;
+  }
   .filters button:hover{background:var(--hover)}
   .filters button.on{background:var(--text);border-color:var(--text);color:var(--bg)}
 
-  .source-badge{font-size:11px;padding:2px 7px;border-radius:99px;
-    background:var(--soft);color:var(--muted);display:inline-block}
+  .source-badge{
+    font-size:12px;padding:3px 9px;border-radius:999px;
+    background:var(--soft);color:var(--muted);display:inline-block;
+  }
 
-  .diff-section{display:inline-flex;align-items:center;gap:4px;
-    background:var(--warn-bg);color:var(--warn-text);font-size:12px;
-    padding:3px 6px 3px 9px;border-radius:99px;margin:3px 4px 0 0}
-  .diff-section button{border:0;background:none;color:inherit;cursor:pointer;
-    font-size:11px;padding:0 2px}
+  .diff-section{
+    display:inline-flex;align-items:center;gap:5px;background:var(--warn-bg);
+    color:var(--warn-text);font-size:13px;padding:4px 8px 4px 11px;
+    border-radius:999px;margin:4px 5px 0 0;
+  }
+  .diff-section button{border:0;background:none;color:inherit;cursor:pointer;font-size:12px;padding:0 2px}
 
-  .rep-bar{display:flex;align-items:center;gap:8px;margin:8px 0;flex-wrap:wrap}
-  .rep-count{font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
-  .rep-bar-fill{flex:1;min-width:80px;height:6px;background:var(--soft);border-radius:99px;overflow:hidden}
-  .rep-bar-fill>i{display:block;height:100%;background:var(--accent);border-radius:99px;
-    transition:width .2s}
+  .rep-bar{display:flex;align-items:center;gap:10px;margin:10px 0;flex-wrap:wrap}
+  .rep-count{font-size:13.5px;font-weight:650;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .rep-bar-fill{flex:1;min-width:90px;height:6px;background:var(--soft);border-radius:999px;overflow:hidden}
+  .rep-bar-fill>i{display:block;height:100%;background:var(--accent);border-radius:999px;transition:width .2s}
 
-  @media (max-width:720px){
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width:860px){
     h1{display:none}
-    nav.mainnav button{padding:6px 9px;font-size:12.5px}
-    .util{padding:6px 9px;font-size:12.5px}
+    nav.mainnav{order:3;width:100%}
+    nav.mainnav button{flex:1;text-align:center;padding:9px 10px;font-size:13.5px}
+    .topbar{gap:10px;padding:12px 0}
+    .utils{margin-left:auto}
   }
   @media (max-width:640px){
-    .stats,.targets,.grid2,.facts{grid-template-columns:1fr}
-    .prow{grid-template-columns:110px 1fr 58px}
-    .lesson-detail{padding-left:6px}
-    .lesson-list{padding-left:6px}
+    .wrap{padding:0 14px}
+    .card,.pr-card,.pr-add{padding:16px;border-radius:14px}
+    main.wrap{gap:13px;padding-top:18px}
+    .prow{grid-template-columns:minmax(90px,120px) 1fr 58px;gap:10px;font-size:14px}
+    .lesson-detail{padding-left:8px}
+    .lesson-list{padding-left:10px}
+    .facts b{font-size:20px}
+    .stat-num{font-size:26px}
   }
 </style>
 </head>
@@ -416,7 +643,7 @@
       <button data-route="pronunciation">Pronunciation</button>
     </nav>
     <div class="utils">
-      <a class="util" href="index.html">Home</a>
+      <a class="util" href="Index.html">Home</a>
       <a class="util" href="Pace.html">Pace</a>
       <a class="util" href="Room.html">Room</a>
       <a class="util" href="Vocabulary.html">Vocabulary</a>
@@ -985,7 +1212,7 @@ function renderDashboard() {
     </div>
   </section>
 
-  <section class="card">
+  <section class="card half">
     <div class="card-head">
       <div>
         <h2>Spaced repetition</h2>
@@ -1013,7 +1240,7 @@ function renderDashboard() {
           : ''}</p>`}
   </section>
 
-  <section class="card">
+  <section class="card half">
     <div class="card-head"><h2>Overall progress</h2></div>
     ${progRow('Grammar lessons', doneL, lessons.length)}
     ${progRow('Pronunciation items', prMastered, prAll.length)}
@@ -1023,17 +1250,17 @@ function renderDashboard() {
       <div><b>${versions}</b><span>drafts &amp; revisions</span></div>
       <div><b>${words}</b><span>words in progress</span></div>
     </div>
-    <div class="facts" style="margin-top:10px;padding-top:10px">
+    <div class="facts" style="margin-top:12px;padding-top:12px">
       <div><b>${state.pronunciation.sounds.length}</b><span>sounds</span></div>
       <div><b>${state.pronunciation.words.length}</b><span>words</span></div>
       <div><b>${state.pronunciation.sentences.length + state.pronunciation.connected.length}</b><span>sentences &amp; connected</span></div>
     </div>
-    <div class="facts" style="margin-top:10px;padding-top:10px">
+    <div class="facts" style="margin-top:12px;padding-top:12px">
       <div><b>${gWritings}</b><span>grammar practice pieces</span></div>
       <div><b>${gMistakes}</b><span>logged mistakes</span></div>
       <div><b>${prAll.filter(i=>i.difficult).length}</b><span>items on review list</span></div>
     </div>
-    <div class="facts" style="margin-top:10px;padding-top:10px">
+    <div class="facts" style="margin-top:12px;padding-top:12px">
       <div><b>${gContexts}</b><span>lessons with context</span></div>
       <div><b>${gSentences}</b><span>example sentences</span></div>
       <div><b>${state.grammar.books.length}</b><span>grammar books</span></div>
@@ -1094,7 +1321,7 @@ function contextSectionHTML(l) {
       </div>
       <div class="ctx-block">
         <div class="ctx-block-head"><span>Mistakes</span><span>${l.mistakes.length}</span></div>
-        ${l.mistakes.length ? `<div class="row" style="gap:4px;margin-bottom:6px">
+        ${l.mistakes.length ? `<div class="row" style="gap:4px;margin-bottom:8px">
           ${l.mistakes.map((m, i) => `<span class="chip">${esc(m)}
             <button data-action="del-mistake" data-lesson="${l.id}" data-idx="${i}" title="Remove">✕</button></span>`).join('')}
         </div>` : ''}
@@ -1171,7 +1398,7 @@ function practiceHTML(l) {
         ? `${sCount} sentence${sCount === 1 ? '' : 's'} · ${pCount} paragraph${pCount === 1 ? '' : 's'}`
         : 'write to make the rule stick'}</span>
     </div>
-    <div class="row between" style="margin-bottom:6px">
+    <div class="row between" style="margin-bottom:8px">
       <div class="kindseg">
         <button class="${!isPara ? 'on' : ''}" data-action="gw-kind" data-lesson="${l.id}" data-val="sentence">Sentence</button>
         <button class="${isPara ? 'on' : ''}" data-action="gw-kind" data-lesson="${l.id}" data-val="paragraph">Paragraph</button>
@@ -1179,7 +1406,7 @@ function practiceHTML(l) {
     </div>
     <textarea rows="${isPara ? 4 : 2}" data-action="gw-draft" data-lesson="${l.id}"
       placeholder="${isPara ? 'Write a short paragraph using this grammar point…' : 'Write a sentence using this grammar point…'}">${esc(draft)}</textarea>
-    <div class="row between" style="margin-top:6px">
+    <div class="row between" style="margin-top:8px">
       <span class="muted small">⌘/Ctrl + Enter to save</span>
       <button class="btn small primary" data-action="gw-add" data-lesson="${l.id}">Save</button>
     </div>
@@ -1244,7 +1471,7 @@ function bookHTML(b) {
     </div>
     ${b.lessons.length
       ? `<div class="lesson-list">${b.lessons.map(l => lessonHTML(b, l)).join('')}</div>`
-      : `<p class="muted small" style="margin:10px 0 0">No lessons yet. Add one above — then
+      : `<p class="muted small" style="margin:12px 0 0">No lessons yet. Add one above — then
            expand it to write practice, record <b>Grammar in Context</b>, and manage its
            spaced-repetition schedule.</p>`}
   </section>`;
@@ -1354,7 +1581,7 @@ function projectBody(p) {
       <button class="icon" data-action="del-version" data-project="${p.id}" data-version="${v.id}">✕</button>
     </div>`).join('')}
   </div>` : ''}
-  <div class="row between" style="margin-top:14px;border-top:1px solid var(--line);padding-top:12px">
+  <div class="row between" style="margin-top:16px;border-top:1px solid var(--line);padding-top:14px">
     <button class="btn" data-action="log-writing-session" data-project="${p.id}">+ Log writing session</button>
     <span class="muted small">${p.sessions.length} session${p.sessions.length === 1 ? '' : 's'} logged</span>
   </div>`;
@@ -1389,7 +1616,7 @@ function renderWriting() {
       <span>${p.versions.length} version${p.versions.length === 1 ? '' : 's'}</span>
       <span>${words} word${words === 1 ? '' : 's'}</span>
     </div>`;
-    html += `<div class="pr-card tint-writing standalone${open ? '' : ' collapsed'}">
+    html += `<div class="pr-card tint-writing${open ? '' : ' collapsed'}">
       <div class="pr-card-head">
         ${toggle}
         <div class="grow">
@@ -1462,7 +1689,7 @@ function mediaBlockHTML(item, kind, hint) {
         data-action="pr-media-field" data-kind="${kind}" data-id="${item.id}" data-field="videoUrl"
         placeholder="https://youtube.com/watch?v=..."></label>
 
-    <label class="field" style="margin-top:6px"><span>External audio URL (MP3)</span>
+    <label class="field" style="margin-top:8px"><span>External audio URL (MP3)</span>
       <input value="${esc(item.audioUrl)}"
         data-action="pr-media-field" data-kind="${kind}" data-id="${item.id}" data-field="audioUrl"
         placeholder="https://.../clip.mp3"></label>
@@ -1486,10 +1713,10 @@ function mediaBlockHTML(item, kind, hint) {
     </div>
     ${playbackSrc ? `<div class="rec-bar"><audio controls src="${esc(playbackSrc)}"></audio>
         <button class="btn tiny" data-action="pr-audio-clear" data-kind="${kind}" data-id="${item.id}">Clear</button></div>` : ''}
-    ${playbackId && !playbackSrc ? `<p class="muted small" style="margin:5px 0 0">Loading audio…</p>` : ''}
+    ${playbackId && !playbackSrc ? `<p class="muted small" style="margin:7px 0 0">Loading audio…</p>` : ''}
 
     ${!playbackSrc && !playbackId && !item.audioUrl && !embed
-      ? `<p class="muted small" style="margin:5px 0 0">${hint
+      ? `<p class="muted small" style="margin:7px 0 0">${hint
           || 'Embed a YouTube clip, paste an MP3 URL, upload a file, or record your own voice.'}</p>`
       : ''}`;
 }
@@ -1535,7 +1762,7 @@ function soundCardHTML(s) {
     <textarea rows="2" data-action="pr-sound-mouth" data-id="${s.id}"
       placeholder="Tongue, lips, jaw position…">${esc(s.mouthNotes)}</textarea>
 
-    <label class="field" style="margin-top:8px">
+    <label class="field" style="margin-top:10px">
       <span>Notes</span>
       <input value="${esc(s.notes)}" data-action="pr-notes" data-kind="sound" data-id="${s.id}"
         placeholder="Extra notes…">
@@ -1574,7 +1801,7 @@ function renderSoundsTab() {
   <section class="card pr-mosaic-section">
     <div class="card-head">
       <h3>Sounds</h3>
-      <div class="row" style="gap:10px">
+      <div class="row" style="gap:12px">
         <span class="muted small">${items.length} shown · ${state.pronunciation.sounds.length} total</span>
         ${expandAllBtnHTML('sound', items)}
       </div>
@@ -1614,7 +1841,7 @@ function wordCardHTML(w) {
       ${masterySegHTML(w, 'word', [['practicing','Practicing'],['improving','Improving'],['mastered','Mastered']])}
     </div>
 
-    <label class="field" style="margin-top:8px">
+    <label class="field" style="margin-top:10px">
       <span>Notes</span>
       <input value="${esc(w.notes)}" data-action="pr-notes" data-kind="word" data-id="${w.id}"
         placeholder="Tricky syllable, common mistake…">
@@ -1648,7 +1875,7 @@ function renderWordsTab() {
   <section class="pr-add">
     <div class="pr-add-title">Add a difficult word</div>
     <div class="row">
-      <input class="grow" style="flex:2;min-width:140px;" placeholder="Word, e.g. thorough"
+      <input class="grow" style="flex:2;min-width:150px;" placeholder="Word, e.g. thorough"
         value="${esc(prDrafts.wordWord)}" data-action="pr-draft" data-key="wordWord">
       <input class="grow" placeholder="IPA (optional)"
         value="${esc(prDrafts.wordIpa)}" data-action="pr-draft" data-key="wordIpa">
@@ -1660,7 +1887,7 @@ function renderWordsTab() {
   <section class="card pr-mosaic-section">
     <div class="card-head">
       <h3>Words</h3>
-      <div class="row" style="gap:10px">
+      <div class="row" style="gap:12px">
         <span class="muted small">${items.length} shown · ${state.pronunciation.words.length} total</span>
         ${expandAllBtnHTML('word', items)}
       </div>
@@ -1710,12 +1937,12 @@ function sentenceCardHTML(s) {
     <input class="small-input" data-action="pr-sentence-add-section" data-id="${s.id}"
       placeholder="Add a difficult part + Enter">
 
-    <div class="pr-row" style="margin-top:10px">
+    <div class="pr-row" style="margin-top:12px">
       <span class="pr-label">Mastery</span>
       ${masterySegHTML(s, 'sentence', [['new','New'],['practicing','Practicing'],['mastered','Mastered']])}
     </div>
 
-    <label class="field" style="margin-top:8px">
+    <label class="field" style="margin-top:10px">
       <span>Notes</span>
       <input value="${esc(s.notes)}" data-action="pr-notes" data-kind="sentence" data-id="${s.id}"
         placeholder="Where you heard it, why it's tricky…">
@@ -1733,7 +1960,7 @@ function sentenceCardHTML(s) {
       ${toggle}
       <div class="grow">
         <div class="pr-text">"${esc(s.text)}"</div>
-        ${s.source ? `<div class="muted small" style="margin-top:4px">
+        ${s.source ? `<div class="muted small" style="margin-top:5px">
           <span class="source-badge">${esc(SOURCE_MAP[s.sourceType] || s.sourceType)}</span>
           ${esc(s.source)}
         </div>` : ''}
@@ -1753,7 +1980,7 @@ function renderSentencesTab() {
     <div class="pr-add-title">Add a sentence</div>
     <textarea rows="2" placeholder="Sentence you want to master, e.g. I should have told her earlier."
       data-action="pr-draft" data-key="sentenceText">${esc(prDrafts.sentenceText)}</textarea>
-    <div class="row" style="margin-top:6px">
+    <div class="row" style="margin-top:8px">
       <select style="width:auto" data-action="pr-draft" data-key="sentenceSourceType">
         ${SOURCE_TYPES.map(([val, label]) =>
           `<option value="${val}" ${prDrafts.sentenceSourceType === val ? 'selected' : ''}>${label}</option>`
@@ -1767,7 +1994,7 @@ function renderSentencesTab() {
   <section class="card pr-mosaic-section">
     <div class="card-head">
       <h3>Sentences</h3>
-      <div class="row" style="gap:10px">
+      <div class="row" style="gap:12px">
         <span class="muted small">${items.length} shown · ${state.pronunciation.sentences.length} total</span>
         ${expandAllBtnHTML('sentence', items)}
       </div>
@@ -1798,16 +2025,16 @@ function connectedCardHTML(c) {
       ).join('')}
     </div>
 
-    ${c.tags.length ? `<div class="row" style="gap:4px;margin-top:2px">
+    ${c.tags.length ? `<div class="row" style="gap:5px;margin-top:2px">
       ${c.tags.map(k => `<span class="tag-badge">${esc(CONNECTED_TAG_MAP[k] || k)}</span>`).join('')}
     </div>` : ''}
 
-    <div class="pr-row" style="margin-top:12px">
+    <div class="pr-row" style="margin-top:14px">
       <span class="pr-label">Mastery</span>
       ${masterySegHTML(c, 'connected', [['new','New'],['practicing','Practicing'],['mastered','Mastered']])}
     </div>
 
-    <label class="field" style="margin-top:8px">
+    <label class="field" style="margin-top:10px">
       <span>Notes</span>
       <input value="${esc(c.notes)}" data-action="pr-notes" data-kind="connected" data-id="${c.id}"
         placeholder="How the words blend — e.g. 'wanna' for want to…">
@@ -1830,13 +2057,13 @@ function connectedCardHTML(c) {
             data-action="pr-cs-field" data-id="${c.id}" data-field="original"
             placeholder="What do you want to do?">
         </label>
-        <label class="field" style="margin-top:8px">
+        <label class="field" style="margin-top:10px">
           <span>Connected-speech form</span>
           <input class="cs-form" value="${esc(c.connectedForm)}"
             data-action="pr-cs-field" data-id="${c.id}" data-field="connectedForm"
             placeholder="Whaddya wanna do?">
         </label>` : `<div class="pr-text">${esc(c.original) || '<span class="muted">(no phrase)</span>'}</div>
-        ${c.connectedForm ? `<div class="muted small" style="margin-top:4px">→ ${esc(c.connectedForm)}</div>` : ''}`}
+        ${c.connectedForm ? `<div class="muted small" style="margin-top:5px">→ ${esc(c.connectedForm)}</div>` : ''}`}
       </div>
       <div class="pr-card-head-actions">
         ${starHTML(c, 'connected')}
@@ -1855,7 +2082,7 @@ function renderConnectedTab() {
       <input class="grow" placeholder="Original — e.g. What do you want to do?"
         value="${esc(prDrafts.csOriginal)}" data-action="pr-draft" data-key="csOriginal">
     </div>
-    <div class="row" style="margin-top:6px">
+    <div class="row" style="margin-top:8px">
       <input class="grow" placeholder="Connected-speech form — e.g. Whaddya wanna do?"
         value="${esc(prDrafts.csForm)}" data-action="pr-draft" data-key="csForm">
       <button class="btn primary" data-action="pr-add-connected">Add phrase</button>
@@ -1864,7 +2091,7 @@ function renderConnectedTab() {
   <section class="card pr-mosaic-section">
     <div class="card-head">
       <h3>Connected Speech</h3>
-      <div class="row" style="gap:10px">
+      <div class="row" style="gap:12px">
         <span class="muted small">${items.length} shown · ${state.pronunciation.connected.length} total</span>
         ${expandAllBtnHTML('connected', items)}
       </div>
