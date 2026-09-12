@@ -1010,21 +1010,37 @@ function startTicker(){
    Constants
    ========================================================= */
 const TYPES = {
-  kindle:    { label: 'Kindle',        category: 'reading',   unit: 'pages'   },
-  book:      { label: 'Physical book', category: 'reading',   unit: 'pages'   },
-  article:   { label: 'Article',       category: 'reading',   unit: 'pages'   },
-  manga:   { label: 'Manga',       category: 'reading',   unit: 'pages'   },
-  other:     { label: 'Other',         category: 'reading',   unit: 'pages'   },
+  kindle:    { label: 'Kindle',        category: 'reading',   unit: 'pages' },
+  book:      { label: 'Physical book', category: 'reading',   unit: 'pages' },
+  article:   { label: 'Article',       category: 'reading',   unit: 'pages' },
+  manga:     { label: 'Manga',         category: 'reading',   unit: 'pages' },
+  other:     { label: 'Other',         category: 'reading',   unit: 'pages' },
   audiobook: { label: 'Audiobook',     category: 'listening', unit: 'minutes' },
   podcast:   { label: 'Podcast',       category: 'listening', unit: 'minutes' },
-  anime:   { label: 'Anime',       category: 'listening', unit: 'minutes' },
-  youTube:   { label: 'YouTube',       category: 'listening', unit: 'minutes' },
+  anime:     { label: 'Anime',         category: 'listening', unit: 'minutes' },
+  youtube:   { label: 'YouTube',       category: 'listening', unit: 'minutes' },
   tv:        { label: 'TV',            category: 'listening', unit: 'minutes' },
   film:      { label: 'Film',          category: 'listening', unit: 'minutes' }
 };
-const TYPE_ORDER = ['kindle', 'book', 'article', 'other', 'youtube', 'manga', 'audiobook', 'podcast', 'tv', 'film'];
+
+const TYPE_ORDER = [
+  'kindle',
+  'book',
+  'article',
+  'other',
+  'youtube',
+  'manga',
+  'audiobook',
+  'podcast',
+  'tv',
+  'film'
+];
+
 const CATEGORY_ORDER = ['reading', 'listening'];
-const CATEGORY_LABEL = { reading: 'Reading', listening: 'Listening' };
+
+const CATEGORY_LABEL = {
+  reading: 'Reading',
+  listening: 'Listening'
 
 const STORAGE_KEY = 'english-super-challenge-v2-clean';
 const WELCOME_KEY = 'esc-welcome-shown';
