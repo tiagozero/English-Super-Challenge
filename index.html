@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="sand">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>English Super Challenge</title>
 <style>
-  :root{
+  /* =========================================================
+     Themes
+     ========================================================= */
+  :root, html[data-theme="sand"]{
     --bg:#FAF7F3;
     --surface:#FFFFFF;
     --surface-2:#F4EFE9;
@@ -17,9 +20,150 @@
     --listening:#3F7A6E;
     --listening-2:#66A093;
     --xp:#A9855C;
-    --radius:16px;
+    --good-bg:#E2F0E9;  --good-fg:#2F6B54;
+    --ok-bg:#EBF1E7;    --ok-fg:#4B6B36;
+    --warn-bg:#FBF0DC;  --warn-fg:#8A6420;
+    --bad-bg:#FBE6E1;   --bad-fg:#9C4230;
+    --info-bg:#EAEFF5;  --info-fg:#3E5B78;
+    --neutral-bg:#F0ECE6; --neutral-fg:#8A7F73;
+    --tag-bg:#F1E7DC;   --tag-fg:#8A5A2B;
+    --hover-line:#D6C7B4;
+    --focus-line:#CDBBA6;
+    --dash-line:#C9B9A6;
+    --bar-bg:#E5DCD0;
+    --prompt-border:#E4D6C5;
+    --hdr-bg:rgba(250,247,243,.88);
+    --backdrop:rgba(38,33,28,.34);
+    --on-accent:#FFFFFF;
     --shadow:0 1px 2px rgba(38,33,28,.04), 0 10px 26px -16px rgba(38,33,28,.28);
+    --radius:16px;
+    color-scheme:light;
   }
+
+  html[data-theme="mint"]{
+    --bg:#F3F8F4;
+    --surface:#FFFFFF;
+    --surface-2:#E9F1EB;
+    --line:#DAE7DE;
+    --text:#1A2620;
+    --muted:#6E8378;
+    --reading:#2F7A57;
+    --reading-2:#68A98A;
+    --listening:#2F6E8A;
+    --listening-2:#6EA0B8;
+    --xp:#7A8C4A;
+    --good-bg:#DDF0E4;  --good-fg:#25674A;
+    --ok-bg:#E5EFE3;    --ok-fg:#4A6B34;
+    --warn-bg:#F7EFD9;  --warn-fg:#836018;
+    --bad-bg:#F9E3DD;   --bad-fg:#943D2B;
+    --info-bg:#E2EEF3;  --info-fg:#356278;
+    --neutral-bg:#EBEFEA; --neutral-fg:#6E8378;
+    --tag-bg:#E2EFE6;   --tag-fg:#2F6B50;
+    --hover-line:#C4D6CB;
+    --focus-line:#B6CCBF;
+    --dash-line:#B6CCBF;
+    --bar-bg:#DCE8E0;
+    --prompt-border:#D5E5DB;
+    --hdr-bg:rgba(243,248,244,.88);
+    --backdrop:rgba(20,35,27,.34);
+    --on-accent:#FFFFFF;
+    --shadow:0 1px 2px rgba(26,38,32,.04), 0 10px 26px -16px rgba(26,38,32,.25);
+    color-scheme:light;
+  }
+
+  html[data-theme="lavender"]{
+    --bg:#F8F6FC;
+    --surface:#FFFFFF;
+    --surface-2:#F0EBF7;
+    --line:#E3DCF0;
+    --text:#211C2B;
+    --muted:#7C7489;
+    --reading:#7A5EA8;
+    --reading-2:#A98FD0;
+    --listening:#3E7C8A;
+    --listening-2:#74A7B3;
+    --xp:#A9855C;
+    --good-bg:#E4F0E8;  --good-fg:#2E6B52;
+    --ok-bg:#EBF1E7;    --ok-fg:#4B6B36;
+    --warn-bg:#FBF0DC;  --warn-fg:#8A6420;
+    --bad-bg:#FBE6E1;   --bad-fg:#9C4230;
+    --info-bg:#E7E9F6;  --info-fg:#47528F;
+    --neutral-bg:#EDE9F1; --neutral-fg:#7C7489;
+    --tag-bg:#EDE4F6;   --tag-fg:#6A4E9A;
+    --hover-line:#CFC4E0;
+    --focus-line:#C0B2D6;
+    --dash-line:#C0B2D6;
+    --bar-bg:#E3DAF0;
+    --prompt-border:#E0D6EE;
+    --hdr-bg:rgba(248,246,252,.88);
+    --backdrop:rgba(28,22,40,.34);
+    --on-accent:#FFFFFF;
+    --shadow:0 1px 2px rgba(33,28,43,.04), 0 10px 26px -16px rgba(33,28,43,.28);
+    color-scheme:light;
+  }
+
+  html[data-theme="midnight"]{
+    --bg:#11141A;
+    --surface:#181D25;
+    --surface-2:#212832;
+    --line:#2C3542;
+    --text:#E7ECF3;
+    --muted:#8A95A6;
+    --reading:#E29A62;
+    --reading-2:#B9743F;
+    --listening:#63B3A2;
+    --listening-2:#3F7A6E;
+    --xp:#CBA97C;
+    --good-bg:#17352A;  --good-fg:#7FD3AD;
+    --ok-bg:#26331C;    --ok-fg:#B3D48C;
+    --warn-bg:#382C15;  --warn-fg:#E8C377;
+    --bad-bg:#3A1E19;   --bad-fg:#EFA08A;
+    --info-bg:#1B2A3A;  --info-fg:#96BEE6;
+    --neutral-bg:#262C35; --neutral-fg:#9AA4B2;
+    --tag-bg:#38291B;   --tag-fg:#E5BA85;
+    --hover-line:#3B4653;
+    --focus-line:#4A5765;
+    --dash-line:#4A5765;
+    --bar-bg:#2C3542;
+    --prompt-border:#33404E;
+    --hdr-bg:rgba(17,20,26,.88);
+    --backdrop:rgba(0,0,0,.58);
+    --on-accent:#14181E;
+    --shadow:0 1px 2px rgba(0,0,0,.32), 0 10px 26px -16px rgba(0,0,0,.72);
+    color-scheme:dark;
+  }
+
+  html[data-theme="espresso"]{
+    --bg:#16120F;
+    --surface:#1F1A15;
+    --surface-2:#2A231C;
+    --line:#392F26;
+    --text:#F0E8DF;
+    --muted:#9E9184;
+    --reading:#E39A62;
+    --reading-2:#B9743F;
+    --listening:#6FB6A6;
+    --listening-2:#3F7A6E;
+    --xp:#CFAC7C;
+    --good-bg:#1B352A;  --good-fg:#84D2AE;
+    --ok-bg:#2A331D;    --ok-fg:#B7D590;
+    --warn-bg:#3A2D16;  --warn-fg:#EAC57B;
+    --bad-bg:#3C1F19;   --bad-fg:#F0A48D;
+    --info-bg:#2A2A38;  --info-fg:#A0B4D8;
+    --neutral-bg:#2C2520; --neutral-fg:#A69A8C;
+    --tag-bg:#3A2A1A;   --tag-fg:#E5BA85;
+    --hover-line:#463A2F;
+    --focus-line:#54463A;
+    --dash-line:#54463A;
+    --bar-bg:#392F26;
+    --prompt-border:#3E332A;
+    --hdr-bg:rgba(22,18,15,.88);
+    --backdrop:rgba(0,0,0,.6);
+    --on-accent:#1A1512;
+    --shadow:0 1px 2px rgba(0,0,0,.38), 0 10px 26px -16px rgba(0,0,0,.78);
+    color-scheme:dark;
+  }
+
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{
@@ -30,13 +174,14 @@
     line-height:1.45;
     -webkit-font-smoothing:antialiased;
     text-rendering:optimizeLegibility;
+    transition:background .2s ease, color .2s ease;
   }
   button{font-family:inherit}
 
   /* ---------- Header ---------- */
   .hdr{
     position:sticky;top:0;z-index:50;
-    background:rgba(250,247,243,.88);
+    background:var(--hdr-bg);
     backdrop-filter:saturate(180%) blur(14px);
     -webkit-backdrop-filter:saturate(180%) blur(14px);
     border-bottom:1px solid var(--line);
@@ -49,10 +194,10 @@
   .brand{display:flex;align-items:center;gap:11px;min-width:0}
   .mark{
     width:36px;height:36px;flex:0 0 auto;border-radius:11px;
-    background:linear-gradient(140deg,var(--reading),#A85B2E);
-    color:#fff;font-size:11px;font-weight:800;letter-spacing:.06em;
+    background:linear-gradient(140deg,var(--reading-2),var(--reading));
+    color:var(--on-accent);font-size:11px;font-weight:800;letter-spacing:.06em;
     display:flex;align-items:center;justify-content:center;
-    box-shadow:0 6px 14px -6px rgba(194,112,61,.7);
+    box-shadow:0 6px 14px -6px color-mix(in srgb, var(--reading) 70%, transparent);
   }
   .brand-txt{min-width:0}
   .brand-txt h1{font-size:15.5px;font-weight:650;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -67,7 +212,7 @@
     cursor:pointer;transition:background .15s, border-color .15s;
     font-family:inherit;color:var(--text);min-width:0;
   }
-  .profile-btn:hover{background:var(--surface-2);border-color:#D6C7B4}
+  .profile-btn:hover{background:var(--surface-2);border-color:var(--hover-line)}
   .profile-avatar-sm{
     width:28px;height:28px;border-radius:50%;flex:0 0 auto;
     display:flex;align-items:center;justify-content:center;
@@ -111,8 +256,8 @@
     white-space:nowrap;
   }
   .btn:active{transform:scale(.975)}
-  .btn-primary{background:var(--reading);color:#fff;box-shadow:0 6px 16px -8px rgba(194,112,61,.9)}
-  .btn-primary:hover{filter:brightness(1.05)}
+  .btn-primary{background:var(--reading);color:var(--on-accent);box-shadow:0 6px 16px -8px color-mix(in srgb, var(--reading) 75%, transparent)}
+  .btn-primary:hover{filter:brightness(1.06)}
   .btn-ghost{background:transparent;color:var(--muted);border-color:var(--line)}
   .btn-ghost:hover{background:var(--surface-2);color:var(--text)}
   .btn-block{width:100%;margin-top:14px;padding:13px}
@@ -124,7 +269,30 @@
   .icon-btn:hover{background:var(--surface-2);color:var(--text)}
   .link-btn{background:none;border:0;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;padding:4px 6px;border-radius:8px}
   .link-btn:hover{color:var(--text);background:var(--surface-2)}
-  .link-btn.danger:hover{color:#9C4230;background:#FBE6E1}
+  .link-btn.danger:hover{color:var(--bad-fg);background:var(--bad-bg)}
+
+  /* Small round info button */
+  .info-btn{
+    width:26px;height:26px;border-radius:50%;flex:0 0 auto;
+    border:1px solid var(--line);background:var(--surface);
+    color:var(--muted);font-size:12px;font-weight:800;font-style:normal;
+    display:inline-flex;align-items:center;justify-content:center;
+    cursor:pointer;padding:0;line-height:1;
+    transition:background .15s,color .15s,border-color .15s;
+    font-family:Georgia,"Times New Roman",serif;
+  }
+  .info-btn:hover{background:var(--surface-2);color:var(--text);border-color:var(--hover-line)}
+
+  /* Info modal body */
+  .info-body{font-size:13.5px;line-height:1.65;color:var(--text)}
+  .info-body p{margin:0 0 11px}
+  .info-body p:last-child{margin-bottom:0}
+  .info-body b{font-weight:650}
+  .info-body code{
+    background:var(--surface-2);border:1px solid var(--line);
+    border-radius:6px;padding:1px 6px;font-size:12px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
 
   /* ---------- Layout ---------- */
   main{max-width:1080px;margin:0 auto;padding:20px 20px 120px}
@@ -147,7 +315,7 @@
   .mono{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
   .lb-clock{
     display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
-    background:linear-gradient(90deg,rgba(194,112,61,.10),rgba(194,112,61,.02));
+    background:linear-gradient(90deg,color-mix(in srgb, var(--reading) 10%, transparent),color-mix(in srgb, var(--reading) 2%, transparent));
     border:1px solid var(--line);border-radius:14px;padding:14px 16px;
   }
   .lb-clock .k{
@@ -176,7 +344,7 @@
     width:84px;height:84px;border-radius:24px;flex:0 0 auto;
     display:flex;align-items:center;justify-content:center;
     color:#fff;font-size:38px;font-weight:700;line-height:1;
-    box-shadow:0 10px 22px -12px rgba(38,33,28,.5);
+    box-shadow:0 10px 22px -12px rgba(0,0,0,.5);
   }
   .profile-hero-main{flex:1;min-width:0}
   .profile-hero-main h2{
@@ -211,7 +379,7 @@
     font-size:12.5px;margin-bottom:8px;
   }
   .completeness-top b{font-weight:680;font-size:13.5px}
-  .completeness-bar{height:7px;background:#E5DCD0;border-radius:999px;overflow:hidden}
+  .completeness-bar{height:7px;background:var(--bar-bg);border-radius:999px;overflow:hidden}
   .completeness-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--reading-2),var(--reading));transition:width .4s ease}
 
   /* Detail rows */
@@ -235,7 +403,7 @@
   .tag-list{display:flex;flex-wrap:wrap;gap:7px}
   .tag{
     font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;
-    background:#F1E7DC;color:#8A5A2B;
+    background:var(--tag-bg);color:var(--tag-fg);
   }
   .tag.empty{background:transparent;color:var(--muted);font-weight:500;font-style:italic;padding:0}
 
@@ -264,7 +432,7 @@
     display:flex;align-items:center;justify-content:center;
     color:#fff;font-size:32px;font-weight:700;line-height:1;
   }
-  .avatar-preview-label{font-size:12.5px;color:var(--muted);max-width:220px}
+  .avatar-preview-label{font-size:12.5px;color:var(--muted);max-width:240px}
 
   .picker-label{
     font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
@@ -280,8 +448,8 @@
     transition:transform .08s ease, border-color .15s;
     padding:0;
   }
-  .emoji-grid button:hover{border-color:#D6C7B4;transform:scale(1.06)}
-  .emoji-grid button.active{border-color:var(--reading);box-shadow:0 0 0 2px rgba(194,112,61,.22)}
+  .emoji-grid button:hover{border-color:var(--hover-line);transform:scale(1.06)}
+  .emoji-grid button.active{border-color:var(--reading);box-shadow:0 0 0 2px color-mix(in srgb, var(--reading) 25%, transparent)}
   @media(max-width:520px){.emoji-grid{grid-template-columns:repeat(8,1fr)}}
 
   .swatch-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
@@ -292,6 +460,28 @@
   }
   .swatch:hover{transform:scale(1.08)}
   .swatch.active{border-color:var(--text);box-shadow:0 0 0 2px var(--bg)}
+
+  /* ---------- Range input ---------- */
+  input[type=range]{
+    width:100%;height:6px;
+    -webkit-appearance:none;appearance:none;
+    background:var(--surface-2);border-radius:999px;
+    outline:none;padding:0;border:0;margin:6px 0 2px;
+    box-shadow:none;
+  }
+  input[type=range]:focus{box-shadow:none}
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;
+    width:20px;height:20px;border-radius:50%;
+    background:var(--reading);cursor:pointer;
+    border:2px solid var(--surface);
+    box-shadow:0 2px 6px color-mix(in srgb, var(--reading) 45%, transparent);
+  }
+  input[type=range]::-moz-range-thumb{
+    width:20px;height:20px;border-radius:50%;border:2px solid var(--surface);
+    background:var(--reading);cursor:pointer;
+    box-shadow:0 2px 6px color-mix(in srgb, var(--reading) 45%, transparent);
+  }
 
   /* Section header inside modal */
   .form-section{
@@ -321,10 +511,10 @@
   .bar-ideal{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--text);opacity:.22;border-radius:2px}
   .bar-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;font-size:12.5px;color:var(--muted)}
   .pace-tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
-  .pace-tag.good{background:#E2F0E9;color:#2F6B54}
-  .pace-tag.ok{background:#EBF1E7;color:#4B6B36}
-  .pace-tag.warn{background:#FBF0DC;color:#8A6420}
-  .pace-tag.bad{background:#FBE6E1;color:#9C4230}
+  .pace-tag.good{background:var(--good-bg);color:var(--good-fg)}
+  .pace-tag.ok{background:var(--ok-bg);color:var(--ok-fg)}
+  .pace-tag.warn{background:var(--warn-bg);color:var(--warn-fg)}
+  .pace-tag.bad{background:var(--bad-bg);color:var(--bad-fg)}
 
   /* ---------- Stat cards ---------- */
   .stat-label{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
@@ -371,7 +561,7 @@
     -webkit-appearance:none;appearance:none;
   }
   select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' fill='none' stroke='%238A7F73' stroke-width='1.6' stroke-linecap='round'/></svg>");background-repeat:no-repeat;background-position:right 13px center;padding-right:34px}
-  input:focus,textarea:focus,select:focus{border-color:#CDBBA6;box-shadow:0 0 0 3px rgba(194,112,61,.10)}
+  input:focus,textarea:focus,select:focus{border-color:var(--focus-line);box-shadow:0 0 0 3px color-mix(in srgb, var(--reading) 12%, transparent)}
   textarea{resize:vertical;min-height:56px}
   .day-group{margin-bottom:18px}
   .day-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:0 2px 8px;border-bottom:1px solid var(--line);margin-bottom:4px}
@@ -383,7 +573,7 @@
   .mat:last-child{border-bottom:0}
   .mat-icon{
     width:40px;height:40px;border-radius:11px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
-    font-size:12px;font-weight:750;letter-spacing:.03em;color:#fff;
+    font-size:12px;font-weight:750;letter-spacing:.03em;color:var(--on-accent);
   }
   .mat-icon.reading{background:linear-gradient(140deg,var(--reading-2),var(--reading))}
   .mat-icon.listening{background:linear-gradient(140deg,var(--listening-2),var(--listening))}
@@ -391,15 +581,101 @@
   .mat-title{font-size:14.5px;font-weight:600;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
   .mat-sub{font-size:12.5px;color:var(--muted);margin-top:2px}
   .pill{font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase}
-  .pill.active{background:#E2F0E9;color:#2F6B54}
-  .pill.completed{background:#EAEFF5;color:#3E5B78}
-  .pill.archived{background:#F0ECE6;color:#8A7F73}
+  .pill.active{background:var(--good-bg);color:var(--good-fg)}
+  .pill.completed{background:var(--info-bg);color:var(--info-fg)}
+  .pill.archived{background:var(--neutral-bg);color:var(--neutral-fg)}
   .mat-tot{font-size:12.5px;color:var(--muted);margin-top:5px;font-variant-numeric:tabular-nums}
+
+  /* Materials toolbar */
+  .mat-toolbar{
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;
+  }
+  .mat-search{flex:1;min-width:170px}
+  .mat-search input{padding:9px 13px;font-size:14px}
+  .mat-toolbar .seg button{padding:8px 12px;font-size:12.5px}
+
+  .mat-chip-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+  .mat-chip-row .chip{padding:6px 11px;font-size:12.5px}
+
+  .mat-filters-wrap{
+    overflow:hidden;
+    transition:max-height .28s ease, opacity .2s ease, margin .2s ease;
+    max-height:400px;
+    opacity:1;
+  }
+  .mat-filters-wrap.collapsed{
+    max-height:0;
+    opacity:0;
+  }
+
+  .mat-group-head{
+    display:flex;align-items:center;gap:9px;margin:20px 2px 12px;
+  }
+  .mat-group-head:first-of-type{margin-top:6px}
+  .mat-group-head .gdot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+  .mat-group-head .gdot.reading{background:var(--reading)}
+  .mat-group-head .gdot.listening{background:var(--listening)}
+  .mat-group-head .gt{font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .mat-group-head .gn{
+    font-size:11.5px;font-weight:700;color:var(--muted);
+    background:var(--surface-2);padding:2px 9px;border-radius:999px;
+  }
+  .mat-group-head .gline{flex:1;height:1px;background:var(--line);border-radius:1px}
+
+  /* Filter toggle button with active badge */
+  .filter-toggle{display:inline-flex;align-items:center;gap:6px}
+  .filter-toggle .fcount{
+    font-size:10.5px;font-weight:800;
+    background:var(--reading);color:var(--on-accent);
+    border-radius:999px;padding:1px 7px;line-height:1.5;
+  }
+
+  /* Grid view */
+  .mat-grid{
+    display:grid;gap:12px;
+    grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+  }
+  @media(max-width:520px){
+    .mat-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  }
+  .mat-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:14px;
+    display:flex;flex-direction:column;gap:9px;
+    min-width:0;
+    box-shadow:var(--shadow);
+    transition:border-color .15s ease, transform .1s ease;
+  }
+  .mat-card:hover{border-color:var(--hover-line);transform:translateY(-1px)}
+  .mat-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+  .mat-card-actions{display:flex;gap:0;flex:0 0 auto;margin:-4px -4px 0 0}
+  .mat-card-actions .link-btn{font-size:12px;padding:3px 6px}
+  .mat-card-title{
+    font-size:14.5px;font-weight:640;line-height:1.3;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    overflow:hidden;word-break:break-word;
+  }
+  .mat-card-sub{
+    font-size:12.5px;color:var(--muted);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .mat-card-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:1px}
+  .mat-type-pill{
+    font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;
+    letter-spacing:.04em;text-transform:uppercase;
+    background:var(--surface-2);color:var(--muted);
+  }
+  .mat-card-tot{
+    font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;
+    margin-top:auto;padding-top:8px;border-top:1px solid var(--line);
+  }
 
   /* ---------- Charts ---------- */
   .seg{display:inline-flex;background:var(--surface-2);border-radius:11px;padding:3px;gap:2px}
   .seg button{border:0;background:transparent;padding:7px 14px;border-radius:9px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:background .15s,color .15s}
-  .seg button.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(38,33,28,.1)}
+  .seg button.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.12)}
   .chart{display:flex;gap:3px;height:170px;position:relative}
   .chart .col{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}
   .chart .bar-wrap{flex:1;display:flex;align-items:flex-end}
@@ -408,7 +684,7 @@
   .chart .fill.listening{background:var(--listening)}
   .chart .fill.muted{background:var(--surface-2)}
   .chart .lbl{font-size:9.5px;color:var(--muted);text-align:center;flex:0 0 auto;height:12px;line-height:12px;white-space:nowrap;overflow:hidden}
-  .target-line{position:absolute;left:0;right:0;border-top:1.5px dashed #C9B9A6;pointer-events:none}
+  .target-line{position:absolute;left:0;right:0;border-top:1.5px dashed var(--dash-line);pointer-events:none}
   .chart-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin-top:12px}
   .chart-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
   .cum-chart{width:100%;height:190px;display:block;border-radius:10px;overflow:visible}
@@ -422,14 +698,14 @@
   .chal-title{font-size:14.5px;font-weight:620;display:flex;align-items:center;gap:7px;flex-wrap:wrap;min-width:0}
   .chal-actions{display:flex;gap:2px;flex:0 0 auto}
   .badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase}
-  .badge.daily{background:#F1E7DC;color:#8A5A2B}
-  .badge.weekly{background:#E4EBF3;color:#3E5B78}
-  .badge.done{background:#E2F0E9;color:#2F6B54}
+  .badge.daily{background:var(--tag-bg);color:var(--tag-fg)}
+  .badge.weekly{background:var(--info-bg);color:var(--info-fg)}
+  .badge.done{background:var(--good-bg);color:var(--good-fg)}
   .chal-bar{height:8px;background:var(--surface-2);border-radius:999px;margin:11px 0 8px;overflow:hidden}
   .chal-bar i{display:block;height:100%;border-radius:999px;transition:width .4s ease}
   .chal-bar.reading i{background:linear-gradient(90deg,var(--reading-2),var(--reading))}
   .chal-bar.listening i{background:linear-gradient(90deg,var(--listening-2),var(--listening))}
-  .chal-bar.xp i{background:linear-gradient(90deg,#D9C3A8,var(--xp))}
+  .chal-bar.xp i{background:linear-gradient(90deg,var(--reading-2),var(--xp))}
   .chal-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;flex-wrap:wrap}
   .chal-timer{
     display:flex;align-items:center;gap:6px;margin-top:7px;
@@ -441,7 +717,7 @@
   .lb-row{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--line)}
   .lb-row:last-child{border-bottom:0}
   .lb-row.you{
-    background:linear-gradient(90deg,rgba(194,112,61,.10),rgba(194,112,61,0));
+    background:linear-gradient(90deg,color-mix(in srgb, var(--reading) 10%, transparent),transparent);
     border-radius:12px;padding-left:8px;padding-right:8px;margin:0 -8px;border-bottom-color:transparent;
   }
   .lb-rank{width:26px;text-align:center;font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;flex:0 0 auto}
@@ -457,15 +733,25 @@
   .lb-row.you .lb-bar i{background:var(--reading)}
   .lb-sub{font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 
+  .lb-edit{
+    width:32px;height:32px;border-radius:9px;flex:0 0 auto;
+    border:1px solid transparent;background:transparent;
+    color:var(--muted);font-size:14px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s, color .15s, border-color .15s;
+    padding:0;line-height:1;
+  }
+  .lb-edit:hover{background:var(--surface-2);color:var(--text);border-color:var(--line)}
+
   /* ---------- Modal ---------- */
-  .modal-backdrop{position:fixed;inset:0;background:rgba(38,33,28,.34);z-index:100;animation:fade .16s ease}
+  .modal-backdrop{position:fixed;inset:0;background:var(--backdrop);z-index:100;animation:fade .16s ease}
   @keyframes fade{from{opacity:0}to{opacity:1}}
   .modal{
     position:fixed;z-index:101;left:50%;bottom:0;width:100%;max-width:560px;
     transform:translateX(-50%);
     background:var(--surface);border-radius:22px 22px 0 0;
     max-height:93vh;overflow-y:auto;
-    box-shadow:0 -10px 40px -12px rgba(38,33,28,.35);
+    box-shadow:0 -10px 40px -12px rgba(0,0,0,.45);
   }
   @media(min-width:640px){
     .modal{top:50%;bottom:auto;transform:translate(-50%,-50%);border-radius:22px;max-height:88vh}
@@ -491,17 +777,17 @@
     padding:8px 13px;border-radius:999px;font-size:13.5px;font-weight:550;cursor:pointer;
     transition:all .15s ease;
   }
-  .chip:hover{border-color:#D6C7B4}
-  .chip.active{background:var(--text);color:#fff;border-color:transparent}
-  .chip.active[data-cat="reading"]{background:var(--reading)}
-  .chip.active[data-cat="listening"]{background:var(--listening)}
-  .chip.active[data-cat="xp"]{background:var(--xp)}
+  .chip:hover{border-color:var(--hover-line)}
+  .chip.active{background:var(--text);color:var(--bg);border-color:transparent}
+  .chip.active[data-cat="reading"]{background:var(--reading);color:var(--on-accent)}
+  .chip.active[data-cat="listening"]{background:var(--listening);color:var(--on-accent)}
+  .chip.active[data-cat="xp"]{background:var(--xp);color:var(--on-accent)}
 
   .ac{position:relative}
   .ac-list{
     position:absolute;top:calc(100% + 5px);left:0;right:0;z-index:20;
     background:var(--surface);border:1px solid var(--line);border-radius:13px;
-    box-shadow:0 14px 30px -14px rgba(38,33,28,.3);
+    box-shadow:0 14px 30px -14px rgba(0,0,0,.35);
     max-height:210px;overflow-y:auto;display:none;
   }
   .ac-list.open{display:block}
@@ -527,18 +813,87 @@
   .data-btns{display:flex;gap:8px;flex-wrap:wrap}
   .data-btns .btn{flex:1 1 auto;justify-content:center;display:inline-flex;align-items:center;gap:6px}
 
+  /* ---------- CSV import ---------- */
+  .csv-drop{
+    border:1.5px dashed var(--line);
+    border-radius:14px;
+    padding:26px 16px;
+    text-align:center;
+    font-size:13.5px;
+    color:var(--muted);
+    transition:border-color .15s, background .15s;
+    cursor:pointer;
+    background:var(--surface);
+  }
+  .csv-drop:hover{border-color:var(--hover-line)}
+  .csv-drop.over{border-color:var(--reading);background:var(--surface-2)}
+  .csv-drop .big{font-size:26px;display:block;margin-bottom:8px;opacity:.65}
+  .csv-cols{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 16px}
+  .csv-cols code{
+    background:var(--surface-2);border:1px solid var(--line);
+    border-radius:8px;padding:4px 9px;font-size:12px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--text);
+  }
+  .csv-preview{
+    margin-top:14px;max-height:210px;overflow:auto;
+    border:1px solid var(--line);border-radius:12px;
+  }
+  .csv-preview table{width:100%;border-collapse:collapse;font-size:12.5px}
+  .csv-preview th,.csv-preview td{padding:7px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+  .csv-preview th{
+    background:var(--surface-2);font-weight:700;color:var(--muted);
+    font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;
+    position:sticky;top:0;
+  }
+  .csv-preview tr:last-child td{border-bottom:0}
+  .csv-note{font-size:12.5px;margin-top:12px;line-height:1.5}
+  .csv-note.err{color:var(--bad-fg)}
+  .csv-note.ok{color:var(--good-fg)}
+  .csv-note.warn{color:var(--warn-fg)}
+
+  /* ---------- Theme picker ---------- */
+  .theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:420px){.theme-grid{grid-template-columns:1fr}}
+  .theme-card{
+    border:1.5px solid var(--line);background:var(--surface);
+    border-radius:14px;padding:12px;cursor:pointer;text-align:left;
+    transition:border-color .15s, transform .08s;
+    font-family:inherit;color:var(--text);
+  }
+  .theme-card:hover{border-color:var(--hover-line)}
+  .theme-card:active{transform:scale(.98)}
+  .theme-card.active{border-color:var(--reading);box-shadow:0 0 0 3px color-mix(in srgb, var(--reading) 18%, transparent)}
+  .theme-swatches{display:flex;border-radius:9px;overflow:hidden;border:1px solid var(--line);margin-bottom:10px}
+  .theme-swatches span{flex:1;height:34px;display:block}
+  .theme-name{font-size:13.5px;font-weight:650;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .theme-kind{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .theme-check{font-size:12px;color:var(--reading);font-weight:800}
+
   /* ---------- Empty state ---------- */
   .empty{text-align:center;padding:34px 16px}
   .empty .em-title{font-size:15px;font-weight:620;margin-bottom:5px}
   .empty .em-sub{font-size:13.5px;color:var(--muted);max-width:340px;margin:0 auto 16px}
   .empty .em-icon{font-size:26px;margin-bottom:12px;opacity:.5}
 
+  /* ---------- Prompt card ---------- */
+  .prompt-card{
+    background:linear-gradient(135deg,
+      color-mix(in srgb, var(--reading) 8%, transparent),
+      color-mix(in srgb, var(--listening) 6%, transparent));
+    border-color:var(--prompt-border);
+  }
+  .prompt-icon{
+    width:52px;height:52px;border-radius:16px;
+    background:linear-gradient(140deg,var(--reading-2),var(--reading));
+    display:flex;align-items:center;justify-content:center;font-size:24px;flex:0 0 auto;
+  }
+
   /* ---------- FAB ---------- */
   .fab{
     position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:60;
     width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;
-    background:var(--reading);color:#fff;font-size:26px;line-height:1;
-    box-shadow:0 10px 24px -8px rgba(194,112,61,.85);
+    background:var(--reading);color:var(--on-accent);font-size:26px;line-height:1;
+    box-shadow:0 10px 24px -8px color-mix(in srgb, var(--reading) 80%, transparent);
     display:none;align-items:center;justify-content:center;
   }
   .fab:active{transform:scale(.95)}
@@ -553,6 +908,17 @@
     .profile-avatar-lg{width:70px;height:70px;font-size:32px;border-radius:20px}
   }
 </style>
+<script>
+  /* Apply saved theme before first paint to avoid a flash */
+  (function(){
+    try {
+      var t = localStorage.getItem('esc-theme') || 'sand';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'sand');
+    }
+  })();
+</script>
 </head>
 <body>
 
@@ -570,6 +936,7 @@
         <span class="profile-avatar-sm" id="hdrAvatar">?</span>
         <span class="profile-name-sm" id="hdrName">Profile</span>
       </button>
+      <button class="icon-btn" data-action="open-theme" title="Theme" aria-label="Theme">🎨</button>
       <button class="icon-btn" data-action="open-settings" title="Challenge settings" aria-label="Settings">⚙</button>
       <button class="btn btn-primary" data-action="open-log">+ Log activity</button>
     </div>
@@ -640,7 +1007,7 @@ function initialsOf(name){
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-/* Deterministic pseudo-random helpers (used for the demo rivals) */
+/* Deterministic pseudo-random helpers (used for the demo characters) */
 function hashStr(s){
   let h = 2166136261;
   for (let i = 0; i < s.length; i++){
@@ -656,6 +1023,33 @@ function mulberry32(a){
     t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
+}
+
+/* =========================================================
+   Themes
+   ========================================================= */
+const THEME_KEY = 'esc-theme';
+const THEMES = [
+  { id:'sand',     name:'Sand',     kind:'Light',
+    preview:{ bg:'#FAF7F3', surface:'#FFFFFF', accent:'#C2703D' } },
+  { id:'mint',     name:'Mint',     kind:'Light',
+    preview:{ bg:'#F3F8F4', surface:'#FFFFFF', accent:'#2F7A57' } },
+  { id:'lavender', name:'Lavender', kind:'Light',
+    preview:{ bg:'#F8F6FC', surface:'#FFFFFF', accent:'#7A5EA8' } },
+  { id:'midnight', name:'Midnight', kind:'Dark',
+    preview:{ bg:'#11141A', surface:'#181D25', accent:'#E29A62' } },
+  { id:'espresso', name:'Espresso', kind:'Dark',
+    preview:{ bg:'#16120F', surface:'#1F1A15', accent:'#E39A62' } }
+];
+let currentTheme = 'sand';
+try { currentTheme = localStorage.getItem(THEME_KEY) || 'sand'; } catch (e) {}
+if (!THEMES.some(t => t.id === currentTheme)) currentTheme = 'sand';
+
+function applyTheme(id){
+  if (!THEMES.some(t => t.id === id)) id = 'sand';
+  currentTheme = id;
+  document.documentElement.setAttribute('data-theme', id);
+  try { localStorage.setItem(THEME_KEY, id); } catch (e) {}
 }
 
 /* =========================================================
@@ -737,9 +1131,13 @@ const TYPES = {
   film:      { label: 'Film',          category: 'listening', unit: 'minutes' }
 };
 const TYPE_ORDER = ['kindle', 'book', 'article', 'other', 'audiobook', 'podcast', 'tv', 'film'];
+const CATEGORY_ORDER = ['reading', 'listening'];
+const CATEGORY_LABEL = { reading: 'Reading', listening: 'Listening' };
 
 const STORAGE_KEY = 'english-super-challenge-v2-clean';
 const WELCOME_KEY = 'esc-welcome-shown';
+const MATVIEW_KEY = 'esc-materials-view';
+const MATFILTERS_KEY = 'esc-materials-filters-open';
 
 const XP_PER_UNIT = 5 / 10;
 function xpFrom(pages, minutes){
@@ -796,18 +1194,33 @@ const COUNTRIES = [
   'Iran','Iraq','Other'
 ];
 
-const RIVALS = [
-  { id: 'r1',  name: 'Luna Park',    handle: '@luna_reads',    color: '#C2703D', read: 48, listen: 55,  rest: 0.06, phase: 0 },
-  { id: 'r2',  name: 'Marco Silva',  handle: '@marco.listens', color: '#3F7A6E', read: 22, listen: 95,  rest: 0.10, phase: 2 },
-  { id: 'r3',  name: 'Aiko Tanaka',  handle: '@aiko_pages',    color: '#7A5EA8', read: 65, listen: 30,  rest: 0.04, phase: 4 },
-  { id: 'r4',  name: 'Diego Ramos',  handle: '@diego_r',       color: '#B0563F', read: 35, listen: 70,  rest: 0.14, phase: 6 },
-  { id: 'r5',  name: 'Nora Haddad',  handle: '@nora.reads',    color: '#2F6B54', read: 55, listen: 40,  rest: 0.08, phase: 1 },
-  { id: 'r6',  name: 'Felix Braun',  handle: '@felix_b',       color: '#4A6FA5', read: 30, listen: 80,  rest: 0.12, phase: 3 },
-  { id: 'r7',  name: 'Priya Nair',   handle: '@priya.pages',   color: '#A8567A', read: 70, listen: 25,  rest: 0.05, phase: 5 },
-  { id: 'r8',  name: 'Sam Okafor',   handle: '@sam_listens',   color: '#8A6420', read: 18, listen: 110, rest: 0.09, phase: 7 },
-  { id: 'r9',  name: 'Elena Rossi',  handle: '@elena_r',       color: '#5D7A3F', read: 42, listen: 62,  rest: 0.11, phase: 8 },
-  { id: 'r10', name: 'Kai Nakamura', handle: '@kai.n',         color: '#3E7C8A', read: 58, listen: 48,  rest: 0.07, phase: 9 }
-];
+/* =========================================================
+   Characters (formerly RIVALS) — editable & persisted
+   ========================================================= */
+function defaultRivals(){
+  return [
+    { id:'r1',  name:'Luna Park',    handle:'luna_reads',    color:'#C2703D', avatar_emoji:'📚',
+      avgXp:51.5, intensity:3.7, split:0.466, phase:0 },
+    { id:'r2',  name:'Marco Silva',  handle:'marco.listens', color:'#3F7A6E', avatar_emoji:'🎧',
+      avgXp:58.5, intensity:2.6, split:0.188, phase:2 },
+    { id:'r3',  name:'Aiko Tanaka',  handle:'aiko_pages',    color:'#7A5EA8', avatar_emoji:'🌸',
+      avgXp:47.5, intensity:4.2, split:0.684, phase:4 },
+    { id:'r4',  name:'Diego Ramos',  handle:'diego_r',       color:'#B0563F', avatar_emoji:'⚡',
+      avgXp:52.5, intensity:1.6, split:0.333, phase:6 },
+    { id:'r5',  name:'Nora Haddad',  handle:'nora.reads',    color:'#2F6B54', avatar_emoji:'🌙',
+      avgXp:47.5, intensity:3.2, split:0.579, phase:1 },
+    { id:'r6',  name:'Felix Braun',  handle:'felix_b',       color:'#4A6FA5', avatar_emoji:'🚀',
+      avgXp:55.0, intensity:2.1, split:0.273, phase:3 },
+    { id:'r7',  name:'Priya Nair',   handle:'priya.pages',   color:'#A8567A', avatar_emoji:'🌟',
+      avgXp:47.5, intensity:3.9, split:0.737, phase:5 },
+    { id:'r8',  name:'Sam Okafor',   handle:'sam_listens',   color:'#8A6420', avatar_emoji:'🎬',
+      avgXp:64.0, intensity:2.9, split:0.141, phase:7 },
+    { id:'r9',  name:'Elena Rossi',  handle:'elena_r',       color:'#5D7A3F', avatar_emoji:'🦉',
+      avgXp:52.0, intensity:2.4, split:0.404, phase:8 },
+    { id:'r10', name:'Kai Nakamura', handle:'kai.n',         color:'#3E7C8A', avatar_emoji:'🔥',
+      avgXp:53.0, intensity:3.4, split:0.547, phase:9 }
+  ];
+}
 
 /* =========================================================
    State
@@ -818,7 +1231,16 @@ let progressMetric = 'reading';
 let leaderboardRange = 'all';
 let historyFilters = { from: '', to: '', category: 'all', type: 'all', material: 'all', q: '' };
 let searchTimer = null;
-let editingProfileId = null;   // tracks which profile id we're editing (for future multi-profile)
+
+/* Materials view state */
+let materialsView = 'grid';
+try { materialsView = localStorage.getItem(MATVIEW_KEY) || 'grid'; } catch (e) {}
+if (materialsView !== 'grid' && materialsView !== 'list') materialsView = 'grid';
+
+let materialsFiltersOpen = true;
+try { materialsFiltersOpen = localStorage.getItem(MATFILTERS_KEY) !== '0'; } catch (e) {}
+
+let materialsFilter = { q: '', type: 'all', category: 'all' };
 
 /* =========================================================
    Fresh (empty) challenge
@@ -839,7 +1261,8 @@ function freshData(){
     profile: null,
     materials: [],
     activities: [],
-    customChallenges: []
+    customChallenges: [],
+    rivals: defaultRivals()
   };
 }
 
@@ -856,6 +1279,46 @@ function normalizeState(s){
   if (s.profile){
     if (!Array.isArray(s.profile.favorite_genres)) s.profile.favorite_genres = [];
   }
+
+  /* --- Characters --- */
+  if (!Array.isArray(s.rivals) || s.rivals.length === 0){
+    s.rivals = defaultRivals();
+  } else {
+    /* Migrate old rival format (read/listen/rest) to new (avgXp/intensity/split) */
+    s.rivals = s.rivals.map(r => {
+      if (r && r.avgXp !== undefined) {
+        // already new format — normalise
+        return {
+          id: r.id || uid('r'),
+          name: r.name || 'Character',
+          handle: String(r.handle || '').replace(/^@+/, ''),
+          color: r.color || AVATAR_COLORS[0],
+          avatar_emoji: r.avatar_emoji || '',
+          avgXp: Math.max(0, Number(r.avgXp) || 0),
+          intensity: clamp(Number(r.intensity) || 3, 1, 5),
+          split: clamp(Number(r.split) ?? 0.5, 0, 1),
+          phase: Number(r.phase) || 0
+        };
+      }
+      // Legacy: derive from read/listen/rest
+      const read = Number(r.read) || 0;
+      const listen = Number(r.listen) || 0;
+      const totalXp = (read + listen) * 0.5;
+      const rest = Number(r.rest) || 0.08;
+      return {
+        id: r.id || uid('r'),
+        name: r.name || 'Character',
+        handle: String(r.handle || '').replace(/^@+/, ''),
+        color: r.color || AVATAR_COLORS[0],
+        avatar_emoji: r.avatar_emoji || '',
+        avgXp: totalXp > 0 ? totalXp : 50,
+        intensity: clamp(Math.round(((0.20 - rest) / 0.038) * 10) / 10, 1, 5) || 3,
+        split: totalXp > 0 ? read / (read + listen) : 0.5,
+        phase: Number(r.phase) || 0
+      };
+    });
+  }
+
   return s;
 }
 
@@ -883,6 +1346,7 @@ function resetAll(){
   saveState();
   historyFilters = { from: '', to: '', category: 'all', type: 'all', material: 'all', q: '' };
   leaderboardRange = 'all';
+  materialsFilter = { q: '', type: 'all', category: 'all' };
 }
 
 /* =========================================================
@@ -934,15 +1398,8 @@ function profileCompleteness(){
   return Math.round((filled / checks.length) * 100);
 }
 
-function profileLevelLabel(){
-  const p = state.profile;
-  if (!p || !p.level) return '';
-  const lv = LEVELS.find(l => l.id === p.level);
-  return lv ? lv.label : p.level;
-}
-
 /* =========================================================
-   Export / Import
+   Export / Import (full backup)
    ========================================================= */
 function downloadBlob(blob, filename){
   const url = URL.createObjectURL(blob);
@@ -964,7 +1421,8 @@ function exportJSON(){
     profile: state.profile,
     materials: state.materials,
     activities: state.activities,
-    customChallenges: state.customChallenges
+    customChallenges: state.customChallenges,
+    rivals: state.rivals
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   downloadBlob(blob, `esc-backup-${todayISO()}.json`);
@@ -1023,12 +1481,14 @@ function importJSONFile(file){
     const actCount = candidate.activities.length;
     const matCount = candidate.materials.length;
     const chCount  = Array.isArray(candidate.customChallenges) ? candidate.customChallenges.length : 0;
+    const rivalCount = Array.isArray(candidate.rivals) ? candidate.rivals.length : 0;
     const hasProfile = !!(candidate.profile && candidate.profile.display_name);
     const ok = confirm(
       `Import this backup?\n\n` +
       `• ${actCount} activit${actCount === 1 ? 'y' : 'ies'}\n` +
       `• ${matCount} material${matCount === 1 ? '' : 's'}\n` +
       `• ${chCount} challenge${chCount === 1 ? '' : 's'}\n` +
+      `• ${rivalCount} character${rivalCount === 1 ? '' : 's'}\n` +
       `• Profile: ${hasProfile ? 'included' : 'none'}\n\n` +
       `This will replace your current data.`
     );
@@ -1039,7 +1499,8 @@ function importJSONFile(file){
       profile: candidate.profile || null,
       materials: candidate.materials,
       activities: candidate.activities,
-      customChallenges: candidate.customChallenges
+      customChallenges: candidate.customChallenges,
+      rivals: candidate.rivals
     });
     saveState();
     closeModal();
@@ -1237,7 +1698,7 @@ function challengeRowHTML(ch){
 }
 
 /* =========================================================
-   Leaderboard — you + 10 simulated rivals
+   Leaderboard — you + editable characters
    ========================================================= */
 function lbRangeISO(){
   const t = todayISO();
@@ -1256,6 +1717,33 @@ function userStatsIn(from, to){
   const minutes = sumCategory(list, 'listening');
   return { pages, minutes, xp: xpFrom(pages, minutes), days: diffDays(f, t) + 1 };
 }
+
+/* Deterministic daily stats for a character */
+function rivalDayStats(rival, idx, dateISO){
+  const rng = mulberry32(hashStr(rival.id + '|' + dateISO));
+  const r1 = rng(), r2 = rng();
+
+  const intensity = clamp(Number(rival.intensity) || 3, 1, 5);
+
+  /* Rest probability — higher intensity means fewer skipped days */
+  const rest = Math.max(0, 0.20 - intensity * 0.038);
+  if (r1 < rest) return { pages: 0, minutes: 0, xp: 0 };
+
+  /* Variance — higher intensity means more consistent output */
+  const variance = Math.max(0.10, 0.85 - intensity * 0.13);
+  const phase = Number(rival.phase) || 0;
+  const swing = 1 + variance * Math.sin((idx + phase) / 8);
+  const noise = 1 + variance * (r2 - 0.5) * 1.4;
+  const dayXp = Math.max(0, (Number(rival.avgXp) || 0) * swing * noise);
+
+  const split = clamp(Number(rival.split) ?? 0.5, 0, 1);
+  const readXp = dayXp * split;
+  const listenXp = dayXp * (1 - split);
+  const pages = Math.round(readXp * 2);      // 0.5 XP per page
+  const minutes = Math.round(listenXp * 2);  // 0.5 XP per minute
+  return { pages, minutes, xp: xpFrom(pages, minutes) };
+}
+
 function rivalStats(rival, from, to){
   const ch = state.challenge;
   const start = maxISO(from, ch.start_date);
@@ -1266,15 +1754,13 @@ function rivalStats(rival, from, to){
   for (let d = start; d <= end; d = addDays(d, 1)){
     days++;
     const idx = diffDays(ch.start_date, d);
-    const rng = mulberry32(hashStr(rival.id + '|' + d));
-    const r1 = rng(), r2 = rng(), r3 = rng();
-    if (r1 < rival.rest) continue;
-    const swing = 0.85 + 0.30 * Math.sin((idx + rival.phase) / 8);
-    pages   += Math.round(rival.read   * swing * (0.60 + r2 * 0.80));
-    minutes += Math.round(rival.listen * swing * (0.60 + r3 * 0.80));
+    const s = rivalDayStats(rival, idx, d);
+    pages += s.pages;
+    minutes += s.minutes;
   }
   return { pages, minutes, xp: xpFrom(pages, minutes), days };
 }
+
 function leaderboardEntries(){
   const { from, to } = lbRangeISO();
   const entries = [];
@@ -1292,17 +1778,67 @@ function leaderboardEntries(){
     pages: u.pages, minutes: u.minutes, xp: u.xp
   });
 
-  RIVALS.forEach(r => {
+  (state.rivals || []).forEach(r => {
     const s = rivalStats(r, from, to);
     entries.push({
-      id: r.id, name: r.name, handle: r.handle, color: r.color,
-      initials: initialsOf(r.name), isEmoji: false, you: false,
+      id: r.id,
+      name: r.name,
+      handle: r.handle ? (r.handle.startsWith('@') ? r.handle : '@' + r.handle) : '',
+      color: r.color || '#26211C',
+      initials: r.avatar_emoji || initialsOf(r.name),
+      isEmoji: !!r.avatar_emoji,
+      you: false,
       pages: s.pages, minutes: s.minutes, xp: s.xp
     });
   });
 
   entries.sort((a, b) => b.xp - a.xp || b.pages - a.pages || a.name.localeCompare(b.name));
   return entries;
+}
+
+/* =========================================================
+   Info modal
+   ========================================================= */
+function openInfoModal(title, bodyHtml){
+  openModal(`
+    <div class="modal-backdrop" data-action="close-modal"></div>
+    <div class="modal" role="dialog" aria-modal="true" style="max-width:480px">
+      <div class="modal-head">
+        <h2>${escapeHtml(title)}</h2>
+        <button class="icon-btn" data-action="close-modal" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="info-body">${bodyHtml}</div>
+        <div class="modal-actions" style="margin-top:20px">
+          <button type="button" class="btn btn-primary" data-action="close-modal">Got it</button>
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+function infoMaterials(){
+  openInfoModal('How materials work', `
+    <p>Every activity can be linked to a material — a book, audiobook, podcast, show or article.
+    Type a title when logging and it's saved here automatically for one-tap reuse next time.</p>
+    <p>Materials are grouped into <b>Reading</b> and <b>Listening</b>, and you can filter further by exact
+    type (Kindle, Podcast, Film…). Switch between <b>Grid</b> and <b>List</b> view with the toggle above.</p>
+    <p>You can also bulk-add materials by importing a <b>CSV file</b> with the <b>⬆ CSV</b> button.
+    Set a material to <b>completed</b> or <b>archived</b> to keep the list tidy; its history stays intact.</p>
+  `);
+}
+
+function infoXp(){
+  openInfoModal('How XP & timing work', `
+    <p>Every <b>10 pages</b> read or <b>10 minutes</b> listened earns <b>5 XP</b> (1 unit = 0.5 XP).
+    Your XP comes from the activities you log yourself.</p>
+    <p>Each <b>character</b> is simulated from three settings you control:
+    <b>average XP per day</b>, <b>intensity</b> (how consistently they hit that average), and
+    <b>focus</b> (the reading / listening split). Their daily sessions are generated deterministically,
+    so the board stays consistent between visits.</p>
+    <p>The <b>Today</b> board runs for exactly <b>24 hours</b> and resets at <b>00:00</b> (24-hour clock).
+    The <b>This week</b> board runs Monday to Sunday and resets at <b>Monday 00:00</b>.</p>
+  `);
 }
 
 /* =========================================================
@@ -1412,9 +1948,9 @@ function dashboardChallengesCard(){
 function dashboardProfilePrompt(){
   if (state.profile) return '';
   return `
-  <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,rgba(194,112,61,.08),rgba(63,122,110,.06));border-color:#E4D6C5">
+  <div class="card prompt-card" style="margin-bottom:14px">
     <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-      <div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(140deg,var(--reading-2),var(--reading));display:flex;align-items:center;justify-content:center;font-size:24px;flex:0 0 auto">👤</div>
+      <div class="prompt-icon">👤</div>
       <div style="flex:1;min-width:200px">
         <div style="font-size:14.5px;font-weight:650;margin-bottom:2px">Create your profile</div>
         <div style="font-size:13px;color:var(--muted)">Add your name, avatar, languages and goals — it personalizes the app and shows up on the leaderboard.</div>
@@ -1503,7 +2039,6 @@ function viewProfile(){
     </div>`;
   }
 
-  /* Stats */
   const entries = leaderboardEntries();
   const youRank = entries.findIndex(e => e.you) + 1;
   const totalXp = xpFrom(s.readingTotal, s.listeningTotal);
@@ -1511,7 +2046,6 @@ function viewProfile(){
 
   const completeness = profileCompleteness();
 
-  /* Meta row pieces */
   const metas = [];
   if (p.country) metas.push(`<span>📍 ${escapeHtml(p.country)}</span>`);
   if (p.native_language && p.target_language){
@@ -1528,13 +2062,11 @@ function viewProfile(){
     metas.push(`<span>📅 Joined ${d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>`);
   }
 
-  /* Genres */
   const genres = (p.favorite_genres || []);
   const genreHtml = genres.length
     ? genres.map(g => `<span class="tag">${escapeHtml(g)}</span>`).join('')
     : '<span class="tag empty">No genres selected yet</span>';
 
-  /* Social */
   const socials = [];
   if (p.social_twitter)   socials.push({ icon: '🐦', k: 'Twitter / X', v: p.social_twitter });
   if (p.social_goodreads) socials.push({ icon: '📗', k: 'Goodreads',   v: p.social_goodreads });
@@ -1791,6 +2323,7 @@ function viewLeaderboard(){
                   : 'Challenge finishes at the end date';
 
   const youIsProfile = !!state.profile;
+  const rivalCount = (state.rivals || []).length;
 
   return `
   <div class="card" style="margin-bottom:14px">
@@ -1800,8 +2333,11 @@ function viewLeaderboard(){
         <button data-lbrange="week"  class="${leaderboardRange === 'week'  ? 'active' : ''}">This week</button>
         <button data-lbrange="all"   class="${leaderboardRange === 'all'   ? 'active' : ''}">Full challenge</button>
       </div>
-      <div style="font-size:12.5px;color:var(--muted)">
-        ${escapeHtml(label)} · ${days} day${days === 1 ? '' : 's'} · 10 pages/min = 5 XP
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="font-size:12.5px;color:var(--muted)">
+          ${escapeHtml(label)} · ${days} day${days === 1 ? '' : 's'} · 10 pages/min = 5 XP
+        </div>
+        <button class="info-btn" data-action="info-xp" title="How XP &amp; timing work" aria-label="How XP and timing work">i</button>
       </div>
     </div>
 
@@ -1823,9 +2359,9 @@ function viewLeaderboard(){
   </div>
 
   ${!youIsProfile ? `
-  <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,rgba(194,112,61,.08),rgba(63,122,110,.06));border-color:#E4D6C5">
+  <div class="card prompt-card" style="margin-bottom:14px">
     <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-      <div style="width:44px;height:44px;border-radius:14px;background:linear-gradient(140deg,var(--reading-2),var(--reading));display:flex;align-items:center;justify-content:center;font-size:20px;flex:0 0 auto">👤</div>
+      <div class="prompt-icon" style="width:44px;height:44px;border-radius:14px;font-size:20px">👤</div>
       <div style="flex:1;min-width:200px">
         <div style="font-size:14px;font-weight:650;margin-bottom:2px">You're shown as "You · @you"</div>
         <div style="font-size:13px;color:var(--muted)">Create a profile to display your name, avatar and handle on the board.</div>
@@ -1855,8 +2391,16 @@ function viewLeaderboard(){
   <div class="card">
     <div class="card-head">
       <h2>Leaderboard</h2>
-      <span style="font-size:11.5px;color:var(--muted)">10 demo rivals · simulated daily logs</span>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-ghost" data-action="new-rival"
+                style="padding:6px 11px;font-size:12.5px"
+                title="Add a new character">
+          ＋ Character
+        </button>
+        <button class="info-btn" data-action="info-xp" title="How XP &amp; timing work" aria-label="How XP and timing work">i</button>
+      </div>
     </div>
+
     ${entries.map((e, i) => `
       <div class="lb-row ${e.you ? 'you' : ''}">
         <div class="lb-rank">${i < 3 ? medals[i] : (i + 1)}</div>
@@ -1871,19 +2415,14 @@ function viewLeaderboard(){
           <div class="lb-bar"><i style="width:${clamp(e.xp / maxXp * 100, 0, 100)}%"></i></div>
           <div class="lb-sub">${fmt(e.pages)} pages · ${fmt(e.minutes)} min</div>
         </div>
+        ${e.you ? '' : `<button class="lb-edit" data-action="edit-rival" data-id="${e.id}" title="Edit character" aria-label="Edit character">✎</button>`}
       </div>`).join('')}
-  </div>
 
-  <div class="card" style="margin-top:14px">
-    <div class="card-head"><h2>How XP &amp; timing work</h2></div>
-    <p style="font-size:13.5px;color:var(--muted);line-height:1.6">
-      Every <b>10 pages</b> read or <b>10 minutes</b> listened earns <b>5 XP</b> (1 unit = 0.5 XP).
-      Your XP comes from the activities you log yourself. The ten rivals are fictional demo characters —
-      their daily sessions are generated deterministically from their profile and the date, so they log
-      something every day and the board stays consistent between visits.<br><br>
-      The <b>Today</b> board runs for exactly <b>24 hours</b> and resets at <b>00:00</b> (midnight, 24-hour clock).
-      The <b>This week</b> board runs Monday to Sunday and resets at <b>Monday 00:00</b>.
-    </p>
+    ${rivalCount === 0 ? `
+      <div style="font-size:12.5px;color:var(--muted);padding:14px 0 0;text-align:center">
+        No characters yet — you're racing alone.
+        <button class="link-btn" data-action="new-rival" style="color:var(--reading)">Add a character</button>
+      </div>` : ''}
   </div>`;
 }
 
@@ -2040,7 +2579,7 @@ function dailyChartHTML(metric, days){
       </div>`).join('')}
   </div>
   <div class="chart-legend">
-    <span><i class="${cls}" style="background:${metric === 'reading' ? 'var(--reading)' : 'var(--listening)'}"></i>${metric === 'reading' ? 'Pages read' : 'Minutes listened'}</span>
+    <span><i style="background:${metric === 'reading' ? 'var(--reading)' : 'var(--listening)'}"></i>${metric === 'reading' ? 'Pages read' : 'Minutes listened'}</span>
     <span>Last ${days} days · peak ${fmt(max)}</span>
   </div>`;
 }
@@ -2082,7 +2621,7 @@ function weeklyChartHTML(metric){
   </div>
   <div class="chart-legend">
     <span><i style="background:${metric === 'reading' ? 'var(--reading)' : 'var(--listening)'}"></i>Weekly total</span>
-    <span><i style="background:transparent;border-top:1.5px dashed #C9B9A6;width:14px;height:0;border-radius:0"></i>Pace target</span>
+    <span><i style="background:transparent;border-top:1.5px dashed var(--dash-line);width:14px;height:0;border-radius:0"></i>Pace target</span>
   </div>`;
 }
 
@@ -2156,19 +2695,18 @@ function cumulativeSVG(metric){
   const areaPath = linePath + ` L ${x(pts[pts.length - 1][0]).toFixed(2)} 100 L 0 100 Z`;
   const idealPath = `M 0 100 L 100 ${y(target).toFixed(2)}`;
 
-  const color = metric === 'reading' ? '#C2703D' : '#3F7A6E';
-  const fillColor = metric === 'reading' ? 'rgba(194,112,61,.10)' : 'rgba(63,122,110,.10)';
+  const varName = metric === 'reading' ? '--reading' : '--listening';
 
   return `
   <svg class="cum-chart" viewBox="0 0 100 100" preserveAspectRatio="none" aria-label="Cumulative progress">
-    <line x1="0" y1="100" x2="100" y2="100" stroke="#EAE2D8" stroke-width="1" vector-effect="non-scaling-stroke"/>
-    <path d="${areaPath}" fill="${fillColor}" stroke="none"/>
-    <path d="${idealPath}" fill="none" stroke="#C9B9A6" stroke-width="1.5" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/>
-    <path d="${linePath}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+    <line x1="0" y1="100" x2="100" y2="100" style="stroke:var(--line)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+    <path d="${areaPath}" style="fill:var(${varName})" fill-opacity="0.10" stroke="none"/>
+    <path d="${idealPath}" fill="none" style="stroke:var(--dash-line)" stroke-width="1.5" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/>
+    <path d="${linePath}" fill="none" style="stroke:var(${varName})" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
   </svg>
   <div class="chart-legend">
-    <span><i style="background:${color}"></i>Your cumulative total</span>
-    <span><i style="background:transparent;border-top:1.5px dashed #C9B9A6;width:14px;height:0;border-radius:0"></i>Ideal pace line</span>
+    <span><i style="background:var(${varName})"></i>Your cumulative total</span>
+    <span><i style="background:transparent;border-top:1.5px dashed var(--dash-line);width:14px;height:0;border-radius:0"></i>Ideal pace line</span>
     <span>Day ${elapsed} of ${totalDays}</span>
   </div>`;
 }
@@ -2193,7 +2731,7 @@ function viewProgress(){
     </div>
     <div style="font-size:12.5px;color:var(--muted)">
       ${fmt(total)} / ${fmt(target)} ${unit} ·
-      <b style="color:${delta >= 0 ? '#2F6B54' : '#9C4230'}">${delta >= 0 ? '+' : ''}${fmt(delta)}</b> vs ideal
+      <b style="color:${delta >= 0 ? 'var(--good-fg)' : 'var(--bad-fg)'}">${delta >= 0 ? '+' : ''}${fmt(delta)}</b> vs ideal
     </div>
   </div>
 
@@ -2230,7 +2768,7 @@ function viewProgress(){
 }
 
 /* =========================================================
-   Views — Materials
+   Views — Materials  (split by type, grid / list, CSV import)
    ========================================================= */
 function materialTotals(id){
   const list = state.activities.filter(a => a.material_id === id);
@@ -2240,60 +2778,184 @@ function materialTotals(id){
     count: list.length
   };
 }
+function materialTotalsText(t){
+  const parts = [];
+  if (t.pages)   parts.push(fmt(t.pages) + ' pages');
+  if (t.minutes) parts.push(fmt(t.minutes) + ' min');
+  return parts.length ? parts.join(' · ') : 'Nothing logged yet';
+}
+
+const MATERIAL_STATUS_RANK = { active: 0, completed: 1, archived: 2 };
+function materialSorter(a, b){
+  const r = (MATERIAL_STATUS_RANK[a.status] ?? 3) - (MATERIAL_STATUS_RANK[b.status] ?? 3);
+  return r !== 0 ? r : a.title.localeCompare(b.title);
+}
+
+function materialRowHTML(m){
+  const t = materialTotals(m.id);
+  const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
+  const initials = (m.title || '?').trim().slice(0, 2).toUpperCase();
+  return `
+  <div class="mat">
+    <div class="mat-icon ${m.default_category}">${escapeHtml(initials)}</div>
+    <div class="mat-main">
+      <div class="mat-title">
+        ${escapeHtml(m.title)}
+        <span class="pill ${m.status}">${m.status}</span>
+      </div>
+      <div class="mat-sub">${escapeHtml(m.creator || '—')} · ${escapeHtml(typeLabel)}</div>
+      <div class="mat-tot">${materialTotalsText(t)}${t.count ? ` · ${t.count} entr${t.count === 1 ? 'y' : 'ies'}` : ''}</div>
+    </div>
+    <div class="act-actions">
+      <button class="link-btn" data-action="edit-material" data-id="${m.id}">Edit</button>
+      <button class="link-btn danger" data-action="delete-material" data-id="${m.id}">Delete</button>
+    </div>
+  </div>`;
+}
+
+function materialCardHTML(m){
+  const t = materialTotals(m.id);
+  const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
+  const initials = (m.title || '?').trim().slice(0, 2).toUpperCase();
+  return `
+  <div class="mat-card">
+    <div class="mat-card-top">
+      <div class="mat-icon ${m.default_category}">${escapeHtml(initials)}</div>
+      <div class="mat-card-actions">
+        <button class="link-btn" data-action="edit-material" data-id="${m.id}">Edit</button>
+        <button class="link-btn danger" data-action="delete-material" data-id="${m.id}" aria-label="Delete">✕</button>
+      </div>
+    </div>
+    <div class="mat-card-title">${escapeHtml(m.title)}</div>
+    <div class="mat-card-sub">${escapeHtml(m.creator || '—')}</div>
+    <div class="mat-card-pills">
+      <span class="pill ${m.status}">${m.status}</span>
+      <span class="mat-type-pill">${escapeHtml(typeLabel)}</span>
+    </div>
+    <div class="mat-card-tot">${materialTotalsText(t)}${t.count ? ` · ${t.count} entr${t.count === 1 ? 'y' : 'ies'}` : ''}</div>
+  </div>`;
+}
 
 function viewMaterials(){
-  const statusRank = { active: 0, completed: 1, archived: 2 };
-  const mats = state.materials.slice().sort((a, b) => {
-    const r = (statusRank[a.status] ?? 3) - (statusRank[b.status] ?? 3);
-    return r !== 0 ? r : a.title.localeCompare(b.title);
+  const all = state.materials;
+
+  /* type counts for the chips */
+  const typeCounts = {};
+  TYPE_ORDER.forEach(t => { typeCounts[t] = 0; });
+  all.forEach(m => {
+    if (typeCounts[m.default_input_type] === undefined) typeCounts[m.default_input_type] = 0;
+    typeCounts[m.default_input_type]++;
   });
+
+  /* apply filters */
+  const q = materialsFilter.q.trim().toLowerCase();
+  const filtered = all.filter(m => {
+    if (materialsFilter.category !== 'all' && m.default_category !== materialsFilter.category) return false;
+    if (materialsFilter.type !== 'all' && m.default_input_type !== materialsFilter.type) return false;
+    if (q){
+      const hay = ((m.title || '') + ' ' + (m.creator || '')).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  const groups = CATEGORY_ORDER
+    .map(cat => ({
+      id: cat,
+      label: CATEGORY_LABEL[cat],
+      items: filtered.filter(m => m.default_category === cat).sort(materialSorter)
+    }))
+    .filter(g => g.items.length);
+
+  const hasFilter = !!q || materialsFilter.type !== 'all' || materialsFilter.category !== 'all';
+  const hiddenActiveCount =
+    (!materialsFiltersOpen ? 1 : 0) *
+    ((materialsFilter.category !== 'all' ? 1 : 0) + (materialsFilter.type !== 'all' ? 1 : 0));
+
+  const catChips = `
+    <div class="mat-chip-row">
+      <button class="chip ${materialsFilter.category === 'all' ? 'active' : ''}" data-matcat="all">All materials</button>
+      <button class="chip ${materialsFilter.category === 'reading' ? 'active' : ''}" data-matcat="reading">Reading</button>
+      <button class="chip ${materialsFilter.category === 'listening' ? 'active' : ''}" data-matcat="listening">Listening</button>
+    </div>`;
+
+  const typeChips = `
+    <div class="mat-chip-row">
+      <button class="chip ${materialsFilter.type === 'all' ? 'active' : ''}" data-mattype="all">All types</button>
+      ${TYPE_ORDER.map(t => `
+        <button class="chip ${materialsFilter.type === t ? 'active' : ''}" data-mattype="${t}">
+          ${escapeHtml(TYPES[t].label)}
+          <span style="opacity:.6;font-weight:600">${typeCounts[t] || 0}</span>
+        </button>
+      `).join('')}
+    </div>`;
+
+  const body = groups.length
+    ? groups.map(g => `
+        <div class="mat-group-head">
+          <span class="gdot ${g.id}"></span>
+          <span class="gt">${escapeHtml(g.label)}</span>
+          <span class="gn">${g.items.length}</span>
+          <span class="gline"></span>
+        </div>
+        ${materialsView === 'grid'
+          ? `<div class="mat-grid">${g.items.map(materialCardHTML).join('')}</div>`
+          : `<div>${g.items.map(materialRowHTML).join('')}</div>`}
+      `).join('')
+    : `<div class="empty">
+         <div class="em-icon">${all.length ? '🔍' : '📚'}</div>
+         <div class="em-title">${all.length ? 'No materials match' : 'No materials yet'}</div>
+         <div class="em-sub">${all.length
+           ? 'Try a different type filter or clear the search.'
+           : 'Materials are created automatically when you log an activity with a new title — or add them manually, or import a CSV.'}</div>
+         ${all.length
+           ? '<button class="btn btn-ghost" data-action="clear-material-filters">Clear filters</button>'
+           : `<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+                <button class="btn btn-primary" data-action="add-material">+ Add material</button>
+                <button class="btn btn-ghost" data-action="import-materials">⬆ Import CSV</button>
+              </div>`}
+       </div>`;
 
   return `
   <div class="card" style="margin-bottom:14px">
-    <div class="card-head">
-      <h2>Materials</h2>
-      <button class="btn btn-ghost" data-action="add-material">+ Add material</button>
+    <div class="mat-toolbar">
+      <div class="mat-search">
+        <input type="text" id="matSearch" placeholder="Search materials…" value="${escapeHtml(materialsFilter.q)}" autocomplete="off">
+      </div>
+      <button class="btn btn-ghost filter-toggle" data-action="toggle-mat-filters"
+              aria-expanded="${materialsFiltersOpen ? 'true' : 'false'}"
+              title="${materialsFiltersOpen ? 'Hide filters' : 'Show filters'}">
+        ${materialsFiltersOpen ? 'Filters ▾' : 'Filters ▸'}
+        ${hiddenActiveCount ? `<span class="fcount">${hiddenActiveCount}</span>` : ''}
+      </button>
+      <div class="seg" id="matViewSeg">
+        <button data-matview="grid" class="${materialsView === 'grid' ? 'active' : ''}" title="Grid view">▦ Grid</button>
+        <button data-matview="list" class="${materialsView === 'list' ? 'active' : ''}" title="List view">☰ List</button>
+      </div>
+      <button class="btn btn-ghost" data-action="import-materials">⬆ CSV</button>
+      <button class="btn btn-primary" data-action="add-material">+ Add</button>
     </div>
-    ${mats.length ? mats.map(m => {
-      const t = materialTotals(m.id);
-      const parts = [];
-      if (t.pages)   parts.push(fmt(t.pages) + ' pages');
-      if (t.minutes) parts.push(fmt(t.minutes) + ' min');
-      const totalTxt = parts.length ? parts.join(' · ') : 'Nothing logged yet';
-      const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
-      const initials = m.title.trim().slice(0, 2).toUpperCase();
-      return `
-      <div class="mat">
-        <div class="mat-icon ${m.default_category}">${escapeHtml(initials)}</div>
-        <div class="mat-main">
-          <div class="mat-title">
-            ${escapeHtml(m.title)}
-            <span class="pill ${m.status}">${m.status}</span>
-          </div>
-          <div class="mat-sub">${escapeHtml(m.creator || '—')} · ${escapeHtml(typeLabel)}</div>
-          <div class="mat-tot">${totalTxt}${t.count ? ` · ${t.count} entr${t.count === 1 ? 'y' : 'ies'}` : ''}</div>
-        </div>
-        <div class="act-actions">
-          <button class="link-btn" data-action="edit-material" data-id="${m.id}">Edit</button>
-          <button class="link-btn danger" data-action="delete-material" data-id="${m.id}">Delete</button>
-        </div>
-      </div>`;
-    }).join('') : `
-      <div class="empty">
-        <div class="em-icon">📚</div>
-        <div class="em-title">No materials yet</div>
-        <div class="em-sub">Materials are created automatically when you log an activity with a new title, or you can add one manually.</div>
-        <button class="btn btn-primary" data-action="add-material">+ Add material</button>
-      </div>`}
+
+    <div class="mat-filters-wrap ${materialsFiltersOpen ? '' : 'collapsed'}">
+      ${catChips}
+      ${typeChips}
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap">
+      <div style="font-size:12.5px;color:var(--muted)">
+        ${filtered.length} of ${all.length} material${all.length === 1 ? '' : 's'}
+        ${hasFilter ? ' · filtered' : ''}
+      </div>
+      ${hasFilter ? '<button class="link-btn" data-action="clear-material-filters">Clear filters</button>' : ''}
+    </div>
   </div>
 
-  <div class="card">
-    <div class="card-head"><h2>How materials work</h2></div>
-    <p style="font-size:13.5px;color:var(--muted);line-height:1.6">
-      Every activity can be linked to a material — a book, audiobook, podcast, show or article.
-      Type a title when logging and it's saved here automatically for one-tap reuse next time.
-      Set a material to <b>completed</b> or <b>archived</b> to keep the list tidy; its history stays intact.
-    </p>
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-head">
+      <h2>Materials by type</h2>
+      <button class="info-btn" data-action="info-materials" title="How materials work" aria-label="How materials work">i</button>
+    </div>
+    ${body}
   </div>`;
 }
 
@@ -2374,6 +3036,43 @@ function closeModal(){
 }
 
 /* =========================================================
+   Theme modal
+   ========================================================= */
+function openThemeModal(){
+  openModal(`
+    <div class="modal-backdrop" data-action="close-modal"></div>
+    <div class="modal" role="dialog" aria-modal="true" style="max-width:460px">
+      <div class="modal-head">
+        <h2>Theme</h2>
+        <button class="icon-btn" data-action="close-modal" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="hint" style="margin:0 0 16px">
+          Five themes — three light, two dark. Your choice is saved in this browser.
+        </p>
+        <div class="theme-grid">
+          ${THEMES.map(t => `
+            <button type="button" class="theme-card ${currentTheme === t.id ? 'active' : ''}"
+                    data-theme-pick="${t.id}">
+              <div class="theme-swatches">
+                <span style="background:${t.preview.bg}"></span>
+                <span style="background:${t.preview.surface}"></span>
+                <span style="background:${t.preview.accent}"></span>
+              </div>
+              <div class="theme-name">
+                ${escapeHtml(t.name)}
+                ${currentTheme === t.id ? '<span class="theme-check">✓</span>' : ''}
+              </div>
+              <div class="theme-kind">${escapeHtml(t.kind)}</div>
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+/* =========================================================
    Profile modal (create / edit)
    ========================================================= */
 function openProfileModal(mode){
@@ -2447,7 +3146,7 @@ function openProfileModal(mode){
           </div>
 
           <div class="field">
-            <label for="pfName">Display name <span style="color:#B0563F">*</span></label>
+            <label for="pfName">Display name <span style="color:var(--bad-fg)">*</span></label>
             <input type="text" id="pfName" required maxlength="40"
                    placeholder="e.g. Alex Rivera" value="${escapeHtml(draft.display_name)}">
           </div>
@@ -2592,7 +3291,6 @@ function openProfileModal(mode){
     preview.style.fontSize = emoji ? '34px' : '26px';
   }
 
-  /* --- emoji picker --- */
   $('#emojiGrid').addEventListener('click', e => {
     const b = e.target.closest('button[data-emoji]');
     if (!b) return;
@@ -2601,7 +3299,6 @@ function openProfileModal(mode){
     refreshPreview();
   });
 
-  /* --- color picker --- */
   $('#swatchRow').addEventListener('click', e => {
     const b = e.target.closest('button[data-color]');
     if (!b) return;
@@ -2610,7 +3307,6 @@ function openProfileModal(mode){
     refreshPreview();
   });
 
-  /* --- level chips --- */
   $('#levelChips').addEventListener('click', e => {
     const b = e.target.closest('.chip[data-level]');
     if (!b) return;
@@ -2618,7 +3314,6 @@ function openProfileModal(mode){
     $$('#levelChips .chip').forEach(x => x.classList.toggle('active', x === b));
   });
 
-  /* --- genre chips --- */
   $('#genreChips').addEventListener('click', e => {
     const b = e.target.closest('.chip[data-genre]');
     if (!b) return;
@@ -2629,7 +3324,6 @@ function openProfileModal(mode){
     b.classList.toggle('active');
   });
 
-  /* --- visibility chips --- */
   $('#visChips').addEventListener('click', e => {
     const b = e.target.closest('.chip[data-vis]');
     if (!b) return;
@@ -2637,13 +3331,9 @@ function openProfileModal(mode){
     $$('#visChips .chip').forEach(x => x.classList.toggle('active', x === b));
   });
 
-  /* --- live preview on name change --- */
   $('#pfName').addEventListener('input', refreshPreview);
-
-  /* --- initial render --- */
   refreshPreview();
 
-  /* --- submit --- */
   $('#profileForm').addEventListener('submit', e => {
     e.preventDefault();
     const display_name = $('#pfName').value.trim();
@@ -2682,12 +3372,241 @@ function openProfileModal(mode){
     saveState();
     closeModal();
 
-    /* If the user had the profile tab open, keep it open — otherwise jump to profile on create */
     if (!editing) currentView = 'profile';
     render();
   });
 
   setTimeout(() => $('#pfName').focus(), 60);
+}
+
+/* =========================================================
+   Character modal (create / edit)
+   ========================================================= */
+function openRivalModal(rival){
+  const editing = !!rival;
+  const r = rival || {
+    name: '', handle: '', color: AVATAR_COLORS[0], avatar_emoji: '',
+    avgXp: 50, intensity: 3, split: 0.5, phase: Math.random() * 10
+  };
+
+  const draft = {
+    name: r.name || '',
+    handle: String(r.handle || '').replace(/^@+/, ''),
+    color: r.color || AVATAR_COLORS[0],
+    avatar_emoji: r.avatar_emoji || '',
+    avgXp: Math.max(0, Number(r.avgXp) || 0),
+    intensity: clamp(Number(r.intensity) || 3, 1, 5),
+    split: clamp(Number(r.split) ?? 0.5, 0, 1),
+    phase: Number(r.phase) || 0
+  };
+
+  openModal(`
+    <div class="modal-backdrop" data-action="close-modal"></div>
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h2>${editing ? 'Edit character' : 'New character'}</h2>
+        <button class="icon-btn" data-action="close-modal" aria-label="Close">✕</button>
+      </div>
+      <form id="rivalForm" class="modal-body" autocomplete="off">
+
+        <div class="form-section">
+          <div class="form-section-title"><span class="dotnum">1</span> Avatar &amp; identity</div>
+
+          <div class="avatar-preview-row">
+            <div class="avatar-preview" id="rivalPreview" style="background:${escapeHtml(draft.color)}"></div>
+            <div class="avatar-preview-label">
+              How this character appears on the leaderboard. Pick an emoji and a color.
+            </div>
+          </div>
+
+          <div class="picker-label">Emoji</div>
+          <div class="emoji-grid" id="rivalEmojiGrid">
+            <button type="button" data-emoji="" title="Use initials" class="${draft.avatar_emoji === '' ? 'active' : ''}" style="font-size:11px;font-weight:700;color:var(--muted)">A–Z</button>
+            ${AVATAR_EMOJIS.map(e => `
+              <button type="button" data-emoji="${e}" class="${draft.avatar_emoji === e ? 'active' : ''}">${e}</button>
+            `).join('')}
+          </div>
+
+          <div class="picker-label">Color</div>
+          <div class="swatch-row" id="rivalSwatchRow">
+            ${AVATAR_COLORS.map(c => `
+              <button type="button" class="swatch ${draft.color === c ? 'active' : ''}"
+                      data-color="${c}" style="background:${c}" aria-label="Color ${c}"></button>
+            `).join('')}
+          </div>
+
+          <div class="field">
+            <label for="rivalName">Display name <span style="color:var(--bad-fg)">*</span></label>
+            <input type="text" id="rivalName" required maxlength="40"
+                   placeholder="e.g. Luna Park" value="${escapeHtml(draft.name)}">
+          </div>
+
+          <div class="field">
+            <label for="rivalHandle">Handle <span style="font-weight:500;text-transform:none">(optional)</span></label>
+            <input type="text" id="rivalHandle" maxlength="24"
+                   placeholder="e.g. luna_reads" value="${escapeHtml(draft.handle)}">
+            <div style="font-size:11.5px;color:var(--muted);margin-top:-4px">Shown as @handle on the leaderboard.</div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title"><span class="dotnum">2</span> Performance</div>
+
+          <div class="field">
+            <label for="rivalAvgXp">Average XP per day</label>
+            <div class="amount-row">
+              <input type="number" id="rivalAvgXp" min="0" max="500" step="0.5" inputmode="decimal"
+                     value="${draft.avgXp}">
+              <div class="seg" style="align-items:center">
+                <span style="font-size:12.5px;color:var(--muted);padding:0 12px">XP / day</span>
+              </div>
+            </div>
+            <div style="font-size:12px;color:var(--muted);margin-top:-4px" id="rivalXpPreview"></div>
+          </div>
+
+          <div class="field">
+            <label for="rivalIntensity">
+              Intensity
+              <span style="font-weight:500;text-transform:none;color:var(--muted)" id="rivalIntensityLabel"></span>
+            </label>
+            <input type="range" id="rivalIntensity" min="1" max="5" step="0.1" value="${draft.intensity}">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:2px">
+              <span>Casual · erratic</span>
+              <span>Intense · consistent</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="rivalSplit">
+              Focus
+              <span style="font-weight:500;text-transform:none;color:var(--muted)" id="rivalSplitLabel"></span>
+            </label>
+            <input type="range" id="rivalSplit" min="0" max="100" step="5" value="${Math.round(draft.split * 100)}">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:2px">
+              <span>🎧 Listening</span>
+              <span>📖 Reading</span>
+            </div>
+          </div>
+
+          <p class="hint" style="margin-top:4px">
+            <b>Average XP</b> sets the daily pace. <b>Intensity</b> controls how consistently they hit it —
+            higher intensity means fewer rest days and less day-to-day swing.
+          </p>
+        </div>
+
+        <div class="modal-actions" style="margin-top:20px">
+          ${editing
+            ? `<button type="button" class="btn btn-ghost" data-action="delete-rival" data-id="${r.id}"
+                       style="color:var(--bad-fg);margin-right:auto">Delete</button>`
+            : ''}
+          <button type="button" class="btn btn-ghost" data-action="close-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">${editing ? 'Save character' : 'Create character'}</button>
+        </div>
+      </form>
+    </div>
+  `);
+
+  const preview       = $('#rivalPreview');
+  const avgInput      = $('#rivalAvgXp');
+  const intensityIn   = $('#rivalIntensity');
+  const splitIn       = $('#rivalSplit');
+  const xpPreview     = $('#rivalXpPreview');
+  const intensityLbl  = $('#rivalIntensityLabel');
+  const splitLbl      = $('#rivalSplitLabel');
+
+  function refresh(){
+    const name = $('#rivalName').value.trim() || '?';
+    preview.textContent = draft.avatar_emoji || initialsOf(name);
+    preview.style.background = draft.color;
+    preview.style.fontSize = draft.avatar_emoji ? '34px' : '26px';
+
+    const avg = Math.max(0, Number(avgInput.value) || 0);
+    const split = clamp(Number(splitIn.value) / 100, 0, 1);
+    const readXp = avg * split;
+    const listenXp = avg * (1 - split);
+    const pages = Math.round(readXp * 2);
+    const minutes = Math.round(listenXp * 2);
+
+    xpPreview.textContent = `≈ ${fmt(pages)} pages + ${fmt(minutes)} min per day`;
+
+    const iv = Number(intensityIn.value) || 3;
+    let il;
+    if (iv < 2)        il = '· very casual';
+    else if (iv < 3)   il = '· casual';
+    else if (iv < 3.8) il = '· steady';
+    else if (iv < 4.5) il = '· intense';
+    else               il = '· relentless';
+    intensityLbl.textContent = il;
+
+    let sl;
+    if (split >= 0.8)      sl = '· mostly reading';
+    else if (split >= 0.6) sl = '· reading-leaning';
+    else if (split > 0.4)  sl = '· balanced';
+    else if (split > 0.2)  sl = '· listening-leaning';
+    else                   sl = '· mostly listening';
+    splitLbl.textContent = sl;
+  }
+
+  $('#rivalEmojiGrid').addEventListener('click', e => {
+    const b = e.target.closest('button[data-emoji]');
+    if (!b) return;
+    draft.avatar_emoji = b.dataset.emoji;
+    $$('#rivalEmojiGrid button').forEach(x => x.classList.toggle('active', x === b));
+    refresh();
+  });
+
+  $('#rivalSwatchRow').addEventListener('click', e => {
+    const b = e.target.closest('button[data-color]');
+    if (!b) return;
+    draft.color = b.dataset.color;
+    $$('#rivalSwatchRow .swatch').forEach(x => x.classList.toggle('active', x === b));
+    refresh();
+  });
+
+  $('#rivalName').addEventListener('input', refresh);
+  avgInput.addEventListener('input', refresh);
+  intensityIn.addEventListener('input', refresh);
+  splitIn.addEventListener('input', refresh);
+
+  refresh();
+
+  $('#rivalForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const name = $('#rivalName').value.trim();
+    if (!name){ $('#rivalName').focus(); return; }
+
+    const handle = $('#rivalHandle').value.trim().replace(/^@+/, '');
+    const avgXp = Math.max(0, Number(avgInput.value) || 0);
+    const intensity = clamp(Number(intensityIn.value) || 3, 1, 5);
+    const split = clamp(Number(splitIn.value) / 100, 0, 1);
+
+    if (editing){
+      const target = state.rivals.find(x => x.id === r.id);
+      if (target){
+        Object.assign(target, {
+          name, handle,
+          avatar_emoji: draft.avatar_emoji,
+          color: draft.color,
+          avgXp, intensity, split
+        });
+      }
+    } else {
+      state.rivals.push({
+        id: uid('r'),
+        name, handle,
+        avatar_emoji: draft.avatar_emoji,
+        color: draft.color,
+        avgXp, intensity, split,
+        phase: Math.random() * 10
+      });
+    }
+
+    saveState();
+    closeModal();
+    render();
+  });
+
+  setTimeout(() => $('#rivalName').focus(), 60);
 }
 
 /* =========================================================
@@ -3034,6 +3953,307 @@ function openMaterialModal(material){
 }
 
 /* =========================================================
+   CSV import — parsing + normalisation
+   ========================================================= */
+function parseCSVRows(text){
+  const rows = [];
+  let row = [];
+  let field = '';
+  let inQuotes = false;
+  const s = String(text || '').replace(/^\uFEFF/, ''); // strip BOM
+
+  for (let i = 0; i < s.length; i++){
+    const c = s[i];
+    if (inQuotes){
+      if (c === '"'){
+        if (s[i + 1] === '"'){ field += '"'; i++; }
+        else inQuotes = false;
+      } else {
+        field += c;
+      }
+    } else {
+      if (c === '"') inQuotes = true;
+      else if (c === ','){ row.push(field); field = ''; }
+      else if (c === '\n'){ row.push(field); rows.push(row); row = []; field = ''; }
+      else if (c === '\r'){ /* skip */ }
+      else field += c;
+    }
+  }
+  if (field !== '' || row.length){ row.push(field); rows.push(row); }
+  return rows;
+}
+
+function normalizeMaterialType(raw, categoryRaw){
+  const s = String(raw || '').trim().toLowerCase();
+  const cat = String(categoryRaw || '').trim().toLowerCase();
+
+  if (s){
+    if (TYPES[s]) return s;
+    for (const k of TYPE_ORDER){
+      if (TYPES[k].label.toLowerCase() === s) return k;
+    }
+    if (/audio|audio-?book/.test(s)) return 'audiobook';
+    if (/pod/.test(s))               return 'podcast';
+    if (/kindle|e-?book|ebook|ereader/.test(s)) return 'kindle';
+    if (/paper|physical|hardcover|paperback|\bbook\b/.test(s)) return 'book';
+    if (/article|blog|essay|news/.test(s)) return 'article';
+    if (/\btv\b|show|series|netflix/.test(s)) return 'tv';
+    if (/film|movie|cinema/.test(s)) return 'film';
+  }
+  if (cat === 'listening') return 'audiobook';
+  if (cat === 'reading')   return 'kindle';
+  return 'other';
+}
+
+function normalizeMaterialStatus(raw){
+  const s = String(raw || '').trim().toLowerCase();
+  if (s === 'completed' || s === 'complete' || s === 'done' || s === 'finished') return 'completed';
+  if (s === 'archived' || s === 'archive' || s === 'inactive') return 'archived';
+  return 'active';
+}
+
+function parseMaterialsCSV(text){
+  const rows = parseCSVRows(text);
+  const errors = [];
+  const out = [];
+
+  if (!rows.length) return { rows: out, errors: ['The file appears to be empty.'] };
+
+  const first = rows[0].map(c => String(c || '').trim().toLowerCase());
+  const hasHeader = first.includes('title') || first.includes('name');
+
+  let idx;
+  let startIdx;
+
+  if (hasHeader){
+    idx = {
+      title:    first.findIndex(h => h === 'title' || h === 'name'),
+      creator:  first.findIndex(h => h === 'creator' || h === 'author' || h === 'host'),
+      type:     first.findIndex(h => h === 'type' || h === 'input_type' || h === 'default_input_type' || h === 'format'),
+      category: first.findIndex(h => h === 'category'),
+      status:   first.findIndex(h => h === 'status')
+    };
+    startIdx = 1;
+  } else {
+    idx = { title: 0, creator: 1, type: 2, category: -1, status: 3 };
+    startIdx = 0;
+  }
+
+  if (idx.title < 0) errors.push('No "title" column found — the first column will be used as the title.');
+
+  for (let i = startIdx; i < rows.length; i++){
+    const r = rows[i];
+    if (!r || !r.length) continue;
+    if (r.every(c => !String(c || '').trim())) continue;
+
+    const get = k => (idx[k] >= 0 && r[idx[k]] !== undefined) ? String(r[idx[k]]).trim() : '';
+
+    const title = get('title');
+    if (!title){
+      errors.push(`Row ${i + 1}: missing title — skipped.`);
+      continue;
+    }
+
+    const typeKey = normalizeMaterialType(get('type'), get('category'));
+
+    out.push({
+      title,
+      creator: get('creator'),
+      default_input_type: typeKey,
+      default_category: TYPES[typeKey].category,
+      status: normalizeMaterialStatus(get('status'))
+    });
+  }
+
+  return { rows: out, errors };
+}
+
+function materialsCSVTemplate(){
+  const lines = ['title,creator,type,status'];
+  lines.push('Project Hail Mary,Andy Weir,book,active');
+  lines.push('Atomic Habits,James Clear,kindle,active');
+  lines.push('The Daily,The New York Times,podcast,active');
+  lines.push('Dune,Frank Herbert,audiobook,completed');
+  lines.push('How to Learn a Language,Benny Lewis,article,archived');
+  return lines.join('\n');
+}
+
+function openMaterialsImportModal(){
+  let pending = [];
+  let pendingErrors = [];
+
+  openModal(`
+    <div class="modal-backdrop" data-action="close-modal"></div>
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h2>Import materials from CSV</h2>
+        <button class="icon-btn" data-action="close-modal" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="hint" style="margin:0 0 6px">
+          Upload a CSV with a header row. These columns are recognised:
+        </p>
+        <div class="csv-cols">
+          <code>title</code><code>creator</code><code>type</code><code>status</code>
+        </div>
+        <p class="hint" style="margin:0 0 14px">
+          <b>title</b> is required. <b>type</b> accepts keys like <code>kindle</code>, <code>book</code>,
+          <code>podcast</code>, <code>audiobook</code>, <code>tv</code>, <code>film</code>,
+          <code>article</code>, <code>other</code> — or their labels ("Physical book").<br>
+          <b>status</b> can be <code>active</code>, <code>completed</code> or <code>archived</code> (defaults to active).
+        </p>
+
+        <div class="csv-drop" id="csvDrop">
+          <span class="big">📄</span>
+          <div>Drag &amp; drop your CSV here, or
+            <button type="button" class="link-btn" id="csvBrowse" style="color:var(--reading);font-weight:700">browse files</button>
+          </div>
+        </div>
+        <input type="file" id="csvFile" accept=".csv,text/csv,text/plain" style="display:none">
+
+        <div id="csvPreview"></div>
+        <div id="csvNote"></div>
+
+        <div class="modal-actions" style="margin-top:20px">
+          <button type="button" class="btn btn-ghost" data-action="download-csv-template">⬇ Template</button>
+          <button type="button" class="btn btn-ghost" data-action="close-modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="csvImportBtn" disabled>Import</button>
+        </div>
+      </div>
+    </div>
+  `);
+
+  const drop       = $('#csvDrop');
+  const fileInput  = $('#csvFile');
+  const preview    = $('#csvPreview');
+  const note       = $('#csvNote');
+  const importBtn  = $('#csvImportBtn');
+
+  function renderPreview(){
+    if (!pending.length && !pendingErrors.length){
+      preview.innerHTML = '';
+      note.innerHTML = '';
+      importBtn.disabled = true;
+      return;
+    }
+
+    if (pending.length){
+      const rowsHtml = pending.slice(0, 50).map(r => `
+        <tr>
+          <td>${escapeHtml(r.title)}</td>
+          <td>${escapeHtml(r.creator || '—')}</td>
+          <td>${escapeHtml((TYPES[r.default_input_type] || { label: 'Other' }).label)}</td>
+          <td>${escapeHtml(r.status)}</td>
+        </tr>`).join('');
+
+      preview.innerHTML = `
+        <div class="csv-preview">
+          <table>
+            <thead><tr><th>Title</th><th>Creator</th><th>Type</th><th>Status</th></tr></thead>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+        </div>
+        ${pending.length > 50 ? `<div style="font-size:12px;color:var(--muted);margin-top:8px">Showing first 50 of ${pending.length} rows.</div>` : ''}
+      `;
+    } else {
+      preview.innerHTML = '';
+    }
+
+    const notes = [];
+    if (pending.length){
+      const existing = new Set(state.materials.map(m => (m.title || '').trim().toLowerCase()));
+      const dupes = pending.filter(r => existing.has(r.title.toLowerCase())).length;
+      notes.push(`<div class="csv-note ok"><b>${pending.length}</b> material${pending.length === 1 ? '' : 's'} ready to import.${dupes ? ` <span style="color:var(--warn-fg)">${dupes} duplicate title${dupes === 1 ? '' : 's'} will be skipped.</span>` : ''}</div>`);
+    }
+    if (pendingErrors.length){
+      notes.push(`<div class="csv-note warn">${pendingErrors.length} row${pendingErrors.length === 1 ? '' : 's'} skipped: ${escapeHtml(pendingErrors.slice(0, 3).join(' '))}${pendingErrors.length > 3 ? ' …' : ''}</div>`);
+    }
+    note.innerHTML = notes.join('');
+
+    importBtn.disabled = pending.length === 0;
+  }
+
+  function handleFile(file){
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const parsed = parseMaterialsCSV(String(e.target.result || ''));
+      pending = parsed.rows;
+      pendingErrors = parsed.errors;
+      renderPreview();
+    };
+    reader.onerror = () => {
+      pending = [];
+      pendingErrors = ['Could not read that file.'];
+      renderPreview();
+    };
+    reader.readAsText(file);
+  }
+
+  $('#csvBrowse').addEventListener('click', () => fileInput.click());
+  drop.addEventListener('click', e => {
+    if (e.target.closest('#csvBrowse')) return;
+    fileInput.click();
+  });
+  fileInput.addEventListener('change', e => {
+    const f = e.target.files && e.target.files[0];
+    handleFile(f);
+    e.target.value = '';
+  });
+
+  ['dragenter', 'dragover'].forEach(ev => {
+    drop.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); drop.classList.add('over'); });
+  });
+  ['dragleave', 'drop'].forEach(ev => {
+    drop.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); drop.classList.remove('over'); });
+  });
+  drop.addEventListener('drop', e => {
+    const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    handleFile(f);
+  });
+
+  importBtn.addEventListener('click', () => {
+    if (!pending.length) return;
+    const existing = new Set(state.materials.map(m => (m.title || '').trim().toLowerCase()));
+    let added = 0, skipped = 0;
+
+    pending.forEach(r => {
+      const key = r.title.trim().toLowerCase();
+      if (existing.has(key)){ skipped++; return; }
+      existing.add(key);
+      state.materials.push({
+        id: uid('m'),
+        challenge_id: state.challenge.id,
+        title: r.title,
+        creator: r.creator,
+        default_input_type: r.default_input_type,
+        default_category: r.default_category,
+        status: r.status,
+        cover_url: ''
+      });
+      added++;
+    });
+
+    saveState();
+    closeModal();
+    render();
+
+    if (added && skipped){
+      alert(`Imported ${added} material${added === 1 ? '' : 's'}. ${skipped} duplicate${skipped === 1 ? '' : 's'} skipped.`);
+    } else if (added){
+      alert(`Imported ${added} material${added === 1 ? '' : 's'}.`);
+    } else {
+      alert('Nothing to import — every title already exists.');
+    }
+  });
+}
+
+function downloadMaterialsCSVTemplate(){
+  const blob = new Blob([materialsCSVTemplate()], { type: 'text/csv;charset=utf-8' });
+  downloadBlob(blob, 'esc-materials-template.csv');
+}
+
+/* =========================================================
    Challenge modal (daily / weekly)
    ========================================================= */
 function openChallengeModal(ch){
@@ -3158,6 +4378,7 @@ function openSettings(){
   const actCount = state.activities.length;
   const matCount = state.materials.length;
   const chCount  = state.customChallenges.length;
+  const rivalCount = (state.rivals || []).length;
   const hasProfile = !!state.profile;
 
   openModal(`
@@ -3187,6 +4408,15 @@ function openSettings(){
         </div>
 
         <div class="data-block">
+          <div class="data-title">Appearance</div>
+          <p class="hint" style="margin:0 0 12px">
+            Currently using the <b>${escapeHtml((THEMES.find(t => t.id === currentTheme) || THEMES[0]).name)}</b> theme.
+            Five themes available — three light, two dark.
+          </p>
+          <button type="button" class="btn btn-ghost" data-action="open-theme">🎨 Change theme</button>
+        </div>
+
+        <div class="data-block">
           <div class="data-title">Profile</div>
           <p class="hint" style="margin:0 0 12px">
             ${hasProfile
@@ -3199,6 +4429,17 @@ function openSettings(){
         </div>
 
         <div class="data-block">
+          <div class="data-title">Characters</div>
+          <p class="hint" style="margin:0 0 12px">
+            ${rivalCount} character${rivalCount === 1 ? '' : 's'} on the leaderboard.
+            Create, edit, or delete them from the Leaderboard tab — or reset them all to the defaults below.
+          </p>
+          <div class="data-btns">
+            <button type="button" class="btn btn-ghost" data-action="reset-rivals">↺ Reset characters</button>
+          </div>
+        </div>
+
+        <div class="data-block">
           <div class="data-title">Data</div>
           <div class="data-btns">
             <button type="button" class="btn btn-ghost" data-action="export-json">⬇ Export JSON</button>
@@ -3207,7 +4448,8 @@ function openSettings(){
           </div>
           <p class="hint" style="margin-top:12px">
             Export JSON saves a full backup (profile, ${actCount} activit${actCount === 1 ? 'y' : 'ies'},
-            ${matCount} material${matCount === 1 ? '' : 's'}, ${chCount} challenge${chCount === 1 ? '' : 's'}, and settings).
+            ${matCount} material${matCount === 1 ? '' : 's'}, ${chCount} challenge${chCount === 1 ? '' : 's'},
+            ${rivalCount} character${rivalCount === 1 ? '' : 's'}, and settings).
             Export CSV lists activities only. Import replaces your current data.
           </p>
           <input type="file" id="importFile" accept=".json,application/json" style="display:none">
@@ -3238,6 +4480,40 @@ function openSettings(){
    Event handling
    ========================================================= */
 document.addEventListener('click', e => {
+  /* Theme pick */
+  const themeBtn = e.target.closest('[data-theme-pick]');
+  if (themeBtn){
+    applyTheme(themeBtn.dataset.themePick);
+    openThemeModal();   /* re-render the picker so the check moves */
+    render();
+    return;
+  }
+
+  /* Materials: view toggle */
+  const viewBtn = e.target.closest('[data-matview]');
+  if (viewBtn){
+    materialsView = viewBtn.dataset.matview === 'list' ? 'list' : 'grid';
+    try { localStorage.setItem(MATVIEW_KEY, materialsView); } catch (err) {}
+    render();
+    return;
+  }
+
+  /* Materials: category filter */
+  const catBtn = e.target.closest('[data-matcat]');
+  if (catBtn){
+    materialsFilter.category = catBtn.dataset.matcat;
+    render();
+    return;
+  }
+
+  /* Materials: type filter */
+  const typeBtn = e.target.closest('[data-mattype]');
+  if (typeBtn){
+    materialsFilter.type = typeBtn.dataset.mattype;
+    render();
+    return;
+  }
+
   const navBtn = e.target.closest('[data-nav]');
   if (navBtn){
     currentView = navBtn.dataset.nav;
@@ -3273,6 +4549,20 @@ document.addEventListener('click', e => {
       closeModal();
       break;
 
+    /* ---- Info modals ---- */
+    case 'info-materials':
+      infoMaterials();
+      break;
+
+    case 'info-xp':
+      infoXp();
+      break;
+
+    /* ---- Theme ---- */
+    case 'open-theme':
+      openThemeModal();
+      break;
+
     /* ---- Profile ---- */
     case 'open-profile':
       openProfileModal(state.profile ? 'edit' : 'create');
@@ -3292,6 +4582,40 @@ document.addEventListener('click', e => {
       openSettings();
       break;
 
+    /* ---- Characters ---- */
+    case 'new-rival':
+      openRivalModal(null);
+      break;
+
+    case 'edit-rival': {
+      const r = (state.rivals || []).find(x => x.id === actionEl.dataset.id);
+      if (r) openRivalModal(r);
+      break;
+    }
+
+    case 'delete-rival': {
+      const id = actionEl.dataset.id;
+      const r = (state.rivals || []).find(x => x.id === id);
+      if (!r) break;
+      if (confirm(`Delete the character "${r.name}"?`)){
+        state.rivals = state.rivals.filter(x => x.id !== id);
+        saveState();
+        closeModal();
+        render();
+      }
+      break;
+    }
+
+    case 'reset-rivals':
+      if (confirm('Reset all characters to their default values? Your custom characters will be lost.')){
+        state.rivals = defaultRivals();
+        saveState();
+        closeModal();
+        render();
+      }
+      break;
+
+    /* ---- Activities ---- */
     case 'edit-activity': {
       const a = state.activities.find(x => x.id === actionEl.dataset.id);
       if (a) openLogModal(a);
@@ -3310,8 +4634,28 @@ document.addEventListener('click', e => {
       break;
     }
 
+    /* ---- Materials ---- */
     case 'add-material':
       openMaterialModal(null);
+      break;
+
+    case 'import-materials':
+      openMaterialsImportModal();
+      break;
+
+    case 'download-csv-template':
+      downloadMaterialsCSVTemplate();
+      break;
+
+    case 'toggle-mat-filters':
+      materialsFiltersOpen = !materialsFiltersOpen;
+      try { localStorage.setItem(MATFILTERS_KEY, materialsFiltersOpen ? '1' : '0'); } catch (err) {}
+      render();
+      break;
+
+    case 'clear-material-filters':
+      materialsFilter = { q: '', type: 'all', category: 'all' };
+      render();
       break;
 
     case 'edit-material': {
@@ -3337,6 +4681,7 @@ document.addEventListener('click', e => {
       break;
     }
 
+    /* ---- Challenges ---- */
     case 'new-challenge':
       openChallengeModal(null);
       break;
@@ -3374,11 +4719,13 @@ document.addEventListener('click', e => {
       break;
     }
 
+    /* ---- History ---- */
     case 'clear-filters':
       historyFilters = { from: '', to: '', category: 'all', type: 'all', material: 'all', q: '' };
       render();
       break;
 
+    /* ---- Data ---- */
     case 'export-json':
       exportJSON();
       break;
@@ -3424,6 +4771,11 @@ document.addEventListener('input', e => {
     clearTimeout(searchTimer);
     searchTimer = setTimeout(renderPreservingFocus, 220);
   }
+  else if (e.target.id === 'matSearch'){
+    materialsFilter.q = e.target.value;
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(renderPreservingFocus, 220);
+  }
 });
 
 document.addEventListener('keydown', e => {
@@ -3433,6 +4785,7 @@ document.addEventListener('keydown', e => {
 /* =========================================================
    Boot
    ========================================================= */
+applyTheme(currentTheme);
 loadState();
 render();
 startTicker();
