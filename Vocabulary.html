@@ -110,11 +110,17 @@
   .item .t small{display:block;font-weight:400;color:var(--soft);font-size:11px;line-height:1.25;
                  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
   .cbx{width:18px;height:18px;border:1.5px solid #d1d5db;border-radius:5px;display:flex;align-items:center;
-       justify-content:center;font-size:11px;font-weight:800;color:#fff;background:#fff;flex-shrink:0}
+       justify-content:center;font-size:11px;font-weight:800;color:#fff;background:#fff;flex-shrink:0;cursor:pointer}
   .cbx.on{background:var(--accent);border-color:var(--accent)}
   .inp{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;font-size:13px;
        background:#fff;color:var(--ink);outline:none;transition:.15s;resize:vertical}
   .inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,70,229,.12)}
+  select.inp{
+    appearance:none;-webkit-appearance:none;
+    background-image:linear-gradient(45deg,transparent 50%,#9aa0ad 50%),linear-gradient(135deg,#9aa0ad 50%,transparent 50%);
+    background-position:calc(100% - 15px) 50%,calc(100% - 10px) 50%;
+    background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:28px;cursor:pointer
+  }
   .lbl{display:block;font-size:10.5px;font-weight:700;color:var(--soft);letter-spacing:.05em;
        text-transform:uppercase;margin:0 0 4px}
   .field{margin-bottom:10px}
@@ -122,6 +128,11 @@
         font-size:12px;font-weight:600;cursor:pointer;color:#4b5563;transition:.15s}
   .chip:hover{background:#f3f4f7}
   .chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+  /* Category-tinted chip when selected */
+  .chip.on[data-rcat="collocation"]{background:#4338ca;border-color:#4338ca}
+  .chip.on[data-rcat="phrasal"]{background:#0369a1;border-color:#0369a1}
+  .chip.on[data-rcat="chunk"]{background:#b45309;border-color:#b45309}
+  .chip.on[data-rcat="vocab"]{background:#047857;border-color:#047857}
   .modal{position:fixed;inset:0;display:none;z-index:100}
   .modal.on{display:block}
   .modal .bg{position:absolute;inset:0;background:rgba(15,17,22,.45);backdrop-filter:blur(2px)}
@@ -175,6 +186,12 @@
   .csv-pv{max-height:180px;overflow-y:auto;border:1px solid var(--line);border-radius:8px;padding:6px;background:#fafbfc}
   .csv-pv table{font-size:11.5px}
   .csv-pv th,.csv-pv td{padding:4px 6px}
+  /* Resources */
+  .res-head{cursor:pointer;user-select:none}
+  .res-head:hover b{color:var(--accent)}
+  .chapter-list .item{cursor:default}
+  .chapter-list .item .t{white-space:normal}
+  .chapter-list .item .t small{white-space:normal}
 </style>
 </head>
 <body>
@@ -207,6 +224,11 @@ const SCHEDULE  = ['Day 0','Day 1','Day 3','Day 7','Day 14','Day 30','Mastered']
 const WRITE_REQ = {collocation:2,phrasal:1,chunk:1,vocab:2};
 const LS_KEY = 'words30.v2';
 const MEM_PAIRS = 6;
+
+/* --- Resources --- */
+const RES_TYPES = ['book','podcast','course','article','video','other'];
+const RES_TYPE_LABEL = {book:'Book',podcast:'Podcast',course:'Course',article:'Article',video:'Video',other:'Other'};
+const RES_TYPE_ICON  = {book:'📕',podcast:'🎧',course:'🎓',article:'📰',video:'🎬',other:'🔖'};
 
 /* ============================================================
    HELPERS
@@ -305,20 +327,67 @@ function mk(term,category,meaning,example,source,extra){
   return Object.assign({
     id:uid(), term, category, meaning, example,
     personal:'', source:source||'', difficulty:2, notes:'', pronunciation:'', related:'',
+    resourceId:'', chapterId:'',
     inbox:false, dateAdded:iso(), challengeDate:null,
     studiedAt:null, practicedAt:null, activeAt:null, masteredAt:null,
     reviews:[], stage:0, nextReview:iso()
   }, extra||{});
 }
-function emptyState(){ return { settings:defaultSettings(), items:[], days:{} }; }
+function emptyState(){ return { settings:defaultSettings(), items:[], days:{}, resources:[] }; }
 function load(){
   try{
     const raw = localStorage.getItem(LS_KEY);
-    if(raw){const p=JSON.parse(raw); if(p && Array.isArray(p.items)) return p;}
+    if(raw){
+      const p=JSON.parse(raw);
+      if(p && Array.isArray(p.items)){
+        if(!Array.isArray(p.resources)) p.resources = [];
+        p.resources.forEach(r=>{
+          if(!Array.isArray(r.chapters)) r.chapters = [];
+          if(!Array.isArray(r.categories)) r.categories = [];
+        });
+        return p;
+      }
+    }
   }catch(e){}
   return emptyState();
 }
 function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){} }
+
+/* ============================================================
+   RESOURCES
+   ============================================================ */
+function resourcesList(){
+  if(!Array.isArray(S.resources)) S.resources = [];
+  return S.resources;
+}
+function resourceById(id){ return id ? (resourcesList().find(r=>r.id===id) || null) : null; }
+function chapterOf(r,id){ return (r && id) ? ((r.chapters||[]).find(c=>c.id===id) || null) : null; }
+function currentChapter(r){ return r ? chapterOf(r, r.currentChapterId) : null; }
+function resProgress(r){
+  const ch = r.chapters || [];
+  const total = ch.length;
+  const done = ch.filter(c=>c.done).length;
+  const pct = total ? Math.round(done/total*100) : 0;
+  const idx = ch.findIndex(c=>c.id === r.currentChapterId);
+  return { total, done, pct, idx };
+}
+function linkedCount(id){ return S.items.filter(i=>i.resourceId===id).length; }
+function chapterWords(cid){ return cid ? S.items.filter(i=>i.chapterId===cid).length : 0; }
+function resCats(r){ return (r && Array.isArray(r.categories)) ? r.categories : []; }
+
+function chapterOptions(r, selected){
+  if(!r) return `<option value="">—</option>`;
+  const ch = r.chapters || [];
+  if(!ch.length) return `<option value="">— no chapters —</option>`;
+  return `<option value="">—</option>` +
+    ch.map(c=>`<option value="${c.id}" ${c.id===selected?'selected':''}>${esc(c.title)}</option>`).join('');
+}
+function resourceOptions(selected){
+  const list = resourcesList();
+  if(!list.length) return `<option value="">— none —</option>`;
+  return `<option value="">—</option>` +
+    list.map(r=>`<option value="${r.id}" ${r.id===selected?'selected':''}>${esc(r.title)}</option>`).join('');
+}
 
 /* ============================================================
    DERIVED
@@ -368,10 +437,11 @@ function streak(){
    ============================================================ */
 function clearSelection(){ ui.selectMode=false; ui.selected=new Set(); }
 function filteredLibrary(){
-  ui.lib = ui.lib || {cat:'all',status:'all',q:''};
+  ui.lib = ui.lib || {cat:'all',status:'all',q:'',res:'all'};
   let list = S.items.filter(i=>!i.inbox);
   if(ui.lib.cat!=='all')    list = list.filter(i=>i.category===ui.lib.cat);
   if(ui.lib.status!=='all') list = list.filter(i=>statusOf(i)===ui.lib.status);
+  if(ui.lib.res && ui.lib.res!=='all') list = list.filter(i=>i.resourceId===ui.lib.res);
   if(ui.lib.q){
     const q = ui.lib.q.toLowerCase();
     list = list.filter(i=>(i.term+' '+i.meaning+' '+i.example).toLowerCase().includes(q));
@@ -486,6 +556,7 @@ function importData(){
             id: raw.id||uid(),
             personal: raw.personal||'', difficulty: Number(raw.difficulty)||2,
             notes: raw.notes||'', pronunciation: raw.pronunciation||'', related: raw.related||'',
+            resourceId: raw.resourceId||'', chapterId: raw.chapterId||'',
             inbox: !!raw.inbox, dateAdded: raw.dateAdded||iso(),
             challengeDate: raw.challengeDate||null,
             studiedAt: raw.studiedAt||null, practicedAt: raw.practicedAt||null,
@@ -494,6 +565,22 @@ function importData(){
             stage: Number(raw.stage)||0, nextReview: raw.nextReview||iso()
           }
         ));
+        const resources = Array.isArray(p.resources) ? p.resources.map(raw=>({
+          id: raw.id||uid(),
+          title: String(raw.title||'').trim(),
+          type: RES_TYPES.includes(raw.type) ? raw.type : 'other',
+          author: raw.author||'',
+          notes: raw.notes||'',
+          categories: Array.isArray(raw.categories) ? raw.categories.filter(c=>CATS.includes(c)) : [],
+          dateAdded: raw.dateAdded||iso(),
+          currentChapterId: raw.currentChapterId||null,
+          chapters: Array.isArray(raw.chapters) ? raw.chapters.map(c=>({
+            id: c.id||uid(),
+            title: String(c.title||'').trim(),
+            done: !!c.done,
+            completedAt: c.completedAt||null
+          })).filter(c=>c.title) : []
+        })).filter(r=>r.title) : [];
         const settings = (p.settings && typeof p.settings==='object')
           ? {target:Number(p.settings.target)||30,
              dist:Object.assign({collocation:10,phrasal:5,chunk:5,vocab:10},
@@ -501,9 +588,10 @@ function importData(){
           : defaultSettings();
         const days = (p.days && typeof p.days==='object') ? p.days : {};
         const apply = ()=>{
-          S = { settings, items, days };
+          S = { settings, items, days, resources };
           save();
-          ui = {lib:{cat:'all',status:'all',q:''}, addCat:'', selectMode:false, selected:new Set()};
+          ui = {lib:{cat:'all',status:'all',q:'',res:'all'}, addCat:'', selectMode:false,
+                selected:new Set(), editRes:null, openRes:null, resCats:null, resFilter:'all'};
           nav('today');
           toast(`Imported ${items.length} item${items.length===1?'':'s'}`);
         };
@@ -572,13 +660,14 @@ function commitCSVImport(){
    NAV
    ============================================================ */
 const TABS = [
-  {id:'today',    label:'Today'},
-  {id:'inbox',    label:'Inbox'},
-  {id:'library',  label:'Library'},
-  {id:'practice', label:'Practice'},
-  {id:'write',    label:'Write'},
-  {id:'review',   label:'Review'},
-  {id:'stats',    label:'Stats'}
+  {id:'today',     label:'Today'},
+  {id:'inbox',     label:'Inbox'},
+  {id:'library',   label:'Library'},
+  {id:'resources', label:'Resources'},
+  {id:'practice',  label:'Practice'},
+  {id:'write',     label:'Write'},
+  {id:'review',    label:'Review'},
+  {id:'stats',     label:'Stats'}
 ];
 function nav(id){
   view = id;
@@ -607,8 +696,8 @@ function render(){
   ).join('');
 
   const views = {
-    today:viewToday, inbox:viewInbox, library:viewLibrary, practice:viewPractice,
-    write:viewWrite, review:viewReview, stats:viewStats, add:viewAdd
+    today:viewToday, inbox:viewInbox, library:viewLibrary, resources:viewResources,
+    practice:viewPractice, write:viewWrite, review:viewReview, stats:viewStats, add:viewAdd
   };
   app.innerHTML = (views[view]||viewToday)();
   if(view==='write') bindWrite();
@@ -705,6 +794,15 @@ function viewToday(){
           ${writingDone?'Edit paragraph':'Start writing'}
         </button>
       </div>
+
+      ${resourcesList().length ? `
+      <div class="card">
+        <div class="between">
+          <h2 style="margin:0">Current chapter</h2>
+          <button class="btn sm ghost" data-nav="resources">All</button>
+        </div>
+        <div style="margin-top:6px">${currentChapterLine()}</div>
+      </div>` : ''}
     </div>
 
     <div class="card items">
@@ -715,6 +813,23 @@ function viewToday(){
       ${list}
     </div>
   </div>`;
+}
+
+function currentChapterLine(){
+  const list = resourcesList();
+  const act = list.filter(r=>currentChapter(r));
+  if(!act.length) return `<span class="tiny muted">No current chapter set.</span>`;
+  return act.map(r=>{
+    const c = currentChapter(r);
+    const p = resProgress(r);
+    return `<div class="between" style="gap:10px;padding:3px 0">
+      <span class="tiny" style="min-width:0">
+        <b>${esc(r.title)}</b>
+        <span class="muted"> · ${esc(c.title)}</span>
+      </span>
+      <span class="tiny muted">${p.idx+1}/${p.total}</span>
+    </div>`;
+  }).join('');
 }
 
 function stat(k,v){ return `<div class="stat"><div class="v">${v}</div><div class="k">${k}</div></div>`; }
@@ -866,6 +981,16 @@ function viewAdd(){
           <input class="inp" type="number" id="f_difficulty" min="1" max="5" value="2">
         </div>
       </div>
+      <div class="grid g-2">
+        <div class="field">
+          <label class="lbl">Resource</label>
+          <select class="inp" id="f_resource">${resourceOptions('')}</select>
+        </div>
+        <div class="field">
+          <label class="lbl">Chapter</label>
+          <select class="inp" id="f_chapter">${chapterOptions(null,'')}</select>
+        </div>
+      </div>
       <div class="field">
         <label class="lbl">Related expressions</label>
         <input class="inp" id="f_related" placeholder="think up, come up against">
@@ -887,6 +1012,11 @@ function viewAdd(){
         <div class="tiny muted">Term, Meaning, Example Sentence, Category</div>
         <button class="btn pri wide" style="margin-top:10px" data-act="csvUpload">⭱ Upload CSV</button>
       </div>
+      <div class="card">
+        <h2>Resources</h2>
+        <div class="tiny muted">Track the books, podcasts and courses you're working through — and which chapter you're on.</div>
+        <button class="btn wide" style="margin-top:10px" data-nav="resources">Manage resources</button>
+      </div>
     </div>
   </div>`;
 }
@@ -898,12 +1028,15 @@ function readAdd(){
     meaning: g('f_meaning'), example: g('f_example'), source: g('f_source'),
     personal: g('f_personal'), pronunciation: g('f_pronunciation'),
     related: g('f_related'), notes: g('f_notes'),
+    resourceId: g('f_resource'), chapterId: g('f_chapter'),
     difficulty: Number(g('f_difficulty'))||2
   };
 }
 function clearAdd(){
   ['f_term','f_meaning','f_example','f_source','f_personal','f_pronunciation','f_related','f_notes']
     .forEach(id=>{ const e=$('#'+id); if(e) e.value=''; });
+  const r = $('#f_resource'); if(r) r.value='';
+  const c = $('#f_chapter'); if(c) c.innerHTML = chapterOptions(null,'');
 }
 function doAdd(openIt){
   const d = readAdd();
@@ -912,6 +1045,7 @@ function doAdd(openIt){
   const it = mk(d.term, d.category, d.meaning, d.example, d.source, {
     personal:d.personal, pronunciation:d.pronunciation, related:d.related,
     notes:d.notes, difficulty:d.difficulty,
+    resourceId:d.resourceId, chapterId:d.chapterId,
     dateAdded:T, nextReview:T, challengeDate:T
   });
   S.items.push(it);
@@ -927,6 +1061,8 @@ function viewLibrary(){
   const list = filteredLibrary();
   const total = S.items.filter(i=>!i.inbox).length;
   const rows = list.length ? list.map(rowItem).join('') : `<div class="empty">No items match.</div>`;
+  const resList = resourcesList();
+
   return `
   <div class="card" style="margin-bottom:10px">
     <div class="between">
@@ -947,9 +1083,179 @@ function viewLibrary(){
       <button class="chip ${ui.lib.status==='all'?'on':''}" data-libst="all">Any</button>
       ${Object.keys(STATUS_LABEL).map(s=>`<button class="chip ${ui.lib.status===s?'on':''}" data-libst="${s}">${STATUS_LABEL[s]}</button>`).join('')}
     </div>
+    ${resList.length ? `
+    <div class="wrap" style="margin-top:6px">
+      <button class="chip ${(!ui.lib.res||ui.lib.res==='all')?'on':''}" data-libres="all">All sources</button>
+      ${resList.map(r=>`<button class="chip ${ui.lib.res===r.id?'on':''}" data-libres="${r.id}">${RES_TYPE_ICON[r.type]||'🔖'} ${esc(r.title)}</button>`).join('')}
+    </div>` : ''}
     ${selBar(list.length)}
   </div>
   <div class="card">${rows}</div>`;
+}
+
+/* ============================================================
+   RESOURCES
+   ============================================================ */
+function viewResources(){
+  const all = resourcesList();
+  const editing = ui.editRes;
+  const catFilter = ui.resFilter || 'all';
+  const list = catFilter === 'all' ? all : all.filter(r => resCats(r).includes(catFilter));
+
+  // Count resources per category (for chip labels)
+  const counts = {}; CATS.forEach(c=>counts[c]=0);
+  all.forEach(r => resCats(r).forEach(c => { if(counts[c]!==undefined) counts[c]++; }));
+
+  const header = `
+  <div class="card" style="margin-bottom:10px">
+    <div class="between">
+      <div>
+        <h2 style="margin:0">Resources</h2>
+        <div class="tiny muted" style="margin-top:2px">
+          ${all.length} resource${all.length===1?'':'s'} · chapters &amp; progress
+        </div>
+      </div>
+      <div class="wrap">
+        ${editing==='new'
+          ? `<button class="btn sm ghost" data-act="cancelResource">Cancel</button>`
+          : `<button class="btn sm pri" data-act="newResource">+ Add resource</button>`}
+      </div>
+    </div>
+    <div class="wrap" style="margin-top:10px">
+      <button class="chip ${catFilter==='all'?'on':''}" data-rescat="all">All</button>
+      ${CATS.map(c=>`<button class="chip ${catFilter===c?'on':''}" data-rescat="${c}">${CAT_LABEL[c]}${counts[c]?` <span style="opacity:.55">${counts[c]}</span>`:''}</button>`).join('')}
+    </div>
+  </div>`;
+
+  const formNew = (editing==='new') ? resourceForm(null) : '';
+
+  const cards = list.map(r => (editing===r.id) ? resourceForm(r) : resourceCard(r)).join('');
+
+  let empty = '';
+  if(!list.length && editing!=='new'){
+    empty = (all.length && catFilter!=='all')
+      ? `<div class="card"><div class="empty">No resources tagged ${esc(CAT_LABEL[catFilter])}.</div></div>`
+      : `<div class="card"><div class="empty">No resources yet.<br>Add the book, podcast or course you're working through.</div></div>`;
+  }
+
+  return header + formNew + `<div class="grid" style="gap:10px">${cards}</div>` + empty;
+}
+
+function resourceForm(r){
+  const isNew = !r;
+  const v = r || {title:'', type:'book', author:'', notes:''};
+  const selectedCats = (ui.resCats instanceof Set)
+    ? ui.resCats
+    : new Set(r ? resCats(r) : []);
+  return `
+  <div class="card" style="border-color:#c7d2fe;background:#f8faff">
+    <h2>${isNew?'Add a resource':'Edit resource'}</h2>
+    <div class="grid g-2">
+      <div class="field">
+        <label class="lbl">Title</label>
+        <input class="inp" id="r_title" value="${esc(v.title)}" placeholder="English Vocabulary in Use" autocomplete="off">
+      </div>
+      <div class="field">
+        <label class="lbl">Type</label>
+        <select class="inp" id="r_type">
+          ${RES_TYPES.map(t=>`<option value="${t}" ${v.type===t?'selected':''}>${RES_TYPE_LABEL[t]}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label class="lbl">Author / source</label>
+      <input class="inp" id="r_author" value="${esc(v.author||'')}" placeholder="Optional" autocomplete="off">
+    </div>
+    <div class="field">
+      <label class="lbl">Categories</label>
+      <div class="wrap" id="r_cats">
+        ${CATS.map(c=>`<button type="button" class="chip ${selectedCats.has(c)?'on':''}" data-rcat="${c}">${CAT_LABEL[c]}</button>`).join('')}
+      </div>
+      <div class="tiny muted" style="margin-top:5px">Which kinds of items this resource covers.</div>
+    </div>
+    <div class="field">
+      <label class="lbl">Notes</label>
+      <textarea class="inp" id="r_notes" rows="2" placeholder="Optional">${esc(v.notes||'')}</textarea>
+    </div>
+    <div class="wrap">
+      <button class="btn pri" data-act="saveResource" data-id="${r?r.id:''}">${isNew?'Add resource':'Save'}</button>
+      <button class="btn ghost" data-act="cancelResource">Cancel</button>
+    </div>
+  </div>`;
+}
+
+function resourceCard(r){
+  const open = ui.openRes === r.id;
+  const p = resProgress(r);
+  const cur = currentChapter(r);
+  const words = linkedCount(r.id);
+  const chapters = r.chapters || [];
+  const cats = resCats(r);
+
+  const chapRows = chapters.length ? chapters.map((c,i)=>{
+    const isCur = c.id === r.currentChapterId;
+    const n = chapterWords(c.id);
+    return `<div class="item" style="cursor:default;gap:8px">
+      <span class="cbx ${c.done?'on':''}" data-act="toggleChapter" data-rid="${r.id}" data-cid="${c.id}"
+            title="${c.done?'Mark not done':'Mark done'}">${c.done?'✓':''}</span>
+      <span class="t" style="${isCur?'font-weight:700':''}">
+        <span class="muted tiny">${i+1}.</span> ${esc(c.title)}
+        <small>${n ? n+' word'+(n===1?'':'s') : 'no words yet'}${c.done?' · completed':''}</small>
+      </span>
+      ${isCur?'<span class="pill active">Current</span>':''}
+      ${!isCur?`<button class="btn sm ghost" data-act="setCurrentChapter" data-rid="${r.id}" data-cid="${c.id}">Set current</button>`:''}
+      <button class="btn sm ghost" data-act="delChapter" data-rid="${r.id}" data-cid="${c.id}" title="Delete chapter">✕</button>
+    </div>`;
+  }).join('') : `<div class="empty">No chapters yet — add the first one below.</div>`;
+
+  return `
+  <div class="card">
+    <div class="between res-head" data-act="toggleResource" data-id="${r.id}">
+      <div style="min-width:0">
+        <div class="row" style="gap:7px;flex-wrap:wrap">
+          <span>${RES_TYPE_ICON[r.type]||'🔖'}</span>
+          <b style="font-size:14.5px">${esc(r.title)}</b>
+          <span class="pill">${RES_TYPE_LABEL[r.type]||'Other'}</span>
+          ${cats.map(c=>`<span class="pill ${c}">${CAT_LABEL[c]}</span>`).join('')}
+          ${words?`<span class="pill vocab">${words} word${words===1?'':'s'}</span>`:''}
+        </div>
+        <div class="tiny muted" style="margin-top:3px">
+          ${r.author?esc(r.author)+' · ':''}${p.done}/${p.total} chapters done
+        </div>
+      </div>
+      <span class="tiny muted" style="flex-shrink:0">${open?'▴':'▾'}</span>
+    </div>
+
+    <div class="bar" style="margin-top:9px"><i style="width:${p.pct}%"></i></div>
+
+    <div class="row" style="margin-top:9px;gap:6px;flex-wrap:wrap">
+      ${cur
+        ? `<span class="tiny muted">Current:</span>
+           <span class="pill studied">${p.idx+1}. ${esc(cur.title)}</span>`
+        : `<span class="tiny muted">No current chapter set</span>`}
+    </div>
+
+    ${open ? `
+      <div class="sep"></div>
+      <div class="between" style="margin-bottom:6px">
+        <div class="lbl" style="margin:0">Chapters</div>
+        <div class="wrap">
+          <button class="btn sm ghost" data-act="addChapters" data-rid="${r.id}">Paste list</button>
+          <button class="btn sm ghost" data-act="editResource" data-id="${r.id}">Edit</button>
+          <button class="btn sm ghost" data-act="deleteResource" data-id="${r.id}" style="color:#b91c1c">Delete</button>
+        </div>
+      </div>
+      <div class="chapter-list">${chapRows}</div>
+      <div class="row" style="margin-top:8px">
+        <input class="inp" id="ch_${r.id}" placeholder="Add a chapter…" autocomplete="off">
+        <button class="btn pri" data-act="addChapter" data-rid="${r.id}">Add</button>
+      </div>
+      ${r.notes?`<div class="tiny muted" style="margin-top:8px">${esc(r.notes)}</div>`:''}
+      <div class="wrap" style="margin-top:10px">
+        <button class="btn sm" data-act="resWords" data-id="${r.id}">View words (${words})</button>
+      </div>
+    ` : ''}
+  </div>`;
 }
 
 /* ============================================================
@@ -1298,6 +1604,7 @@ function viewReview(){
     <div style="margin-top:8px"><b>Meaning.</b> ${esc(it.meaning||'—')}</div>
     ${it.example?`<div class="tiny muted" style="margin-top:6px">"${esc(it.example)}"</div>`:''}
     ${it.personal?`<div class="tiny" style="margin-top:6px"><b>You wrote:</b> ${esc(it.personal)}</div>`:''}
+    ${it.resourceId&&resourceById(it.resourceId)?`<div class="tiny muted" style="margin-top:6px">${RES_TYPE_ICON[resourceById(it.resourceId).type]||'🔖'} ${esc(resourceById(it.resourceId).title)}${chapterOf(resourceById(it.resourceId),it.chapterId)?' · '+esc(chapterOf(resourceById(it.resourceId),it.chapterId).title):''}</div>`:''}
     <div class="sep"></div>
     <div class="lbl">How did it feel?</div>
     <div class="grid g-4">
@@ -1368,6 +1675,8 @@ function viewStats(){
     </tr>`);
   }
 
+  const resList = resourcesList();
+
   return `
   <div class="grid g-2" style="margin-bottom:10px">
     <div class="card">
@@ -1404,9 +1713,31 @@ function viewStats(){
         </div>`).join('')}
     </div>
 
+    ${resList.length?`
+    <div class="card">
+      <h2>Resources</h2>
+      ${resList.map(r=>{
+        const p = resProgress(r);
+        const cur = currentChapter(r);
+        const cats = resCats(r);
+        return `<div style="margin-bottom:9px">
+          <div class="between tiny">
+            <span style="min-width:0">${RES_TYPE_ICON[r.type]||'🔖'} <b>${esc(r.title)}</b>
+              ${cats.map(c=>`<span class="pill ${c}">${CAT_LABEL[c]}</span>`).join(' ')}
+            </span>
+            <span class="muted">${p.done}/${p.total}</span>
+          </div>
+          <div class="bar" style="margin-top:4px;height:5px"><i style="width:${p.pct}%"></i></div>
+          <div class="tiny muted" style="margin-top:3px">
+            ${cur?`Current: ${esc(cur.title)}`:'No current chapter'} · ${linkedCount(r.id)} words
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`:''}
+
     <div class="card">
       <h2>Data</h2>
-      <div class="tiny muted">Stored locally · ${S.items.length} item${S.items.length===1?'':'s'}</div>
+      <div class="tiny muted">Stored locally · ${S.items.length} item${S.items.length===1?'':'s'} · ${resList.length} resource${resList.length===1?'':'s'}</div>
       <div class="wrap" style="margin-top:10px">
         <button class="btn" data-act="exportData">⭳ Export JSON</button>
         <button class="btn" data-act="importData">⭱ Import JSON</button>
@@ -1439,6 +1770,7 @@ function renderModal(){
   const it = S.items.find(i=>i.id===modalId);
   if(!it){ modalId=null; modal.innerHTML=''; modal.classList.remove('on'); return; }
   const st = statusOf(it);
+  const res = resourceById(it.resourceId);
 
   const history = it.reviews.length
     ? it.reviews.slice().reverse().map(r=>`<div class="between tiny" style="padding:3px 0;border-bottom:1px solid #f2f3f6">
@@ -1480,6 +1812,12 @@ function renderModal(){
         <input class="inp" data-field="source" value="${esc(it.source)}"></div>
       <div class="field"><label class="lbl">Pronunciation</label>
         <input class="inp" data-field="pronunciation" value="${esc(it.pronunciation)}"></div>
+    </div>
+    <div class="grid g-2">
+      <div class="field"><label class="lbl">Resource</label>
+        <select class="inp" data-field="resourceId">${resourceOptions(it.resourceId)}</select></div>
+      <div class="field"><label class="lbl">Chapter</label>
+        <select class="inp" data-field="chapterId">${chapterOptions(res, it.chapterId)}</select></div>
     </div>
     <div class="grid g-2">
       <div class="field"><label class="lbl">Related</label>
@@ -1547,6 +1885,21 @@ document.addEventListener('click', e=>{
   if(libcat){ ui.lib.cat = libcat.dataset.libcat; render(); return; }
   const libst = e.target.closest('[data-libst]');
   if(libst){ ui.lib.status = libst.dataset.libst; render(); return; }
+  const libres = e.target.closest('[data-libres]');
+  if(libres){ ui.lib.res = libres.dataset.libres; render(); return; }
+  const rescat = e.target.closest('[data-rescat]');
+  if(rescat){ ui.resFilter = rescat.dataset.rescat; render(); return; }
+
+  // Resource category chip — toggle without re-rendering (preserves form inputs)
+  const rcat = e.target.closest('[data-rcat]');
+  if(rcat){
+    const c = rcat.dataset.rcat;
+    if(!(ui.resCats instanceof Set)) ui.resCats = new Set();
+    if(ui.resCats.has(c)) ui.resCats.delete(c); else ui.resCats.add(c);
+    rcat.classList.toggle('on', ui.resCats.has(c));
+    return;
+  }
+
   const wsel = e.target.closest('[data-wsel]');
   if(wsel){
     const day = ensureDay(iso());
@@ -1672,6 +2025,135 @@ function handleAct(el){
     case 'deselectAll': ui.selected = new Set(); render(); break;
     case 'deleteSelected': deleteSelected(); break;
 
+    /* ---------- Resources ---------- */
+    case 'newResource':
+      ui.editRes = 'new'; ui.openRes = null; ui.resCats = new Set(); render();
+      break;
+    case 'editResource': {
+      const r = resourceById(el.dataset.id);
+      ui.resCats = new Set(r ? resCats(r) : []);
+      ui.editRes = el.dataset.id;
+      render();
+      break;
+    }
+    case 'cancelResource':
+      ui.editRes = null; ui.resCats = null; render();
+      break;
+    case 'saveResource': {
+      const id = el.dataset.id;
+      const titleEl = $('#r_title');
+      const title = titleEl ? titleEl.value.trim() : '';
+      if(!title){ toast('Enter a title'); return; }
+      const type = ($('#r_type') && $('#r_type').value) || 'other';
+      const author = ($('#r_author') && $('#r_author').value.trim()) || '';
+      const notes = ($('#r_notes') && $('#r_notes').value.trim()) || '';
+      const categories = [...((ui.resCats instanceof Set) ? ui.resCats : new Set())];
+      if(id){
+        const r = resourceById(id);
+        if(r){ r.title=title; r.type=type; r.author=author; r.notes=notes; r.categories=categories; }
+        toast('Resource updated');
+      } else {
+        const r = {id:uid(), title, type, author, notes, categories, dateAdded:iso(), chapters:[], currentChapterId:null};
+        resourcesList().push(r);
+        ui.openRes = r.id;
+        toast('Resource added');
+      }
+      ui.editRes = null; ui.resCats = null;
+      save(); render();
+      break;
+    }
+    case 'toggleResource':
+      ui.openRes = (ui.openRes === el.dataset.id) ? null : el.dataset.id;
+      render();
+      break;
+    case 'deleteResource': {
+      const r = resourceById(el.dataset.id);
+      if(!r) break;
+      const n = linkedCount(r.id);
+      if(!confirm(`Delete "${r.title}"?${n?` ${n} word${n===1?'':'s'} will be unlinked.`:''}`)) break;
+      S.resources = resourcesList().filter(x=>x.id!==r.id);
+      S.items.forEach(i=>{ if(i.resourceId===r.id){ i.resourceId=''; i.chapterId=''; } });
+      if(ui.openRes===r.id) ui.openRes = null;
+      if(ui.editRes===r.id) ui.editRes = null;
+      save(); render();
+      toast('Resource deleted');
+      break;
+    }
+    case 'addChapter': {
+      const r = resourceById(el.dataset.rid);
+      if(!r) break;
+      const inp = $('#ch_'+r.id);
+      const t = inp ? inp.value.trim() : '';
+      if(!t){ toast('Type a chapter title'); break; }
+      const c = {id:uid(), title:t, done:false, completedAt:null};
+      r.chapters.push(c);
+      if(!r.currentChapterId) r.currentChapterId = c.id;
+      save(); render();
+      const again = $('#ch_'+r.id); if(again) again.focus();
+      break;
+    }
+    case 'addChapters': {
+      const r = resourceById(el.dataset.rid);
+      if(!r) break;
+      const txt = prompt('One chapter per line:');
+      if(!txt) break;
+      const lines = txt.split('\n').map(s=>s.trim()).filter(Boolean);
+      if(!lines.length) break;
+      lines.forEach(t=> r.chapters.push({id:uid(), title:t, done:false, completedAt:null}));
+      if(!r.currentChapterId) r.currentChapterId = r.chapters[0].id;
+      save(); render();
+      toast(`Added ${lines.length} chapter${lines.length===1?'':'s'}`);
+      break;
+    }
+    case 'delChapter': {
+      const r = resourceById(el.dataset.rid);
+      if(!r) break;
+      const cid = el.dataset.cid;
+      const c = chapterOf(r, cid);
+      if(!c) break;
+      if(!confirm(`Delete chapter "${c.title}"?`)) break;
+      r.chapters = r.chapters.filter(x=>x.id!==cid);
+      S.items.forEach(i=>{ if(i.chapterId===cid) i.chapterId=''; });
+      if(r.currentChapterId===cid){
+        const next = r.chapters.find(x=>!x.done) || r.chapters[0] || null;
+        r.currentChapterId = next ? next.id : null;
+      }
+      save(); render();
+      break;
+    }
+    case 'toggleChapter': {
+      const r = resourceById(el.dataset.rid);
+      if(!r) break;
+      const cid = el.dataset.cid;
+      const c = chapterOf(r, cid);
+      if(!c) break;
+      c.done = !c.done;
+      c.completedAt = c.done ? iso() : null;
+      // Auto-advance: finishing the current chapter moves the marker forward.
+      if(c.done && r.currentChapterId === cid){
+        const idx = r.chapters.indexOf(c);
+        const next = r.chapters.slice(idx+1).find(x=>!x.done) || r.chapters.find(x=>!x.done);
+        r.currentChapterId = next ? next.id : cid;
+      }
+      save(); render();
+      break;
+    }
+    case 'setCurrentChapter': {
+      const r = resourceById(el.dataset.rid);
+      if(!r) break;
+      r.currentChapterId = el.dataset.cid;
+      save(); render();
+      const c = chapterOf(r, r.currentChapterId);
+      toast('Current: ' + (c ? c.title : '—'));
+      break;
+    }
+    case 'resWords': {
+      ui.lib = ui.lib || {cat:'all',status:'all',q:'',res:'all'};
+      ui.lib.res = el.dataset.id;
+      nav('library');
+      break;
+    }
+
     case 'startPrac': startPractice(el.dataset.mode); break;
     case 'pracStop':  ui.practice = null; render(); break;
     case 'pracNext': {
@@ -1792,7 +2274,8 @@ function handleAct(el){
       if(confirm('Delete all data and start fresh?')){
         localStorage.removeItem(LS_KEY);
         S = emptyState();
-        ui = {lib:{cat:'all',status:'all',q:''}, addCat:'', selectMode:false, selected:new Set()};
+        ui = {lib:{cat:'all',status:'all',q:'',res:'all'}, addCat:'', selectMode:false,
+              selected:new Set(), editRes:null, openRes:null, resCats:null, resFilter:'all'};
         save(); nav('today');
         toast('Cleared');
       }
@@ -1803,7 +2286,7 @@ function handleAct(el){
 
 document.addEventListener('input', e=>{
   if(e.target.id === 'libSearch'){
-    ui.lib = ui.lib || {cat:'all',status:'all',q:''};
+    ui.lib = ui.lib || {cat:'all',status:'all',q:'',res:'all'};
     ui.lib.q = e.target.value;
     const pos = e.target.selectionStart;
     render();
@@ -1811,6 +2294,7 @@ document.addEventListener('input', e=>{
     if(el){ el.focus(); el.setSelectionRange(pos,pos); }
     return;
   }
+  if(e.target.tagName === 'SELECT') return;   // selects handled in 'change'
   const f = e.target.dataset.field;
   if(f && modalId){
     const it = S.items.find(i=>i.id===modalId);
@@ -1821,9 +2305,44 @@ document.addEventListener('input', e=>{
   }
 });
 
+document.addEventListener('change', e=>{
+  const f = e.target.dataset.field;
+  if(f && modalId){
+    const it = S.items.find(i=>i.id===modalId);
+    if(!it) return;
+    if(f === 'resourceId'){
+      it.resourceId = e.target.value || '';
+      it.chapterId = '';
+      // Auto-suggest category from resource if word has none
+      const r = resourceById(it.resourceId);
+      const rc = resCats(r);
+      if(!it.category && rc.length === 1) it.category = rc[0];
+      save(); renderModal(); render();
+      return;
+    }
+    if(f === 'chapterId'){
+      it.chapterId = e.target.value || '';
+      save(); return;
+    }
+  }
+  // Add-view: repopulate chapter dropdown when the resource changes; auto-suggest category
+  if(e.target.id === 'f_resource'){
+    const r = resourceById(e.target.value);
+    const sel = $('#f_chapter');
+    if(sel) sel.innerHTML = chapterOptions(r, null);
+    const rc = resCats(r);
+    if(rc.length === 1 && !ui.addCat){
+      ui.addCat = rc[0];
+      $$('#catPick .chip').forEach(c=>c.classList.toggle('on', c.dataset.cat===ui.addCat));
+    }
+    return;
+  }
+});
+
 document.addEventListener('keydown', e=>{
   if(e.key === 'Escape'){
     if(ui.selectMode){ clearSelection(); render(); return; }
+    if(ui.editRes){ ui.editRes = null; ui.resCats = null; render(); return; }
     closeModal();
     return;
   }
@@ -1836,9 +2355,14 @@ document.addEventListener('keydown', e=>{
       return;
     }
     if(e.target.id === 'f_term' || e.target.id === 'f_meaning'){ e.preventDefault(); doAdd(false); return; }
+    if(e.target.id && e.target.id.indexOf('ch_') === 0){
+      e.preventDefault();
+      handleAct({dataset:{act:'addChapter', rid: e.target.id.slice(3)}});
+      return;
+    }
     if(e.target.id === 'pracInput' && ui.practice){
       const p = ui.practice;
-      if(p.mode === 'production') handleAct({dataset:{act:'pracProduce'}});
+      if(p.mode === 'production') handleAct({dataset:{act:'pracProduction'}}) || handleAct({dataset:{act:'pracProduce'}});
       else handleAct({dataset:{act:'pracCheck'}});
       return;
     }
@@ -1849,7 +2373,8 @@ document.addEventListener('keydown', e=>{
    BOOT
    ============================================================ */
 S = load();
-ui = { lib:{cat:'all',status:'all',q:''}, addCat:'', selectMode:false, selected:new Set() };
+ui = { lib:{cat:'all',status:'all',q:'',res:'all'}, addCat:'', selectMode:false,
+       selected:new Set(), editRes:null, openRes:null, resCats:null, resFilter:'all' };
 render();
 </script>
 </body>
