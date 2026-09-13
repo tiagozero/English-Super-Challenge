@@ -544,28 +544,6 @@
   .chal-timer{display:flex;align-items:center;gap:6px;margin-top:7px;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
   .chal-timer b{color:var(--text);font-weight:650}
 
-  /* Puzzle */
-  .puzzle-wrap{display:flex;justify-content:center;width:100%}
-  .puzzle-board{display:grid;gap:2px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;width:100%;box-shadow:var(--shadow)}
-  .pz-cell{position:relative;min-width:0;min-height:0;background-color:var(--surface-2);background-repeat:no-repeat}
-  .pz-cell.locked{background-image:repeating-linear-gradient(45deg,transparent 0 5px,color-mix(in srgb, var(--text) 5%, transparent) 5px 10px)}
-  .pz-cell.revealed{background-color:var(--surface);background-image:var(--pz-img, none);background-size:var(--pz-size, 100% 100%);background-position:var(--pz-pos, 50% 50%)}
-  .pz-cell.next{box-shadow:inset 0 0 0 2px var(--reading);animation:pzPulse 1.8s ease-in-out infinite;z-index:2}
-  @keyframes pzPulse{
-    0%,100%{box-shadow:inset 0 0 0 2px color-mix(in srgb, var(--reading) 85%, transparent)}
-    50%{box-shadow:inset 0 0 0 2px color-mix(in srgb, var(--reading) 20%, transparent)}
-  }
-  .pz-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin-top:14px;justify-content:center}
-  .pz-legend span{display:inline-flex;align-items:center;gap:6px}
-  .pz-legend i{width:12px;height:12px;border-radius:4px;display:inline-block}
-  .pz-legend i.locked{background:var(--surface-2);border:1px solid var(--line)}
-  .pz-legend i.revealed{background:linear-gradient(135deg,var(--reading-2),var(--reading))}
-  .pz-legend i.next{background:var(--surface);box-shadow:0 0 0 2px color-mix(in srgb,var(--reading) 45%,transparent)}
-  .pz-thumb{width:100%;max-width:230px;aspect-ratio:16/10;border-radius:12px;border:1px solid var(--line);background:var(--surface-2) center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12.5px;overflow:hidden;text-align:center;padding:8px}
-  .pz-final{border-radius:16px;padding:18px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow)}
-  .pz-final.locked{background:var(--surface-2);border-style:dashed}
-  .pz-final.done{background:linear-gradient(135deg,color-mix(in srgb, var(--good-bg) 70%, var(--surface)),var(--surface));border-color:color-mix(in srgb, var(--good-fg) 40%, var(--line))}
-
   /* ================= Roadmap ================= */
   .rm-view-toggle{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:14px}
   .rm-stat-strip{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:14px}
@@ -797,25 +775,6 @@
   .rm-projection .proj-title{font-size:13.5px;font-weight:650}
   .rm-projection .proj-sub{font-size:12.5px;color:var(--muted);margin-top:2px}
 
-  /* Leaderboard */
-  .lb-row{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--line)}
-  .lb-row:last-child{border-bottom:0}
-  .lb-row.you{background:linear-gradient(90deg,color-mix(in srgb, var(--reading) 10%, transparent),transparent);border-radius:12px;padding-left:8px;padding-right:8px;margin:0 -8px;border-bottom-color:transparent}
-  .lb-rank{width:26px;text-align:center;font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;flex:0 0 auto}
-  .lb-row.you .lb-rank{color:var(--reading)}
-  .lb-avatar{width:38px;height:38px;border-radius:12px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12.5px;font-weight:750;letter-spacing:.03em}
-  .lb-main{flex:1;min-width:0}
-  .lb-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
-  .lb-name{font-size:13.5px;font-weight:620;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .lb-handle{font-size:11.5px;color:var(--muted);font-weight:500}
-  .lb-xp{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
-  .lb-bar{height:5px;background:var(--surface-2);border-radius:999px;margin:5px 0 4px;overflow:hidden}
-  .lb-bar i{display:block;height:100%;border-radius:999px;background:var(--reading-2);transition:width .4s ease}
-  .lb-row.you .lb-bar i{background:var(--reading)}
-  .lb-sub{font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
-  .lb-edit{width:32px;height:32px;border-radius:9px;flex:0 0 auto;border:1px solid transparent;background:transparent;color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s, color .15s, border-color .15s;padding:0;line-height:1}
-  .lb-edit:hover{background:var(--surface-2);color:var(--text);border-color:var(--line)}
-
   /* Modal */
   .modal-backdrop{position:fixed;inset:0;background:var(--backdrop);z-index:100;animation:fade .16s ease}
   @keyframes fade{from{opacity:0}to{opacity:1}}
@@ -960,9 +919,7 @@
     <button data-nav="dashboard" class="active">Dashboard</button>
     <button data-nav="profile">Profile</button>
     <button data-nav="challenges">Challenges</button>
-    <button data-nav="puzzle">Puzzle</button>
     <button data-nav="roadmap">Roadmap</button>
-    <button data-nav="leaderboard">Leaderboard</button>
     <button data-nav="history">History</button>
     <button data-nav="progress">Progress</button>
     <a href="output.html">Output <span class="ext">↗</span></a>
@@ -1018,20 +975,6 @@ function initialsOf(name){
   if (!parts.length) return '?';
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
-
-function hashStr(s){
-  let h = 2166136261;
-  for (let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
-  return h >>> 0;
-}
-function mulberry32(a){
-  return function(){
-    a |= 0; a = (a + 0x6D2B79F5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
 }
 
 /* =========================================================
@@ -1252,31 +1195,6 @@ const COUNTRIES = [
   'Iran','Iraq','Other'
 ];
 
-function defaultRivals(){
-  return [
-    { id:'r1',  name:'Luna Park',    handle:'luna_reads',    color:'#C2703D', avatar_emoji:'📚', avgXp:51.5, intensity:3.7, split:0.466, phase:0 },
-    { id:'r2',  name:'Marco Silva',  handle:'marco.listens', color:'#3F7A6E', avatar_emoji:'🎧', avgXp:58.5, intensity:2.6, split:0.188, phase:2 },
-    { id:'r3',  name:'Aiko Tanaka',  handle:'aiko_pages',    color:'#7A5EA8', avatar_emoji:'🌸', avgXp:47.5, intensity:4.2, split:0.684, phase:4 },
-    { id:'r4',  name:'Diego Ramos',  handle:'diego_r',       color:'#B0563F', avatar_emoji:'⚡', avgXp:52.5, intensity:1.6, split:0.333, phase:6 },
-    { id:'r5',  name:'Nora Haddad',  handle:'nora.reads',    color:'#2F6B54', avatar_emoji:'🌙', avgXp:47.5, intensity:3.2, split:0.579, phase:1 },
-    { id:'r6',  name:'Felix Braun',  handle:'felix_b',       color:'#4A6FA5', avatar_emoji:'🚀', avgXp:55.0, intensity:2.1, split:0.273, phase:3 },
-    { id:'r7',  name:'Priya Nair',   handle:'priya.pages',   color:'#A8567A', avatar_emoji:'🌟', avgXp:47.5, intensity:3.9, split:0.737, phase:5 },
-    { id:'r8',  name:'Sam Okafor',   handle:'sam_listens',   color:'#8A6420', avatar_emoji:'🎬', avgXp:64.0, intensity:2.9, split:0.141, phase:7 },
-    { id:'r9',  name:'Elena Rossi',  handle:'elena_r',       color:'#5D7A3F', avatar_emoji:'🦉', avgXp:52.0, intensity:2.4, split:0.404, phase:8 },
-    { id:'r10', name:'Kai Nakamura', handle:'kai.n',         color:'#3E7C8A', avatar_emoji:'🔥', avgXp:53.0, intensity:3.4, split:0.547, phase:9 }
-  ];
-}
-
-function defaultPuzzle(){
-  return {
-    image: null,
-    rows: 9, cols: 10,
-    tasksPerBlock: 3,
-    finalTitle: 'Final Challenge',
-    finalTarget: 30
-  };
-}
-
 function defaultRoadmap(){
   return {
     phases: [
@@ -1299,7 +1217,6 @@ function defaultRoadmap(){
 let state = null;
 let currentView = 'dashboard';
 let progressMetric = 'reading';
-let leaderboardRange = 'all';
 let historyFilters = { from: '', to: '', category: 'all', type: 'all', material: 'all', q: '' };
 let searchTimer = null;
 let weekNoteTimer = null;
@@ -1344,8 +1261,6 @@ function freshData(){
     materials: [],
     activities: [],
     customChallenges: [],
-    rivals: defaultRivals(),
-    puzzle: defaultPuzzle(),
     roadmap: defaultRoadmap()
   };
 }
@@ -1366,53 +1281,6 @@ function normalizeState(s){
   if (s.profile === undefined) s.profile = null;
   if (s.profile && typeof s.profile !== 'object') s.profile = null;
   if (s.profile){ if (!Array.isArray(s.profile.favorite_genres)) s.profile.favorite_genres = []; }
-
-  if (!Array.isArray(s.rivals) || s.rivals.length === 0){
-    s.rivals = defaultRivals();
-  } else {
-    s.rivals = s.rivals.map(r => {
-      if (r && r.avgXp !== undefined) {
-        return {
-          id: r.id || uid('r'), name: r.name || 'Character',
-          handle: String(r.handle || '').replace(/^@+/, ''),
-          color: r.color || AVATAR_COLORS[0],
-          avatar_emoji: r.avatar_emoji || '',
-          avgXp: Math.max(0, Number(r.avgXp) || 0),
-          intensity: clamp(Number(r.intensity) || 3, 1, 5),
-          split: clamp(Number(r.split) ?? 0.5, 0, 1),
-          phase: Number(r.phase) || 0
-        };
-      }
-      const read = Number(r.read) || 0;
-      const listen = Number(r.listen) || 0;
-      const totalXp = (read + listen) * 0.5;
-      const rest = Number(r.rest) || 0.08;
-      return {
-        id: r.id || uid('r'), name: r.name || 'Character',
-        handle: String(r.handle || '').replace(/^@+/, ''),
-        color: r.color || AVATAR_COLORS[0],
-        avatar_emoji: r.avatar_emoji || '',
-        avgXp: totalXp > 0 ? totalXp : 50,
-        intensity: clamp(Math.round(((0.20 - rest) / 0.038) * 10) / 10, 1, 5) || 3,
-        split: totalXp > 0 ? read / (read + listen) : 0.5,
-        phase: Number(r.phase) || 0
-      };
-    });
-  }
-
-  const dp = defaultPuzzle();
-  if (!s.puzzle || typeof s.puzzle !== 'object'){ s.puzzle = dp; }
-  else {
-    const p = s.puzzle;
-    s.puzzle = {
-      image: (typeof p.image === 'string' && p.image.startsWith('data:image')) ? p.image : null,
-      rows: clamp(Math.round(Number(p.rows) || dp.rows), 2, 20),
-      cols: clamp(Math.round(Number(p.cols) || dp.cols), 2, 20),
-      tasksPerBlock: clamp(Math.round(Number(p.tasksPerBlock) || dp.tasksPerBlock), 1, 100),
-      finalTitle: String(p.finalTitle ?? dp.finalTitle).slice(0, 60) || dp.finalTitle,
-      finalTarget: clamp(Math.round(Number(p.finalTarget) ?? dp.finalTarget), 0, 10000)
-    };
-  }
 
   const dr = defaultRoadmap();
   if (!s.roadmap || typeof s.roadmap !== 'object'){ s.roadmap = dr; }
@@ -1482,7 +1350,6 @@ function resetAll(){
   state = freshData();
   saveState();
   historyFilters = { from: '', to: '', category: 'all', type: 'all', material: 'all', q: '' };
-  leaderboardRange = 'all';
   materialsFilter = { q: '', type: 'all', category: 'all' };
   roadmapOpenPhases = {};
   roadmapOpenWeeks = {};
@@ -1538,15 +1405,13 @@ function downloadBlob(blob, filename){
 function exportJSON(){
   const payload = {
     app: 'english-super-challenge',
-    version: 5,
+    version: 6,
     exported_at: new Date().toISOString(),
     challenge: state.challenge,
     profile: state.profile,
     materials: state.materials,
     activities: state.activities,
     customChallenges: state.customChallenges,
-    rivals: state.rivals,
-    puzzle: state.puzzle,
     roadmap: state.roadmap
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -1591,18 +1456,14 @@ function importJSONFile(file){
     const actCount = candidate.activities.length;
     const matCount = candidate.materials.length;
     const chCount  = Array.isArray(candidate.customChallenges) ? candidate.customChallenges.length : 0;
-    const rivalCount = Array.isArray(candidate.rivals) ? candidate.rivals.length : 0;
     const msCount = (candidate.roadmap && Array.isArray(candidate.roadmap.milestones)) ? candidate.roadmap.milestones.length : 0;
     const hasProfile = !!(candidate.profile && candidate.profile.display_name);
-    const hasPuzzle = !!(candidate.puzzle && candidate.puzzle.image);
     const ok = confirm(
       `Import this backup?\n\n` +
       `• ${actCount} activit${actCount === 1 ? 'y' : 'ies'}\n` +
       `• ${matCount} material${matCount === 1 ? '' : 's'}\n` +
       `• ${chCount} challenge${chCount === 1 ? '' : 's'}\n` +
-      `• ${rivalCount} character${rivalCount === 1 ? '' : 's'}\n` +
       `• ${msCount} milestone${msCount === 1 ? '' : 's'}\n` +
-      `• Puzzle image: ${hasPuzzle ? 'included' : 'none'}\n` +
       `• Profile: ${hasProfile ? 'included' : 'none'}\n\n` +
       `This will replace your current data.`
     );
@@ -1614,8 +1475,6 @@ function importJSONFile(file){
       materials: candidate.materials,
       activities: candidate.activities,
       customChallenges: candidate.customChallenges,
-      rivals: candidate.rivals,
-      puzzle: candidate.puzzle,
       roadmap: candidate.roadmap
     });
     saveState(); closeModal(); render();
@@ -1831,41 +1690,6 @@ function challengeRowHTML(ch){
 }
 
 /* =========================================================
-   Puzzle logic
-   ========================================================= */
-function puzzleRevealOrder(rows, cols){
-  const total = rows * cols;
-  const arr = Array.from({ length: total }, (_, i) => i);
-  const rng = mulberry32(hashStr('esc-puzzle-v1-' + rows + 'x' + cols));
-  for (let i = arr.length - 1; i > 0; i--){
-    const j = Math.floor(rng() * (i + 1));
-    const t = arr[i]; arr[i] = arr[j]; arr[j] = t;
-  }
-  return arr;
-}
-function puzzleTotals(){
-  const p = state.puzzle;
-  const tasks = state.activities.length;
-  const total = Math.max(1, p.rows * p.cols);
-  const per = Math.max(1, p.tasksPerBlock);
-  const forBlocks = per * total;
-  const revealed = Math.min(total, Math.floor(tasks / per));
-  const blocksComplete = revealed >= total;
-  const finalTarget = Math.max(0, p.finalTarget);
-  const finalProgress = blocksComplete ? Math.min(finalTarget, Math.max(0, tasks - forBlocks)) : 0;
-  const finalComplete = blocksComplete && finalTarget > 0 && finalProgress >= finalTarget;
-  const allComplete = blocksComplete && (finalTarget === 0 || finalProgress >= finalTarget);
-  const grandTotal = forBlocks + finalTarget;
-  const overallPct = grandTotal > 0 ? clamp(tasks / grandTotal * 100, 0, 100) : 0;
-  const nextBlockIn = blocksComplete ? 0 : Math.max(0, (revealed + 1) * per - tasks);
-  return {
-    tasks, total, per, forBlocks, revealed, blocksComplete,
-    finalTarget, finalProgress, finalComplete, allComplete,
-    grandTotal, overallPct, nextBlockIn
-  };
-}
-
-/* =========================================================
    Roadmap builder
    ========================================================= */
 function buildRoadmap(){
@@ -2073,89 +1897,6 @@ function buildMilestones(rm){
 }
 
 /* =========================================================
-   Leaderboard
-   ========================================================= */
-function lbRangeISO(){
-  const t = todayISO();
-  const ch = state.challenge;
-  if (leaderboardRange === 'today') return { from: t, to: t, label: 'Today' };
-  if (leaderboardRange === 'week')  return { from: startOfWeekISO(t), to: t, label: 'This week' };
-  return { from: ch.start_date, to: minISO(t, ch.end_date), label: 'Full challenge' };
-}
-function userStatsIn(from, to){
-  const ch = state.challenge;
-  const f = maxISO(from, ch.start_date);
-  const t = minISO(to, todayISO());
-  if (f > t) return { pages: 0, minutes: 0, xp: 0, days: 0 };
-  const list = actsInRange(f, t);
-  const pages = sumCategory(list, 'reading');
-  const minutes = sumCategory(list, 'listening');
-  return { pages, minutes, xp: xpFrom(pages, minutes), days: diffDays(f, t) + 1 };
-}
-function rivalDayStats(rival, idx, dateISO){
-  const rng = mulberry32(hashStr(rival.id + '|' + dateISO));
-  const r1 = rng(), r2 = rng();
-  const intensity = clamp(Number(rival.intensity) || 3, 1, 5);
-  const rest = Math.max(0, 0.20 - intensity * 0.038);
-  if (r1 < rest) return { pages: 0, minutes: 0, xp: 0 };
-  const variance = Math.max(0.10, 0.85 - intensity * 0.13);
-  const phase = Number(rival.phase) || 0;
-  const swing = 1 + variance * Math.sin((idx + phase) / 8);
-  const noise = 1 + variance * (r2 - 0.5) * 1.4;
-  const dayXp = Math.max(0, (Number(rival.avgXp) || 0) * swing * noise);
-  const split = clamp(Number(rival.split) ?? 0.5, 0, 1);
-  const readXp = dayXp * split;
-  const listenXp = dayXp * (1 - split);
-  const pages = Math.round(readXp * 2);
-  const minutes = Math.round(listenXp * 2);
-  return { pages, minutes, xp: xpFrom(pages, minutes) };
-}
-function rivalStats(rival, from, to){
-  const ch = state.challenge;
-  const start = maxISO(from, ch.start_date);
-  const end   = minISO(to, todayISO());
-  if (start > end) return { pages: 0, minutes: 0, xp: 0, days: 0 };
-  let pages = 0, minutes = 0, days = 0;
-  for (let d = start; d <= end; d = addDays(d, 1)){
-    days++;
-    const idx = diffDays(ch.start_date, d);
-    const s = rivalDayStats(rival, idx, d);
-    pages += s.pages; minutes += s.minutes;
-  }
-  return { pages, minutes, xp: xpFrom(pages, minutes), days };
-}
-function leaderboardEntries(){
-  const { from, to } = lbRangeISO();
-  const entries = [];
-  const u = userStatsIn(from, to);
-  const p = state.profile;
-  entries.push({
-    id: 'you',
-    name: profileDisplayName(),
-    handle: profileHandle(),
-    color: profileColor(),
-    initials: profileAvatarContent(p),
-    isEmoji: !!(p && p.avatar_emoji),
-    you: true,
-    pages: u.pages, minutes: u.minutes, xp: u.xp
-  });
-  (state.rivals || []).forEach(r => {
-    const s = rivalStats(r, from, to);
-    entries.push({
-      id: r.id, name: r.name,
-      handle: r.handle ? (r.handle.startsWith('@') ? r.handle : '@' + r.handle) : '',
-      color: r.color || '#26211C',
-      initials: r.avatar_emoji || initialsOf(r.name),
-      isEmoji: !!r.avatar_emoji,
-      you: false,
-      pages: s.pages, minutes: s.minutes, xp: s.xp
-    });
-  });
-  entries.sort((a, b) => b.xp - a.xp || b.pages - a.pages || a.name.localeCompare(b.name));
-  return entries;
-}
-
-/* =========================================================
    Info modals
    ========================================================= */
 function openInfoModal(title, bodyHtml){
@@ -2183,26 +1924,6 @@ function infoMaterials(){
     and <b>List</b> view with the toggle above. Bulk-add via <b>⬆ CSV</b>.</p>
     <p>Edit a material to add a <b>cover</b> — upload an image or paste a link — so it's easier to
     spot at a glance in Grid view.</p>
-  `);
-}
-function infoXp(){
-  openInfoModal('How XP & timing work', `
-    <p>Every <b>10 pages</b> read or <b>10 minutes</b> listened earns <b>5 XP</b> (1 unit = 0.5 XP).
-    Your XP comes from the activities you log yourself.</p>
-    <p>Each <b>character</b> is simulated from three settings you control:
-    <b>average XP per day</b>, <b>intensity</b>, and <b>focus</b> (the reading / listening split).</p>
-    <p>The <b>Today</b> board runs for exactly <b>24 hours</b> and resets at <b>00:00</b>.
-    The <b>This week</b> board runs Monday to Sunday and resets at <b>Monday 00:00</b>.</p>
-  `);
-}
-function infoPuzzle(){
-  openInfoModal('How the puzzle works', `
-    <p>Upload any image and it gets split into a grid of blocks — <b>90 by default (10 × 9)</b>,
-    but you can pick any size from 2 × 2 up to 20 × 20.</p>
-    <p>Every <b>logged activity</b> counts as one task. Each block unlocks once you've completed
-    your chosen number of <b>tasks per block</b>.</p>
-    <p>When every block is revealed, your <b>Final Challenge</b> unlocks — a final task target you set
-    yourself. Complete it to finish the puzzle.</p>
   `);
 }
 function infoRoadmap(){
@@ -2363,7 +2084,7 @@ function dashboardProfilePrompt(){
       <div class="prompt-icon">👤</div>
       <div style="flex:1;min-width:200px">
         <div style="font-size:14.5px;font-weight:650;margin-bottom:2px">Create your profile</div>
-        <div style="font-size:13px;color:var(--muted)">Add your name, avatar, languages and goals — it personalizes the app and shows up on the leaderboard.</div>
+        <div style="font-size:13px;color:var(--muted)">Add your name, avatar, languages and goals — it personalizes the app.</div>
       </div>
       <button class="btn btn-primary" data-action="open-profile">Create profile</button>
     </div>
@@ -2436,14 +2157,12 @@ function viewProfile(){
         <div class="em-title" style="font-size:17px;font-weight:650;margin-bottom:6px">No profile yet</div>
         <div class="em-sub" style="font-size:13.5px;color:var(--muted);max-width:380px;margin:0 auto 18px;line-height:1.55">
           Create a profile to personalize your experience: pick an avatar, set your languages and level,
-          describe your goal, and choose the genres you love. Your profile also appears on the leaderboard.
+          describe your goal, and choose the genres you love.
         </div>
         <button class="btn btn-primary" data-action="open-profile">+ Create your profile</button>
       </div>
     </div>`;
   }
-  const entries = leaderboardEntries();
-  const youRank = entries.findIndex(e => e.you) + 1;
   const totalXp = xpFrom(s.readingTotal, s.listeningTotal);
   const activeDays = new Set(state.activities.map(a => a.logged_on)).size;
   const completeness = profileCompleteness();
@@ -2508,16 +2227,11 @@ function viewProfile(){
       </div>
     </div>
   </div>` : ''}
-  <div class="grid cols-3" style="margin-bottom:14px">
+  <div class="grid cols-2" style="margin-bottom:14px">
     <div class="card">
       <div class="stat-label">Total XP</div>
       <div class="stat-value">${fmt1(totalXp)} <small>XP</small></div>
       <div class="stat-sub">${fmt(s.readingTotal)} pages · ${fmt(s.listeningTotal)} min</div>
-    </div>
-    <div class="card">
-      <div class="stat-label">Leaderboard rank</div>
-      <div class="stat-value">#${youRank} <small>of ${entries.length}</small></div>
-      <div class="stat-sub">Full challenge standings</div>
     </div>
     <div class="card">
       <div class="stat-label">Active days</div>
@@ -2648,172 +2362,6 @@ function viewChallenges(){
 }
 
 /* =========================================================
-   Views — Puzzle
-   ========================================================= */
-function viewPuzzle(){
-  const p = state.puzzle;
-  const t = puzzleTotals();
-  const order = puzzleRevealOrder(p.rows, p.cols);
-  const stepOf = new Array(t.total);
-  order.forEach((cellIdx, step) => { stepOf[cellIdx] = step; });
-
-  const cols = p.cols, rows = p.rows;
-  const img = p.image || '';
-
-  let cells = '';
-  for (let i = 0; i < t.total; i++){
-    const r = Math.floor(i / cols);
-    const c = i % cols;
-    const rev = stepOf[i] < t.revealed;
-    const isNext = !rev && stepOf[i] === t.revealed && !t.blocksComplete;
-    const x = cols > 1 ? (c / (cols - 1)) * 100 : 50;
-    const y = rows > 1 ? (r / (rows - 1)) * 100 : 50;
-    const pos = rev ? ` style="--pz-pos:${x}% ${y}%"` : '';
-    cells += `<div class="pz-cell ${rev ? 'revealed' : 'locked'}${isNext ? ' next' : ''}"${pos}></div>`;
-  }
-
-  const boardStyleBits = [
-    `aspect-ratio:${cols}/${rows}`,
-    `max-width:min(680px, calc(64vh * ${cols} / ${rows}))`,
-    `grid-template-columns:repeat(${cols},1fr)`,
-    `grid-template-rows:repeat(${rows},1fr)`,
-    `--pz-size:${cols * 100}% ${rows * 100}%`
-  ];
-  if (img) boardStyleBits.push(`--pz-img:url('${img}')`);
-  const boardStyle = boardStyleBits.join(';');
-
-  let finalCard = '';
-  if (t.finalTarget > 0){
-    if (!t.blocksComplete){
-      const blocksRemaining = t.total - t.revealed;
-      finalCard = `
-      <div class="pz-final locked" style="margin-bottom:14px">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <div style="width:42px;height:42px;border-radius:13px;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:19px;flex:0 0 auto">🔒</div>
-          <div style="flex:1;min-width:180px">
-            <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Final Challenge</div>
-            <div style="font-size:15px;font-weight:650;margin-top:2px">${escapeHtml(p.finalTitle)}</div>
-            <div style="font-size:12.5px;color:var(--muted);margin-top:2px">Reveal all ${fmt(t.total)} blocks to unlock — ${fmt(blocksRemaining)} to go.</div>
-          </div>
-        </div>
-      </div>`;
-    } else if (t.finalComplete){
-      finalCard = `
-      <div class="pz-final done" style="margin-bottom:14px">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <div style="width:42px;height:42px;border-radius:13px;background:var(--good-bg);color:var(--good-fg);display:flex;align-items:center;justify-content:center;font-size:19px;flex:0 0 auto">🏆</div>
-          <div style="flex:1;min-width:180px">
-            <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Final Challenge</div>
-            <div style="font-size:15px;font-weight:650;margin-top:2px">${escapeHtml(p.finalTitle)}</div>
-            <div style="font-size:12.5px;color:var(--good-fg);font-weight:600;margin-top:2px">Complete ✓ — ${fmt(t.finalTarget)} / ${fmt(t.finalTarget)} tasks</div>
-          </div>
-        </div>
-        <div class="bar" style="margin-top:14px"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,var(--reading-2),var(--reading))"></div></div>
-      </div>`;
-    } else {
-      const pct = clamp(t.finalTarget ? t.finalProgress / t.finalTarget * 100 : 0, 0, 100);
-      const rem = Math.max(0, t.finalTarget - t.finalProgress);
-      finalCard = `
-      <div class="pz-final" style="margin-bottom:14px">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <div style="width:42px;height:42px;border-radius:13px;background:linear-gradient(140deg,var(--reading-2),var(--reading));color:var(--on-accent);display:flex;align-items:center;justify-content:center;font-size:19px;flex:0 0 auto">🏁</div>
-          <div style="flex:1;min-width:180px">
-            <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Final Challenge</div>
-            <div style="font-size:15px;font-weight:650;margin-top:2px">${escapeHtml(p.finalTitle)}</div>
-            <div style="font-size:12.5px;color:var(--muted);margin-top:2px">${fmt(t.finalProgress)} / ${fmt(t.finalTarget)} tasks · ${fmt(rem)} to go</div>
-          </div>
-          <div style="font-size:15px;font-weight:700;color:var(--reading);font-variant-numeric:tabular-nums">${pct.toFixed(0)}%</div>
-        </div>
-        <div class="bar" style="margin-top:14px"><div class="bar-fill" style="width:${pct}%;background:linear-gradient(90deg,var(--reading-2),var(--reading))"></div></div>
-      </div>`;
-    }
-  }
-
-  const completeBanner = t.allComplete ? `
-  <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,color-mix(in srgb, var(--good-bg) 75%, var(--surface)), var(--surface));border-color:color-mix(in srgb, var(--good-fg) 35%, var(--line))">
-    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-      <div style="width:52px;height:52px;border-radius:16px;background:var(--good-bg);color:var(--good-fg);display:flex;align-items:center;justify-content:center;font-size:26px;flex:0 0 auto">🎉</div>
-      <div style="flex:1;min-width:200px">
-        <div style="font-size:15.5px;font-weight:680;margin-bottom:2px">Puzzle complete!</div>
-        <div style="font-size:13px;color:var(--muted)">You finished every block and the final challenge.</div>
-      </div>
-    </div>
-  </div>` : '';
-
-  const noImagePrompt = !img ? `
-  <div class="card prompt-card" style="margin-bottom:14px">
-    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-      <div class="prompt-icon">🖼️</div>
-      <div style="flex:1;min-width:200px">
-        <div style="font-size:14.5px;font-weight:650;margin-bottom:2px">Add a picture</div>
-        <div style="font-size:13px;color:var(--muted)">Upload any image — it becomes the picture you uncover, block by block.</div>
-      </div>
-      <button class="btn btn-primary" data-action="open-puzzle">Upload image</button>
-    </div>
-  </div>` : '';
-
-  return `
-  ${completeBanner}
-  ${noImagePrompt}
-  <div class="card" style="margin-bottom:14px">
-    <div class="card-head">
-      <h2>Puzzle progress</h2>
-      <span style="font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums">${t.overallPct.toFixed(1)}%</span>
-    </div>
-    <div class="bar"><div class="bar-fill" style="width:${t.overallPct}%;background:linear-gradient(90deg,var(--reading-2),var(--reading))"></div></div>
-    <div class="grid cols-3" style="margin:16px 0 0">
-      <div>
-        <div class="stat-label">Blocks revealed</div>
-        <div class="stat-value">${fmt(t.revealed)} <small>/ ${fmt(t.total)}</small></div>
-        <div class="stat-sub">${t.blocksComplete ? 'All blocks revealed' : `${fmt(t.total - t.revealed)} left`}</div>
-      </div>
-      <div>
-        <div class="stat-label">Tasks logged</div>
-        <div class="stat-value">${fmt(t.tasks)}</div>
-        <div class="stat-sub">Every activity = 1 task</div>
-      </div>
-      <div>
-        <div class="stat-label">Next block in</div>
-        <div class="stat-value">${t.blocksComplete ? '—' : fmt(t.nextBlockIn)} <small>${t.blocksComplete ? '' : 'tasks'}</small></div>
-        <div class="stat-sub">${t.blocksComplete ? 'Blocks finished' : `${fmt(t.per)} tasks per block`}</div>
-      </div>
-    </div>
-  </div>
-  <div class="card" style="margin-bottom:14px">
-    <div class="card-head">
-      <h2>Your puzzle</h2>
-      <div style="display:flex;align-items:center;gap:6px">
-        ${img ? '<button class="btn btn-ghost btn-sm" data-action="open-puzzle">Edit</button>' : ''}
-        <button class="info-btn" data-action="info-puzzle" title="How the puzzle works" aria-label="How the puzzle works">i</button>
-      </div>
-    </div>
-    <div class="puzzle-wrap">
-      <div class="puzzle-board" style="${boardStyle}">${cells}</div>
-    </div>
-    <div class="pz-legend">
-      <span><i class="revealed"></i>Revealed</span>
-      <span><i class="locked"></i>Still hidden</span>
-      ${!t.blocksComplete ? '<span><i class="next"></i>Next to unlock</span>' : ''}
-      <span>${fmt(p.rows)} × ${fmt(p.cols)} · ${fmt(t.total)} blocks</span>
-    </div>
-  </div>
-  ${finalCard}
-  <div class="card">
-    <div class="card-head">
-      <h2>Puzzle settings</h2>
-      <button class="btn btn-ghost" data-action="open-puzzle">Edit puzzle</button>
-    </div>
-    <div class="grid cols-2" style="margin:0">
-      <div class="det"><div class="det-icon">🧩</div><div class="det-main"><div class="det-k">Grid size</div><div class="det-v">${fmt(p.rows)} rows × ${fmt(p.cols)} columns · ${fmt(t.total)} blocks</div></div></div>
-      <div class="det"><div class="det-icon">✅</div><div class="det-main"><div class="det-k">Tasks per block</div><div class="det-v">${fmt(t.per)} task${t.per === 1 ? '' : 's'} → 1 block</div></div></div>
-      <div class="det"><div class="det-icon">🏁</div><div class="det-main"><div class="det-k">Final challenge</div><div class="det-v">${escapeHtml(p.finalTitle)} · ${fmt(t.finalTarget)} task${t.finalTarget === 1 ? '' : 's'}</div></div></div>
-      <div class="det"><div class="det-icon">🎯</div><div class="det-main"><div class="det-k">Grand total</div><div class="det-v">${fmt(t.grandTotal)} tasks to finish everything</div></div></div>
-    </div>
-    <button class="btn btn-primary btn-block" data-action="open-puzzle">${img ? 'Edit puzzle' : 'Set up your puzzle'}</button>
-  </div>`;
-}
-
-/* =========================================================
    Views — Roadmap
    ========================================================= */
 function viewRoadmap(){
@@ -2876,6 +2424,16 @@ function viewRoadmap(){
       <button class="btn btn-ghost" data-action="rm-add-milestone">＋ Milestone</button>
     </div>
   </div>` : '';
+
+  // Challenge countdown clock
+  const challengeClock = `
+  <div class="card" style="margin-bottom:14px">
+    <div class="lb-clock">
+      <div class="lb-clock-cell"><span class="k">Now (24h)</span><span class="v mono" data-now>--:--:--</span></div>
+      <div class="lb-clock-main"><span class="k">This challenge ends in</span><strong class="mono" data-countdown="challenge">--:--:--</strong></div>
+      <div class="lb-clock-cell lb-clock-side"><span class="k">Ends at</span><span class="v mono">${escapeHtml(resetTimeLabel('challenge'))}</span></div>
+    </div>
+  </div>`;
 
   // View toggle
   const viewToggle = `
@@ -2989,6 +2547,7 @@ function viewRoadmap(){
 
   return `
   ${todayBanner}
+  ${challengeClock}
   ${viewToggle}
   ${isMaterialsView ? '' : statStrip}
   ${isMaterialsView ? '' : projCard}
@@ -3310,115 +2869,6 @@ function roadmapMilestoneHTML(m, today){
       <div class="rm-ms-actions">
         <button class="link-btn" data-action="rm-toggle-milestone" data-id="${m.id}">${m.done ? 'Undo' : 'Mark'}</button>
         <button class="link-btn danger" data-action="rm-delete-milestone" data-id="${m.id}">Delete</button>
-      </div>` : ''}
-  </div>`;
-}
-
-/* =========================================================
-   Views — Leaderboard
-   ========================================================= */
-function viewLeaderboard(){
-  const entries = leaderboardEntries();
-  const maxXp = Math.max(...entries.map(e => e.xp), 1);
-  const top = entries[0];
-  const you = entries.find(e => e.you);
-  const youRank = entries.indexOf(you) + 1;
-  const { from, to, label } = lbRangeISO();
-  const days = Math.max(1, diffDays(from, to) + 1);
-  const medals = ['🥇', '🥈', '🥉'];
-  const gapToLeader = top && !top.you ? top.xp - you.xp : 0;
-
-  const cdKind = leaderboardRange === 'today' ? 'day'
-               : leaderboardRange === 'week'  ? 'week'
-               : 'challenge';
-  const periodName = leaderboardRange === 'today' ? 'Today'
-                   : leaderboardRange === 'week'  ? 'This week'
-                   : 'This challenge';
-  const resetAt = resetTimeLabel(cdKind);
-  const resetVerb = leaderboardRange === 'today' ? 'Leaderboard resets at midnight'
-                  : leaderboardRange === 'week'  ? 'Leaderboard resets Monday 00:00'
-                  : 'Challenge finishes at the end date';
-  const youIsProfile = !!state.profile;
-  const rivalCount = (state.rivals || []).length;
-
-  return `
-  <div class="card" style="margin-bottom:14px">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px">
-      <div class="seg" id="lbSeg">
-        <button data-lbrange="today" class="${leaderboardRange === 'today' ? 'active' : ''}">Today</button>
-        <button data-lbrange="week"  class="${leaderboardRange === 'week'  ? 'active' : ''}">This week</button>
-        <button data-lbrange="all"   class="${leaderboardRange === 'all'   ? 'active' : ''}">Full challenge</button>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <div style="font-size:12.5px;color:var(--muted)">
-          ${escapeHtml(label)} · ${days} day${days === 1 ? '' : 's'} · 10 pages/min = 5 XP
-        </div>
-        <button class="info-btn" data-action="info-xp" title="How XP &amp; timing work" aria-label="How XP and timing work">i</button>
-      </div>
-    </div>
-    <div class="lb-clock">
-      <div class="lb-clock-cell"><span class="k">Now (24h)</span><span class="v mono" data-now>--:--:--</span></div>
-      <div class="lb-clock-main"><span class="k">${periodName} ends in</span><strong class="mono" data-countdown="${cdKind}">--:--:--</strong></div>
-      <div class="lb-clock-cell lb-clock-side"><span class="k">Finishes at</span><span class="v mono">${escapeHtml(resetAt)}</span></div>
-    </div>
-    <p class="hint" style="margin:10px 0 0">${escapeHtml(resetVerb)} — 24-hour clock.</p>
-  </div>
-  ${!youIsProfile ? `
-  <div class="card prompt-card" style="margin-bottom:14px">
-    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-      <div class="prompt-icon" style="width:44px;height:44px;border-radius:14px;font-size:20px">👤</div>
-      <div style="flex:1;min-width:200px">
-        <div style="font-size:14px;font-weight:650;margin-bottom:2px">You're shown as "You · @you"</div>
-        <div style="font-size:13px;color:var(--muted)">Create a profile to display your name, avatar and handle on the board.</div>
-      </div>
-      <button class="btn btn-primary" data-action="open-profile">Create profile</button>
-    </div>
-  </div>` : ''}
-  <div class="grid cols-3" style="margin-bottom:14px">
-    <div class="card">
-      <div class="stat-label">Your rank</div>
-      <div class="stat-value">#${youRank} <small>of ${entries.length}</small></div>
-      <div class="stat-sub">${youRank === 1 ? 'Top of the board 🎉' : `${fmt1(gapToLeader)} XP behind the leader`}</div>
-    </div>
-    <div class="card">
-      <div class="stat-label">Your XP</div>
-      <div class="stat-value">${fmt1(you.xp)} <small>XP</small></div>
-      <div class="stat-sub">${fmt(you.pages)} pages · ${fmt(you.minutes)} min</div>
-    </div>
-    <div class="card">
-      <div class="stat-label">Leader</div>
-      <div class="stat-value">${fmt1(top.xp)} <small>XP</small></div>
-      <div class="stat-sub">${escapeHtml(top.name)}${top.you ? " · that's you!" : ''}</div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-head">
-      <h2>Leaderboard</h2>
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-ghost btn-sm" data-action="new-rival" title="Add a new character">＋ Character</button>
-        <button class="info-btn" data-action="info-xp" title="How XP &amp; timing work" aria-label="How XP and timing work">i</button>
-      </div>
-    </div>
-    ${entries.map((e, i) => `
-      <div class="lb-row ${e.you ? 'you' : ''}">
-        <div class="lb-rank">${i < 3 ? medals[i] : (i + 1)}</div>
-        <div class="lb-avatar" style="background:${e.color};font-size:${e.isEmoji ? '18px' : '12.5px'}">
-          ${escapeHtml(e.initials)}
-        </div>
-        <div class="lb-main">
-          <div class="lb-top">
-            <span class="lb-name">${escapeHtml(e.name)} <span class="lb-handle">${escapeHtml(e.handle)}</span></span>
-            <span class="lb-xp">${fmt1(e.xp)} XP</span>
-          </div>
-          <div class="lb-bar"><i style="width:${clamp(e.xp / maxXp * 100, 0, 100)}%"></i></div>
-          <div class="lb-sub">${fmt(e.pages)} pages · ${fmt(e.minutes)} min</div>
-        </div>
-        ${e.you ? '' : `<button class="lb-edit" data-action="edit-rival" data-id="${e.id}" title="Edit character" aria-label="Edit character">✎</button>`}
-      </div>`).join('')}
-    ${rivalCount === 0 ? `
-      <div style="font-size:12.5px;color:var(--muted);padding:14px 0 0;text-align:center">
-        No characters yet — you're racing alone.
-        <button class="link-btn" data-action="new-rival" style="color:var(--reading)">Add a character</button>
       </div>` : ''}
   </div>`;
 }
@@ -3958,9 +3408,7 @@ function render(){
   if (currentView === 'dashboard')        app.innerHTML = viewDashboard();
   else if (currentView === 'profile')     app.innerHTML = viewProfile();
   else if (currentView === 'challenges')  app.innerHTML = viewChallenges();
-  else if (currentView === 'puzzle')      app.innerHTML = viewPuzzle();
   else if (currentView === 'roadmap')     app.innerHTML = viewRoadmap();
-  else if (currentView === 'leaderboard') app.innerHTML = viewLeaderboard();
   else if (currentView === 'history')     app.innerHTML = viewHistory();
   else if (currentView === 'progress')    app.innerHTML = viewProgress();
   else                                    app.innerHTML = viewDashboard();
@@ -4099,7 +3547,7 @@ function openProfileModal(mode){
           <div class="form-section-title"><span class="dotnum">1</span> Avatar &amp; identity</div>
           <div class="avatar-preview-row">
             <div class="avatar-preview" id="avatarPreview" style="background:${escapeHtml(draft.avatar_color)}"></div>
-            <div class="avatar-preview-label">Pick an emoji and a color — this is how you'll appear on the leaderboard and in the header.</div>
+            <div class="avatar-preview-label">Pick an emoji and a color — this is how you'll appear in the header.</div>
           </div>
           <div class="picker-label">Emoji</div>
           <div class="emoji-grid" id="emojiGrid">
@@ -4277,367 +3725,6 @@ function openProfileModal(mode){
     render();
   });
   setTimeout(() => $('#pfName').focus(), 60);
-}
-
-/* =========================================================
-   Character modal
-   ========================================================= */
-function openRivalModal(rival){
-  const editing = !!rival;
-  const r = rival || {
-    name: '', handle: '', color: AVATAR_COLORS[0], avatar_emoji: '',
-    avgXp: 50, intensity: 3, split: 0.5, phase: Math.random() * 10
-  };
-  const draft = {
-    name: r.name || '',
-    handle: String(r.handle || '').replace(/^@+/, ''),
-    color: r.color || AVATAR_COLORS[0],
-    avatar_emoji: r.avatar_emoji || '',
-    avgXp: Math.max(0, Number(r.avgXp) || 0),
-    intensity: clamp(Number(r.intensity) || 3, 1, 5),
-    split: clamp(Number(r.split) ?? 0.5, 0, 1),
-    phase: Number(r.phase) || 0
-  };
-
-  openModal(`
-    <div class="modal-backdrop" data-action="close-modal"></div>
-    <div class="modal" role="dialog" aria-modal="true">
-      <div class="modal-head">
-        <h2>${editing ? 'Edit character' : 'New character'}</h2>
-        <button class="icon-btn" data-action="close-modal" aria-label="Close">✕</button>
-      </div>
-      <form id="rivalForm" class="modal-body" autocomplete="off">
-        <div class="form-section">
-          <div class="form-section-title"><span class="dotnum">1</span> Avatar &amp; identity</div>
-          <div class="avatar-preview-row">
-            <div class="avatar-preview" id="rivalPreview" style="background:${escapeHtml(draft.color)}"></div>
-            <div class="avatar-preview-label">How this character appears on the leaderboard.</div>
-          </div>
-          <div class="picker-label">Emoji</div>
-          <div class="emoji-grid" id="rivalEmojiGrid">
-            <button type="button" data-emoji="" title="Use initials" class="${draft.avatar_emoji === '' ? 'active' : ''}" style="font-size:11px;font-weight:700;color:var(--muted)">A–Z</button>
-            ${AVATAR_EMOJIS.map(e => `
-              <button type="button" data-emoji="${e}" class="${draft.avatar_emoji === e ? 'active' : ''}">${e}</button>
-            `).join('')}
-          </div>
-          <div class="picker-label">Color</div>
-          <div class="swatch-row" id="rivalSwatchRow">
-            ${AVATAR_COLORS.map(c => `
-              <button type="button" class="swatch ${draft.color === c ? 'active' : ''}" data-color="${c}" style="background:${c}" aria-label="Color ${c}"></button>
-            `).join('')}
-          </div>
-          <div class="field">
-            <label for="rivalName">Display name <span style="color:var(--bad-fg)">*</span></label>
-            <input type="text" id="rivalName" required maxlength="40" placeholder="e.g. Luna Park" value="${escapeHtml(draft.name)}">
-          </div>
-          <div class="field">
-            <label for="rivalHandle">Handle</label>
-            <input type="text" id="rivalHandle" maxlength="24" placeholder="e.g. luna_reads" value="${escapeHtml(draft.handle)}">
-          </div>
-        </div>
-        <div class="form-section">
-          <div class="form-section-title"><span class="dotnum">2</span> Performance</div>
-          <div class="field">
-            <label for="rivalAvgXp">Average XP per day</label>
-            <div class="amount-row">
-              <input type="number" id="rivalAvgXp" min="0" max="500" step="0.5" inputmode="decimal" value="${draft.avgXp}">
-              <div class="seg" style="align-items:center"><span style="font-size:12.5px;color:var(--muted);padding:0 12px">XP / day</span></div>
-            </div>
-            <div style="font-size:12px;color:var(--muted);margin-top:-4px" id="rivalXpPreview"></div>
-          </div>
-          <div class="field">
-            <label for="rivalIntensity">Intensity <span style="font-weight:500;text-transform:none;color:var(--muted)" id="rivalIntensityLabel"></span></label>
-            <input type="range" id="rivalIntensity" min="1" max="5" step="0.1" value="${draft.intensity}">
-            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:2px"><span>Casual · erratic</span><span>Intense · consistent</span></div>
-          </div>
-          <div class="field">
-            <label for="rivalSplit">Focus <span style="font-weight:500;text-transform:none;color:var(--muted)" id="rivalSplitLabel"></span></label>
-            <input type="range" id="rivalSplit" min="0" max="100" step="5" value="${Math.round(draft.split * 100)}">
-            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:2px"><span>🎧 Listening</span><span>📖 Reading</span></div>
-          </div>
-          <p class="hint" style="margin-top:4px">
-            <b>Average XP</b> sets the daily pace. <b>Intensity</b> controls consistency.
-          </p>
-        </div>
-        <div class="modal-actions" style="margin-top:20px">
-          ${editing ? `<button type="button" class="btn btn-ghost" data-action="delete-rival" data-id="${r.id}" style="color:var(--bad-fg);margin-right:auto">Delete</button>` : ''}
-          <button type="button" class="btn btn-ghost" data-action="close-modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">${editing ? 'Save character' : 'Create character'}</button>
-        </div>
-      </form>
-    </div>
-  `);
-
-  const preview = $('#rivalPreview');
-  const avgInput = $('#rivalAvgXp');
-  const intensityIn = $('#rivalIntensity');
-  const splitIn = $('#rivalSplit');
-  const xpPreview = $('#rivalXpPreview');
-  const intensityLbl = $('#rivalIntensityLabel');
-  const splitLbl = $('#rivalSplitLabel');
-
-  function refresh(){
-    const name = $('#rivalName').value.trim() || '?';
-    preview.textContent = draft.avatar_emoji || initialsOf(name);
-    preview.style.background = draft.color;
-    preview.style.fontSize = draft.avatar_emoji ? '34px' : '26px';
-    const avg = Math.max(0, Number(avgInput.value) || 0);
-    const split = clamp(Number(splitIn.value) / 100, 0, 1);
-    const readXp = avg * split;
-    const listenXp = avg * (1 - split);
-    const pages = Math.round(readXp * 2);
-    const minutes = Math.round(listenXp * 2);
-    xpPreview.textContent = `≈ ${fmt(pages)} pages + ${fmt(minutes)} min per day`;
-    const iv = Number(intensityIn.value) || 3;
-    let il;
-    if (iv < 2) il = '· very casual';
-    else if (iv < 3) il = '· casual';
-    else if (iv < 3.8) il = '· steady';
-    else if (iv < 4.5) il = '· intense';
-    else il = '· relentless';
-    intensityLbl.textContent = il;
-    let sl;
-    if (split >= 0.8) sl = '· mostly reading';
-    else if (split >= 0.6) sl = '· reading-leaning';
-    else if (split > 0.4) sl = '· balanced';
-    else if (split > 0.2) sl = '· listening-leaning';
-    else sl = '· mostly listening';
-    splitLbl.textContent = sl;
-  }
-  $('#rivalEmojiGrid').addEventListener('click', e => {
-    const b = e.target.closest('button[data-emoji]'); if (!b) return;
-    draft.avatar_emoji = b.dataset.emoji;
-    $$('#rivalEmojiGrid button').forEach(x => x.classList.toggle('active', x === b));
-    refresh();
-  });
-  $('#rivalSwatchRow').addEventListener('click', e => {
-    const b = e.target.closest('button[data-color]'); if (!b) return;
-    draft.color = b.dataset.color;
-    $$('#rivalSwatchRow .swatch').forEach(x => x.classList.toggle('active', x === b));
-    refresh();
-  });
-  $('#rivalName').addEventListener('input', refresh);
-  avgInput.addEventListener('input', refresh);
-  intensityIn.addEventListener('input', refresh);
-  splitIn.addEventListener('input', refresh);
-  refresh();
-
-  $('#rivalForm').addEventListener('submit', e => {
-    e.preventDefault();
-    const name = $('#rivalName').value.trim();
-    if (!name){ $('#rivalName').focus(); return; }
-    const handle = $('#rivalHandle').value.trim().replace(/^@+/, '');
-    const avgXp = Math.max(0, Number(avgInput.value) || 0);
-    const intensity = clamp(Number(intensityIn.value) || 3, 1, 5);
-    const split = clamp(Number(splitIn.value) / 100, 0, 1);
-    if (editing){
-      const target = state.rivals.find(x => x.id === r.id);
-      if (target) Object.assign(target, {
-        name, handle,
-        avatar_emoji: draft.avatar_emoji,
-        color: draft.color,
-        avgXp, intensity, split
-      });
-    } else {
-      state.rivals.push({
-        id: uid('r'), name, handle,
-        avatar_emoji: draft.avatar_emoji,
-        color: draft.color,
-        avgXp, intensity, split,
-        phase: Math.random() * 10
-      });
-    }
-    saveState(); closeModal(); render();
-  });
-  setTimeout(() => $('#rivalName').focus(), 60);
-}
-
-/* =========================================================
-   Puzzle modal
-   ========================================================= */
-const PUZZLE_GRID_PRESETS = [
-  { label: '3 × 3',   rows: 3,  cols: 3  },
-  { label: '4 × 4',   rows: 4,  cols: 4  },
-  { label: '5 × 5',   rows: 5,  cols: 5  },
-  { label: '6 × 6',   rows: 6,  cols: 6  },
-  { label: '8 × 8',   rows: 8,  cols: 8  },
-  { label: '9 × 10',  rows: 9,  cols: 10 },
-  { label: '10 × 10', rows: 10, cols: 10 },
-  { label: '12 × 12', rows: 12, cols: 12 }
-];
-function openPuzzleModal(){
-  const p = state.puzzle;
-  const draft = {
-    image: p.image,
-    rows: p.rows, cols: p.cols,
-    tasksPerBlock: p.tasksPerBlock,
-    finalTitle: p.finalTitle,
-    finalTarget: p.finalTarget
-  };
-
-  openModal(`
-    <div class="modal-backdrop" data-action="close-modal"></div>
-    <div class="modal" role="dialog" aria-modal="true">
-      <div class="modal-head">
-        <h2>Puzzle settings</h2>
-        <button class="icon-btn" data-action="close-modal" aria-label="Close">✕</button>
-      </div>
-      <form id="puzzleForm" class="modal-body" autocomplete="off">
-        <div class="form-section">
-          <div class="form-section-title"><span class="dotnum">1</span> Image</div>
-          <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px">
-            <div class="pz-thumb" id="pzThumb"></div>
-            <div style="flex:1;min-width:170px">
-              <p style="font-size:12.5px;color:var(--muted);line-height:1.5;margin-bottom:10px">
-                Upload any picture. Large images are automatically resized and compressed.
-              </p>
-              <div style="display:flex;gap:8px;flex-wrap:wrap">
-                <button type="button" class="btn btn-ghost" id="pzUploadBtn">⬆ Upload image</button>
-                <button type="button" class="btn btn-ghost" id="pzRemoveBtn" style="color:var(--bad-fg)">Remove</button>
-              </div>
-            </div>
-          </div>
-          <input type="file" id="pzFile" accept="image/*" style="display:none">
-        </div>
-        <div class="form-section">
-          <div class="form-section-title"><span class="dotnum">2</span> Grid size</div>
-          <div class="chips" id="pzGridChips">
-            ${PUZZLE_GRID_PRESETS.map(g => `
-              <button type="button" class="chip" data-rows="${g.rows}" data-cols="${g.cols}">${g.label}</button>
-            `).join('')}
-          </div>
-          <div class="two-col" style="margin-top:14px">
-            <div class="field"><label for="pzRows">Rows</label><input type="number" id="pzRows" min="2" max="20" step="1" value="${draft.rows}"></div>
-            <div class="field"><label for="pzCols">Columns</label><input type="number" id="pzCols" min="2" max="20" step="1" value="${draft.cols}"></div>
-          </div>
-          <p class="hint" id="pzGridSummary" style="margin-top:-4px"></p>
-        </div>
-        <div class="form-section">
-          <div class="form-section-title"><span class="dotnum">3</span> Progression</div>
-          <div class="field">
-            <label for="pzTasksPerBlock">Tasks per block</label>
-            <input type="number" id="pzTasksPerBlock" min="1" max="100" step="1" value="${draft.tasksPerBlock}">
-            <div style="font-size:11.5px;color:var(--muted);margin-top:-4px">One task = one logged activity.</div>
-          </div>
-          <p class="hint" id="pzBlockSummary" style="margin-top:2px"></p>
-          <div class="field" style="margin-top:14px">
-            <label for="pzFinalTitle">Final challenge name</label>
-            <input type="text" id="pzFinalTitle" maxlength="60" value="${escapeHtml(draft.finalTitle)}" placeholder="e.g. Finish the whole book">
-          </div>
-          <div class="field">
-            <label for="pzFinalTarget">Final challenge tasks</label>
-            <input type="number" id="pzFinalTarget" min="0" max="10000" step="1" value="${draft.finalTarget}">
-            <div style="font-size:11.5px;color:var(--muted);margin-top:-4px">Extra tasks on top of the blocks. Set 0 to skip.</div>
-          </div>
-          <p class="hint" id="pzTotalSummary" style="margin-top:2px"></p>
-        </div>
-        <div class="modal-actions" style="margin-top:20px">
-          <button type="button" class="btn btn-ghost" data-action="close-modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save puzzle</button>
-        </div>
-      </form>
-    </div>
-  `);
-
-  const thumb = $('#pzThumb');
-  const fileInput = $('#pzFile');
-  const rowsIn = $('#pzRows');
-  const colsIn = $('#pzCols');
-  const perIn = $('#pzTasksPerBlock');
-  const finalIn = $('#pzFinalTarget');
-  const gridSum = $('#pzGridSummary');
-  const blockSum = $('#pzBlockSummary');
-  const totalSum = $('#pzTotalSummary');
-
-  function refreshThumb(){
-    if (draft.image){
-      thumb.style.backgroundImage = `url('${draft.image}')`;
-      thumb.style.backgroundSize = 'cover';
-      thumb.textContent = '';
-    } else {
-      thumb.style.backgroundImage = '';
-      thumb.textContent = 'No image yet';
-    }
-  }
-  function refreshChips(){
-    $$('#pzGridChips .chip').forEach(c => {
-      const active = Number(c.dataset.rows) === Number(rowsIn.value) && Number(c.dataset.cols) === Number(colsIn.value);
-      c.classList.toggle('active', active);
-    });
-  }
-  function refreshSummaries(){
-    const rows = clamp(Math.round(Number(rowsIn.value) || 1), 2, 20);
-    const cols = clamp(Math.round(Number(colsIn.value) || 1), 2, 20);
-    const total = rows * cols;
-    const per = Math.max(1, Math.round(Number(perIn.value) || 1));
-    const ft = Math.max(0, Math.round(Number(finalIn.value) || 0));
-    const forBlocks = per * total;
-    gridSum.textContent = `${rows} × ${cols} = ${fmt(total)} blocks`;
-    blockSum.textContent = `All blocks need ${fmt(forBlocks)} tasks (${fmt(per)} × ${fmt(total)}).`;
-    totalSum.innerHTML = ft > 0
-      ? `Grand total: <b>${fmt(forBlocks + ft)} tasks</b> — ${fmt(forBlocks)} for the blocks + ${fmt(ft)} for the final challenge.`
-      : `Grand total: <b>${fmt(forBlocks)} tasks</b> — the final challenge is disabled.`;
-  }
-  $('#pzGridChips').addEventListener('click', e => {
-    const b = e.target.closest('.chip[data-rows]'); if (!b) return;
-    rowsIn.value = b.dataset.rows;
-    colsIn.value = b.dataset.cols;
-    refreshChips(); refreshSummaries();
-  });
-  $('#pzUploadBtn').addEventListener('click', () => fileInput.click());
-  $('#pzRemoveBtn').addEventListener('click', () => { draft.image = null; refreshThumb(); });
-  fileInput.addEventListener('change', e => {
-    const f = e.target.files && e.target.files[0];
-    e.target.value = '';
-    if (!f) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-      const img = new Image();
-      img.onload = () => { draft.image = encodeImage(img, 1200); refreshThumb(); };
-      img.onerror = () => alert('Could not read that image.');
-      img.src = ev.target.result;
-    };
-    reader.onerror = () => alert('Could not read that file.');
-    reader.readAsDataURL(f);
-  });
-  ['input','change'].forEach(ev => {
-    rowsIn.addEventListener(ev, () => { refreshChips(); refreshSummaries(); });
-    colsIn.addEventListener(ev, () => { refreshChips(); refreshSummaries(); });
-    perIn.addEventListener(ev, refreshSummaries);
-    finalIn.addEventListener(ev, refreshSummaries);
-  });
-  refreshThumb(); refreshChips(); refreshSummaries();
-
-  $('#puzzleForm').addEventListener('submit', e => {
-    e.preventDefault();
-    state.puzzle.image = draft.image;
-    state.puzzle.rows = clamp(Math.round(Number(rowsIn.value) || 9), 2, 20);
-    state.puzzle.cols = clamp(Math.round(Number(colsIn.value) || 10), 2, 20);
-    state.puzzle.tasksPerBlock = clamp(Math.round(Number(perIn.value) || 3), 1, 100);
-    state.puzzle.finalTitle = ($('#pzFinalTitle').value.trim() || 'Final Challenge').slice(0, 60);
-    state.puzzle.finalTarget = clamp(Math.round(Number(finalIn.value) || 0), 0, 10000);
-    saveState(); closeModal(); render();
-  });
-}
-function encodeImage(img, maxDim){
-  let quality = 0.85, dim = maxDim, dataUrl = '';
-  const srcW = img.naturalWidth || img.width || 1;
-  const srcH = img.naturalHeight || img.height || 1;
-  for (let attempt = 0; attempt < 4; attempt++){
-    const scale = Math.min(1, dim / Math.max(srcW, srcH));
-    const w = Math.max(1, Math.round(srcW * scale));
-    const h = Math.max(1, Math.round(srcH * scale));
-    const canvas = document.createElement('canvas');
-    canvas.width = w; canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h);
-    ctx.drawImage(img, 0, 0, w, h);
-    dataUrl = canvas.toDataURL('image/jpeg', quality);
-    if (dataUrl.length <= 700000) break;
-    quality = Math.max(0.4, quality - 0.15);
-    dim = Math.round(dim * 0.8);
-  }
-  return dataUrl;
 }
 
 /* =========================================================
@@ -5524,11 +4611,8 @@ function openSettings(){
   const actCount = state.activities.length;
   const matCount = state.materials.length;
   const chCount = state.customChallenges.length;
-  const rivalCount = (state.rivals || []).length;
   const msCount = (state.roadmap.milestones || []).length;
   const hasProfile = !!state.profile;
-  const hasPuzzleImage = !!state.puzzle.image;
-  const puzzleTotal = state.puzzle.rows * state.puzzle.cols;
 
   openModal(`
     <div class="modal-backdrop" data-action="close-modal"></div>
@@ -5569,26 +4653,6 @@ function openSettings(){
         </div>
 
         <div class="data-block">
-          <div class="data-title">Characters</div>
-          <p class="hint" style="margin:0 0 12px">
-            ${rivalCount} character${rivalCount === 1 ? '' : 's'} on the leaderboard.
-          </p>
-          <div class="data-btns">
-            <button type="button" class="btn btn-ghost" data-action="reset-rivals">↺ Reset characters</button>
-          </div>
-        </div>
-
-        <div class="data-block">
-          <div class="data-title">Puzzle</div>
-          <p class="hint" style="margin:0 0 12px">
-            ${fmt(state.puzzle.rows)} × ${fmt(state.puzzle.cols)} grid · ${fmt(puzzleTotal)} blocks ·
-            ${fmt(state.puzzle.tasksPerBlock)} task${state.puzzle.tasksPerBlock === 1 ? '' : 's'} per block ·
-            image ${hasPuzzleImage ? 'set' : 'not set'}.
-          </p>
-          <button type="button" class="btn btn-ghost" data-action="open-puzzle">🧩 Edit puzzle</button>
-        </div>
-
-        <div class="data-block">
           <div class="data-title">Roadmap</div>
           <p class="hint" style="margin:0 0 12px">
             Four phases · ${msCount} custom milestone${msCount === 1 ? '' : 's'}.
@@ -5610,7 +4674,7 @@ function openSettings(){
           <p class="hint" style="margin-top:12px">
             Export JSON saves a full backup (profile, ${actCount} activit${actCount === 1 ? 'y' : 'ies'},
             ${matCount} material${matCount === 1 ? '' : 's'}, ${chCount} challenge${chCount === 1 ? '' : 's'},
-            ${rivalCount} character${rivalCount === 1 ? '' : 's'}, puzzle, roadmap, and settings).
+            roadmap, and settings).
             Import replaces your current data.
           </p>
           <input type="file" id="importFile" accept=".json,application/json" style="display:none">
@@ -5701,8 +4765,6 @@ document.addEventListener('click', e => {
   }
   const metricBtn = e.target.closest('[data-metric]');
   if (metricBtn){ progressMetric = metricBtn.dataset.metric; render(); return; }
-  const lbBtn = e.target.closest('[data-lbrange]');
-  if (lbBtn){ leaderboardRange = lbBtn.dataset.lbrange; render(); return; }
 
   const actionEl = e.target.closest('[data-action]');
   if (!actionEl) return;
@@ -5714,15 +4776,10 @@ document.addEventListener('click', e => {
 
     /* Info */
     case 'info-materials': infoMaterials(); break;
-    case 'info-xp': infoXp(); break;
-    case 'info-puzzle': infoPuzzle(); break;
     case 'info-roadmap': infoRoadmap(); break;
 
     /* Theme */
     case 'open-theme': openThemeModal(); break;
-
-    /* Puzzle */
-    case 'open-puzzle': openPuzzleModal(); break;
 
     /* Roadmap */
     case 'rm-edit-phases': openRmEditPhases(); break;
@@ -5798,30 +4855,6 @@ document.addEventListener('click', e => {
       closeModal();
       break;
     case 'open-settings': openSettings(); break;
-
-    /* Characters */
-    case 'new-rival': openRivalModal(null); break;
-    case 'edit-rival': {
-      const r = (state.rivals || []).find(x => x.id === actionEl.dataset.id);
-      if (r) openRivalModal(r);
-      break;
-    }
-    case 'delete-rival': {
-      const id = actionEl.dataset.id;
-      const r = (state.rivals || []).find(x => x.id === id);
-      if (!r) break;
-      if (confirm(`Delete the character "${r.name}"?`)){
-        state.rivals = state.rivals.filter(x => x.id !== id);
-        saveState(); closeModal(); render();
-      }
-      break;
-    }
-    case 'reset-rivals':
-      if (confirm('Reset all characters to their default values?')){
-        state.rivals = defaultRivals();
-        saveState(); closeModal(); render();
-      }
-      break;
 
     /* Activities */
     case 'edit-activity': {
@@ -5940,7 +4973,7 @@ document.addEventListener('click', e => {
       break;
     }
     case 'reset-all':
-      if (confirm('Reset everything? Your profile, activities, materials, challenges, characters, puzzle, roadmap and settings will be permanently cleared.')){
+      if (confirm('Reset everything? Your profile, activities, materials, challenges, roadmap and settings will be permanently cleared.')){
         resetAll(); closeModal(); render();
       }
       break;
