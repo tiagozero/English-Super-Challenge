@@ -434,30 +434,6 @@
   .preset-title{font-size:13.5px;font-weight:600}
   .preset-meta{font-size:11.5px;color:var(--muted)}
 
-  .mat-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));align-items:start}
-  @media(max-width:520px){.mat-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}}
-  .mat-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:9px;min-width:0;box-shadow:var(--shadow);transition:border-color .15s ease, transform .1s ease}
-  .mat-card:hover{border-color:var(--hover-line);transform:translateY(-1px)}
-  .mat-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
-  .mat-card-actions{display:flex;gap:0;flex:0 0 auto;margin:-4px -4px 0 0}
-  .mat-card-actions .link-btn{font-size:12px;padding:3px 6px}
-  .mat-card-cover{position:relative;width:100%;aspect-ratio:3/4;border-radius:10px;background:var(--surface-2) center/cover no-repeat;margin:-2px -2px 0}
-  .mat-card-cover .mat-card-actions{position:absolute;top:6px;right:6px;margin:0;background:color-mix(in srgb, var(--surface) 78%, transparent);border-radius:8px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-  .mat-deadline-badge{
-    position:absolute;left:0;right:0;bottom:0;border-radius:0 0 10px 10px;
-    padding:18px 9px 8px;display:flex;flex-direction:column;gap:1px;
-    background:linear-gradient(to top, rgba(0,0,0,.74), rgba(0,0,0,.42) 55%, rgba(0,0,0,0));
-    color:#fff;
-  }
-  .mat-deadline-badge .dl-date{font-size:10px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;opacity:.85}
-  .mat-deadline-badge .dl-cd{font-size:13px;font-weight:750;font-variant-numeric:tabular-nums}
-  .mat-deadline-badge .dl-cd.overdue{color:#FF9C86}
-  .mat-deadline-chip{
-    display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:650;
-    background:var(--warn-bg);color:var(--warn-fg);border-radius:999px;padding:3px 9px;
-    font-variant-numeric:tabular-nums;width:fit-content;
-  }
-  .mat-deadline-chip:has(.overdue){background:var(--bad-bg);color:var(--bad-fg)}
   .mat-deadline-line{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--warn-fg);margin-top:2px;font-variant-numeric:tabular-nums}
   .mat-deadline-line b.overdue{color:var(--bad-fg)}
 
@@ -488,11 +464,45 @@
   .mat-subtask-inline{margin-top:6px;padding-top:6px;border-top:1px dashed var(--dash-line);display:flex;flex-direction:column;gap:5px}
   .mat-subtask-inline .subtask-row{font-size:12.5px}
   .mat-subtask-inline .subtask-title{font-size:12.5px}
-  .mat-card-title{font-size:14.5px;font-weight:640;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
-  .mat-card-sub{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .mat-card-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:1px}
-  .mat-type-pill{font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;background:var(--surface-2);color:var(--muted)}
-  .mat-card-tot{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:auto;padding-top:8px;border-top:1px solid var(--line)}
+  .mat-progress{margin-top:auto;padding-top:8px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+  .mat-progress-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:12px;font-variant-numeric:tabular-nums}
+  .mat-progress-pct{font-weight:750;color:var(--reading)}
+  .mat-progress-pct.complete{color:var(--good-fg)}
+  .mat-progress-sub{color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mat-progress-bar{position:relative;height:8px;background:var(--bar-bg);border-radius:999px;overflow:hidden}
+  .mat-progress-bar > i{display:block;height:100%;border-radius:999px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+  .mat-progress-bar.reading > i{background:linear-gradient(90deg,var(--reading-2),var(--reading))}
+  .mat-progress-bar.listening > i{background:linear-gradient(90deg,var(--listening-2),var(--listening))}
+  .mat-progress-bar.complete > i{background:var(--good-fg)}
+  .mat .mat-progress{border-top:none;margin-top:6px;padding-top:0}
+
+  /* Materials library — toolbar, stats strip, grid & cards */
+  .mat-toolbar-top{justify-content:space-between}
+  .mat-lib-title{font-size:12px;font-weight:750;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0}
+  .mat-toolbar-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .lib-stats{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:14px;padding:12px 16px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;font-size:12.5px;color:var(--muted)}
+  .lib-stat b{color:var(--text);font-weight:750;font-variant-numeric:tabular-nums}
+  .mat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+  .mat-card{display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:16px}
+  .mat-card-top{display:flex;gap:11px;align-items:flex-start}
+  .mat-card-icon{width:38px;height:38px;flex:0 0 auto;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:750;color:var(--on-accent)}
+  .mat-card-icon.has-cover{background-size:cover;background-position:center}
+  .mat-card-titles{min-width:0;flex:1}
+  .mat-card-title{font-size:14.5px;font-weight:650;letter-spacing:-.005em;line-height:1.25;word-break:break-word}
+  .mat-card-sub{font-size:12px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mat-card-stats{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .mat-card-figure{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+  .mat-card-episodes{font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .mat-card-status-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .mat-card-pct{font-size:12px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+  .status-pill{font-size:10px;font-weight:750;padding:3px 9px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase}
+  .status-pill.good{background:var(--good-bg);color:var(--good-fg)}
+  .status-pill.warn{background:var(--warn-bg);color:var(--warn-fg)}
+  .status-pill.neutral{background:var(--neutral-bg);color:var(--neutral-fg)}
+  .mat-card-queued{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding-top:8px;border-top:1px dashed var(--dash-line)}
+  .mat-card-queued .qlabel{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .mat-card-queued .tag{font-size:11px;font-weight:650;padding:2px 9px;border-radius:999px;background:var(--tag-bg);color:var(--tag-fg)}
+  .mat-card-actions{display:flex;justify-content:flex-end;gap:14px;margin-top:2px}
 
   /* Charts */
   .seg{display:inline-flex;background:var(--surface-2);border-radius:11px;padding:3px;gap:2px}
@@ -532,28 +542,6 @@
   .chal-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;flex-wrap:wrap}
   .chal-timer{display:flex;align-items:center;gap:6px;margin-top:7px;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
   .chal-timer b{color:var(--text);font-weight:650}
-
-  /* Puzzle */
-  .puzzle-wrap{display:flex;justify-content:center;width:100%}
-  .puzzle-board{display:grid;gap:2px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;width:100%;box-shadow:var(--shadow)}
-  .pz-cell{position:relative;min-width:0;min-height:0;background-color:var(--surface-2);background-repeat:no-repeat}
-  .pz-cell.locked{background-image:repeating-linear-gradient(45deg,transparent 0 5px,color-mix(in srgb, var(--text) 5%, transparent) 5px 10px)}
-  .pz-cell.revealed{background-color:var(--surface);background-image:var(--pz-img, none);background-size:var(--pz-size, 100% 100%);background-position:var(--pz-pos, 50% 50%)}
-  .pz-cell.next{box-shadow:inset 0 0 0 2px var(--reading);animation:pzPulse 1.8s ease-in-out infinite;z-index:2}
-  @keyframes pzPulse{
-    0%,100%{box-shadow:inset 0 0 0 2px color-mix(in srgb, var(--reading) 85%, transparent)}
-    50%{box-shadow:inset 0 0 0 2px color-mix(in srgb, var(--reading) 20%, transparent)}
-  }
-  .pz-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin-top:14px;justify-content:center}
-  .pz-legend span{display:inline-flex;align-items:center;gap:6px}
-  .pz-legend i{width:12px;height:12px;border-radius:4px;display:inline-block}
-  .pz-legend i.locked{background:var(--surface-2);border:1px solid var(--line)}
-  .pz-legend i.revealed{background:linear-gradient(135deg,var(--reading-2),var(--reading))}
-  .pz-legend i.next{background:var(--surface);box-shadow:0 0 0 2px color-mix(in srgb,var(--reading) 45%,transparent)}
-  .pz-thumb{width:100%;max-width:230px;aspect-ratio:16/10;border-radius:12px;border:1px solid var(--line);background:var(--surface-2) center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12.5px;overflow:hidden;text-align:center;padding:8px}
-  .pz-final{border-radius:16px;padding:18px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow)}
-  .pz-final.locked{background:var(--surface-2);border-style:dashed}
-  .pz-final.done{background:linear-gradient(135deg,color-mix(in srgb, var(--good-bg) 70%, var(--surface)),var(--surface));border-color:color-mix(in srgb, var(--good-fg) 40%, var(--line))}
 
   /* ================= Roadmap ================= */
   .rm-view-toggle{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -617,6 +605,44 @@
   .rm-dbar-row .lbl{width:70px;flex:0 0 auto;text-transform:uppercase;letter-spacing:.06em;font-weight:700;font-size:10.5px}
   .rm-dbar-row .bar{flex:1}
   .rm-dbar-row .v{min-width:92px;text-align:right;flex:0 0 auto}
+
+  .rm-queue{padding:0 18px 18px}
+  .rm-queue-label{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+  .rm-queue-label .ql{font-size:11px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+  .rm-queue-label .qn{font-size:11px;font-weight:700;color:var(--muted);background:var(--surface-2);padding:2px 9px;border-radius:999px}
+  .rm-queue-progress{margin-bottom:12px;padding:10px 12px;background:var(--surface-2);border:1px solid var(--line);border-radius:11px}
+  .rm-progress-top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--muted);font-weight:650;margin-bottom:7px}
+  .rm-progress-top .v{color:var(--text);font-variant-numeric:tabular-nums}
+  .rm-queue-list{display:flex;flex-direction:column;gap:8px}
+  .rm-queue-item{display:flex;align-items:stretch;gap:11px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:11px 12px;transition:border-color .15s;min-width:0}
+  .rm-queue-item:hover{border-color:var(--hover-line)}
+  .rm-queue-item.done{background:color-mix(in srgb, var(--good-bg) 55%, var(--surface-2));border-color:color-mix(in srgb, var(--good-fg) 25%, var(--line))}
+  .rm-queue-item.next{border-color:var(--reading);box-shadow:0 0 0 3px color-mix(in srgb, var(--reading) 12%, transparent)}
+  .rq-pos{width:22px;height:22px;flex:0 0 auto;align-self:flex-start;border-radius:50%;background:var(--surface);border:1px solid var(--line);color:var(--muted);font-size:11px;font-weight:750;display:flex;align-items:center;justify-content:center}
+  .rm-queue-item.done .rq-pos{background:var(--good-fg);color:var(--on-accent);border-color:var(--good-fg)}
+  .rm-queue-item.next .rq-pos{background:var(--reading);color:var(--on-accent);border-color:var(--reading)}
+  .rq-icon{width:34px;height:34px;flex:0 0 auto;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:750;color:var(--on-accent);align-self:flex-start}
+  .rq-icon.has-cover{background-size:cover;background-position:center;color:transparent}
+  .rq-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+  .rq-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .rq-title{font-size:13.5px;font-weight:650;letter-spacing:-.005em;word-break:break-word}
+  .rq-badge{font-size:11.5px;color:var(--muted);white-space:nowrap}
+  .rq-sub{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .rq-sub .sep{color:var(--line)}
+  .rq-bar{position:relative;height:7px;background:var(--bar-bg);border-radius:999px;overflow:hidden}
+  .rq-bar > i{display:block;height:100%;border-radius:999px;transition:width .4s ease}
+  .rq-bar.complete > i{background:var(--good-fg)}
+  .rq-actions{display:flex;flex-direction:column;gap:2px;align-self:flex-start;flex:0 0 auto}
+  .rq-action{width:22px;height:20px;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--muted);font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;transition:background .12s,color .12s,border-color .12s}
+  .rq-action:hover:not(:disabled){background:var(--surface);color:var(--text);border-color:var(--line)}
+  .rq-action.danger:hover:not(:disabled){color:var(--bad-fg);background:var(--bad-bg);border-color:transparent}
+  .rq-action:disabled{opacity:.25;cursor:not-allowed}
+  .rm-queue-empty{padding:14px;text-align:center;font-size:12.5px;color:var(--muted);font-style:italic;background:var(--surface-2);border:1px dashed var(--dash-line);border-radius:12px}
+  .rm-queue-complete{margin-top:10px;padding:11px 14px;background:linear-gradient(90deg,color-mix(in srgb, var(--good-bg) 80%, transparent),transparent);border:1px solid color-mix(in srgb, var(--good-fg) 30%, var(--line));border-radius:11px;font-size:12.5px;color:var(--good-fg);font-weight:600;display:flex;align-items:center;gap:8px}
+  .rm-queue-add{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+  .rm-queue-add select{flex:1;min-width:180px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 11px;font-size:13px;color:var(--text);outline:none}
+  .rm-queue-add select:focus{border-color:var(--reading);box-shadow:0 0 0 3px color-mix(in srgb, var(--reading) 14%, transparent)}
+  .badge.next{background:var(--reading);color:var(--on-accent)}
 
   .rm-week{
     border-top:1px solid var(--line);
@@ -747,25 +773,6 @@
   .rm-projection .proj-main{flex:1;min-width:200px}
   .rm-projection .proj-title{font-size:13.5px;font-weight:650}
   .rm-projection .proj-sub{font-size:12.5px;color:var(--muted);margin-top:2px}
-
-  /* Leaderboard */
-  .lb-row{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--line)}
-  .lb-row:last-child{border-bottom:0}
-  .lb-row.you{background:linear-gradient(90deg,color-mix(in srgb, var(--reading) 10%, transparent),transparent);border-radius:12px;padding-left:8px;padding-right:8px;margin:0 -8px;border-bottom-color:transparent}
-  .lb-rank{width:26px;text-align:center;font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;flex:0 0 auto}
-  .lb-row.you .lb-rank{color:var(--reading)}
-  .lb-avatar{width:38px;height:38px;border-radius:12px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12.5px;font-weight:750;letter-spacing:.03em}
-  .lb-main{flex:1;min-width:0}
-  .lb-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
-  .lb-name{font-size:13.5px;font-weight:620;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .lb-handle{font-size:11.5px;color:var(--muted);font-weight:500}
-  .lb-xp{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
-  .lb-bar{height:5px;background:var(--surface-2);border-radius:999px;margin:5px 0 4px;overflow:hidden}
-  .lb-bar i{display:block;height:100%;border-radius:999px;background:var(--reading-2);transition:width .4s ease}
-  .lb-row.you .lb-bar i{background:var(--reading)}
-  .lb-sub{font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
-  .lb-edit{width:32px;height:32px;border-radius:9px;flex:0 0 auto;border:1px solid transparent;background:transparent;color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s, color .15s, border-color .15s;padding:0;line-height:1}
-  .lb-edit:hover{background:var(--surface-2);color:var(--text);border-color:var(--line)}
 
   /* Modal */
   .modal-backdrop{position:fixed;inset:0;background:var(--backdrop);z-index:100;animation:fade .16s ease}
@@ -911,12 +918,9 @@
     <button data-nav="dashboard" class="active">Dashboard</button>
     <button data-nav="profile">Profile</button>
     <button data-nav="challenges">Challenges</button>
-    <button data-nav="puzzle">Puzzle</button>
     <button data-nav="roadmap">Roadmap</button>
-    <button data-nav="leaderboard">Leaderboard</button>
     <button data-nav="history">History</button>
     <button data-nav="progress">Progress</button>
-    <button data-nav="materials">Materials</button>
     <a href="output.html">Output <span class="ext">↗</span></a>
   </nav>
 </header>
@@ -970,20 +974,6 @@ function initialsOf(name){
   if (!parts.length) return '?';
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
-
-function hashStr(s){
-  let h = 2166136261;
-  for (let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
-  return h >>> 0;
-}
-function mulberry32(a){
-  return function(){
-    a |= 0; a = (a + 0x6D2B79F5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
 }
 
 /* =========================================================
@@ -1128,7 +1118,6 @@ const CATEGORY_LABEL = { reading: 'Reading', listening: 'Listening' };
 
 const STORAGE_KEY = 'english-super-challenge-v2-clean';
 const WELCOME_KEY = 'esc-welcome-shown';
-const MATVIEW_KEY = 'esc-materials-view';
 const MATFILTERS_KEY = 'esc-materials-filters-open';
 const QUICKADD_KEY = 'esc-quickadd-open';
 const RMVIEW_KEY = 'esc-roadmap-view';
@@ -1174,6 +1163,28 @@ const AVATAR_COLORS = [
   '#4A6FA5','#A8567A','#8A6420','#5D7A3F','#3E7C8A',
   '#26211C','#9C4230','#6B5B95','#B08B3E','#3E5B78'
 ];
+/* Named palette for material cards — same hexes as AVATAR_COLORS, given
+   friendly names for the material color picker. */
+const MATERIAL_COLORS = [
+  { name: 'Clay',   hex: '#C2703D' },
+  { name: 'Pine',   hex: '#3F7A6E' },
+  { name: 'Plum',   hex: '#7A5EA8' },
+  { name: 'Rust',   hex: '#B0563F' },
+  { name: 'Moss',   hex: '#2F6B54' },
+  { name: 'Slate',  hex: '#4A6FA5' },
+  { name: 'Berry',  hex: '#A8567A' },
+  { name: 'Amber',  hex: '#8A6420' },
+  { name: 'Olive',  hex: '#5D7A3F' },
+  { name: 'Teal',   hex: '#3E7C8A' },
+  { name: 'Ink',    hex: '#26211C' },
+  { name: 'Brick',  hex: '#9C4230' },
+  { name: 'Violet', hex: '#6B5B95' },
+  { name: 'Gold',   hex: '#B08B3E' },
+  { name: 'Ocean',  hex: '#3E5B78' }
+];
+const MATERIAL_EMOJI_SUGGESTIONS = ['📖','📗','📙','📘','🎧','🎙️','📻','🎬','📰','📝','🗞️','🔖'];
+const UNIT_SUGGESTIONS = { reading: ['Pages', 'Chapters', 'Words'], listening: ['Minutes', 'Hours', 'Episodes'] };
+function defaultUnitFor(category){ return category === 'listening' ? 'Minutes' : 'Pages'; }
 const LANGUAGES = [
   'English','Spanish','French','German','Italian','Portuguese','Dutch','Swedish',
   'Norwegian','Danish','Finnish','Polish','Czech','Greek','Turkish','Russian',
@@ -1204,31 +1215,6 @@ const COUNTRIES = [
   'Iran','Iraq','Other'
 ];
 
-function defaultRivals(){
-  return [
-    { id:'r1',  name:'Luna Park',    handle:'luna_reads',    color:'#C2703D', avatar_emoji:'📚', avgXp:51.5, intensity:3.7, split:0.466, phase:0 },
-    { id:'r2',  name:'Marco Silva',  handle:'marco.listens', color:'#3F7A6E', avatar_emoji:'🎧', avgXp:58.5, intensity:2.6, split:0.188, phase:2 },
-    { id:'r3',  name:'Aiko Tanaka',  handle:'aiko_pages',    color:'#7A5EA8', avatar_emoji:'🌸', avgXp:47.5, intensity:4.2, split:0.684, phase:4 },
-    { id:'r4',  name:'Diego Ramos',  handle:'diego_r',       color:'#B0563F', avatar_emoji:'⚡', avgXp:52.5, intensity:1.6, split:0.333, phase:6 },
-    { id:'r5',  name:'Nora Haddad',  handle:'nora.reads',    color:'#2F6B54', avatar_emoji:'🌙', avgXp:47.5, intensity:3.2, split:0.579, phase:1 },
-    { id:'r6',  name:'Felix Braun',  handle:'felix_b',       color:'#4A6FA5', avatar_emoji:'🚀', avgXp:55.0, intensity:2.1, split:0.273, phase:3 },
-    { id:'r7',  name:'Priya Nair',   handle:'priya.pages',   color:'#A8567A', avatar_emoji:'🌟', avgXp:47.5, intensity:3.9, split:0.737, phase:5 },
-    { id:'r8',  name:'Sam Okafor',   handle:'sam_listens',   color:'#8A6420', avatar_emoji:'🎬', avgXp:64.0, intensity:2.9, split:0.141, phase:7 },
-    { id:'r9',  name:'Elena Rossi',  handle:'elena_r',       color:'#5D7A3F', avatar_emoji:'🦉', avgXp:52.0, intensity:2.4, split:0.404, phase:8 },
-    { id:'r10', name:'Kai Nakamura', handle:'kai.n',         color:'#3E7C8A', avatar_emoji:'🔥', avgXp:53.0, intensity:3.4, split:0.547, phase:9 }
-  ];
-}
-
-function defaultPuzzle(){
-  return {
-    image: null,
-    rows: 9, cols: 10,
-    tasksPerBlock: 3,
-    finalTitle: 'Final Challenge',
-    finalTarget: 30
-  };
-}
-
 function defaultRoadmap(){
   return {
     phases: [
@@ -1251,14 +1237,9 @@ function defaultRoadmap(){
 let state = null;
 let currentView = 'dashboard';
 let progressMetric = 'reading';
-let leaderboardRange = 'all';
 let historyFilters = { from: '', to: '', category: 'all', type: 'all', material: 'all', q: '' };
 let searchTimer = null;
 let weekNoteTimer = null;
-
-let materialsView = 'grid';
-try { materialsView = localStorage.getItem(MATVIEW_KEY) || 'grid'; } catch (e) {}
-if (materialsView !== 'grid' && materialsView !== 'list') materialsView = 'grid';
 
 let materialsFiltersOpen = true;
 try { materialsFiltersOpen = localStorage.getItem(MATFILTERS_KEY) !== '0'; } catch (e) {}
@@ -1269,9 +1250,14 @@ try { quickAddOpen = localStorage.getItem(QUICKADD_KEY) !== '0'; } catch (e) {}
 let materialsFilter = { q: '', type: 'all', category: 'all' };
 let expandedSubtasks = new Set();
 
+const MATVIEW_KEY = 'esc-materials-view-mode';
+let materialsViewMode = 'grid';
+try { materialsViewMode = localStorage.getItem(MATVIEW_KEY) || 'grid'; } catch (e) {}
+if (!['grid', 'list'].includes(materialsViewMode)) materialsViewMode = 'grid';
+
 let roadmapView = 'phases';
 try { roadmapView = localStorage.getItem(RMVIEW_KEY) || 'phases'; } catch (e) {}
-if (!['phases','weeks','days'].includes(roadmapView)) roadmapView = 'phases';
+if (!['phases','weeks','days','materials'].includes(roadmapView)) roadmapView = 'phases';
 
 let roadmapOpenPhases = {}; // phaseIndex -> true (ui state)
 let roadmapOpenWeeks = {};  // weekIndex -> true (ui state)
@@ -1296,8 +1282,6 @@ function freshData(){
     materials: [],
     activities: [],
     customChallenges: [],
-    rivals: defaultRivals(),
-    puzzle: defaultPuzzle(),
     roadmap: defaultRoadmap()
   };
 }
@@ -1318,53 +1302,6 @@ function normalizeState(s){
   if (s.profile === undefined) s.profile = null;
   if (s.profile && typeof s.profile !== 'object') s.profile = null;
   if (s.profile){ if (!Array.isArray(s.profile.favorite_genres)) s.profile.favorite_genres = []; }
-
-  if (!Array.isArray(s.rivals) || s.rivals.length === 0){
-    s.rivals = defaultRivals();
-  } else {
-    s.rivals = s.rivals.map(r => {
-      if (r && r.avgXp !== undefined) {
-        return {
-          id: r.id || uid('r'), name: r.name || 'Character',
-          handle: String(r.handle || '').replace(/^@+/, ''),
-          color: r.color || AVATAR_COLORS[0],
-          avatar_emoji: r.avatar_emoji || '',
-          avgXp: Math.max(0, Number(r.avgXp) || 0),
-          intensity: clamp(Number(r.intensity) || 3, 1, 5),
-          split: clamp(Number(r.split) ?? 0.5, 0, 1),
-          phase: Number(r.phase) || 0
-        };
-      }
-      const read = Number(r.read) || 0;
-      const listen = Number(r.listen) || 0;
-      const totalXp = (read + listen) * 0.5;
-      const rest = Number(r.rest) || 0.08;
-      return {
-        id: r.id || uid('r'), name: r.name || 'Character',
-        handle: String(r.handle || '').replace(/^@+/, ''),
-        color: r.color || AVATAR_COLORS[0],
-        avatar_emoji: r.avatar_emoji || '',
-        avgXp: totalXp > 0 ? totalXp : 50,
-        intensity: clamp(Math.round(((0.20 - rest) / 0.038) * 10) / 10, 1, 5) || 3,
-        split: totalXp > 0 ? read / (read + listen) : 0.5,
-        phase: Number(r.phase) || 0
-      };
-    });
-  }
-
-  const dp = defaultPuzzle();
-  if (!s.puzzle || typeof s.puzzle !== 'object'){ s.puzzle = dp; }
-  else {
-    const p = s.puzzle;
-    s.puzzle = {
-      image: (typeof p.image === 'string' && p.image.startsWith('data:image')) ? p.image : null,
-      rows: clamp(Math.round(Number(p.rows) || dp.rows), 2, 20),
-      cols: clamp(Math.round(Number(p.cols) || dp.cols), 2, 20),
-      tasksPerBlock: clamp(Math.round(Number(p.tasksPerBlock) || dp.tasksPerBlock), 1, 100),
-      finalTitle: String(p.finalTitle ?? dp.finalTitle).slice(0, 60) || dp.finalTitle,
-      finalTarget: clamp(Math.round(Number(p.finalTarget) ?? dp.finalTarget), 0, 10000)
-    };
-  }
 
   const dr = defaultRoadmap();
   if (!s.roadmap || typeof s.roadmap !== 'object'){ s.roadmap = dr; }
@@ -1434,7 +1371,6 @@ function resetAll(){
   state = freshData();
   saveState();
   historyFilters = { from: '', to: '', category: 'all', type: 'all', material: 'all', q: '' };
-  leaderboardRange = 'all';
   materialsFilter = { q: '', type: 'all', category: 'all' };
   roadmapOpenPhases = {};
   roadmapOpenWeeks = {};
@@ -1490,15 +1426,13 @@ function downloadBlob(blob, filename){
 function exportJSON(){
   const payload = {
     app: 'english-super-challenge',
-    version: 5,
+    version: 7,
     exported_at: new Date().toISOString(),
     challenge: state.challenge,
     profile: state.profile,
     materials: state.materials,
     activities: state.activities,
     customChallenges: state.customChallenges,
-    rivals: state.rivals,
-    puzzle: state.puzzle,
     roadmap: state.roadmap
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -1543,18 +1477,14 @@ function importJSONFile(file){
     const actCount = candidate.activities.length;
     const matCount = candidate.materials.length;
     const chCount  = Array.isArray(candidate.customChallenges) ? candidate.customChallenges.length : 0;
-    const rivalCount = Array.isArray(candidate.rivals) ? candidate.rivals.length : 0;
     const msCount = (candidate.roadmap && Array.isArray(candidate.roadmap.milestones)) ? candidate.roadmap.milestones.length : 0;
     const hasProfile = !!(candidate.profile && candidate.profile.display_name);
-    const hasPuzzle = !!(candidate.puzzle && candidate.puzzle.image);
     const ok = confirm(
       `Import this backup?\n\n` +
       `• ${actCount} activit${actCount === 1 ? 'y' : 'ies'}\n` +
       `• ${matCount} material${matCount === 1 ? '' : 's'}\n` +
       `• ${chCount} challenge${chCount === 1 ? '' : 's'}\n` +
-      `• ${rivalCount} character${rivalCount === 1 ? '' : 's'}\n` +
       `• ${msCount} milestone${msCount === 1 ? '' : 's'}\n` +
-      `• Puzzle image: ${hasPuzzle ? 'included' : 'none'}\n` +
       `• Profile: ${hasProfile ? 'included' : 'none'}\n\n` +
       `This will replace your current data.`
     );
@@ -1566,8 +1496,6 @@ function importJSONFile(file){
       materials: candidate.materials,
       activities: candidate.activities,
       customChallenges: candidate.customChallenges,
-      rivals: candidate.rivals,
-      puzzle: candidate.puzzle,
       roadmap: candidate.roadmap
     });
     saveState(); closeModal(); render();
@@ -1783,41 +1711,6 @@ function challengeRowHTML(ch){
 }
 
 /* =========================================================
-   Puzzle logic
-   ========================================================= */
-function puzzleRevealOrder(rows, cols){
-  const total = rows * cols;
-  const arr = Array.from({ length: total }, (_, i) => i);
-  const rng = mulberry32(hashStr('esc-puzzle-v1-' + rows + 'x' + cols));
-  for (let i = arr.length - 1; i > 0; i--){
-    const j = Math.floor(rng() * (i + 1));
-    const t = arr[i]; arr[i] = arr[j]; arr[j] = t;
-  }
-  return arr;
-}
-function puzzleTotals(){
-  const p = state.puzzle;
-  const tasks = state.activities.length;
-  const total = Math.max(1, p.rows * p.cols);
-  const per = Math.max(1, p.tasksPerBlock);
-  const forBlocks = per * total;
-  const revealed = Math.min(total, Math.floor(tasks / per));
-  const blocksComplete = revealed >= total;
-  const finalTarget = Math.max(0, p.finalTarget);
-  const finalProgress = blocksComplete ? Math.min(finalTarget, Math.max(0, tasks - forBlocks)) : 0;
-  const finalComplete = blocksComplete && finalTarget > 0 && finalProgress >= finalTarget;
-  const allComplete = blocksComplete && (finalTarget === 0 || finalProgress >= finalTarget);
-  const grandTotal = forBlocks + finalTarget;
-  const overallPct = grandTotal > 0 ? clamp(tasks / grandTotal * 100, 0, 100) : 0;
-  const nextBlockIn = blocksComplete ? 0 : Math.max(0, (revealed + 1) * per - tasks);
-  return {
-    tasks, total, per, forBlocks, revealed, blocksComplete,
-    finalTarget, finalProgress, finalComplete, allComplete,
-    grandTotal, overallPct, nextBlockIn
-  };
-}
-
-/* =========================================================
    Roadmap builder
    ========================================================= */
 function buildRoadmap(){
@@ -1889,10 +1782,33 @@ function buildRoadmap(){
     const endIdx = Math.floor((i + 1) * totalDays / 4) - 1;
     const realEnd = Math.max(startIdx, endIdx);
     const pDays = days.slice(startIdx, realEnd + 1);
-    const expectedRead = pDays.length * dailyRead;
-    const expectedListen = pDays.length * dailyListen;
-    const actualRead = pDays.reduce((s, d) => s + d.actualRead, 0);
-    const actualListen = pDays.reduce((s, d) => s + d.actualListen, 0);
+
+    // Even-pace, date-range baseline (used whenever this phase has no
+    // materials of a given category assigned to it yet).
+    const dateExpectedRead = pDays.length * dailyRead;
+    const dateExpectedListen = pDays.length * dailyListen;
+    const dateActualRead = pDays.reduce((s, d) => s + d.actualRead, 0);
+    const dateActualListen = pDays.reduce((s, d) => s + d.actualListen, 0);
+
+    // Material-driven totals: each phase's own exclusive materials
+    // drive its Reading/Listening progress, so two phases never mirror
+    // the same numbers just because they share a material.
+    const phaseMaterials = (p.materials || []).map(id => materialById(id)).filter(Boolean);
+    const readingMats = phaseMaterials.filter(m => m.default_category === 'reading');
+    const listeningMats = phaseMaterials.filter(m => m.default_category === 'listening');
+    const matExpectedRead = readingMats.reduce((s, m) => s + (materialHasTarget(m) ? Number(m.total_units) : 0), 0);
+    const matActualRead = readingMats.reduce((s, m) => s + materialLoggedUnits(m), 0);
+    const matExpectedListen = listeningMats.reduce((s, m) => s + (materialHasTarget(m) ? Number(m.total_units) : 0), 0);
+    const matActualListen = listeningMats.reduce((s, m) => s + materialLoggedUnits(m), 0);
+
+    // Use the phase's own materials once it has any in that category;
+    // if none of them carry a target yet, still show real logged
+    // progress against the even-pace baseline rather than dividing by 0.
+    const expectedRead = readingMats.length ? (matExpectedRead || dateExpectedRead) : dateExpectedRead;
+    const actualRead = readingMats.length ? matActualRead : dateActualRead;
+    const expectedListen = listeningMats.length ? (matExpectedListen || dateExpectedListen) : dateExpectedListen;
+    const actualListen = listeningMats.length ? matActualListen : dateActualListen;
+
     const elapsedRead = pDays.filter(d => !d.isFuture).reduce((s, d) => s + d.actualRead, 0);
     const elapsedListen = pDays.filter(d => !d.isFuture).reduce((s, d) => s + d.actualListen, 0);
     const expectedToDate = pDays.filter(d => !d.isFuture).length;
@@ -2025,89 +1941,6 @@ function buildMilestones(rm){
 }
 
 /* =========================================================
-   Leaderboard
-   ========================================================= */
-function lbRangeISO(){
-  const t = todayISO();
-  const ch = state.challenge;
-  if (leaderboardRange === 'today') return { from: t, to: t, label: 'Today' };
-  if (leaderboardRange === 'week')  return { from: startOfWeekISO(t), to: t, label: 'This week' };
-  return { from: ch.start_date, to: minISO(t, ch.end_date), label: 'Full challenge' };
-}
-function userStatsIn(from, to){
-  const ch = state.challenge;
-  const f = maxISO(from, ch.start_date);
-  const t = minISO(to, todayISO());
-  if (f > t) return { pages: 0, minutes: 0, xp: 0, days: 0 };
-  const list = actsInRange(f, t);
-  const pages = sumCategory(list, 'reading');
-  const minutes = sumCategory(list, 'listening');
-  return { pages, minutes, xp: xpFrom(pages, minutes), days: diffDays(f, t) + 1 };
-}
-function rivalDayStats(rival, idx, dateISO){
-  const rng = mulberry32(hashStr(rival.id + '|' + dateISO));
-  const r1 = rng(), r2 = rng();
-  const intensity = clamp(Number(rival.intensity) || 3, 1, 5);
-  const rest = Math.max(0, 0.20 - intensity * 0.038);
-  if (r1 < rest) return { pages: 0, minutes: 0, xp: 0 };
-  const variance = Math.max(0.10, 0.85 - intensity * 0.13);
-  const phase = Number(rival.phase) || 0;
-  const swing = 1 + variance * Math.sin((idx + phase) / 8);
-  const noise = 1 + variance * (r2 - 0.5) * 1.4;
-  const dayXp = Math.max(0, (Number(rival.avgXp) || 0) * swing * noise);
-  const split = clamp(Number(rival.split) ?? 0.5, 0, 1);
-  const readXp = dayXp * split;
-  const listenXp = dayXp * (1 - split);
-  const pages = Math.round(readXp * 2);
-  const minutes = Math.round(listenXp * 2);
-  return { pages, minutes, xp: xpFrom(pages, minutes) };
-}
-function rivalStats(rival, from, to){
-  const ch = state.challenge;
-  const start = maxISO(from, ch.start_date);
-  const end   = minISO(to, todayISO());
-  if (start > end) return { pages: 0, minutes: 0, xp: 0, days: 0 };
-  let pages = 0, minutes = 0, days = 0;
-  for (let d = start; d <= end; d = addDays(d, 1)){
-    days++;
-    const idx = diffDays(ch.start_date, d);
-    const s = rivalDayStats(rival, idx, d);
-    pages += s.pages; minutes += s.minutes;
-  }
-  return { pages, minutes, xp: xpFrom(pages, minutes), days };
-}
-function leaderboardEntries(){
-  const { from, to } = lbRangeISO();
-  const entries = [];
-  const u = userStatsIn(from, to);
-  const p = state.profile;
-  entries.push({
-    id: 'you',
-    name: profileDisplayName(),
-    handle: profileHandle(),
-    color: profileColor(),
-    initials: profileAvatarContent(p),
-    isEmoji: !!(p && p.avatar_emoji),
-    you: true,
-    pages: u.pages, minutes: u.minutes, xp: u.xp
-  });
-  (state.rivals || []).forEach(r => {
-    const s = rivalStats(r, from, to);
-    entries.push({
-      id: r.id, name: r.name,
-      handle: r.handle ? (r.handle.startsWith('@') ? r.handle : '@' + r.handle) : '',
-      color: r.color || '#26211C',
-      initials: r.avatar_emoji || initialsOf(r.name),
-      isEmoji: !!r.avatar_emoji,
-      you: false,
-      pages: s.pages, minutes: s.minutes, xp: s.xp
-    });
-  });
-  entries.sort((a, b) => b.xp - a.xp || b.pages - a.pages || a.name.localeCompare(b.name));
-  return entries;
-}
-
-/* =========================================================
    Info modals
    ========================================================= */
 function openInfoModal(title, bodyHtml){
@@ -2131,30 +1964,9 @@ function infoMaterials(){
   openInfoModal('How materials work', `
     <p>Every activity can be linked to a material — a book, audiobook, podcast, show or article.
     Type a title when logging and it's saved here automatically for one-tap reuse next time.</p>
-    <p>Materials are grouped into <b>Reading</b> and <b>Listening</b>. Switch between <b>Grid</b>
-    and <b>List</b> view with the toggle above. Bulk-add via <b>⬆ CSV</b>.</p>
+    <p>Materials are grouped into <b>Reading</b> and <b>Listening</b>. Bulk-add via <b>⬆ CSV</b>.</p>
     <p>Edit a material to add a <b>cover</b> — upload an image or paste a link — so it's easier to
-    spot at a glance in Grid view.</p>
-  `);
-}
-function infoXp(){
-  openInfoModal('How XP & timing work', `
-    <p>Every <b>10 pages</b> read or <b>10 minutes</b> listened earns <b>5 XP</b> (1 unit = 0.5 XP).
-    Your XP comes from the activities you log yourself.</p>
-    <p>Each <b>character</b> is simulated from three settings you control:
-    <b>average XP per day</b>, <b>intensity</b>, and <b>focus</b> (the reading / listening split).</p>
-    <p>The <b>Today</b> board runs for exactly <b>24 hours</b> and resets at <b>00:00</b>.
-    The <b>This week</b> board runs Monday to Sunday and resets at <b>Monday 00:00</b>.</p>
-  `);
-}
-function infoPuzzle(){
-  openInfoModal('How the puzzle works', `
-    <p>Upload any image and it gets split into a grid of blocks — <b>90 by default (10 × 9)</b>,
-    but you can pick any size from 2 × 2 up to 20 × 20.</p>
-    <p>Every <b>logged activity</b> counts as one task. Each block unlocks once you've completed
-    your chosen number of <b>tasks per block</b>.</p>
-    <p>When every block is revealed, your <b>Final Challenge</b> unlocks — a final task target you set
-    yourself. Complete it to finish the puzzle.</p>
+    spot at a glance in the list.</p>
   `);
 }
 function infoRoadmap(){
@@ -2288,7 +2100,7 @@ function overdueMaterialsBannerHTML(){
   <div class="card overdue-banner" style="margin-bottom:14px">
     <div class="card-head">
       <h2>⚠️ Overdue material${list.length === 1 ? '' : 's'} (${list.length})</h2>
-      <button class="link-btn" data-nav="materials">View all</button>
+      <button class="link-btn" data-nav="roadmap" data-rmview="materials">View all</button>
     </div>
     ${rows}
     ${list.length > shown.length ? `<div style="font-size:12.5px;color:var(--bad-fg);margin-top:8px">+ ${list.length - shown.length} more…</div>` : ''}
@@ -2315,7 +2127,7 @@ function dashboardProfilePrompt(){
       <div class="prompt-icon">👤</div>
       <div style="flex:1;min-width:200px">
         <div style="font-size:14.5px;font-weight:650;margin-bottom:2px">Create your profile</div>
-        <div style="font-size:13px;color:var(--muted)">Add your name, avatar, languages and goals — it personalizes the app and shows up on the leaderboard.</div>
+        <div style="font-size:13px;color:var(--muted)">Add your name, avatar, languages and goals — it personalizes the app.</div>
       </div>
       <button class="btn btn-primary" data-action="open-profile">Create profile</button>
     </div>
@@ -2388,14 +2200,12 @@ function viewProfile(){
         <div class="em-title" style="font-size:17px;font-weight:650;margin-bottom:6px">No profile yet</div>
         <div class="em-sub" style="font-size:13.5px;color:var(--muted);max-width:380px;margin:0 auto 18px;line-height:1.55">
           Create a profile to personalize your experience: pick an avatar, set your languages and level,
-          describe your goal, and choose the genres you love. Your profile also appears on the leaderboard.
+          describe your goal, and choose the genres you love.
         </div>
         <button class="btn btn-primary" data-action="open-profile">+ Create your profile</button>
       </div>
     </div>`;
   }
-  const entries = leaderboardEntries();
-  const youRank = entries.findIndex(e => e.you) + 1;
   const totalXp = xpFrom(s.readingTotal, s.listeningTotal);
   const activeDays = new Set(state.activities.map(a => a.logged_on)).size;
   const completeness = profileCompleteness();
@@ -2460,16 +2270,11 @@ function viewProfile(){
       </div>
     </div>
   </div>` : ''}
-  <div class="grid cols-3" style="margin-bottom:14px">
+  <div class="grid cols-2" style="margin-bottom:14px">
     <div class="card">
       <div class="stat-label">Total XP</div>
       <div class="stat-value">${fmt1(totalXp)} <small>XP</small></div>
       <div class="stat-sub">${fmt(s.readingTotal)} pages · ${fmt(s.listeningTotal)} min</div>
-    </div>
-    <div class="card">
-      <div class="stat-label">Leaderboard rank</div>
-      <div class="stat-value">#${youRank} <small>of ${entries.length}</small></div>
-      <div class="stat-sub">Full challenge standings</div>
     </div>
     <div class="card">
       <div class="stat-label">Active days</div>
@@ -2600,172 +2405,6 @@ function viewChallenges(){
 }
 
 /* =========================================================
-   Views — Puzzle
-   ========================================================= */
-function viewPuzzle(){
-  const p = state.puzzle;
-  const t = puzzleTotals();
-  const order = puzzleRevealOrder(p.rows, p.cols);
-  const stepOf = new Array(t.total);
-  order.forEach((cellIdx, step) => { stepOf[cellIdx] = step; });
-
-  const cols = p.cols, rows = p.rows;
-  const img = p.image || '';
-
-  let cells = '';
-  for (let i = 0; i < t.total; i++){
-    const r = Math.floor(i / cols);
-    const c = i % cols;
-    const rev = stepOf[i] < t.revealed;
-    const isNext = !rev && stepOf[i] === t.revealed && !t.blocksComplete;
-    const x = cols > 1 ? (c / (cols - 1)) * 100 : 50;
-    const y = rows > 1 ? (r / (rows - 1)) * 100 : 50;
-    const pos = rev ? ` style="--pz-pos:${x}% ${y}%"` : '';
-    cells += `<div class="pz-cell ${rev ? 'revealed' : 'locked'}${isNext ? ' next' : ''}"${pos}></div>`;
-  }
-
-  const boardStyleBits = [
-    `aspect-ratio:${cols}/${rows}`,
-    `max-width:min(680px, calc(64vh * ${cols} / ${rows}))`,
-    `grid-template-columns:repeat(${cols},1fr)`,
-    `grid-template-rows:repeat(${rows},1fr)`,
-    `--pz-size:${cols * 100}% ${rows * 100}%`
-  ];
-  if (img) boardStyleBits.push(`--pz-img:url('${img}')`);
-  const boardStyle = boardStyleBits.join(';');
-
-  let finalCard = '';
-  if (t.finalTarget > 0){
-    if (!t.blocksComplete){
-      const blocksRemaining = t.total - t.revealed;
-      finalCard = `
-      <div class="pz-final locked" style="margin-bottom:14px">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <div style="width:42px;height:42px;border-radius:13px;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:19px;flex:0 0 auto">🔒</div>
-          <div style="flex:1;min-width:180px">
-            <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Final Challenge</div>
-            <div style="font-size:15px;font-weight:650;margin-top:2px">${escapeHtml(p.finalTitle)}</div>
-            <div style="font-size:12.5px;color:var(--muted);margin-top:2px">Reveal all ${fmt(t.total)} blocks to unlock — ${fmt(blocksRemaining)} to go.</div>
-          </div>
-        </div>
-      </div>`;
-    } else if (t.finalComplete){
-      finalCard = `
-      <div class="pz-final done" style="margin-bottom:14px">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <div style="width:42px;height:42px;border-radius:13px;background:var(--good-bg);color:var(--good-fg);display:flex;align-items:center;justify-content:center;font-size:19px;flex:0 0 auto">🏆</div>
-          <div style="flex:1;min-width:180px">
-            <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Final Challenge</div>
-            <div style="font-size:15px;font-weight:650;margin-top:2px">${escapeHtml(p.finalTitle)}</div>
-            <div style="font-size:12.5px;color:var(--good-fg);font-weight:600;margin-top:2px">Complete ✓ — ${fmt(t.finalTarget)} / ${fmt(t.finalTarget)} tasks</div>
-          </div>
-        </div>
-        <div class="bar" style="margin-top:14px"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,var(--reading-2),var(--reading))"></div></div>
-      </div>`;
-    } else {
-      const pct = clamp(t.finalTarget ? t.finalProgress / t.finalTarget * 100 : 0, 0, 100);
-      const rem = Math.max(0, t.finalTarget - t.finalProgress);
-      finalCard = `
-      <div class="pz-final" style="margin-bottom:14px">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <div style="width:42px;height:42px;border-radius:13px;background:linear-gradient(140deg,var(--reading-2),var(--reading));color:var(--on-accent);display:flex;align-items:center;justify-content:center;font-size:19px;flex:0 0 auto">🏁</div>
-          <div style="flex:1;min-width:180px">
-            <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Final Challenge</div>
-            <div style="font-size:15px;font-weight:650;margin-top:2px">${escapeHtml(p.finalTitle)}</div>
-            <div style="font-size:12.5px;color:var(--muted);margin-top:2px">${fmt(t.finalProgress)} / ${fmt(t.finalTarget)} tasks · ${fmt(rem)} to go</div>
-          </div>
-          <div style="font-size:15px;font-weight:700;color:var(--reading);font-variant-numeric:tabular-nums">${pct.toFixed(0)}%</div>
-        </div>
-        <div class="bar" style="margin-top:14px"><div class="bar-fill" style="width:${pct}%;background:linear-gradient(90deg,var(--reading-2),var(--reading))"></div></div>
-      </div>`;
-    }
-  }
-
-  const completeBanner = t.allComplete ? `
-  <div class="card" style="margin-bottom:14px;background:linear-gradient(135deg,color-mix(in srgb, var(--good-bg) 75%, var(--surface)), var(--surface));border-color:color-mix(in srgb, var(--good-fg) 35%, var(--line))">
-    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-      <div style="width:52px;height:52px;border-radius:16px;background:var(--good-bg);color:var(--good-fg);display:flex;align-items:center;justify-content:center;font-size:26px;flex:0 0 auto">🎉</div>
-      <div style="flex:1;min-width:200px">
-        <div style="font-size:15.5px;font-weight:680;margin-bottom:2px">Puzzle complete!</div>
-        <div style="font-size:13px;color:var(--muted)">You finished every block and the final challenge.</div>
-      </div>
-    </div>
-  </div>` : '';
-
-  const noImagePrompt = !img ? `
-  <div class="card prompt-card" style="margin-bottom:14px">
-    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-      <div class="prompt-icon">🖼️</div>
-      <div style="flex:1;min-width:200px">
-        <div style="font-size:14.5px;font-weight:650;margin-bottom:2px">Add a picture</div>
-        <div style="font-size:13px;color:var(--muted)">Upload any image — it becomes the picture you uncover, block by block.</div>
-      </div>
-      <button class="btn btn-primary" data-action="open-puzzle">Upload image</button>
-    </div>
-  </div>` : '';
-
-  return `
-  ${completeBanner}
-  ${noImagePrompt}
-  <div class="card" style="margin-bottom:14px">
-    <div class="card-head">
-      <h2>Puzzle progress</h2>
-      <span style="font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums">${t.overallPct.toFixed(1)}%</span>
-    </div>
-    <div class="bar"><div class="bar-fill" style="width:${t.overallPct}%;background:linear-gradient(90deg,var(--reading-2),var(--reading))"></div></div>
-    <div class="grid cols-3" style="margin:16px 0 0">
-      <div>
-        <div class="stat-label">Blocks revealed</div>
-        <div class="stat-value">${fmt(t.revealed)} <small>/ ${fmt(t.total)}</small></div>
-        <div class="stat-sub">${t.blocksComplete ? 'All blocks revealed' : `${fmt(t.total - t.revealed)} left`}</div>
-      </div>
-      <div>
-        <div class="stat-label">Tasks logged</div>
-        <div class="stat-value">${fmt(t.tasks)}</div>
-        <div class="stat-sub">Every activity = 1 task</div>
-      </div>
-      <div>
-        <div class="stat-label">Next block in</div>
-        <div class="stat-value">${t.blocksComplete ? '—' : fmt(t.nextBlockIn)} <small>${t.blocksComplete ? '' : 'tasks'}</small></div>
-        <div class="stat-sub">${t.blocksComplete ? 'Blocks finished' : `${fmt(t.per)} tasks per block`}</div>
-      </div>
-    </div>
-  </div>
-  <div class="card" style="margin-bottom:14px">
-    <div class="card-head">
-      <h2>Your puzzle</h2>
-      <div style="display:flex;align-items:center;gap:6px">
-        ${img ? '<button class="btn btn-ghost btn-sm" data-action="open-puzzle">Edit</button>' : ''}
-        <button class="info-btn" data-action="info-puzzle" title="How the puzzle works" aria-label="How the puzzle works">i</button>
-      </div>
-    </div>
-    <div class="puzzle-wrap">
-      <div class="puzzle-board" style="${boardStyle}">${cells}</div>
-    </div>
-    <div class="pz-legend">
-      <span><i class="revealed"></i>Revealed</span>
-      <span><i class="locked"></i>Still hidden</span>
-      ${!t.blocksComplete ? '<span><i class="next"></i>Next to unlock</span>' : ''}
-      <span>${fmt(p.rows)} × ${fmt(p.cols)} · ${fmt(t.total)} blocks</span>
-    </div>
-  </div>
-  ${finalCard}
-  <div class="card">
-    <div class="card-head">
-      <h2>Puzzle settings</h2>
-      <button class="btn btn-ghost" data-action="open-puzzle">Edit puzzle</button>
-    </div>
-    <div class="grid cols-2" style="margin:0">
-      <div class="det"><div class="det-icon">🧩</div><div class="det-main"><div class="det-k">Grid size</div><div class="det-v">${fmt(p.rows)} rows × ${fmt(p.cols)} columns · ${fmt(t.total)} blocks</div></div></div>
-      <div class="det"><div class="det-icon">✅</div><div class="det-main"><div class="det-k">Tasks per block</div><div class="det-v">${fmt(t.per)} task${t.per === 1 ? '' : 's'} → 1 block</div></div></div>
-      <div class="det"><div class="det-icon">🏁</div><div class="det-main"><div class="det-k">Final challenge</div><div class="det-v">${escapeHtml(p.finalTitle)} · ${fmt(t.finalTarget)} task${t.finalTarget === 1 ? '' : 's'}</div></div></div>
-      <div class="det"><div class="det-icon">🎯</div><div class="det-main"><div class="det-k">Grand total</div><div class="det-v">${fmt(t.grandTotal)} tasks to finish everything</div></div></div>
-    </div>
-    <button class="btn btn-primary btn-block" data-action="open-puzzle">${img ? 'Edit puzzle' : 'Set up your puzzle'}</button>
-  </div>`;
-}
-
-/* =========================================================
    Views — Roadmap
    ========================================================= */
 function viewRoadmap(){
@@ -2829,13 +2468,24 @@ function viewRoadmap(){
     </div>
   </div>` : '';
 
+  // Challenge countdown clock
+  const challengeClock = `
+  <div class="card" style="margin-bottom:14px">
+    <div class="lb-clock">
+      <div class="lb-clock-cell"><span class="k">Now (24h)</span><span class="v mono" data-now>--:--:--</span></div>
+      <div class="lb-clock-main"><span class="k">This challenge ends in</span><strong class="mono" data-countdown="challenge">--:--:--</strong></div>
+      <div class="lb-clock-cell lb-clock-side"><span class="k">Ends at</span><span class="v mono">${escapeHtml(resetTimeLabel('challenge'))}</span></div>
+    </div>
+  </div>`;
+
   // View toggle
   const viewToggle = `
   <div class="rm-view-toggle">
     <div class="seg">
-      <button data-rmview="phases" class="${roadmapView === 'phases' ? 'active' : ''}">Phases</button>
-      <button data-rmview="weeks"  class="${roadmapView === 'weeks'  ? 'active' : ''}">Weeks</button>
-      <button data-rmview="days"   class="${roadmapView === 'days'   ? 'active' : ''}">All days</button>
+      <button data-rmview="phases"    class="${roadmapView === 'phases'    ? 'active' : ''}">Phases</button>
+      <button data-rmview="weeks"     class="${roadmapView === 'weeks'     ? 'active' : ''}">Weeks</button>
+      <button data-rmview="days"      class="${roadmapView === 'days'      ? 'active' : ''}">All days</button>
+      <button data-rmview="materials" class="${roadmapView === 'materials' ? 'active' : ''}">Materials</button>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-ghost btn-sm" data-action="rm-edit-phases">✎ Edit phases</button>
@@ -2916,6 +2566,7 @@ function viewRoadmap(){
   </div>`;
 
   // Body by view
+  const isMaterialsView = roadmapView === 'materials';
   let body = '';
   if (roadmapView === 'phases'){
     body = rm.phases.map(phase => roadmapPhaseHTML(phase, rm)).join('');
@@ -2924,11 +2575,13 @@ function viewRoadmap(){
       <div class="card" style="padding:0;overflow:hidden">
         ${rm.weeks.map(w => roadmapWeekHTML(w, rm, false)).join('')}
       </div>`;
-  } else {
+  } else if (roadmapView === 'days'){
     body = `
       <div class="card" style="padding:0;overflow:hidden">
         ${rm.weeks.map(w => roadmapWeekHTML(w, rm, true)).join('')}
       </div>`;
+  } else {
+    body = materialsLibraryHTML();
   }
 
   // Milestones section
@@ -2937,13 +2590,15 @@ function viewRoadmap(){
 
   return `
   ${todayBanner}
+  ${challengeClock}
   ${viewToggle}
-  ${statStrip}
-  ${projCard}
-  ${consistencyCard}
+  ${isMaterialsView ? '' : statStrip}
+  ${isMaterialsView ? '' : projCard}
+  ${isMaterialsView ? '' : consistencyCard}
 
   ${body}
 
+  ${isMaterialsView ? '' : `
   <div class="card" style="margin-top:14px">
     <div class="card-head">
       <h2>Milestones</h2>
@@ -2966,7 +2621,7 @@ function viewRoadmap(){
       <button class="btn btn-ghost" data-action="rm-add-milestone">＋ Add milestone</button>
       <button class="btn btn-ghost" data-action="open-settings">⚙ Challenge settings</button>
     </div>
-  </div>`;
+  </div>`}`;
 }
 
 function roadmapWeeklyChartHTML(rm){
@@ -3013,7 +2668,6 @@ function roadmapPhaseHTML(phase, rm){
   const isOpen = !!roadmapOpenPhases[phase.index];
   const weeks = phase.weekIndices.map(i => rm.weeks[i]).filter(Boolean);
   const statusCls = phase.status;
-  const phaseMats = phase.materials.map(id => materialById(id)).filter(Boolean);
 
   return `
   <div class="rm-phase">
@@ -3028,7 +2682,6 @@ function roadmapPhaseHTML(phase, rm){
           Day ${phase.startDay} – ${phase.endDay} · ${shortDate(phase.startDate)} → ${shortDate(phase.endDate)}
         </div>
         ${phase.focus ? `<div class="rm-phase-focus">${escapeHtml(phase.focus)}</div>` : ''}
-        ${phaseMats.length ? `<div class="tag-list" style="margin-top:8px">${phaseMats.map(m => `<span class="tag">${escapeHtml(m.title)}</span>`).join('')}</div>` : ''}
       </div>
       <div class="rm-phase-right">
         <div class="rm-phase-pct">${phase.pct.toFixed(0)}%</div>
@@ -3057,7 +2710,133 @@ function roadmapPhaseHTML(phase, rm){
         </div>
       </div>
     </div>
+    ${roadmapQueueHTML(phase)}
     ${isOpen ? weeks.map(w => roadmapWeekHTML(w, rm, false)).join('') : ''}
+  </div>`;
+}
+
+/* Ordered, reorderable "read this then that" material queue per phase —
+   merges the Materials library into the Roadmap, styled after the
+   Demo-RM phase-queue concept, with progress computed from real logged
+   activity / subtask data rather than fixed totals. */
+/* Combined progress across every queued material's own target (total_units).
+   Materials with no target set don't contribute units, but still count
+   toward hasUntargeted so the caller knows the bar is a partial picture. */
+/* A material can only belong to ONE phase's queue at a time. Returns the
+   set of material ids already claimed by any phase other than excludeIndex. */
+function materialsClaimedByOtherPhases(excludeIndex){
+  const claimed = new Set();
+  (state.roadmap.phases || []).forEach((p, i) => {
+    if (i === excludeIndex) return;
+    (p.materials || []).forEach(id => claimed.add(id));
+  });
+  return claimed;
+}
+function phaseUnitsTotals(phase){
+  const rawIds = state.roadmap.phases[phase.index]?.materials || [];
+  const items = rawIds.map(id => materialById(id)).filter(Boolean);
+  let logged = 0, total = 0, targeted = 0;
+  items.forEach(m => {
+    if (materialHasTarget(m)){
+      targeted++;
+      logged += materialLoggedUnits(m);
+      total += Number(m.total_units);
+    }
+  });
+  return { logged, total, targeted, count: items.length };
+}
+function roadmapQueueHTML(phase){
+  const rawIds = state.roadmap.phases[phase.index]?.materials || [];
+  const items = rawIds.map(id => materialById(id)).filter(Boolean);
+  const firstActiveIdx = items.findIndex(m => !materialIsComplete(m));
+
+  const rows = items.length
+    ? items.map((m, i) => roadmapQueueItemHTML(phase.index, m, i, {
+        isFirst: i === 0,
+        isLast: i === items.length - 1,
+        isNext: i === firstActiveIdx
+      })).join('')
+    : `<div class="rm-queue-empty">No materials queued for this phase yet — add one below.</div>`;
+
+  const allDone = items.length > 0 && items.every(materialIsComplete);
+  const completeBanner = allDone
+    ? `<div class="rm-queue-complete">✓ All materials in this phase are complete</div>` : '';
+
+  const ut = phaseUnitsTotals(phase);
+  const phaseBar = ut.targeted > 0 ? `
+    <div class="rm-queue-progress">
+      <div class="rm-progress-top">
+        <span>Queue progress</span>
+        <span class="v">${fmt(ut.logged)} / ${fmt(ut.total)} units${allDone ? ' · ✓ Complete' : ''}</span>
+      </div>
+      <div class="mat-progress-bar ${allDone ? 'complete' : 'reading'}"><i style="width:${ut.total ? clamp(ut.logged / ut.total * 100, 0, 100) : 0}%"></i></div>
+    </div>` : '';
+
+  const claimedElsewhere = materialsClaimedByOtherPhases(phase.index);
+  const options = state.materials
+    .filter(m => m.status !== 'archived' && !rawIds.includes(m.id) && !claimedElsewhere.has(m.id))
+    .sort((a, b) => a.title.localeCompare(b.title));
+
+  return `
+  <div class="rm-queue">
+    <div class="rm-queue-label">
+      <span class="ql">Reading &amp; listening queue</span>
+      <span class="qn">${items.length} item${items.length === 1 ? '' : 's'}</span>
+    </div>
+    ${phaseBar}
+    <div class="rm-queue-list">${rows}</div>
+    ${completeBanner}
+    <div class="rm-queue-add">
+      <select data-action="rm-add-phase-material" data-idx="${phase.index}">
+        <option value="">+ Add material to queue…</option>
+        ${options.map(m => `<option value="${m.id}">${escapeHtml(m.title)}</option>`).join('')}
+      </select>
+    </div>
+  </div>`;
+}
+function roadmapQueueItemHTML(phaseIndex, m, index, opts){
+  const hasTarget = materialHasTarget(m);
+  const pct = materialUnitPct(m);
+  const isDone = materialIsComplete(m);
+  const sp = materialSubtasksSummary(m);
+  const itemCls = ['rm-queue-item', isDone ? 'done' : '', opts.isNext ? 'next' : ''].filter(Boolean).join(' ');
+  const badge = opts.isNext ? '<span class="badge next">Now</span>'
+              : isDone ? '<span class="badge done">✓ Done</span>'
+              : '';
+  const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
+  const initials = (m.title || '?').trim().slice(0, 2).toUpperCase();
+  // Tasks mirror their material's own color/cover from the Materials
+  // section — no separate color setting here, and it updates automatically
+  // whenever the material's color or cover changes.
+  const matColor = m.color || MATERIAL_COLORS[0].hex;
+  const icon = m.cover_url
+    ? `<div class="rq-icon has-cover" style="background-image:url('${escapeHtml(m.cover_url)}')"></div>`
+    : `<div class="rq-icon" style="background:${escapeHtml(matColor)}">${escapeHtml(initials)}</div>`;
+  const subLabel = hasTarget
+    ? `${fmt(materialLoggedUnits(m))} / ${fmt(Number(m.total_units))} ${materialUnitLabel(m).toLowerCase()}`
+    : (sp ? `${sp.done}/${sp.total} subtasks` : materialTotalsText(materialTotals(m.id)));
+
+  return `
+  <div class="${itemCls}">
+    <span class="rq-pos">${index + 1}</span>
+    ${icon}
+    <div class="rq-main">
+      <div class="rq-top">
+        <span class="rq-title">${escapeHtml(m.title)}</span>
+        <span class="rq-badge">${badge || escapeHtml(typeLabel)}</span>
+      </div>
+      <div class="rq-sub">
+        <span>${escapeHtml(subLabel)}</span>
+        <span class="sep">·</span>
+        <span>${isDone ? 'Complete' : pct + '%'}</span>
+      </div>
+      <div class="rq-bar ${isDone ? 'complete' : ''}"><i style="width:${pct}%${isDone ? '' : `;background:${escapeHtml(matColor)}`}"></i></div>
+    </div>
+    <div class="rq-actions">
+      <button class="rq-action" data-action="rm-queue-up" data-phase="${phaseIndex}" data-idx="${index}" ${opts.isFirst ? 'disabled' : ''} title="Move up" aria-label="Move up">↑</button>
+      <button class="rq-action" data-action="rm-queue-down" data-phase="${phaseIndex}" data-idx="${index}" ${opts.isLast ? 'disabled' : ''} title="Move down" aria-label="Move down">↓</button>
+      <button class="rq-action danger" data-action="rm-queue-remove" data-phase="${phaseIndex}" data-idx="${index}" title="Remove" aria-label="Remove">✕</button>
+    </div>
   </div>`;
 }
 
@@ -3180,115 +2959,6 @@ function roadmapMilestoneHTML(m, today){
       <div class="rm-ms-actions">
         <button class="link-btn" data-action="rm-toggle-milestone" data-id="${m.id}">${m.done ? 'Undo' : 'Mark'}</button>
         <button class="link-btn danger" data-action="rm-delete-milestone" data-id="${m.id}">Delete</button>
-      </div>` : ''}
-  </div>`;
-}
-
-/* =========================================================
-   Views — Leaderboard
-   ========================================================= */
-function viewLeaderboard(){
-  const entries = leaderboardEntries();
-  const maxXp = Math.max(...entries.map(e => e.xp), 1);
-  const top = entries[0];
-  const you = entries.find(e => e.you);
-  const youRank = entries.indexOf(you) + 1;
-  const { from, to, label } = lbRangeISO();
-  const days = Math.max(1, diffDays(from, to) + 1);
-  const medals = ['🥇', '🥈', '🥉'];
-  const gapToLeader = top && !top.you ? top.xp - you.xp : 0;
-
-  const cdKind = leaderboardRange === 'today' ? 'day'
-               : leaderboardRange === 'week'  ? 'week'
-               : 'challenge';
-  const periodName = leaderboardRange === 'today' ? 'Today'
-                   : leaderboardRange === 'week'  ? 'This week'
-                   : 'This challenge';
-  const resetAt = resetTimeLabel(cdKind);
-  const resetVerb = leaderboardRange === 'today' ? 'Leaderboard resets at midnight'
-                  : leaderboardRange === 'week'  ? 'Leaderboard resets Monday 00:00'
-                  : 'Challenge finishes at the end date';
-  const youIsProfile = !!state.profile;
-  const rivalCount = (state.rivals || []).length;
-
-  return `
-  <div class="card" style="margin-bottom:14px">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px">
-      <div class="seg" id="lbSeg">
-        <button data-lbrange="today" class="${leaderboardRange === 'today' ? 'active' : ''}">Today</button>
-        <button data-lbrange="week"  class="${leaderboardRange === 'week'  ? 'active' : ''}">This week</button>
-        <button data-lbrange="all"   class="${leaderboardRange === 'all'   ? 'active' : ''}">Full challenge</button>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <div style="font-size:12.5px;color:var(--muted)">
-          ${escapeHtml(label)} · ${days} day${days === 1 ? '' : 's'} · 10 pages/min = 5 XP
-        </div>
-        <button class="info-btn" data-action="info-xp" title="How XP &amp; timing work" aria-label="How XP and timing work">i</button>
-      </div>
-    </div>
-    <div class="lb-clock">
-      <div class="lb-clock-cell"><span class="k">Now (24h)</span><span class="v mono" data-now>--:--:--</span></div>
-      <div class="lb-clock-main"><span class="k">${periodName} ends in</span><strong class="mono" data-countdown="${cdKind}">--:--:--</strong></div>
-      <div class="lb-clock-cell lb-clock-side"><span class="k">Finishes at</span><span class="v mono">${escapeHtml(resetAt)}</span></div>
-    </div>
-    <p class="hint" style="margin:10px 0 0">${escapeHtml(resetVerb)} — 24-hour clock.</p>
-  </div>
-  ${!youIsProfile ? `
-  <div class="card prompt-card" style="margin-bottom:14px">
-    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-      <div class="prompt-icon" style="width:44px;height:44px;border-radius:14px;font-size:20px">👤</div>
-      <div style="flex:1;min-width:200px">
-        <div style="font-size:14px;font-weight:650;margin-bottom:2px">You're shown as "You · @you"</div>
-        <div style="font-size:13px;color:var(--muted)">Create a profile to display your name, avatar and handle on the board.</div>
-      </div>
-      <button class="btn btn-primary" data-action="open-profile">Create profile</button>
-    </div>
-  </div>` : ''}
-  <div class="grid cols-3" style="margin-bottom:14px">
-    <div class="card">
-      <div class="stat-label">Your rank</div>
-      <div class="stat-value">#${youRank} <small>of ${entries.length}</small></div>
-      <div class="stat-sub">${youRank === 1 ? 'Top of the board 🎉' : `${fmt1(gapToLeader)} XP behind the leader`}</div>
-    </div>
-    <div class="card">
-      <div class="stat-label">Your XP</div>
-      <div class="stat-value">${fmt1(you.xp)} <small>XP</small></div>
-      <div class="stat-sub">${fmt(you.pages)} pages · ${fmt(you.minutes)} min</div>
-    </div>
-    <div class="card">
-      <div class="stat-label">Leader</div>
-      <div class="stat-value">${fmt1(top.xp)} <small>XP</small></div>
-      <div class="stat-sub">${escapeHtml(top.name)}${top.you ? " · that's you!" : ''}</div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-head">
-      <h2>Leaderboard</h2>
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-ghost btn-sm" data-action="new-rival" title="Add a new character">＋ Character</button>
-        <button class="info-btn" data-action="info-xp" title="How XP &amp; timing work" aria-label="How XP and timing work">i</button>
-      </div>
-    </div>
-    ${entries.map((e, i) => `
-      <div class="lb-row ${e.you ? 'you' : ''}">
-        <div class="lb-rank">${i < 3 ? medals[i] : (i + 1)}</div>
-        <div class="lb-avatar" style="background:${e.color};font-size:${e.isEmoji ? '18px' : '12.5px'}">
-          ${escapeHtml(e.initials)}
-        </div>
-        <div class="lb-main">
-          <div class="lb-top">
-            <span class="lb-name">${escapeHtml(e.name)} <span class="lb-handle">${escapeHtml(e.handle)}</span></span>
-            <span class="lb-xp">${fmt1(e.xp)} XP</span>
-          </div>
-          <div class="lb-bar"><i style="width:${clamp(e.xp / maxXp * 100, 0, 100)}%"></i></div>
-          <div class="lb-sub">${fmt(e.pages)} pages · ${fmt(e.minutes)} min</div>
-        </div>
-        ${e.you ? '' : `<button class="lb-edit" data-action="edit-rival" data-id="${e.id}" title="Edit character" aria-label="Edit character">✎</button>`}
-      </div>`).join('')}
-    ${rivalCount === 0 ? `
-      <div style="font-size:12.5px;color:var(--muted);padding:14px 0 0;text-align:center">
-        No characters yet — you're racing alone.
-        <button class="link-btn" data-action="new-rival" style="color:var(--reading)">Add a character</button>
       </div>` : ''}
   </div>`;
 }
@@ -3590,25 +3260,73 @@ function materialTotalsText(t){
   if (t.minutes) parts.push(fmt(t.minutes) + ' min');
   return parts.length ? parts.join(' · ') : 'Nothing logged yet';
 }
+/* ---- Target-based units (total_units / unit / episodes / manual override) ----
+   A material can carry an explicit target (m.total_units + m.unit). When it
+   does, logged-so-far is computed from real logged activities (pages for
+   reading, minutes for listening) unless a manual override (m.manual_units)
+   has been set, in which case that number is used directly instead. Older
+   materials with no target fall back to the previous subtask/status logic. */
+function materialHasTarget(m){ return Number(m.total_units) > 0; }
+function materialUnitLabel(m){ return m.unit || defaultUnitFor(m.default_category); }
+function materialLoggedUnits(m){
+  if (m.manual_units !== null && m.manual_units !== undefined && m.manual_units !== '') {
+    return Math.max(0, Number(m.manual_units) || 0);
+  }
+  const t = materialTotals(m.id);
+  return m.default_category === 'listening' ? t.minutes : t.pages;
+}
+function materialEpisodesLogged(m){
+  if (m.manual_episodes !== null && m.manual_episodes !== undefined && m.manual_episodes !== '') {
+    return Math.max(0, Number(m.manual_episodes) || 0);
+  }
+  return materialTotals(m.id).count;
+}
+function materialUnitPct(m){
+  if (materialHasTarget(m)) return clamp(Math.round(materialLoggedUnits(m) / Number(m.total_units) * 100), 0, 100);
+  return materialProgressPct(m);
+}
+function materialIsComplete(m){
+  if (materialHasTarget(m)) return materialLoggedUnits(m) >= Number(m.total_units);
+  return m.status === 'completed';
+}
+/* Which phases (by name) a material is queued in, in phase order. */
+function materialPhaseTags(m){
+  const phases = (state.roadmap && state.roadmap.phases) || [];
+  return phases
+    .map((p, i) => ((p.materials || []).includes(m.id) ? { index: i, name: p.name || `Phase ${i + 1}` } : null))
+    .filter(Boolean);
+}
+
+function materialProgressPct(m){
+  const sp = materialSubtasksSummary(m);
+  if (sp) return sp.total ? Math.round(sp.done / sp.total * 100) : 0;
+  if (m.status === 'completed') return 100;
+  return materialTotals(m.id).count > 0 ? 50 : 0;
+}
+function materialProgressBarHTML(m){
+  const sp = materialSubtasksSummary(m);
+  const hasTarget = materialHasTarget(m);
+  const pct = materialUnitPct(m);
+  const isDone = materialIsComplete(m);
+  const barCls = isDone ? 'complete' : (m.default_category || 'reading');
+  const secondary = hasTarget
+    ? `${fmt(materialLoggedUnits(m))} / ${fmt(Number(m.total_units))} ${materialUnitLabel(m).toLowerCase()}`
+    : (sp ? `${sp.done}/${sp.total} subtasks done` : materialTotalsText(materialTotals(m.id)));
+  const pctLabel = isDone ? '✓ Done'
+    : ((hasTarget || sp) ? pct + '%' : (pct > 0 ? 'In progress' : 'Not started'));
+  return `
+    <div class="mat-progress">
+      <div class="mat-progress-top">
+        <span class="mat-progress-pct${isDone ? ' complete' : ''}">${pctLabel}</span>
+        <span class="mat-progress-sub">${escapeHtml(secondary)}</span>
+      </div>
+      <div class="mat-progress-bar ${barCls}"><i style="width:${pct}%"></i></div>
+    </div>`;
+}
 const MATERIAL_STATUS_RANK = { active: 0, completed: 1, archived: 2 };
 function materialSorter(a, b){
   const r = (MATERIAL_STATUS_RANK[a.status] ?? 3) - (MATERIAL_STATUS_RANK[b.status] ?? 3);
   return r !== 0 ? r : a.title.localeCompare(b.title);
-}
-function materialDeadlineChipHTML(m){
-  if (!m.deadline) return '';
-  return `
-    <span class="mat-deadline-chip">
-      📅 ${escapeHtml(fmtDeadlineDate(m.deadline))} · <b class="mono" data-countdown="material:${m.id}">--:--:--</b>
-    </span>`;
-}
-function materialDeadlineBadgeHTML(m){
-  if (!m.deadline) return '';
-  return `
-    <div class="mat-deadline-badge">
-      <span class="dl-date">Due ${escapeHtml(fmtDeadlineDate(m.deadline))}</span>
-      <span class="dl-cd mono" data-countdown="material:${m.id}">--:--:--</span>
-    </div>`;
 }
 function materialSubtasksSummary(m){
   const list = Array.isArray(m.subtasks) ? m.subtasks : [];
@@ -3652,7 +3370,7 @@ function materialRowHTML(m){
     <div class="mat-main">
       <div class="mat-title">${escapeHtml(m.title)}<span class="pill ${m.status}">${m.status}</span></div>
       <div class="mat-sub">${escapeHtml(m.creator || '—')} · ${escapeHtml(typeLabel)}</div>
-      <div class="mat-tot">${materialTotalsText(t)}${t.count ? ` · ${t.count} entr${t.count === 1 ? 'y' : 'ies'}` : ''}</div>
+      ${materialProgressBarHTML(m)}
       ${m.deadline ? `<div class="mat-deadline-line">📅 Due ${escapeHtml(fmtDeadlineDate(m.deadline))} · <b class="mono" data-countdown="material:${m.id}">--:--:--</b></div>` : ''}
       ${materialSubtaskProgressHTML(m)}
     </div>
@@ -3663,35 +3381,73 @@ function materialRowHTML(m){
   </div>`;
 }
 function materialCardHTML(m){
-  const t = materialTotals(m.id);
+  const hasTarget = materialHasTarget(m);
+  const logged = materialLoggedUnits(m);
+  const total = Number(m.total_units) || 0;
+  const unit = materialUnitLabel(m).toLowerCase();
+  const pct = materialUnitPct(m);
+  const isDone = materialIsComplete(m);
+  const barCls = isDone ? 'complete' : (m.default_category || 'reading');
   const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
   const initials = (m.title || '?').trim().slice(0, 2).toUpperCase();
-  const actions = `
-    <div class="mat-card-actions">
-      <button class="link-btn" data-action="edit-material" data-id="${m.id}">Edit</button>
-      <button class="link-btn danger" data-action="delete-material" data-id="${m.id}" aria-label="Delete">✕</button>
-    </div>`;
-  const top = m.cover_url
-    ? `<div class="mat-card-cover" style="background-image:url('${escapeHtml(m.cover_url)}')">${actions}${materialDeadlineBadgeHTML(m)}</div>`
-    : `<div class="mat-card-top">
-         <div class="mat-icon ${m.default_category}">${escapeHtml(initials)}</div>
-         ${actions}
-       </div>`;
+  const color = m.color || MATERIAL_COLORS[0].hex;
+  const icon = m.cover_url
+    ? `<div class="mat-card-icon has-cover" style="background-image:url('${escapeHtml(m.cover_url)}')"></div>`
+    : `<div class="mat-card-icon" style="background:${escapeHtml(color)}">${m.emoji ? escapeHtml(m.emoji) : escapeHtml(initials)}</div>`;
+  const episodesTotal = Number(m.episodes_total) || 0;
+  const episodesRow = episodesTotal > 0
+    ? `<span class="mat-card-episodes">${fmt(materialEpisodesLogged(m))} / ${fmt(episodesTotal)} episodes</span>` : '';
+  const statusKind = isDone ? 'good' : (pct > 0 ? 'warn' : 'neutral');
+  const statusText = isDone ? '✓ Complete' : (pct > 0 ? 'In progress' : 'Not started');
+  const figure = hasTarget
+    ? `${fmt(logged)} / ${fmt(total)} ${escapeHtml(unit)}`
+    : materialTotalsText(materialTotals(m.id));
+  const phaseTags = materialPhaseTags(m);
+
   return `
   <div class="mat-card">
-    ${top}
-    <div class="mat-card-title">${escapeHtml(m.title)}</div>
-    <div class="mat-card-sub">${escapeHtml(m.creator || '—')}</div>
-    <div class="mat-card-pills">
-      <span class="pill ${m.status}">${m.status}</span>
-      <span class="mat-type-pill">${escapeHtml(typeLabel)}</span>
+    <div class="mat-card-top">
+      ${icon}
+      <div class="mat-card-titles">
+        <div class="mat-card-title">${escapeHtml(m.title)}</div>
+        <div class="mat-card-sub">${escapeHtml(m.creator || '—')} · ${escapeHtml(typeLabel)}</div>
+      </div>
     </div>
-    ${!m.cover_url ? materialDeadlineChipHTML(m) : ''}
-    <div class="mat-card-tot">${materialTotalsText(t)}${t.count ? ` · ${t.count} entr${t.count === 1 ? 'y' : 'ies'}` : ''}</div>
-    ${materialSubtaskProgressHTML(m)}
+    <div class="mat-card-stats">
+      <span class="mat-card-figure">${figure}</span>
+      ${episodesRow}
+    </div>
+    <div class="mat-progress-bar ${barCls}"><i style="width:${pct}%"></i></div>
+    <div class="mat-card-status-row">
+      <span class="status-pill ${statusKind}">${statusText}</span>
+      <span class="mat-card-pct">${pct}%</span>
+    </div>
+    ${phaseTags.length ? `
+    <div class="mat-card-queued">
+      <span class="qlabel">Queued in</span>
+      ${phaseTags.map(t => `<span class="tag">${escapeHtml(t.name)}</span>`).join('')}
+    </div>` : ''}
+    <div class="mat-card-actions">
+      <button class="link-btn" data-action="edit-material" data-id="${m.id}">Edit</button>
+      <button class="link-btn danger" data-action="delete-material" data-id="${m.id}">Delete</button>
+    </div>
   </div>`;
 }
-function viewMaterials(){
+function libraryStatsHTML(all){
+  const withTarget = all.filter(materialHasTarget);
+  const totalLogged = withTarget.reduce((s, m) => s + materialLoggedUnits(m), 0);
+  const totalTarget = withTarget.reduce((s, m) => s + Number(m.total_units), 0);
+  const completeCount = all.filter(materialIsComplete).length;
+  const overallPct = totalTarget > 0 ? (totalLogged / totalTarget * 100) : 0;
+  return `
+  <div class="lib-stats">
+    <div class="lib-stat"><b>${all.length}</b> material${all.length === 1 ? '' : 's'}</div>
+    ${totalTarget > 0 ? `<div class="lib-stat"><b>${fmt(totalLogged)}</b> / ${fmt(totalTarget)} total units logged</div>` : ''}
+    <div class="lib-stat"><b>${completeCount}</b> complete</div>
+    ${totalTarget > 0 ? `<div class="lib-stat">Overall <b>${overallPct.toFixed(1)}%</b></div>` : ''}
+  </div>`;
+}
+function materialsLibraryHTML(){
   const all = state.materials;
   const typeCounts = {};
   TYPE_ORDER.forEach(t => { typeCounts[t] = 0; });
@@ -3714,15 +3470,8 @@ function viewMaterials(){
     items: filtered.filter(m => m.default_category === cat).sort(materialSorter)
   })).filter(g => g.items.length);
   const hasFilter = !!q || materialsFilter.type !== 'all' || materialsFilter.category !== 'all';
-  const hiddenActiveCount = (!materialsFiltersOpen ? 1 : 0) *
-    ((materialsFilter.category !== 'all' ? 1 : 0) + (materialsFilter.type !== 'all' ? 1 : 0));
+  const hiddenActiveCount = (!materialsFiltersOpen && materialsFilter.type !== 'all') ? 1 : 0;
 
-  const catChips = `
-    <div class="mat-chip-row">
-      <button class="chip ${materialsFilter.category === 'all' ? 'active' : ''}" data-matcat="all">All materials</button>
-      <button class="chip ${materialsFilter.category === 'reading' ? 'active' : ''}" data-matcat="reading">Reading</button>
-      <button class="chip ${materialsFilter.category === 'listening' ? 'active' : ''}" data-matcat="listening">Listening</button>
-    </div>`;
   const typeChips = `
     <div class="mat-chip-row">
       <button class="chip ${materialsFilter.type === 'all' ? 'active' : ''}" data-mattype="all">All types</button>
@@ -3733,19 +3482,9 @@ function viewMaterials(){
         </button>
       `).join('')}
     </div>`;
-  const body = groups.length
-    ? groups.map(g => `
-        <div class="mat-group-head">
-          <span class="gdot ${g.id}"></span>
-          <span class="gt">${escapeHtml(g.label)}</span>
-          <span class="gn">${g.items.length}</span>
-          <span class="gline"></span>
-        </div>
-        ${materialsView === 'grid'
-          ? `<div class="mat-grid">${g.items.map(materialCardHTML).join('')}</div>`
-          : `<div>${g.items.map(materialRowHTML).join('')}</div>`}
-      `).join('')
-    : `<div class="empty">
+
+  const emptyState = `
+       <div class="empty">
          <div class="em-icon">${all.length ? '🔍' : '📚'}</div>
          <div class="em-title">${all.length ? 'No materials match' : 'No materials yet'}</div>
          <div class="em-sub">${all.length
@@ -3759,11 +3498,43 @@ function viewMaterials(){
               </div>`}
        </div>`;
 
+  const gridBody = filtered.length
+    ? `<div class="mat-grid">${filtered.slice().sort(materialSorter).map(materialCardHTML).join('')}</div>`
+    : emptyState;
+
+  const listBody = groups.length
+    ? groups.map(g => `
+        <div class="mat-group-head">
+          <span class="gdot ${g.id}"></span>
+          <span class="gt">${escapeHtml(g.label)}</span>
+          <span class="gn">${g.items.length}</span>
+          <span class="gline"></span>
+        </div>
+        <div>${g.items.map(materialRowHTML).join('')}</div>
+      `).join('')
+    : emptyState;
+
   return `
   <div class="card" style="margin-bottom:14px">
-    <div class="mat-toolbar">
+    <div class="mat-toolbar mat-toolbar-top">
+      <h2 class="mat-lib-title">Materials Library</h2>
+      <div class="mat-toolbar-right">
+        <div class="seg">
+          <button class="${materialsFilter.category === 'all' ? 'active' : ''}" data-matcat="all">All</button>
+          <button class="${materialsFilter.category === 'reading' ? 'active' : ''}" data-matcat="reading">Reading</button>
+          <button class="${materialsFilter.category === 'listening' ? 'active' : ''}" data-matcat="listening">Listening</button>
+        </div>
+        <button class="btn btn-primary" data-action="add-material">+ Add material</button>
+      </div>
+    </div>
+    ${libraryStatsHTML(all)}
+    <div class="mat-toolbar" style="margin-top:14px">
       <div class="mat-search">
         <input type="text" id="matSearch" placeholder="Search materials…" value="${escapeHtml(materialsFilter.q)}" autocomplete="off">
+      </div>
+      <div class="seg">
+        <button class="${materialsViewMode === 'grid' ? 'active' : ''}" data-matview="grid">Grid</button>
+        <button class="${materialsViewMode === 'list' ? 'active' : ''}" data-matview="list">List</button>
       </div>
       <button class="btn btn-ghost filter-toggle" data-action="toggle-mat-filters"
               aria-expanded="${materialsFiltersOpen ? 'true' : 'false'}"
@@ -3771,14 +3542,9 @@ function viewMaterials(){
         ${materialsFiltersOpen ? 'Filters ▾' : 'Filters ▸'}
         ${hiddenActiveCount ? `<span class="fcount">${hiddenActiveCount}</span>` : ''}
       </button>
-      <div class="seg" id="matViewSeg">
-        <button data-matview="grid" class="${materialsView === 'grid' ? 'active' : ''}" title="Grid view">▦ Grid</button>
-        <button data-matview="list" class="${materialsView === 'list' ? 'active' : ''}" title="List view">☰ List</button>
-      </div>
       <button class="btn btn-ghost" data-action="import-materials">⬆ CSV</button>
-      <button class="btn btn-primary" data-action="add-material">+ Add</button>
     </div>
-    <div class="mat-filters-wrap ${materialsFiltersOpen ? '' : 'collapsed'}">${catChips}${typeChips}</div>
+    <div class="mat-filters-wrap ${materialsFiltersOpen ? '' : 'collapsed'}">${typeChips}</div>
     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap">
       <div style="font-size:12.5px;color:var(--muted)">
         ${filtered.length} of ${all.length} material${all.length === 1 ? '' : 's'}${hasFilter ? ' · filtered' : ''}
@@ -3788,10 +3554,10 @@ function viewMaterials(){
   </div>
   <div class="card" style="margin-bottom:14px">
     <div class="card-head">
-      <h2>Materials by type</h2>
+      <h2>${materialsViewMode === 'grid' ? 'Library' : 'Materials by type'}</h2>
       <button class="info-btn" data-action="info-materials" title="How materials work" aria-label="How materials work">i</button>
     </div>
-    ${body}
+    ${materialsViewMode === 'grid' ? gridBody : listBody}
   </div>`;
 }
 
@@ -3803,12 +3569,10 @@ function render(){
   if (currentView === 'dashboard')        app.innerHTML = viewDashboard();
   else if (currentView === 'profile')     app.innerHTML = viewProfile();
   else if (currentView === 'challenges')  app.innerHTML = viewChallenges();
-  else if (currentView === 'puzzle')      app.innerHTML = viewPuzzle();
   else if (currentView === 'roadmap')     app.innerHTML = viewRoadmap();
-  else if (currentView === 'leaderboard') app.innerHTML = viewLeaderboard();
   else if (currentView === 'history')     app.innerHTML = viewHistory();
   else if (currentView === 'progress')    app.innerHTML = viewProgress();
-  else                                    app.innerHTML = viewMaterials();
+  else                                    app.innerHTML = viewDashboard();
 
   updateHeader();
   updateTabs();
@@ -3944,7 +3708,7 @@ function openProfileModal(mode){
           <div class="form-section-title"><span class="dotnum">1</span> Avatar &amp; identity</div>
           <div class="avatar-preview-row">
             <div class="avatar-preview" id="avatarPreview" style="background:${escapeHtml(draft.avatar_color)}"></div>
-            <div class="avatar-preview-label">Pick an emoji and a color — this is how you'll appear on the leaderboard and in the header.</div>
+            <div class="avatar-preview-label">Pick an emoji and a color — this is how you'll appear in the header.</div>
           </div>
           <div class="picker-label">Emoji</div>
           <div class="emoji-grid" id="emojiGrid">
@@ -4125,367 +3889,6 @@ function openProfileModal(mode){
 }
 
 /* =========================================================
-   Character modal
-   ========================================================= */
-function openRivalModal(rival){
-  const editing = !!rival;
-  const r = rival || {
-    name: '', handle: '', color: AVATAR_COLORS[0], avatar_emoji: '',
-    avgXp: 50, intensity: 3, split: 0.5, phase: Math.random() * 10
-  };
-  const draft = {
-    name: r.name || '',
-    handle: String(r.handle || '').replace(/^@+/, ''),
-    color: r.color || AVATAR_COLORS[0],
-    avatar_emoji: r.avatar_emoji || '',
-    avgXp: Math.max(0, Number(r.avgXp) || 0),
-    intensity: clamp(Number(r.intensity) || 3, 1, 5),
-    split: clamp(Number(r.split) ?? 0.5, 0, 1),
-    phase: Number(r.phase) || 0
-  };
-
-  openModal(`
-    <div class="modal-backdrop" data-action="close-modal"></div>
-    <div class="modal" role="dialog" aria-modal="true">
-      <div class="modal-head">
-        <h2>${editing ? 'Edit character' : 'New character'}</h2>
-        <button class="icon-btn" data-action="close-modal" aria-label="Close">✕</button>
-      </div>
-      <form id="rivalForm" class="modal-body" autocomplete="off">
-        <div class="form-section">
-          <div class="form-section-title"><span class="dotnum">1</span> Avatar &amp; identity</div>
-          <div class="avatar-preview-row">
-            <div class="avatar-preview" id="rivalPreview" style="background:${escapeHtml(draft.color)}"></div>
-            <div class="avatar-preview-label">How this character appears on the leaderboard.</div>
-          </div>
-          <div class="picker-label">Emoji</div>
-          <div class="emoji-grid" id="rivalEmojiGrid">
-            <button type="button" data-emoji="" title="Use initials" class="${draft.avatar_emoji === '' ? 'active' : ''}" style="font-size:11px;font-weight:700;color:var(--muted)">A–Z</button>
-            ${AVATAR_EMOJIS.map(e => `
-              <button type="button" data-emoji="${e}" class="${draft.avatar_emoji === e ? 'active' : ''}">${e}</button>
-            `).join('')}
-          </div>
-          <div class="picker-label">Color</div>
-          <div class="swatch-row" id="rivalSwatchRow">
-            ${AVATAR_COLORS.map(c => `
-              <button type="button" class="swatch ${draft.color === c ? 'active' : ''}" data-color="${c}" style="background:${c}" aria-label="Color ${c}"></button>
-            `).join('')}
-          </div>
-          <div class="field">
-            <label for="rivalName">Display name <span style="color:var(--bad-fg)">*</span></label>
-            <input type="text" id="rivalName" required maxlength="40" placeholder="e.g. Luna Park" value="${escapeHtml(draft.name)}">
-          </div>
-          <div class="field">
-            <label for="rivalHandle">Handle</label>
-            <input type="text" id="rivalHandle" maxlength="24" placeholder="e.g. luna_reads" value="${escapeHtml(draft.handle)}">
-          </div>
-        </div>
-        <div class="form-section">
-          <div class="form-section-title"><span class="dotnum">2</span> Performance</div>
-          <div class="field">
-            <label for="rivalAvgXp">Average XP per day</label>
-            <div class="amount-row">
-              <input type="number" id="rivalAvgXp" min="0" max="500" step="0.5" inputmode="decimal" value="${draft.avgXp}">
-              <div class="seg" style="align-items:center"><span style="font-size:12.5px;color:var(--muted);padding:0 12px">XP / day</span></div>
-            </div>
-            <div style="font-size:12px;color:var(--muted);margin-top:-4px" id="rivalXpPreview"></div>
-          </div>
-          <div class="field">
-            <label for="rivalIntensity">Intensity <span style="font-weight:500;text-transform:none;color:var(--muted)" id="rivalIntensityLabel"></span></label>
-            <input type="range" id="rivalIntensity" min="1" max="5" step="0.1" value="${draft.intensity}">
-            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:2px"><span>Casual · erratic</span><span>Intense · consistent</span></div>
-          </div>
-          <div class="field">
-            <label for="rivalSplit">Focus <span style="font-weight:500;text-transform:none;color:var(--muted)" id="rivalSplitLabel"></span></label>
-            <input type="range" id="rivalSplit" min="0" max="100" step="5" value="${Math.round(draft.split * 100)}">
-            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:2px"><span>🎧 Listening</span><span>📖 Reading</span></div>
-          </div>
-          <p class="hint" style="margin-top:4px">
-            <b>Average XP</b> sets the daily pace. <b>Intensity</b> controls consistency.
-          </p>
-        </div>
-        <div class="modal-actions" style="margin-top:20px">
-          ${editing ? `<button type="button" class="btn btn-ghost" data-action="delete-rival" data-id="${r.id}" style="color:var(--bad-fg);margin-right:auto">Delete</button>` : ''}
-          <button type="button" class="btn btn-ghost" data-action="close-modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">${editing ? 'Save character' : 'Create character'}</button>
-        </div>
-      </form>
-    </div>
-  `);
-
-  const preview = $('#rivalPreview');
-  const avgInput = $('#rivalAvgXp');
-  const intensityIn = $('#rivalIntensity');
-  const splitIn = $('#rivalSplit');
-  const xpPreview = $('#rivalXpPreview');
-  const intensityLbl = $('#rivalIntensityLabel');
-  const splitLbl = $('#rivalSplitLabel');
-
-  function refresh(){
-    const name = $('#rivalName').value.trim() || '?';
-    preview.textContent = draft.avatar_emoji || initialsOf(name);
-    preview.style.background = draft.color;
-    preview.style.fontSize = draft.avatar_emoji ? '34px' : '26px';
-    const avg = Math.max(0, Number(avgInput.value) || 0);
-    const split = clamp(Number(splitIn.value) / 100, 0, 1);
-    const readXp = avg * split;
-    const listenXp = avg * (1 - split);
-    const pages = Math.round(readXp * 2);
-    const minutes = Math.round(listenXp * 2);
-    xpPreview.textContent = `≈ ${fmt(pages)} pages + ${fmt(minutes)} min per day`;
-    const iv = Number(intensityIn.value) || 3;
-    let il;
-    if (iv < 2) il = '· very casual';
-    else if (iv < 3) il = '· casual';
-    else if (iv < 3.8) il = '· steady';
-    else if (iv < 4.5) il = '· intense';
-    else il = '· relentless';
-    intensityLbl.textContent = il;
-    let sl;
-    if (split >= 0.8) sl = '· mostly reading';
-    else if (split >= 0.6) sl = '· reading-leaning';
-    else if (split > 0.4) sl = '· balanced';
-    else if (split > 0.2) sl = '· listening-leaning';
-    else sl = '· mostly listening';
-    splitLbl.textContent = sl;
-  }
-  $('#rivalEmojiGrid').addEventListener('click', e => {
-    const b = e.target.closest('button[data-emoji]'); if (!b) return;
-    draft.avatar_emoji = b.dataset.emoji;
-    $$('#rivalEmojiGrid button').forEach(x => x.classList.toggle('active', x === b));
-    refresh();
-  });
-  $('#rivalSwatchRow').addEventListener('click', e => {
-    const b = e.target.closest('button[data-color]'); if (!b) return;
-    draft.color = b.dataset.color;
-    $$('#rivalSwatchRow .swatch').forEach(x => x.classList.toggle('active', x === b));
-    refresh();
-  });
-  $('#rivalName').addEventListener('input', refresh);
-  avgInput.addEventListener('input', refresh);
-  intensityIn.addEventListener('input', refresh);
-  splitIn.addEventListener('input', refresh);
-  refresh();
-
-  $('#rivalForm').addEventListener('submit', e => {
-    e.preventDefault();
-    const name = $('#rivalName').value.trim();
-    if (!name){ $('#rivalName').focus(); return; }
-    const handle = $('#rivalHandle').value.trim().replace(/^@+/, '');
-    const avgXp = Math.max(0, Number(avgInput.value) || 0);
-    const intensity = clamp(Number(intensityIn.value) || 3, 1, 5);
-    const split = clamp(Number(splitIn.value) / 100, 0, 1);
-    if (editing){
-      const target = state.rivals.find(x => x.id === r.id);
-      if (target) Object.assign(target, {
-        name, handle,
-        avatar_emoji: draft.avatar_emoji,
-        color: draft.color,
-        avgXp, intensity, split
-      });
-    } else {
-      state.rivals.push({
-        id: uid('r'), name, handle,
-        avatar_emoji: draft.avatar_emoji,
-        color: draft.color,
-        avgXp, intensity, split,
-        phase: Math.random() * 10
-      });
-    }
-    saveState(); closeModal(); render();
-  });
-  setTimeout(() => $('#rivalName').focus(), 60);
-}
-
-/* =========================================================
-   Puzzle modal
-   ========================================================= */
-const PUZZLE_GRID_PRESETS = [
-  { label: '3 × 3',   rows: 3,  cols: 3  },
-  { label: '4 × 4',   rows: 4,  cols: 4  },
-  { label: '5 × 5',   rows: 5,  cols: 5  },
-  { label: '6 × 6',   rows: 6,  cols: 6  },
-  { label: '8 × 8',   rows: 8,  cols: 8  },
-  { label: '9 × 10',  rows: 9,  cols: 10 },
-  { label: '10 × 10', rows: 10, cols: 10 },
-  { label: '12 × 12', rows: 12, cols: 12 }
-];
-function openPuzzleModal(){
-  const p = state.puzzle;
-  const draft = {
-    image: p.image,
-    rows: p.rows, cols: p.cols,
-    tasksPerBlock: p.tasksPerBlock,
-    finalTitle: p.finalTitle,
-    finalTarget: p.finalTarget
-  };
-
-  openModal(`
-    <div class="modal-backdrop" data-action="close-modal"></div>
-    <div class="modal" role="dialog" aria-modal="true">
-      <div class="modal-head">
-        <h2>Puzzle settings</h2>
-        <button class="icon-btn" data-action="close-modal" aria-label="Close">✕</button>
-      </div>
-      <form id="puzzleForm" class="modal-body" autocomplete="off">
-        <div class="form-section">
-          <div class="form-section-title"><span class="dotnum">1</span> Image</div>
-          <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px">
-            <div class="pz-thumb" id="pzThumb"></div>
-            <div style="flex:1;min-width:170px">
-              <p style="font-size:12.5px;color:var(--muted);line-height:1.5;margin-bottom:10px">
-                Upload any picture. Large images are automatically resized and compressed.
-              </p>
-              <div style="display:flex;gap:8px;flex-wrap:wrap">
-                <button type="button" class="btn btn-ghost" id="pzUploadBtn">⬆ Upload image</button>
-                <button type="button" class="btn btn-ghost" id="pzRemoveBtn" style="color:var(--bad-fg)">Remove</button>
-              </div>
-            </div>
-          </div>
-          <input type="file" id="pzFile" accept="image/*" style="display:none">
-        </div>
-        <div class="form-section">
-          <div class="form-section-title"><span class="dotnum">2</span> Grid size</div>
-          <div class="chips" id="pzGridChips">
-            ${PUZZLE_GRID_PRESETS.map(g => `
-              <button type="button" class="chip" data-rows="${g.rows}" data-cols="${g.cols}">${g.label}</button>
-            `).join('')}
-          </div>
-          <div class="two-col" style="margin-top:14px">
-            <div class="field"><label for="pzRows">Rows</label><input type="number" id="pzRows" min="2" max="20" step="1" value="${draft.rows}"></div>
-            <div class="field"><label for="pzCols">Columns</label><input type="number" id="pzCols" min="2" max="20" step="1" value="${draft.cols}"></div>
-          </div>
-          <p class="hint" id="pzGridSummary" style="margin-top:-4px"></p>
-        </div>
-        <div class="form-section">
-          <div class="form-section-title"><span class="dotnum">3</span> Progression</div>
-          <div class="field">
-            <label for="pzTasksPerBlock">Tasks per block</label>
-            <input type="number" id="pzTasksPerBlock" min="1" max="100" step="1" value="${draft.tasksPerBlock}">
-            <div style="font-size:11.5px;color:var(--muted);margin-top:-4px">One task = one logged activity.</div>
-          </div>
-          <p class="hint" id="pzBlockSummary" style="margin-top:2px"></p>
-          <div class="field" style="margin-top:14px">
-            <label for="pzFinalTitle">Final challenge name</label>
-            <input type="text" id="pzFinalTitle" maxlength="60" value="${escapeHtml(draft.finalTitle)}" placeholder="e.g. Finish the whole book">
-          </div>
-          <div class="field">
-            <label for="pzFinalTarget">Final challenge tasks</label>
-            <input type="number" id="pzFinalTarget" min="0" max="10000" step="1" value="${draft.finalTarget}">
-            <div style="font-size:11.5px;color:var(--muted);margin-top:-4px">Extra tasks on top of the blocks. Set 0 to skip.</div>
-          </div>
-          <p class="hint" id="pzTotalSummary" style="margin-top:2px"></p>
-        </div>
-        <div class="modal-actions" style="margin-top:20px">
-          <button type="button" class="btn btn-ghost" data-action="close-modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save puzzle</button>
-        </div>
-      </form>
-    </div>
-  `);
-
-  const thumb = $('#pzThumb');
-  const fileInput = $('#pzFile');
-  const rowsIn = $('#pzRows');
-  const colsIn = $('#pzCols');
-  const perIn = $('#pzTasksPerBlock');
-  const finalIn = $('#pzFinalTarget');
-  const gridSum = $('#pzGridSummary');
-  const blockSum = $('#pzBlockSummary');
-  const totalSum = $('#pzTotalSummary');
-
-  function refreshThumb(){
-    if (draft.image){
-      thumb.style.backgroundImage = `url('${draft.image}')`;
-      thumb.style.backgroundSize = 'cover';
-      thumb.textContent = '';
-    } else {
-      thumb.style.backgroundImage = '';
-      thumb.textContent = 'No image yet';
-    }
-  }
-  function refreshChips(){
-    $$('#pzGridChips .chip').forEach(c => {
-      const active = Number(c.dataset.rows) === Number(rowsIn.value) && Number(c.dataset.cols) === Number(colsIn.value);
-      c.classList.toggle('active', active);
-    });
-  }
-  function refreshSummaries(){
-    const rows = clamp(Math.round(Number(rowsIn.value) || 1), 2, 20);
-    const cols = clamp(Math.round(Number(colsIn.value) || 1), 2, 20);
-    const total = rows * cols;
-    const per = Math.max(1, Math.round(Number(perIn.value) || 1));
-    const ft = Math.max(0, Math.round(Number(finalIn.value) || 0));
-    const forBlocks = per * total;
-    gridSum.textContent = `${rows} × ${cols} = ${fmt(total)} blocks`;
-    blockSum.textContent = `All blocks need ${fmt(forBlocks)} tasks (${fmt(per)} × ${fmt(total)}).`;
-    totalSum.innerHTML = ft > 0
-      ? `Grand total: <b>${fmt(forBlocks + ft)} tasks</b> — ${fmt(forBlocks)} for the blocks + ${fmt(ft)} for the final challenge.`
-      : `Grand total: <b>${fmt(forBlocks)} tasks</b> — the final challenge is disabled.`;
-  }
-  $('#pzGridChips').addEventListener('click', e => {
-    const b = e.target.closest('.chip[data-rows]'); if (!b) return;
-    rowsIn.value = b.dataset.rows;
-    colsIn.value = b.dataset.cols;
-    refreshChips(); refreshSummaries();
-  });
-  $('#pzUploadBtn').addEventListener('click', () => fileInput.click());
-  $('#pzRemoveBtn').addEventListener('click', () => { draft.image = null; refreshThumb(); });
-  fileInput.addEventListener('change', e => {
-    const f = e.target.files && e.target.files[0];
-    e.target.value = '';
-    if (!f) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-      const img = new Image();
-      img.onload = () => { draft.image = encodeImage(img, 1200); refreshThumb(); };
-      img.onerror = () => alert('Could not read that image.');
-      img.src = ev.target.result;
-    };
-    reader.onerror = () => alert('Could not read that file.');
-    reader.readAsDataURL(f);
-  });
-  ['input','change'].forEach(ev => {
-    rowsIn.addEventListener(ev, () => { refreshChips(); refreshSummaries(); });
-    colsIn.addEventListener(ev, () => { refreshChips(); refreshSummaries(); });
-    perIn.addEventListener(ev, refreshSummaries);
-    finalIn.addEventListener(ev, refreshSummaries);
-  });
-  refreshThumb(); refreshChips(); refreshSummaries();
-
-  $('#puzzleForm').addEventListener('submit', e => {
-    e.preventDefault();
-    state.puzzle.image = draft.image;
-    state.puzzle.rows = clamp(Math.round(Number(rowsIn.value) || 9), 2, 20);
-    state.puzzle.cols = clamp(Math.round(Number(colsIn.value) || 10), 2, 20);
-    state.puzzle.tasksPerBlock = clamp(Math.round(Number(perIn.value) || 3), 1, 100);
-    state.puzzle.finalTitle = ($('#pzFinalTitle').value.trim() || 'Final Challenge').slice(0, 60);
-    state.puzzle.finalTarget = clamp(Math.round(Number(finalIn.value) || 0), 0, 10000);
-    saveState(); closeModal(); render();
-  });
-}
-function encodeImage(img, maxDim){
-  let quality = 0.85, dim = maxDim, dataUrl = '';
-  const srcW = img.naturalWidth || img.width || 1;
-  const srcH = img.naturalHeight || img.height || 1;
-  for (let attempt = 0; attempt < 4; attempt++){
-    const scale = Math.min(1, dim / Math.max(srcW, srcH));
-    const w = Math.max(1, Math.round(srcW * scale));
-    const h = Math.max(1, Math.round(srcH * scale));
-    const canvas = document.createElement('canvas');
-    canvas.width = w; canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h);
-    ctx.drawImage(img, 0, 0, w, h);
-    dataUrl = canvas.toDataURL('image/jpeg', quality);
-    if (dataUrl.length <= 700000) break;
-    quality = Math.max(0.4, quality - 0.15);
-    dim = Math.round(dim * 0.8);
-  }
-  return dataUrl;
-}
-
-/* =========================================================
    Roadmap modals
    ========================================================= */
 function openRmEditPhases(){
@@ -4503,7 +3906,8 @@ function openRmEditPhases(){
       <form id="rmPhasesForm" class="modal-body" autocomplete="off">
         <p class="hint" style="margin:0 0 16px">
           Your challenge is split into four equal phases. Give each a name, a short focus description,
-          and optionally the materials you plan to use during it.
+          and optionally the materials you plan to use during it. Each material belongs to only one
+          phase at a time — picking it here removes it from any other phase.
         </p>
         ${phases.map((p, i) => `
           <div class="form-section">
@@ -4523,7 +3927,7 @@ function openRmEditPhases(){
                 ${activeMaterials.map(m => `
                   <button type="button" class="chip ${p.materials.includes(m.id) ? 'active' : ''}" data-mid="${m.id}">${escapeHtml(m.title)}</button>
                 `).join('')}
-              </div>` : `<p class="hint" style="margin:0">No materials yet — add some in the Materials tab first.</p>`}
+              </div>` : `<p class="hint" style="margin:0">No materials yet — add some in Roadmap → Materials first.</p>`}
             </div>
           </div>
         `).join('')}
@@ -4541,9 +3945,24 @@ function openRmEditPhases(){
       const b = e.target.closest('.chip[data-mid]'); if (!b) return;
       const mid = b.dataset.mid;
       const idx = draftPhaseMaterials[i].indexOf(mid);
-      if (idx >= 0) draftPhaseMaterials[i].splice(idx, 1);
-      else draftPhaseMaterials[i].push(mid);
-      b.classList.toggle('active');
+      if (idx >= 0){
+        // Turning this material off for this phase.
+        draftPhaseMaterials[i].splice(idx, 1);
+        b.classList.remove('active');
+      } else {
+        // Exclusive: claiming it here means no other phase keeps it.
+        draftPhaseMaterials.forEach((list, j) => {
+          if (j === i) return;
+          const jIdx = list.indexOf(mid);
+          if (jIdx >= 0){
+            list.splice(jIdx, 1);
+            const otherChip = $(`#rmPhasesForm [data-phase-materials="${j}"] .chip[data-mid="${mid}"]`);
+            if (otherChip) otherChip.classList.remove('active');
+          }
+        });
+        draftPhaseMaterials[i].push(mid);
+        b.classList.add('active');
+      }
     });
   });
 
@@ -4896,6 +4315,42 @@ function openMaterialModal(material){
             ${TYPE_ORDER.map(t => `<option value="${t}" ${m.default_input_type === t ? 'selected' : ''}>${TYPES[t].label} (${TYPES[t].category})</option>`).join('')}
           </select>
         </div>
+        <div class="two-col">
+          <div class="field"><label for="matTotalUnits">Total units</label>
+            <input type="number" id="matTotalUnits" min="0" step="1" inputmode="numeric" placeholder="e.g. 320" value="${m.total_units ? escapeHtml(String(m.total_units)) : ''}">
+          </div>
+          <div class="field"><label for="matUnit">Unit</label>
+            <input type="text" id="matUnit" list="matUnitOptions" placeholder="${escapeHtml(defaultUnitFor(m.default_category))}" value="${escapeHtml(m.unit || '')}">
+            <datalist id="matUnitOptions">
+              ${[...UNIT_SUGGESTIONS.reading, ...UNIT_SUGGESTIONS.listening].map(u => `<option value="${u}"></option>`).join('')}
+            </datalist>
+          </div>
+        </div>
+        <div class="field"><label for="matEpisodes">Episodes (optional)</label>
+          <input type="number" id="matEpisodes" min="0" step="1" inputmode="numeric" placeholder="e.g. 24" value="${m.episodes_total ? escapeHtml(String(m.episodes_total)) : ''}">
+          <p class="hint" style="margin-top:6px">For podcasts, TV shows or audiobook chapters — a second progress readout.</p>
+        </div>
+        <div class="field">
+          <label>Emoji</label>
+          <div class="emoji-grid" id="matEmojiGrid" style="grid-template-columns:repeat(7,1fr)">
+            <button type="button" data-mat-emoji="" title="Use initials" class="${!m.emoji ? 'active' : ''}" style="font-size:11px;font-weight:700;color:var(--muted)">A–Z</button>
+            ${MATERIAL_EMOJI_SUGGESTIONS.map(e => `
+              <button type="button" data-mat-emoji="${e}" class="${m.emoji === e ? 'active' : ''}">${e}</button>
+            `).join('')}
+          </div>
+        </div>
+        <div class="field">
+          <label>Color</label>
+          <div class="swatch-row" id="matSwatchRow">
+            ${MATERIAL_COLORS.map(c => `
+              <button type="button" class="swatch ${(m.color || MATERIAL_COLORS[0].hex) === c.hex ? 'active' : ''}" data-mat-color="${c.hex}" style="background:${c.hex}" title="${escapeHtml(c.name)}" aria-label="Color ${escapeHtml(c.name)}"></button>
+            `).join('')}
+          </div>
+        </div>
+        <div class="field"><label for="matManualUnits">Logged units so far (manual override)</label>
+          <input type="number" id="matManualUnits" min="0" step="1" inputmode="numeric" placeholder="Auto from logged activities" value="${m.manual_units !== null && m.manual_units !== undefined && m.manual_units !== '' ? escapeHtml(String(m.manual_units)) : ''}">
+          <p class="hint" style="margin-top:6px">Normally this comes from your logged activities — set a number here to override the tally, or leave it blank to calculate automatically.</p>
+        </div>
         <div class="field"><label for="matStatus">Status</label>
           <select id="matStatus">
             <option value="active" ${m.status === 'active' ? 'selected' : ''}>Active</option>
@@ -4908,7 +4363,7 @@ function openMaterialModal(material){
             <input type="date" id="matDeadline" value="${m.deadline ? escapeHtml(m.deadline) : ''}" style="flex:1;min-width:150px">
             ${m.deadline ? `<button type="button" class="btn btn-ghost btn-sm" id="matDeadlineClearBtn" style="color:var(--bad-fg)">Remove</button>` : ''}
           </div>
-          <p class="hint" style="margin-top:6px">Shows a live countdown on the material's cover until 23:59 that day.</p>
+          <p class="hint" style="margin-top:6px">Shows a live countdown in the list until 23:59 that day.</p>
         </div>
         <div class="field">
           <label>Subtasks (optional)</label>
@@ -4925,6 +4380,19 @@ function openMaterialModal(material){
       </form>
     </div>
   `);
+
+  let matEmoji = m.emoji || '';
+  let matColor = m.color || MATERIAL_COLORS[0].hex;
+  $('#matEmojiGrid').addEventListener('click', e => {
+    const b = e.target.closest('[data-mat-emoji]'); if (!b) return;
+    matEmoji = b.dataset.matEmoji;
+    $$('#matEmojiGrid button').forEach(x => x.classList.toggle('active', x === b));
+  });
+  $('#matSwatchRow').addEventListener('click', e => {
+    const b = e.target.closest('[data-mat-color]'); if (!b) return;
+    matColor = b.dataset.matColor;
+    $$('#matSwatchRow .swatch').forEach(x => x.classList.toggle('active', x === b));
+  });
 
   const coverThumb = $('#matCoverThumb');
   const coverFileInput = $('#matCoverFile');
@@ -5020,15 +4488,25 @@ function openMaterialModal(material){
     const title = $('#matTitle').value.trim();
     if (!title) return;
     const type = $('#matType').value;
+    const category = TYPES[type].category;
+    const totalUnitsRaw = $('#matTotalUnits').value.trim();
+    const episodesRaw = $('#matEpisodes').value.trim();
+    const manualUnitsRaw = $('#matManualUnits').value.trim();
     const payload = {
       title,
       creator: $('#matCreator').value.trim(),
       default_input_type: type,
-      default_category: TYPES[type].category,
+      default_category: category,
       status: $('#matStatus').value,
       cover_url: coverUrl,
       deadline: $('#matDeadline').value || null,
-      subtasks
+      subtasks,
+      total_units: totalUnitsRaw ? Math.max(0, Number(totalUnitsRaw) || 0) : null,
+      unit: $('#matUnit').value.trim() || defaultUnitFor(category),
+      episodes_total: episodesRaw ? Math.max(0, Number(episodesRaw) || 0) : null,
+      manual_units: manualUnitsRaw ? Math.max(0, Number(manualUnitsRaw) || 0) : null,
+      emoji: matEmoji,
+      color: matColor
     };
     if (editing){
       const target = state.materials.find(x => x.id === material.id);
@@ -5369,11 +4847,8 @@ function openSettings(){
   const actCount = state.activities.length;
   const matCount = state.materials.length;
   const chCount = state.customChallenges.length;
-  const rivalCount = (state.rivals || []).length;
   const msCount = (state.roadmap.milestones || []).length;
   const hasProfile = !!state.profile;
-  const hasPuzzleImage = !!state.puzzle.image;
-  const puzzleTotal = state.puzzle.rows * state.puzzle.cols;
 
   openModal(`
     <div class="modal-backdrop" data-action="close-modal"></div>
@@ -5414,26 +4889,6 @@ function openSettings(){
         </div>
 
         <div class="data-block">
-          <div class="data-title">Characters</div>
-          <p class="hint" style="margin:0 0 12px">
-            ${rivalCount} character${rivalCount === 1 ? '' : 's'} on the leaderboard.
-          </p>
-          <div class="data-btns">
-            <button type="button" class="btn btn-ghost" data-action="reset-rivals">↺ Reset characters</button>
-          </div>
-        </div>
-
-        <div class="data-block">
-          <div class="data-title">Puzzle</div>
-          <p class="hint" style="margin:0 0 12px">
-            ${fmt(state.puzzle.rows)} × ${fmt(state.puzzle.cols)} grid · ${fmt(puzzleTotal)} blocks ·
-            ${fmt(state.puzzle.tasksPerBlock)} task${state.puzzle.tasksPerBlock === 1 ? '' : 's'} per block ·
-            image ${hasPuzzleImage ? 'set' : 'not set'}.
-          </p>
-          <button type="button" class="btn btn-ghost" data-action="open-puzzle">🧩 Edit puzzle</button>
-        </div>
-
-        <div class="data-block">
           <div class="data-title">Roadmap</div>
           <p class="hint" style="margin:0 0 12px">
             Four phases · ${msCount} custom milestone${msCount === 1 ? '' : 's'}.
@@ -5455,7 +4910,7 @@ function openSettings(){
           <p class="hint" style="margin-top:12px">
             Export JSON saves a full backup (profile, ${actCount} activit${actCount === 1 ? 'y' : 'ies'},
             ${matCount} material${matCount === 1 ? '' : 's'}, ${chCount} challenge${chCount === 1 ? '' : 's'},
-            ${rivalCount} character${rivalCount === 1 ? '' : 's'}, puzzle, roadmap, and settings).
+            roadmap, and settings).
             Import replaces your current data.
           </p>
           <input type="file" id="importFile" accept=".json,application/json" style="display:none">
@@ -5492,18 +4947,18 @@ document.addEventListener('click', e => {
     return;
   }
 
-  /* Materials view */
-  const viewBtn = e.target.closest('[data-matview]');
-  if (viewBtn){
-    materialsView = viewBtn.dataset.matview === 'list' ? 'list' : 'grid';
-    try { localStorage.setItem(MATVIEW_KEY, materialsView); } catch (err) {}
-    render();
-    return;
-  }
+  /* Materials filters */
   const catBtn = e.target.closest('[data-matcat]');
   if (catBtn){ materialsFilter.category = catBtn.dataset.matcat; render(); return; }
   const typeBtn = e.target.closest('[data-mattype]');
   if (typeBtn){ materialsFilter.type = typeBtn.dataset.mattype; render(); return; }
+  const matViewBtn = e.target.closest('[data-matview]');
+  if (matViewBtn){
+    materialsViewMode = matViewBtn.dataset.matview;
+    try { localStorage.setItem(MATVIEW_KEY, materialsViewMode); } catch (err) {}
+    render();
+    return;
+  }
 
   /* Roadmap view toggle */
   const rmViewBtn = e.target.closest('[data-rmview]');
@@ -5536,14 +4991,16 @@ document.addEventListener('click', e => {
   const navBtn = e.target.closest('[data-nav]');
   if (navBtn){
     currentView = navBtn.dataset.nav;
+    if (navBtn.dataset.rmview && ['phases','weeks','days','materials'].includes(navBtn.dataset.rmview)){
+      roadmapView = navBtn.dataset.rmview;
+      try { localStorage.setItem(RMVIEW_KEY, roadmapView); } catch (err) {}
+    }
     render();
     window.scrollTo({ top: 0, behavior: 'smooth' });
     return;
   }
   const metricBtn = e.target.closest('[data-metric]');
   if (metricBtn){ progressMetric = metricBtn.dataset.metric; render(); return; }
-  const lbBtn = e.target.closest('[data-lbrange]');
-  if (lbBtn){ leaderboardRange = lbBtn.dataset.lbrange; render(); return; }
 
   const actionEl = e.target.closest('[data-action]');
   if (!actionEl) return;
@@ -5555,15 +5012,10 @@ document.addEventListener('click', e => {
 
     /* Info */
     case 'info-materials': infoMaterials(); break;
-    case 'info-xp': infoXp(); break;
-    case 'info-puzzle': infoPuzzle(); break;
     case 'info-roadmap': infoRoadmap(); break;
 
     /* Theme */
     case 'open-theme': openThemeModal(); break;
-
-    /* Puzzle */
-    case 'open-puzzle': openPuzzleModal(); break;
 
     /* Roadmap */
     case 'rm-edit-phases': openRmEditPhases(); break;
@@ -5603,6 +5055,30 @@ document.addEventListener('click', e => {
       }
       break;
     }
+    case 'rm-queue-up': {
+      const phase = state.roadmap.phases[Number(actionEl.dataset.phase)];
+      const i = Number(actionEl.dataset.idx);
+      if (!phase || !Array.isArray(phase.materials) || i <= 0) break;
+      [phase.materials[i - 1], phase.materials[i]] = [phase.materials[i], phase.materials[i - 1]];
+      saveState(); render();
+      break;
+    }
+    case 'rm-queue-down': {
+      const phase = state.roadmap.phases[Number(actionEl.dataset.phase)];
+      const i = Number(actionEl.dataset.idx);
+      if (!phase || !Array.isArray(phase.materials) || i >= phase.materials.length - 1) break;
+      [phase.materials[i + 1], phase.materials[i]] = [phase.materials[i], phase.materials[i + 1]];
+      saveState(); render();
+      break;
+    }
+    case 'rm-queue-remove': {
+      const phase = state.roadmap.phases[Number(actionEl.dataset.phase)];
+      const i = Number(actionEl.dataset.idx);
+      if (!phase || !Array.isArray(phase.materials)) break;
+      phase.materials.splice(i, 1);
+      saveState(); render();
+      break;
+    }
 
     /* Profile */
     case 'open-profile': openProfileModal(state.profile ? 'edit' : 'create'); break;
@@ -5615,30 +5091,6 @@ document.addEventListener('click', e => {
       closeModal();
       break;
     case 'open-settings': openSettings(); break;
-
-    /* Characters */
-    case 'new-rival': openRivalModal(null); break;
-    case 'edit-rival': {
-      const r = (state.rivals || []).find(x => x.id === actionEl.dataset.id);
-      if (r) openRivalModal(r);
-      break;
-    }
-    case 'delete-rival': {
-      const id = actionEl.dataset.id;
-      const r = (state.rivals || []).find(x => x.id === id);
-      if (!r) break;
-      if (confirm(`Delete the character "${r.name}"?`)){
-        state.rivals = state.rivals.filter(x => x.id !== id);
-        saveState(); closeModal(); render();
-      }
-      break;
-    }
-    case 'reset-rivals':
-      if (confirm('Reset all characters to their default values?')){
-        state.rivals = defaultRivals();
-        saveState(); closeModal(); render();
-      }
-      break;
 
     /* Activities */
     case 'edit-activity': {
@@ -5757,7 +5209,7 @@ document.addEventListener('click', e => {
       break;
     }
     case 'reset-all':
-      if (confirm('Reset everything? Your profile, activities, materials, challenges, characters, puzzle, roadmap and settings will be permanently cleared.')){
+      if (confirm('Reset everything? Your profile, activities, materials, challenges, roadmap and settings will be permanently cleared.')){
         resetAll(); closeModal(); render();
       }
       break;
@@ -5782,6 +5234,22 @@ document.addEventListener('change', e => {
     if (mid){
       if (!Array.isArray(state.roadmap.weeklyMaterials[idx])) state.roadmap.weeklyMaterials[idx] = [];
       if (!state.roadmap.weeklyMaterials[idx].includes(mid)) state.roadmap.weeklyMaterials[idx].push(mid);
+      saveState(); render();
+    }
+  }
+  else if (t.matches && t.matches('[data-action="rm-add-phase-material"]')){
+    const targetIdx = Number(t.dataset.idx);
+    const phase = state.roadmap.phases[targetIdx];
+    const mid = t.value;
+    if (phase && mid){
+      // Exclusive: a material can only live in one phase's queue, so drop
+      // it from every other phase before adding it here.
+      state.roadmap.phases.forEach((p, i) => {
+        if (i === targetIdx || !Array.isArray(p.materials)) return;
+        p.materials = p.materials.filter(id => id !== mid);
+      });
+      if (!Array.isArray(phase.materials)) phase.materials = [];
+      if (!phase.materials.includes(mid)) phase.materials.push(mid);
       saveState(); render();
     }
   }
