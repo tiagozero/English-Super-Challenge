@@ -408,6 +408,8 @@
   .mat-chip-row .chip{padding:6px 11px;font-size:12.5px}
   .mat-filters-wrap{overflow:hidden;transition:max-height .28s ease, opacity .2s ease, margin .2s ease;max-height:400px;opacity:1}
   .mat-filters-wrap.collapsed{max-height:0;opacity:0}
+  .qa-wrap{overflow:hidden;transition:max-height .28s ease, opacity .2s ease, margin .2s ease;max-height:3000px;opacity:1}
+  .qa-wrap.collapsed{max-height:0;opacity:0}
 
   .mat-group-head{display:flex;align-items:center;gap:9px;margin:20px 2px 12px}
   .mat-group-head:first-of-type{margin-top:6px}
@@ -421,7 +423,18 @@
   .filter-toggle{display:inline-flex;align-items:center;gap:6px}
   .filter-toggle .fcount{font-size:10.5px;font-weight:800;background:var(--reading);color:var(--on-accent);border-radius:999px;padding:1px 7px;line-height:1.5}
 
-  .mat-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+  /* Intensive preset list */
+  .preset-group-head{display:flex;align-items:center;gap:8px;margin:14px 0 6px}
+  .preset-group-head .gt{font-size:12.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+  .preset-group-head .gline{flex:1;height:1px;background:var(--line)}
+  .preset-list{display:flex;flex-direction:column}
+  .preset-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px dashed var(--dash-line)}
+  .preset-list .preset-row:last-child{border-bottom:0}
+  .preset-row-main{display:flex;flex-direction:column;gap:1px;min-width:0}
+  .preset-title{font-size:13.5px;font-weight:600}
+  .preset-meta{font-size:11.5px;color:var(--muted)}
+
+  .mat-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));align-items:start}
   @media(max-width:520px){.mat-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}}
   .mat-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:9px;min-width:0;box-shadow:var(--shadow);transition:border-color .15s ease, transform .1s ease}
   .mat-card:hover{border-color:var(--hover-line);transform:translateY(-1px)}
@@ -430,6 +443,51 @@
   .mat-card-actions .link-btn{font-size:12px;padding:3px 6px}
   .mat-card-cover{position:relative;width:100%;aspect-ratio:3/4;border-radius:10px;background:var(--surface-2) center/cover no-repeat;margin:-2px -2px 0}
   .mat-card-cover .mat-card-actions{position:absolute;top:6px;right:6px;margin:0;background:color-mix(in srgb, var(--surface) 78%, transparent);border-radius:8px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  .mat-deadline-badge{
+    position:absolute;left:0;right:0;bottom:0;border-radius:0 0 10px 10px;
+    padding:18px 9px 8px;display:flex;flex-direction:column;gap:1px;
+    background:linear-gradient(to top, rgba(0,0,0,.74), rgba(0,0,0,.42) 55%, rgba(0,0,0,0));
+    color:#fff;
+  }
+  .mat-deadline-badge .dl-date{font-size:10px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;opacity:.85}
+  .mat-deadline-badge .dl-cd{font-size:13px;font-weight:750;font-variant-numeric:tabular-nums}
+  .mat-deadline-badge .dl-cd.overdue{color:#FF9C86}
+  .mat-deadline-chip{
+    display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:650;
+    background:var(--warn-bg);color:var(--warn-fg);border-radius:999px;padding:3px 9px;
+    font-variant-numeric:tabular-nums;width:fit-content;
+  }
+  .mat-deadline-chip:has(.overdue){background:var(--bad-bg);color:var(--bad-fg)}
+  .mat-deadline-line{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--warn-fg);margin-top:2px;font-variant-numeric:tabular-nums}
+  .mat-deadline-line b.overdue{color:var(--bad-fg)}
+
+  /* Overdue materials banner */
+  .overdue-banner{
+    background:linear-gradient(135deg,color-mix(in srgb, var(--bad-fg) 8%, transparent),color-mix(in srgb, var(--bad-fg) 3%, transparent));
+    border-color:color-mix(in srgb, var(--bad-fg) 30%, var(--line));
+  }
+  .overdue-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+  .overdue-row:last-of-type{border-bottom:0;padding-bottom:0}
+  .overdue-title{font-size:13.5px;font-weight:620;display:block}
+  .overdue-meta{font-size:12px;color:var(--bad-fg);display:block;margin-top:1px}
+
+  /* Subtasks */
+  .subtask-list{display:flex;flex-direction:column;gap:7px;max-height:240px;overflow-y:auto;padding-right:2px}
+  .subtask-row{display:flex;align-items:center;gap:9px;padding:2px 0}
+  .subtask-row input[type="checkbox"]{width:16px;height:16px;flex:0 0 auto;accent-color:var(--reading);cursor:pointer}
+  .subtask-title{flex:1;font-size:13px;word-break:break-word}
+  .subtask-title.done{color:var(--muted);text-decoration:line-through}
+  .subtask-row .link-btn{padding:2px 6px;font-size:12px}
+  .mat-subtask-toggle{
+    background:none;border:0;padding:0;font:inherit;color:var(--muted);cursor:pointer;
+    display:flex;align-items:center;gap:8px;width:100%;text-align:left;margin-top:2px;
+  }
+  .mat-subtask-toggle:hover{color:var(--text)}
+  .mat-subtask-bar{flex:0 0 auto;width:64px;height:5px;border-radius:99px;background:var(--bar-bg);overflow:hidden}
+  .mat-subtask-bar i{display:block;height:100%;background:var(--reading);border-radius:99px}
+  .mat-subtask-inline{margin-top:6px;padding-top:6px;border-top:1px dashed var(--dash-line);display:flex;flex-direction:column;gap:5px}
+  .mat-subtask-inline .subtask-row{font-size:12.5px}
+  .mat-subtask-inline .subtask-title{font-size:12.5px}
   .mat-card-title{font-size:14.5px;font-weight:640;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
   .mat-card-sub{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .mat-card-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:1px}
@@ -982,6 +1040,27 @@ function fmtCountdown(ms){
   const s = total % 60;
   return pad2(h) + ':' + pad2(m) + ':' + pad2(s);
 }
+/* Per-material deadlines */
+function msUntilDeadline(deadlineIso){
+  const d = parseISO(deadlineIso);
+  const end = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1, 0, 0, 0, 0);
+  return end - new Date();
+}
+function fmtCountdownLong(ms){
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const days = Math.floor(total / 86400);
+  const h = Math.floor((total % 86400) / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return (days > 0 ? days + 'd ' : '') + pad2(h) + ':' + pad2(m) + ':' + pad2(s);
+}
+function fmtDeadlineDate(iso){
+  const d = parseISO(iso);
+  const sameYear = d.getFullYear() === new Date().getFullYear();
+  return d.toLocaleDateString('en-US', sameYear
+    ? { month: 'short', day: 'numeric' }
+    : { month: 'short', day: 'numeric', year: 'numeric' });
+}
 function resetTimeLabel(kind){
   const now = new Date();
   if (kind === 'day') return '00:00';
@@ -1002,7 +1081,23 @@ function nowClock(){
 }
 let tickTimer = null;
 function updateCountdowns(){
-  $$('[data-countdown]').forEach(el => { el.textContent = fmtCountdown(msFor(el.dataset.countdown)); });
+  $$('[data-countdown]').forEach(el => {
+    const kind = el.dataset.countdown;
+    if (kind.indexOf('material:') === 0){
+      const m = materialById(kind.slice('material:'.length));
+      if (!m || !m.deadline){ el.textContent = '—'; el.classList.remove('overdue'); return; }
+      const ms = msUntilDeadline(m.deadline);
+      if (ms <= 0){
+        el.textContent = 'Overdue';
+        el.classList.add('overdue');
+      } else {
+        el.classList.remove('overdue');
+        el.textContent = fmtCountdownLong(ms);
+      }
+      return;
+    }
+    el.textContent = fmtCountdown(msFor(kind));
+  });
   $$('[data-now]').forEach(el => { el.textContent = nowClock(); });
 }
 function startTicker(){
@@ -1035,6 +1130,7 @@ const STORAGE_KEY = 'english-super-challenge-v2-clean';
 const WELCOME_KEY = 'esc-welcome-shown';
 const MATVIEW_KEY = 'esc-materials-view';
 const MATFILTERS_KEY = 'esc-materials-filters-open';
+const QUICKADD_KEY = 'esc-quickadd-open';
 const RMVIEW_KEY = 'esc-roadmap-view';
 
 const XP_PER_UNIT = 5 / 10;
@@ -1047,6 +1143,25 @@ const CHALLENGE_PRESETS = [
   { title: 'Listen 300 minutes a week',  scope: 'weekly', category: 'listening', target: 300 },
   { title: 'Earn 100 XP a day',          scope: 'daily',  category: 'xp',        target: 100 },
   { title: 'Earn 700 XP this week',      scope: 'weekly', category: 'xp',        target: 700 }
+];
+
+const INTENSIVE_CHALLENGE_PRESETS = [
+  { title: 'Read 50 pages a day',                  scope: 'daily',  category: 'reading',   target: 50   },
+  { title: 'Read 75 pages a day (hardcore)',        scope: 'daily',  category: 'reading',   target: 75   },
+  { title: 'Read 150 pages a day (hardcore)',        scope: 'daily',  category: 'reading',   target: 150   },
+  { title: 'Listen 60 minutes a day',              scope: 'daily',  category: 'listening', target: 60   },
+  { title: 'Listen 90 minutes a day (hardcore)',    scope: 'daily',  category: 'listening', target: 90   },
+  { title: 'Listen 350 minutes a day (hardcore)',    scope: 'daily',  category: 'listening', target: 350   },
+  { title: 'Earn 200 XP a day',                    scope: 'daily',  category: 'xp',        target: 200  },
+  { title: 'Earn 300 XP a day (hardcore)',          scope: 'daily',  category: 'xp',        target: 300  },
+  { title: 'Read 300 pages this week',             scope: 'weekly', category: 'reading',   target: 300  },
+  { title: 'Read 500 pages this week (hardcore)',   scope: 'weekly', category: 'reading',   target: 500  },
+  { title: 'Listen 1600 minutes this week',         scope: 'weekly', category: 'listening', target: 1600  },
+  { title: 'Listen 3000 minutes this week (hardcore)', scope: 'weekly', category: 'listening', target: 3000 },
+  { title: 'Listen 6000 minutes this week (hardcore)', scope: 'weekly', category: 'listening', target: 6000 },
+  { title: 'Earn 1500 XP this week',               scope: 'weekly', category: 'xp',        target: 1500 },
+  { title: 'Earn 2500 XP this week (hardcore)',     scope: 'weekly', category: 'xp',        target: 2500 },
+  { title: 'Earn 3500 XP this week (hardcore)',     scope: 'weekly', category: 'xp',        target: 3500 }
 ];
 
 const AVATAR_EMOJIS = [
@@ -1148,7 +1263,11 @@ if (materialsView !== 'grid' && materialsView !== 'list') materialsView = 'grid'
 let materialsFiltersOpen = true;
 try { materialsFiltersOpen = localStorage.getItem(MATFILTERS_KEY) !== '0'; } catch (e) {}
 
+let quickAddOpen = true;
+try { quickAddOpen = localStorage.getItem(QUICKADD_KEY) !== '0'; } catch (e) {}
+
 let materialsFilter = { q: '', type: 'all', category: 'all' };
+let expandedSubtasks = new Set();
 
 let roadmapView = 'phases';
 try { roadmapView = localStorage.getItem(RMVIEW_KEY) || 'phases'; } catch (e) {}
@@ -1549,6 +1668,28 @@ function challengeUnit(cat){
   if (cat === 'listening') return 'minutes';
   if (cat === 'xp') return 'XP';
   return 'pages';
+}
+const INTENSIVE_PRESET_GROUPS = [
+  { id: 'reading',   label: '📖 Reading'   },
+  { id: 'listening', label: '🎧 Listening' },
+  { id: 'xp',        label: '⚡ XP'        }
+];
+function groupedPresets(list){
+  const groups = { reading: [], listening: [], xp: [] };
+  list.forEach((p, i) => {
+    (groups[p.category] || (groups[p.category] = [])).push({ ...p, i });
+  });
+  return groups;
+}
+function presetRowHTML(p, group){
+  return `
+    <div class="preset-row">
+      <div class="preset-row-main">
+        <span class="preset-title">${escapeHtml(p.title)}</span>
+        <span class="preset-meta">${p.scope === 'daily' ? 'Daily' : 'Weekly'} · ${fmt(p.target)} ${challengeUnit(p.category)}</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" data-action="add-preset" data-group="${group}" data-preset="${p.i}">+ Add</button>
+    </div>`;
 }
 function chalHintText(scope, cat){
   const u = challengeUnit(cat);
@@ -2122,6 +2263,37 @@ function activityRow(a, showActions){
       </div>` : ''}
   </div>`;
 }
+function overdueMaterialsList(){
+  return state.materials
+    .filter(m => m.status === 'active' && m.deadline && msUntilDeadline(m.deadline) <= 0)
+    .sort((a, b) => parseISO(a.deadline) - parseISO(b.deadline));
+}
+function overdueMaterialsBannerHTML(){
+  const list = overdueMaterialsList();
+  if (!list.length) return '';
+  const shown = list.slice(0, 5);
+  const rows = shown.map(m => {
+    const overMs = -msUntilDeadline(m.deadline);
+    const daysOver = Math.max(1, Math.ceil(overMs / 86400000));
+    return `
+    <div class="overdue-row">
+      <div>
+        <span class="overdue-title">${escapeHtml(m.title)}</span>
+        <span class="overdue-meta">Was due ${escapeHtml(fmtDeadlineDate(m.deadline))} · ${daysOver} day${daysOver === 1 ? '' : 's'} overdue</span>
+      </div>
+      <button class="link-btn" data-action="edit-material" data-id="${m.id}">Edit</button>
+    </div>`;
+  }).join('');
+  return `
+  <div class="card overdue-banner" style="margin-bottom:14px">
+    <div class="card-head">
+      <h2>⚠️ Overdue material${list.length === 1 ? '' : 's'} (${list.length})</h2>
+      <button class="link-btn" data-nav="materials">View all</button>
+    </div>
+    ${rows}
+    ${list.length > shown.length ? `<div style="font-size:12.5px;color:var(--bad-fg);margin-top:8px">+ ${list.length - shown.length} more…</div>` : ''}
+  </div>`;
+}
 function dashboardChallengesCard(){
   const list = state.customChallenges;
   if (!list.length) return '';
@@ -2159,6 +2331,7 @@ function viewDashboard(){
 
   return `
   ${dashboardProfilePrompt()}
+  ${overdueMaterialsBannerHTML()}
   <div class="grid cols-2">
     ${progressCard(s, 'reading')}
     ${progressCard(s, 'listening')}
@@ -2391,16 +2564,38 @@ function viewChallenges(){
       </div>`}
   </div>
   <div class="card">
-    <div class="card-head"><h2>Quick add</h2></div>
-    <div class="chips">
-      ${CHALLENGE_PRESETS.map((p, i) => `
-        <button class="chip" data-action="add-preset" data-preset="${i}">${escapeHtml(p.title)}</button>
-      `).join('')}
+    <div class="card-head">
+      <h2>Quick add</h2>
+      <button class="btn btn-ghost filter-toggle" data-action="toggle-quickadd"
+              aria-expanded="${quickAddOpen ? 'true' : 'false'}"
+              title="${quickAddOpen ? 'Hide quick add' : 'Show quick add'}">
+        ${quickAddOpen ? 'Hide ▾' : 'Show ▸'}
+      </button>
     </div>
-    <p class="hint" style="margin-top:14px">
-      <b>Daily</b> challenges reset every day at <b>00:00</b>. <b>Weekly</b> challenges run
-      Monday to Sunday and finish at <b>Monday 00:00</b>.
-    </p>
+    <div class="qa-wrap ${quickAddOpen ? '' : 'collapsed'}">
+      ${(() => {
+        const groups = groupedPresets(CHALLENGE_PRESETS);
+        return INTENSIVE_PRESET_GROUPS.map(g => groups[g.id] && groups[g.id].length ? `
+          <div class="preset-group-head"><span class="gt">${g.label}</span><span class="gline"></span></div>
+          <div class="preset-list">${groups[g.id].map(p => presetRowHTML(p, 'standard')).join('')}</div>
+        ` : '').join('');
+      })()}
+      <div class="card-head" style="margin-top:18px">
+        <h2>🔥 Intensive</h2>
+        <span style="font-size:11.5px;color:var(--muted)">Harder daily &amp; weekly targets</span>
+      </div>
+      ${(() => {
+        const groups = groupedPresets(INTENSIVE_CHALLENGE_PRESETS);
+        return INTENSIVE_PRESET_GROUPS.map(g => groups[g.id] && groups[g.id].length ? `
+          <div class="preset-group-head"><span class="gt">${g.label}</span><span class="gline"></span></div>
+          <div class="preset-list">${groups[g.id].map(p => presetRowHTML(p, 'intensive')).join('')}</div>
+        ` : '').join('');
+      })()}
+      <p class="hint" style="margin-top:14px">
+        <b>Daily</b> challenges reset every day at <b>00:00</b>. <b>Weekly</b> challenges run
+        Monday to Sunday and finish at <b>Monday 00:00</b>.
+      </p>
+    </div>
   </div>`;
 }
 
@@ -3400,6 +3595,50 @@ function materialSorter(a, b){
   const r = (MATERIAL_STATUS_RANK[a.status] ?? 3) - (MATERIAL_STATUS_RANK[b.status] ?? 3);
   return r !== 0 ? r : a.title.localeCompare(b.title);
 }
+function materialDeadlineChipHTML(m){
+  if (!m.deadline) return '';
+  return `
+    <span class="mat-deadline-chip">
+      📅 ${escapeHtml(fmtDeadlineDate(m.deadline))} · <b class="mono" data-countdown="material:${m.id}">--:--:--</b>
+    </span>`;
+}
+function materialDeadlineBadgeHTML(m){
+  if (!m.deadline) return '';
+  return `
+    <div class="mat-deadline-badge">
+      <span class="dl-date">Due ${escapeHtml(fmtDeadlineDate(m.deadline))}</span>
+      <span class="dl-cd mono" data-countdown="material:${m.id}">--:--:--</span>
+    </div>`;
+}
+function materialSubtasksSummary(m){
+  const list = Array.isArray(m.subtasks) ? m.subtasks : [];
+  if (!list.length) return null;
+  return { done: list.filter(s => s.done).length, total: list.length };
+}
+function materialSubtaskInlineHTML(m){
+  const list = Array.isArray(m.subtasks) ? m.subtasks : [];
+  if (!expandedSubtasks.has(m.id) || !list.length) return '';
+  return `
+    <div class="mat-subtask-inline">
+      ${list.map(s => `
+        <div class="subtask-row">
+          <input type="checkbox" data-action="toggle-material-subtask" data-id="${m.id}" data-sub="${s.id}" ${s.done ? 'checked' : ''}>
+          <span class="subtask-title ${s.done ? 'done' : ''}">${escapeHtml(s.title)}</span>
+        </div>
+      `).join('')}
+    </div>`;
+}
+function materialSubtaskProgressHTML(m){
+  const sp = materialSubtasksSummary(m);
+  if (!sp) return '';
+  const pct = sp.total ? Math.round(sp.done / sp.total * 100) : 0;
+  return `
+    <button type="button" class="mat-subtask-toggle" data-action="toggle-subtasks" data-id="${m.id}">
+      <span class="mat-subtask-bar"><i style="width:${pct}%"></i></span>
+      <span>${sp.done}/${sp.total} subtasks ${expandedSubtasks.has(m.id) ? '▴' : '▾'}</span>
+    </button>
+    ${materialSubtaskInlineHTML(m)}`;
+}
 function materialRowHTML(m){
   const t = materialTotals(m.id);
   const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
@@ -3414,6 +3653,8 @@ function materialRowHTML(m){
       <div class="mat-title">${escapeHtml(m.title)}<span class="pill ${m.status}">${m.status}</span></div>
       <div class="mat-sub">${escapeHtml(m.creator || '—')} · ${escapeHtml(typeLabel)}</div>
       <div class="mat-tot">${materialTotalsText(t)}${t.count ? ` · ${t.count} entr${t.count === 1 ? 'y' : 'ies'}` : ''}</div>
+      ${m.deadline ? `<div class="mat-deadline-line">📅 Due ${escapeHtml(fmtDeadlineDate(m.deadline))} · <b class="mono" data-countdown="material:${m.id}">--:--:--</b></div>` : ''}
+      ${materialSubtaskProgressHTML(m)}
     </div>
     <div class="act-actions">
       <button class="link-btn" data-action="edit-material" data-id="${m.id}">Edit</button>
@@ -3431,7 +3672,7 @@ function materialCardHTML(m){
       <button class="link-btn danger" data-action="delete-material" data-id="${m.id}" aria-label="Delete">✕</button>
     </div>`;
   const top = m.cover_url
-    ? `<div class="mat-card-cover" style="background-image:url('${escapeHtml(m.cover_url)}')">${actions}</div>`
+    ? `<div class="mat-card-cover" style="background-image:url('${escapeHtml(m.cover_url)}')">${actions}${materialDeadlineBadgeHTML(m)}</div>`
     : `<div class="mat-card-top">
          <div class="mat-icon ${m.default_category}">${escapeHtml(initials)}</div>
          ${actions}
@@ -3445,7 +3686,9 @@ function materialCardHTML(m){
       <span class="pill ${m.status}">${m.status}</span>
       <span class="mat-type-pill">${escapeHtml(typeLabel)}</span>
     </div>
+    ${!m.cover_url ? materialDeadlineChipHTML(m) : ''}
     <div class="mat-card-tot">${materialTotalsText(t)}${t.count ? ` · ${t.count} entr${t.count === 1 ? 'y' : 'ies'}` : ''}</div>
+    ${materialSubtaskProgressHTML(m)}
   </div>`;
 }
 function viewMaterials(){
@@ -4615,7 +4858,7 @@ function openLogModal(activity){
 function openMaterialModal(material){
   const ch = state.challenge;
   const editing = !!material;
-  const m = material || { title: '', creator: '', default_input_type: 'kindle', default_category: 'reading', status: 'active', cover_url: '' };
+  const m = material || { title: '', creator: '', default_input_type: 'kindle', default_category: 'reading', status: 'active', cover_url: '', deadline: '', subtasks: [] };
   let coverUrl = m.cover_url || '';
   const coverIsLink = coverUrl && !coverUrl.startsWith('data:');
 
@@ -4659,6 +4902,21 @@ function openMaterialModal(material){
             <option value="completed" ${m.status === 'completed' ? 'selected' : ''}>Completed</option>
             <option value="archived" ${m.status === 'archived' ? 'selected' : ''}>Archived</option>
           </select>
+        </div>
+        <div class="field"><label for="matDeadline">Deadline (optional)</label>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <input type="date" id="matDeadline" value="${m.deadline ? escapeHtml(m.deadline) : ''}" style="flex:1;min-width:150px">
+            ${m.deadline ? `<button type="button" class="btn btn-ghost btn-sm" id="matDeadlineClearBtn" style="color:var(--bad-fg)">Remove</button>` : ''}
+          </div>
+          <p class="hint" style="margin-top:6px">Shows a live countdown on the material's cover until 23:59 that day.</p>
+        </div>
+        <div class="field">
+          <label>Subtasks (optional)</label>
+          <div id="matSubtasksList" class="subtask-list"></div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <input type="text" id="matSubtaskInput" placeholder="e.g. Finish chapter 3" maxlength="140" style="flex:1">
+            <button type="button" class="btn btn-ghost btn-sm" id="matSubtaskAddBtn">+ Add</button>
+          </div>
         </div>
         <div class="modal-actions">
           <button type="button" class="btn btn-ghost" data-action="close-modal">Cancel</button>
@@ -4705,6 +4963,58 @@ function openMaterialModal(material){
   });
   refreshCoverThumb();
 
+  let subtasks = Array.isArray(m.subtasks)
+    ? m.subtasks.map(s => ({ id: s.id || uid('st'), title: s.title, done: !!s.done }))
+    : [];
+  const subtasksList = $('#matSubtasksList');
+  function renderSubtasksDraft(){
+    if (!subtasks.length){
+      subtasksList.innerHTML = `<div style="font-size:12.5px;color:var(--muted);padding:2px 0">No subtasks yet.</div>`;
+      return;
+    }
+    subtasksList.innerHTML = subtasks.map(s => `
+      <div class="subtask-row" data-id="${s.id}">
+        <input type="checkbox" class="subtask-check" ${s.done ? 'checked' : ''}>
+        <span class="subtask-title ${s.done ? 'done' : ''}">${escapeHtml(s.title)}</span>
+        <button type="button" class="link-btn danger subtask-del" aria-label="Remove subtask">✕</button>
+      </div>
+    `).join('');
+  }
+  renderSubtasksDraft();
+  subtasksList.addEventListener('change', e => {
+    if (!e.target.classList.contains('subtask-check')) return;
+    const row = e.target.closest('.subtask-row');
+    const st = subtasks.find(s => s.id === row.dataset.id);
+    if (st){ st.done = e.target.checked; renderSubtasksDraft(); }
+  });
+  subtasksList.addEventListener('click', e => {
+    if (!e.target.classList.contains('subtask-del')) return;
+    const row = e.target.closest('.subtask-row');
+    subtasks = subtasks.filter(s => s.id !== row.dataset.id);
+    renderSubtasksDraft();
+  });
+  function addSubtaskFromInput(){
+    const input = $('#matSubtaskInput');
+    const title = input.value.trim();
+    if (!title) return;
+    subtasks.push({ id: uid('st'), title, done: false });
+    input.value = '';
+    renderSubtasksDraft();
+    input.focus();
+  }
+  $('#matSubtaskAddBtn').addEventListener('click', addSubtaskFromInput);
+  $('#matSubtaskInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter'){ e.preventDefault(); addSubtaskFromInput(); }
+  });
+
+  const deadlineClearBtn = $('#matDeadlineClearBtn');
+  if (deadlineClearBtn){
+    deadlineClearBtn.addEventListener('click', () => {
+      $('#matDeadline').value = '';
+      deadlineClearBtn.remove();
+    });
+  }
+
   $('#matForm').addEventListener('submit', e => {
     e.preventDefault();
     const title = $('#matTitle').value.trim();
@@ -4716,7 +5026,9 @@ function openMaterialModal(material){
       default_input_type: type,
       default_category: TYPES[type].category,
       status: $('#matStatus').value,
-      cover_url: coverUrl
+      cover_url: coverUrl,
+      deadline: $('#matDeadline').value || null,
+      subtasks
     };
     if (editing){
       const target = state.materials.find(x => x.id === material.id);
@@ -5354,6 +5666,11 @@ document.addEventListener('click', e => {
       try { localStorage.setItem(MATFILTERS_KEY, materialsFiltersOpen ? '1' : '0'); } catch (err) {}
       render();
       break;
+    case 'toggle-quickadd':
+      quickAddOpen = !quickAddOpen;
+      try { localStorage.setItem(QUICKADD_KEY, quickAddOpen ? '1' : '0'); } catch (err) {}
+      render();
+      break;
     case 'clear-material-filters':
       materialsFilter = { q: '', type: 'all', category: 'all' };
       render();
@@ -5382,6 +5699,19 @@ document.addEventListener('click', e => {
       }
       break;
     }
+    case 'toggle-subtasks': {
+      const id = actionEl.dataset.id;
+      if (expandedSubtasks.has(id)) expandedSubtasks.delete(id); else expandedSubtasks.add(id);
+      render();
+      break;
+    }
+    case 'toggle-material-subtask': {
+      const m = materialById(actionEl.dataset.id);
+      if (!m || !Array.isArray(m.subtasks)) break;
+      const st = m.subtasks.find(s => s.id === actionEl.dataset.sub);
+      if (st){ st.done = !st.done; saveState(); render(); }
+      break;
+    }
 
     /* Challenges */
     case 'new-challenge': openChallengeModal(null); break;
@@ -5400,7 +5730,8 @@ document.addEventListener('click', e => {
       break;
     }
     case 'add-preset': {
-      const p = CHALLENGE_PRESETS[Number(actionEl.dataset.preset)];
+      const group = actionEl.dataset.group === 'intensive' ? INTENSIVE_CHALLENGE_PRESETS : CHALLENGE_PRESETS;
+      const p = group[Number(actionEl.dataset.preset)];
       if (!p) break;
       state.customChallenges.push({
         id: uid('c'), title: p.title, scope: p.scope,
