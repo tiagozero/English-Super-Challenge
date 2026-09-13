@@ -434,30 +434,6 @@
   .preset-title{font-size:13.5px;font-weight:600}
   .preset-meta{font-size:11.5px;color:var(--muted)}
 
-  .mat-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));align-items:start}
-  @media(max-width:520px){.mat-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}}
-  .mat-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:9px;min-width:0;box-shadow:var(--shadow);transition:border-color .15s ease, transform .1s ease}
-  .mat-card:hover{border-color:var(--hover-line);transform:translateY(-1px)}
-  .mat-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
-  .mat-card-actions{display:flex;gap:0;flex:0 0 auto;margin:-4px -4px 0 0}
-  .mat-card-actions .link-btn{font-size:12px;padding:3px 6px}
-  .mat-card-cover{position:relative;width:100%;aspect-ratio:3/4;border-radius:10px;background:var(--surface-2) center/cover no-repeat;margin:-2px -2px 0}
-  .mat-card-cover .mat-card-actions{position:absolute;top:6px;right:6px;margin:0;background:color-mix(in srgb, var(--surface) 78%, transparent);border-radius:8px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-  .mat-deadline-badge{
-    position:absolute;left:0;right:0;bottom:0;border-radius:0 0 10px 10px;
-    padding:18px 9px 8px;display:flex;flex-direction:column;gap:1px;
-    background:linear-gradient(to top, rgba(0,0,0,.74), rgba(0,0,0,.42) 55%, rgba(0,0,0,0));
-    color:#fff;
-  }
-  .mat-deadline-badge .dl-date{font-size:10px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;opacity:.85}
-  .mat-deadline-badge .dl-cd{font-size:13px;font-weight:750;font-variant-numeric:tabular-nums}
-  .mat-deadline-badge .dl-cd.overdue{color:#FF9C86}
-  .mat-deadline-chip{
-    display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:650;
-    background:var(--warn-bg);color:var(--warn-fg);border-radius:999px;padding:3px 9px;
-    font-variant-numeric:tabular-nums;width:fit-content;
-  }
-  .mat-deadline-chip:has(.overdue){background:var(--bad-bg);color:var(--bad-fg)}
   .mat-deadline-line{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--warn-fg);margin-top:2px;font-variant-numeric:tabular-nums}
   .mat-deadline-line b.overdue{color:var(--bad-fg)}
 
@@ -488,11 +464,6 @@
   .mat-subtask-inline{margin-top:6px;padding-top:6px;border-top:1px dashed var(--dash-line);display:flex;flex-direction:column;gap:5px}
   .mat-subtask-inline .subtask-row{font-size:12.5px}
   .mat-subtask-inline .subtask-title{font-size:12.5px}
-  .mat-card-title{font-size:14.5px;font-weight:640;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
-  .mat-card-sub{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .mat-card-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:1px}
-  .mat-type-pill{font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;background:var(--surface-2);color:var(--muted)}
-  .mat-card-tot{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:auto;padding-top:8px;border-top:1px solid var(--line)}
   .mat-progress{margin-top:auto;padding-top:8px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
   .mat-progress-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:12px;font-variant-numeric:tabular-nums}
   .mat-progress-pct{font-weight:750;color:var(--reading)}
@@ -504,6 +475,34 @@
   .mat-progress-bar.listening > i{background:linear-gradient(90deg,var(--listening-2),var(--listening))}
   .mat-progress-bar.complete > i{background:var(--good-fg)}
   .mat .mat-progress{border-top:none;margin-top:6px;padding-top:0}
+
+  /* Materials library — toolbar, stats strip, grid & cards */
+  .mat-toolbar-top{justify-content:space-between}
+  .mat-lib-title{font-size:12px;font-weight:750;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0}
+  .mat-toolbar-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .lib-stats{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:14px;padding:12px 16px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;font-size:12.5px;color:var(--muted)}
+  .lib-stat b{color:var(--text);font-weight:750;font-variant-numeric:tabular-nums}
+  .mat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+  .mat-card{display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:16px}
+  .mat-card-top{display:flex;gap:11px;align-items:flex-start}
+  .mat-card-icon{width:38px;height:38px;flex:0 0 auto;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:750;color:var(--on-accent)}
+  .mat-card-icon.has-cover{background-size:cover;background-position:center}
+  .mat-card-titles{min-width:0;flex:1}
+  .mat-card-title{font-size:14.5px;font-weight:650;letter-spacing:-.005em;line-height:1.25;word-break:break-word}
+  .mat-card-sub{font-size:12px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mat-card-stats{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .mat-card-figure{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+  .mat-card-episodes{font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .mat-card-status-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .mat-card-pct{font-size:12px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+  .status-pill{font-size:10px;font-weight:750;padding:3px 9px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase}
+  .status-pill.good{background:var(--good-bg);color:var(--good-fg)}
+  .status-pill.warn{background:var(--warn-bg);color:var(--warn-fg)}
+  .status-pill.neutral{background:var(--neutral-bg);color:var(--neutral-fg)}
+  .mat-card-queued{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding-top:8px;border-top:1px dashed var(--dash-line)}
+  .mat-card-queued .qlabel{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .mat-card-queued .tag{font-size:11px;font-weight:650;padding:2px 9px;border-radius:999px;background:var(--tag-bg);color:var(--tag-fg)}
+  .mat-card-actions{display:flex;justify-content:flex-end;gap:14px;margin-top:2px}
 
   /* Charts */
   .seg{display:inline-flex;background:var(--surface-2);border-radius:11px;padding:3px;gap:2px}
@@ -611,6 +610,9 @@
   .rm-queue-label{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
   .rm-queue-label .ql{font-size:11px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
   .rm-queue-label .qn{font-size:11px;font-weight:700;color:var(--muted);background:var(--surface-2);padding:2px 9px;border-radius:999px}
+  .rm-queue-progress{margin-bottom:12px;padding:10px 12px;background:var(--surface-2);border:1px solid var(--line);border-radius:11px}
+  .rm-progress-top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--muted);font-weight:650;margin-bottom:7px}
+  .rm-progress-top .v{color:var(--text);font-variant-numeric:tabular-nums}
   .rm-queue-list{display:flex;flex-direction:column;gap:8px}
   .rm-queue-item{display:flex;align-items:stretch;gap:11px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:11px 12px;transition:border-color .15s;min-width:0}
   .rm-queue-item:hover{border-color:var(--hover-line)}
@@ -1119,7 +1121,6 @@ const CATEGORY_LABEL = { reading: 'Reading', listening: 'Listening' };
 
 const STORAGE_KEY = 'english-super-challenge-v2-clean';
 const WELCOME_KEY = 'esc-welcome-shown';
-const MATVIEW_KEY = 'esc-materials-view';
 const MATFILTERS_KEY = 'esc-materials-filters-open';
 const QUICKADD_KEY = 'esc-quickadd-open';
 const RMVIEW_KEY = 'esc-roadmap-view';
@@ -1165,6 +1166,28 @@ const AVATAR_COLORS = [
   '#4A6FA5','#A8567A','#8A6420','#5D7A3F','#3E7C8A',
   '#26211C','#9C4230','#6B5B95','#B08B3E','#3E5B78'
 ];
+/* Named palette for material cards — same hexes as AVATAR_COLORS, given
+   friendly names for the material color picker. */
+const MATERIAL_COLORS = [
+  { name: 'Clay',   hex: '#C2703D' },
+  { name: 'Pine',   hex: '#3F7A6E' },
+  { name: 'Plum',   hex: '#7A5EA8' },
+  { name: 'Rust',   hex: '#B0563F' },
+  { name: 'Moss',   hex: '#2F6B54' },
+  { name: 'Slate',  hex: '#4A6FA5' },
+  { name: 'Berry',  hex: '#A8567A' },
+  { name: 'Amber',  hex: '#8A6420' },
+  { name: 'Olive',  hex: '#5D7A3F' },
+  { name: 'Teal',   hex: '#3E7C8A' },
+  { name: 'Ink',    hex: '#26211C' },
+  { name: 'Brick',  hex: '#9C4230' },
+  { name: 'Violet', hex: '#6B5B95' },
+  { name: 'Gold',   hex: '#B08B3E' },
+  { name: 'Ocean',  hex: '#3E5B78' }
+];
+const MATERIAL_EMOJI_SUGGESTIONS = ['📖','📗','📙','📘','🎧','🎙️','📻','🎬','📰','📝','🗞️','🔖'];
+const UNIT_SUGGESTIONS = { reading: ['Pages', 'Chapters', 'Words'], listening: ['Minutes', 'Hours', 'Episodes'] };
+function defaultUnitFor(category){ return category === 'listening' ? 'Minutes' : 'Pages'; }
 const LANGUAGES = [
   'English','Spanish','French','German','Italian','Portuguese','Dutch','Swedish',
   'Norwegian','Danish','Finnish','Polish','Czech','Greek','Turkish','Russian',
@@ -1221,10 +1244,6 @@ let historyFilters = { from: '', to: '', category: 'all', type: 'all', material:
 let searchTimer = null;
 let weekNoteTimer = null;
 
-let materialsView = 'grid';
-try { materialsView = localStorage.getItem(MATVIEW_KEY) || 'grid'; } catch (e) {}
-if (materialsView !== 'grid' && materialsView !== 'list') materialsView = 'grid';
-
 let materialsFiltersOpen = true;
 try { materialsFiltersOpen = localStorage.getItem(MATFILTERS_KEY) !== '0'; } catch (e) {}
 
@@ -1233,6 +1252,11 @@ try { quickAddOpen = localStorage.getItem(QUICKADD_KEY) !== '0'; } catch (e) {}
 
 let materialsFilter = { q: '', type: 'all', category: 'all' };
 let expandedSubtasks = new Set();
+
+const MATVIEW_KEY = 'esc-materials-view-mode';
+let materialsViewMode = 'grid';
+try { materialsViewMode = localStorage.getItem(MATVIEW_KEY) || 'grid'; } catch (e) {}
+if (!['grid', 'list'].includes(materialsViewMode)) materialsViewMode = 'grid';
 
 let roadmapView = 'phases';
 try { roadmapView = localStorage.getItem(RMVIEW_KEY) || 'phases'; } catch (e) {}
@@ -1405,7 +1429,7 @@ function downloadBlob(blob, filename){
 function exportJSON(){
   const payload = {
     app: 'english-super-challenge',
-    version: 6,
+    version: 7,
     exported_at: new Date().toISOString(),
     challenge: state.challenge,
     profile: state.profile,
@@ -1920,10 +1944,9 @@ function infoMaterials(){
   openInfoModal('How materials work', `
     <p>Every activity can be linked to a material — a book, audiobook, podcast, show or article.
     Type a title when logging and it's saved here automatically for one-tap reuse next time.</p>
-    <p>Materials are grouped into <b>Reading</b> and <b>Listening</b>. Switch between <b>Grid</b>
-    and <b>List</b> view with the toggle above. Bulk-add via <b>⬆ CSV</b>.</p>
+    <p>Materials are grouped into <b>Reading</b> and <b>Listening</b>. Bulk-add via <b>⬆ CSV</b>.</p>
     <p>Edit a material to add a <b>cover</b> — upload an image or paste a link — so it's easier to
-    spot at a glance in Grid view.</p>
+    spot at a glance in the list.</p>
   `);
 }
 function infoRoadmap(){
@@ -2676,10 +2699,26 @@ function roadmapPhaseHTML(phase, rm){
    merges the Materials library into the Roadmap, styled after the
    Demo-RM phase-queue concept, with progress computed from real logged
    activity / subtask data rather than fixed totals. */
+/* Combined progress across every queued material's own target (total_units).
+   Materials with no target set don't contribute units, but still count
+   toward hasUntargeted so the caller knows the bar is a partial picture. */
+function phaseUnitsTotals(phase){
+  const rawIds = state.roadmap.phases[phase.index]?.materials || [];
+  const items = rawIds.map(id => materialById(id)).filter(Boolean);
+  let logged = 0, total = 0, targeted = 0;
+  items.forEach(m => {
+    if (materialHasTarget(m)){
+      targeted++;
+      logged += materialLoggedUnits(m);
+      total += Number(m.total_units);
+    }
+  });
+  return { logged, total, targeted, count: items.length };
+}
 function roadmapQueueHTML(phase){
   const rawIds = state.roadmap.phases[phase.index]?.materials || [];
   const items = rawIds.map(id => materialById(id)).filter(Boolean);
-  const firstActiveIdx = items.findIndex(m => m.status !== 'completed');
+  const firstActiveIdx = items.findIndex(m => !materialIsComplete(m));
 
   const rows = items.length
     ? items.map((m, i) => roadmapQueueItemHTML(phase.index, m, i, {
@@ -2689,9 +2728,19 @@ function roadmapQueueHTML(phase){
       })).join('')
     : `<div class="rm-queue-empty">No materials queued for this phase yet — add one below.</div>`;
 
-  const allDone = items.length > 0 && items.every(m => m.status === 'completed');
+  const allDone = items.length > 0 && items.every(materialIsComplete);
   const completeBanner = allDone
     ? `<div class="rm-queue-complete">✓ All materials in this phase are complete</div>` : '';
+
+  const ut = phaseUnitsTotals(phase);
+  const phaseBar = ut.targeted > 0 ? `
+    <div class="rm-queue-progress">
+      <div class="rm-progress-top">
+        <span>Queue progress</span>
+        <span class="v">${fmt(ut.logged)} / ${fmt(ut.total)} units${allDone ? ' · ✓ Complete' : ''}</span>
+      </div>
+      <div class="mat-progress-bar ${allDone ? 'complete' : 'reading'}"><i style="width:${ut.total ? clamp(ut.logged / ut.total * 100, 0, 100) : 0}%"></i></div>
+    </div>` : '';
 
   const options = state.materials
     .filter(m => m.status !== 'archived' && !rawIds.includes(m.id))
@@ -2703,6 +2752,7 @@ function roadmapQueueHTML(phase){
       <span class="ql">Reading &amp; listening queue</span>
       <span class="qn">${items.length} item${items.length === 1 ? '' : 's'}</span>
     </div>
+    ${phaseBar}
     <div class="rm-queue-list">${rows}</div>
     ${completeBanner}
     <div class="rm-queue-add">
@@ -2714,10 +2764,10 @@ function roadmapQueueHTML(phase){
   </div>`;
 }
 function roadmapQueueItemHTML(phaseIndex, m, index, opts){
-  const pct = materialProgressPct(m);
-  const isDone = m.status === 'completed';
+  const hasTarget = materialHasTarget(m);
+  const pct = materialUnitPct(m);
+  const isDone = materialIsComplete(m);
   const barCls = isDone ? 'complete' : (m.default_category || 'reading');
-  const t = materialTotals(m.id);
   const sp = materialSubtasksSummary(m);
   const itemCls = ['rm-queue-item', isDone ? 'done' : '', opts.isNext ? 'next' : ''].filter(Boolean).join(' ');
   const badge = opts.isNext ? '<span class="badge next">Now</span>'
@@ -2725,6 +2775,9 @@ function roadmapQueueItemHTML(phaseIndex, m, index, opts){
               : '';
   const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
   const initials = (m.title || '?').trim().slice(0, 2).toUpperCase();
+  const subLabel = hasTarget
+    ? `${fmt(materialLoggedUnits(m))} / ${fmt(Number(m.total_units))} ${materialUnitLabel(m).toLowerCase()}`
+    : (sp ? `${sp.done}/${sp.total} subtasks` : materialTotalsText(materialTotals(m.id)));
 
   return `
   <div class="${itemCls}">
@@ -2736,7 +2789,7 @@ function roadmapQueueItemHTML(phaseIndex, m, index, opts){
         <span class="rq-badge">${badge || escapeHtml(typeLabel)}</span>
       </div>
       <div class="rq-sub">
-        <span>${escapeHtml(sp ? `${sp.done}/${sp.total} subtasks` : materialTotalsText(t))}</span>
+        <span>${escapeHtml(subLabel)}</span>
         <span class="sep">·</span>
         <span>${isDone ? 'Complete' : pct + '%'}</span>
       </div>
@@ -3170,6 +3223,43 @@ function materialTotalsText(t){
   if (t.minutes) parts.push(fmt(t.minutes) + ' min');
   return parts.length ? parts.join(' · ') : 'Nothing logged yet';
 }
+/* ---- Target-based units (total_units / unit / episodes / manual override) ----
+   A material can carry an explicit target (m.total_units + m.unit). When it
+   does, logged-so-far is computed from real logged activities (pages for
+   reading, minutes for listening) unless a manual override (m.manual_units)
+   has been set, in which case that number is used directly instead. Older
+   materials with no target fall back to the previous subtask/status logic. */
+function materialHasTarget(m){ return Number(m.total_units) > 0; }
+function materialUnitLabel(m){ return m.unit || defaultUnitFor(m.default_category); }
+function materialLoggedUnits(m){
+  if (m.manual_units !== null && m.manual_units !== undefined && m.manual_units !== '') {
+    return Math.max(0, Number(m.manual_units) || 0);
+  }
+  const t = materialTotals(m.id);
+  return m.default_category === 'listening' ? t.minutes : t.pages;
+}
+function materialEpisodesLogged(m){
+  if (m.manual_episodes !== null && m.manual_episodes !== undefined && m.manual_episodes !== '') {
+    return Math.max(0, Number(m.manual_episodes) || 0);
+  }
+  return materialTotals(m.id).count;
+}
+function materialUnitPct(m){
+  if (materialHasTarget(m)) return clamp(Math.round(materialLoggedUnits(m) / Number(m.total_units) * 100), 0, 100);
+  return materialProgressPct(m);
+}
+function materialIsComplete(m){
+  if (materialHasTarget(m)) return materialLoggedUnits(m) >= Number(m.total_units);
+  return m.status === 'completed';
+}
+/* Which phases (by name) a material is queued in, in phase order. */
+function materialPhaseTags(m){
+  const phases = (state.roadmap && state.roadmap.phases) || [];
+  return phases
+    .map((p, i) => ((p.materials || []).includes(m.id) ? { index: i, name: p.name || `Phase ${i + 1}` } : null))
+    .filter(Boolean);
+}
+
 function materialProgressPct(m){
   const sp = materialSubtasksSummary(m);
   if (sp) return sp.total ? Math.round(sp.done / sp.total * 100) : 0;
@@ -3178,14 +3268,15 @@ function materialProgressPct(m){
 }
 function materialProgressBarHTML(m){
   const sp = materialSubtasksSummary(m);
-  const pct = materialProgressPct(m);
-  const isDone = m.status === 'completed';
+  const hasTarget = materialHasTarget(m);
+  const pct = materialUnitPct(m);
+  const isDone = materialIsComplete(m);
   const barCls = isDone ? 'complete' : (m.default_category || 'reading');
-  const secondary = sp
-    ? `${sp.done}/${sp.total} subtasks done`
-    : materialTotalsText(materialTotals(m.id));
+  const secondary = hasTarget
+    ? `${fmt(materialLoggedUnits(m))} / ${fmt(Number(m.total_units))} ${materialUnitLabel(m).toLowerCase()}`
+    : (sp ? `${sp.done}/${sp.total} subtasks done` : materialTotalsText(materialTotals(m.id)));
   const pctLabel = isDone ? '✓ Done'
-    : (sp ? pct + '%' : (pct > 0 ? 'In progress' : 'Not started'));
+    : ((hasTarget || sp) ? pct + '%' : (pct > 0 ? 'In progress' : 'Not started'));
   return `
     <div class="mat-progress">
       <div class="mat-progress-top">
@@ -3199,21 +3290,6 @@ const MATERIAL_STATUS_RANK = { active: 0, completed: 1, archived: 2 };
 function materialSorter(a, b){
   const r = (MATERIAL_STATUS_RANK[a.status] ?? 3) - (MATERIAL_STATUS_RANK[b.status] ?? 3);
   return r !== 0 ? r : a.title.localeCompare(b.title);
-}
-function materialDeadlineChipHTML(m){
-  if (!m.deadline) return '';
-  return `
-    <span class="mat-deadline-chip">
-      📅 ${escapeHtml(fmtDeadlineDate(m.deadline))} · <b class="mono" data-countdown="material:${m.id}">--:--:--</b>
-    </span>`;
-}
-function materialDeadlineBadgeHTML(m){
-  if (!m.deadline) return '';
-  return `
-    <div class="mat-deadline-badge">
-      <span class="dl-date">Due ${escapeHtml(fmtDeadlineDate(m.deadline))}</span>
-      <span class="dl-cd mono" data-countdown="material:${m.id}">--:--:--</span>
-    </div>`;
 }
 function materialSubtasksSummary(m){
   const list = Array.isArray(m.subtasks) ? m.subtasks : [];
@@ -3268,32 +3344,70 @@ function materialRowHTML(m){
   </div>`;
 }
 function materialCardHTML(m){
-  const t = materialTotals(m.id);
+  const hasTarget = materialHasTarget(m);
+  const logged = materialLoggedUnits(m);
+  const total = Number(m.total_units) || 0;
+  const unit = materialUnitLabel(m).toLowerCase();
+  const pct = materialUnitPct(m);
+  const isDone = materialIsComplete(m);
+  const barCls = isDone ? 'complete' : (m.default_category || 'reading');
   const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
   const initials = (m.title || '?').trim().slice(0, 2).toUpperCase();
-  const actions = `
-    <div class="mat-card-actions">
-      <button class="link-btn" data-action="edit-material" data-id="${m.id}">Edit</button>
-      <button class="link-btn danger" data-action="delete-material" data-id="${m.id}" aria-label="Delete">✕</button>
-    </div>`;
-  const top = m.cover_url
-    ? `<div class="mat-card-cover" style="background-image:url('${escapeHtml(m.cover_url)}')">${actions}${materialDeadlineBadgeHTML(m)}</div>`
-    : `<div class="mat-card-top">
-         <div class="mat-icon ${m.default_category}">${escapeHtml(initials)}</div>
-         ${actions}
-       </div>`;
+  const color = m.color || MATERIAL_COLORS[0].hex;
+  const icon = m.cover_url
+    ? `<div class="mat-card-icon has-cover" style="background-image:url('${escapeHtml(m.cover_url)}')"></div>`
+    : `<div class="mat-card-icon" style="background:${escapeHtml(color)}">${m.emoji ? escapeHtml(m.emoji) : escapeHtml(initials)}</div>`;
+  const episodesTotal = Number(m.episodes_total) || 0;
+  const episodesRow = episodesTotal > 0
+    ? `<span class="mat-card-episodes">${fmt(materialEpisodesLogged(m))} / ${fmt(episodesTotal)} episodes</span>` : '';
+  const statusKind = isDone ? 'good' : (pct > 0 ? 'warn' : 'neutral');
+  const statusText = isDone ? '✓ Complete' : (pct > 0 ? 'In progress' : 'Not started');
+  const figure = hasTarget
+    ? `${fmt(logged)} / ${fmt(total)} ${escapeHtml(unit)}`
+    : materialTotalsText(materialTotals(m.id));
+  const phaseTags = materialPhaseTags(m);
+
   return `
   <div class="mat-card">
-    ${top}
-    <div class="mat-card-title">${escapeHtml(m.title)}</div>
-    <div class="mat-card-sub">${escapeHtml(m.creator || '—')}</div>
-    <div class="mat-card-pills">
-      <span class="pill ${m.status}">${m.status}</span>
-      <span class="mat-type-pill">${escapeHtml(typeLabel)}</span>
+    <div class="mat-card-top">
+      ${icon}
+      <div class="mat-card-titles">
+        <div class="mat-card-title">${escapeHtml(m.title)}</div>
+        <div class="mat-card-sub">${escapeHtml(m.creator || '—')} · ${escapeHtml(typeLabel)}</div>
+      </div>
     </div>
-    ${!m.cover_url ? materialDeadlineChipHTML(m) : ''}
-    ${materialProgressBarHTML(m)}
-    ${materialSubtaskProgressHTML(m)}
+    <div class="mat-card-stats">
+      <span class="mat-card-figure">${figure}</span>
+      ${episodesRow}
+    </div>
+    <div class="mat-progress-bar ${barCls}"><i style="width:${pct}%"></i></div>
+    <div class="mat-card-status-row">
+      <span class="status-pill ${statusKind}">${statusText}</span>
+      <span class="mat-card-pct">${pct}%</span>
+    </div>
+    ${phaseTags.length ? `
+    <div class="mat-card-queued">
+      <span class="qlabel">Queued in</span>
+      ${phaseTags.map(t => `<span class="tag">${escapeHtml(t.name)}</span>`).join('')}
+    </div>` : ''}
+    <div class="mat-card-actions">
+      <button class="link-btn" data-action="edit-material" data-id="${m.id}">Edit</button>
+      <button class="link-btn danger" data-action="delete-material" data-id="${m.id}">Delete</button>
+    </div>
+  </div>`;
+}
+function libraryStatsHTML(all){
+  const withTarget = all.filter(materialHasTarget);
+  const totalLogged = withTarget.reduce((s, m) => s + materialLoggedUnits(m), 0);
+  const totalTarget = withTarget.reduce((s, m) => s + Number(m.total_units), 0);
+  const completeCount = all.filter(materialIsComplete).length;
+  const overallPct = totalTarget > 0 ? (totalLogged / totalTarget * 100) : 0;
+  return `
+  <div class="lib-stats">
+    <div class="lib-stat"><b>${all.length}</b> material${all.length === 1 ? '' : 's'}</div>
+    ${totalTarget > 0 ? `<div class="lib-stat"><b>${fmt(totalLogged)}</b> / ${fmt(totalTarget)} total units logged</div>` : ''}
+    <div class="lib-stat"><b>${completeCount}</b> complete</div>
+    ${totalTarget > 0 ? `<div class="lib-stat">Overall <b>${overallPct.toFixed(1)}%</b></div>` : ''}
   </div>`;
 }
 function materialsLibraryHTML(){
@@ -3319,15 +3433,8 @@ function materialsLibraryHTML(){
     items: filtered.filter(m => m.default_category === cat).sort(materialSorter)
   })).filter(g => g.items.length);
   const hasFilter = !!q || materialsFilter.type !== 'all' || materialsFilter.category !== 'all';
-  const hiddenActiveCount = (!materialsFiltersOpen ? 1 : 0) *
-    ((materialsFilter.category !== 'all' ? 1 : 0) + (materialsFilter.type !== 'all' ? 1 : 0));
+  const hiddenActiveCount = (!materialsFiltersOpen && materialsFilter.type !== 'all') ? 1 : 0;
 
-  const catChips = `
-    <div class="mat-chip-row">
-      <button class="chip ${materialsFilter.category === 'all' ? 'active' : ''}" data-matcat="all">All materials</button>
-      <button class="chip ${materialsFilter.category === 'reading' ? 'active' : ''}" data-matcat="reading">Reading</button>
-      <button class="chip ${materialsFilter.category === 'listening' ? 'active' : ''}" data-matcat="listening">Listening</button>
-    </div>`;
   const typeChips = `
     <div class="mat-chip-row">
       <button class="chip ${materialsFilter.type === 'all' ? 'active' : ''}" data-mattype="all">All types</button>
@@ -3338,19 +3445,9 @@ function materialsLibraryHTML(){
         </button>
       `).join('')}
     </div>`;
-  const body = groups.length
-    ? groups.map(g => `
-        <div class="mat-group-head">
-          <span class="gdot ${g.id}"></span>
-          <span class="gt">${escapeHtml(g.label)}</span>
-          <span class="gn">${g.items.length}</span>
-          <span class="gline"></span>
-        </div>
-        ${materialsView === 'grid'
-          ? `<div class="mat-grid">${g.items.map(materialCardHTML).join('')}</div>`
-          : `<div>${g.items.map(materialRowHTML).join('')}</div>`}
-      `).join('')
-    : `<div class="empty">
+
+  const emptyState = `
+       <div class="empty">
          <div class="em-icon">${all.length ? '🔍' : '📚'}</div>
          <div class="em-title">${all.length ? 'No materials match' : 'No materials yet'}</div>
          <div class="em-sub">${all.length
@@ -3364,11 +3461,43 @@ function materialsLibraryHTML(){
               </div>`}
        </div>`;
 
+  const gridBody = filtered.length
+    ? `<div class="mat-grid">${filtered.slice().sort(materialSorter).map(materialCardHTML).join('')}</div>`
+    : emptyState;
+
+  const listBody = groups.length
+    ? groups.map(g => `
+        <div class="mat-group-head">
+          <span class="gdot ${g.id}"></span>
+          <span class="gt">${escapeHtml(g.label)}</span>
+          <span class="gn">${g.items.length}</span>
+          <span class="gline"></span>
+        </div>
+        <div>${g.items.map(materialRowHTML).join('')}</div>
+      `).join('')
+    : emptyState;
+
   return `
   <div class="card" style="margin-bottom:14px">
-    <div class="mat-toolbar">
+    <div class="mat-toolbar mat-toolbar-top">
+      <h2 class="mat-lib-title">Materials Library</h2>
+      <div class="mat-toolbar-right">
+        <div class="seg">
+          <button class="${materialsFilter.category === 'all' ? 'active' : ''}" data-matcat="all">All</button>
+          <button class="${materialsFilter.category === 'reading' ? 'active' : ''}" data-matcat="reading">Reading</button>
+          <button class="${materialsFilter.category === 'listening' ? 'active' : ''}" data-matcat="listening">Listening</button>
+        </div>
+        <button class="btn btn-primary" data-action="add-material">+ Add material</button>
+      </div>
+    </div>
+    ${libraryStatsHTML(all)}
+    <div class="mat-toolbar" style="margin-top:14px">
       <div class="mat-search">
         <input type="text" id="matSearch" placeholder="Search materials…" value="${escapeHtml(materialsFilter.q)}" autocomplete="off">
+      </div>
+      <div class="seg">
+        <button class="${materialsViewMode === 'grid' ? 'active' : ''}" data-matview="grid">Grid</button>
+        <button class="${materialsViewMode === 'list' ? 'active' : ''}" data-matview="list">List</button>
       </div>
       <button class="btn btn-ghost filter-toggle" data-action="toggle-mat-filters"
               aria-expanded="${materialsFiltersOpen ? 'true' : 'false'}"
@@ -3376,14 +3505,9 @@ function materialsLibraryHTML(){
         ${materialsFiltersOpen ? 'Filters ▾' : 'Filters ▸'}
         ${hiddenActiveCount ? `<span class="fcount">${hiddenActiveCount}</span>` : ''}
       </button>
-      <div class="seg" id="matViewSeg">
-        <button data-matview="grid" class="${materialsView === 'grid' ? 'active' : ''}" title="Grid view">▦ Grid</button>
-        <button data-matview="list" class="${materialsView === 'list' ? 'active' : ''}" title="List view">☰ List</button>
-      </div>
       <button class="btn btn-ghost" data-action="import-materials">⬆ CSV</button>
-      <button class="btn btn-primary" data-action="add-material">+ Add</button>
     </div>
-    <div class="mat-filters-wrap ${materialsFiltersOpen ? '' : 'collapsed'}">${catChips}${typeChips}</div>
+    <div class="mat-filters-wrap ${materialsFiltersOpen ? '' : 'collapsed'}">${typeChips}</div>
     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap">
       <div style="font-size:12.5px;color:var(--muted)">
         ${filtered.length} of ${all.length} material${all.length === 1 ? '' : 's'}${hasFilter ? ' · filtered' : ''}
@@ -3393,10 +3517,10 @@ function materialsLibraryHTML(){
   </div>
   <div class="card" style="margin-bottom:14px">
     <div class="card-head">
-      <h2>Materials by type</h2>
+      <h2>${materialsViewMode === 'grid' ? 'Library' : 'Materials by type'}</h2>
       <button class="info-btn" data-action="info-materials" title="How materials work" aria-label="How materials work">i</button>
     </div>
-    ${body}
+    ${materialsViewMode === 'grid' ? gridBody : listBody}
   </div>`;
 }
 
@@ -4138,6 +4262,42 @@ function openMaterialModal(material){
             ${TYPE_ORDER.map(t => `<option value="${t}" ${m.default_input_type === t ? 'selected' : ''}>${TYPES[t].label} (${TYPES[t].category})</option>`).join('')}
           </select>
         </div>
+        <div class="two-col">
+          <div class="field"><label for="matTotalUnits">Total units</label>
+            <input type="number" id="matTotalUnits" min="0" step="1" inputmode="numeric" placeholder="e.g. 320" value="${m.total_units ? escapeHtml(String(m.total_units)) : ''}">
+          </div>
+          <div class="field"><label for="matUnit">Unit</label>
+            <input type="text" id="matUnit" list="matUnitOptions" placeholder="${escapeHtml(defaultUnitFor(m.default_category))}" value="${escapeHtml(m.unit || '')}">
+            <datalist id="matUnitOptions">
+              ${[...UNIT_SUGGESTIONS.reading, ...UNIT_SUGGESTIONS.listening].map(u => `<option value="${u}"></option>`).join('')}
+            </datalist>
+          </div>
+        </div>
+        <div class="field"><label for="matEpisodes">Episodes (optional)</label>
+          <input type="number" id="matEpisodes" min="0" step="1" inputmode="numeric" placeholder="e.g. 24" value="${m.episodes_total ? escapeHtml(String(m.episodes_total)) : ''}">
+          <p class="hint" style="margin-top:6px">For podcasts, TV shows or audiobook chapters — a second progress readout.</p>
+        </div>
+        <div class="field">
+          <label>Emoji</label>
+          <div class="emoji-grid" id="matEmojiGrid" style="grid-template-columns:repeat(7,1fr)">
+            <button type="button" data-mat-emoji="" title="Use initials" class="${!m.emoji ? 'active' : ''}" style="font-size:11px;font-weight:700;color:var(--muted)">A–Z</button>
+            ${MATERIAL_EMOJI_SUGGESTIONS.map(e => `
+              <button type="button" data-mat-emoji="${e}" class="${m.emoji === e ? 'active' : ''}">${e}</button>
+            `).join('')}
+          </div>
+        </div>
+        <div class="field">
+          <label>Color</label>
+          <div class="swatch-row" id="matSwatchRow">
+            ${MATERIAL_COLORS.map(c => `
+              <button type="button" class="swatch ${(m.color || MATERIAL_COLORS[0].hex) === c.hex ? 'active' : ''}" data-mat-color="${c.hex}" style="background:${c.hex}" title="${escapeHtml(c.name)}" aria-label="Color ${escapeHtml(c.name)}"></button>
+            `).join('')}
+          </div>
+        </div>
+        <div class="field"><label for="matManualUnits">Logged units so far (manual override)</label>
+          <input type="number" id="matManualUnits" min="0" step="1" inputmode="numeric" placeholder="Auto from logged activities" value="${m.manual_units !== null && m.manual_units !== undefined && m.manual_units !== '' ? escapeHtml(String(m.manual_units)) : ''}">
+          <p class="hint" style="margin-top:6px">Normally this comes from your logged activities — set a number here to override the tally, or leave it blank to calculate automatically.</p>
+        </div>
         <div class="field"><label for="matStatus">Status</label>
           <select id="matStatus">
             <option value="active" ${m.status === 'active' ? 'selected' : ''}>Active</option>
@@ -4150,7 +4310,7 @@ function openMaterialModal(material){
             <input type="date" id="matDeadline" value="${m.deadline ? escapeHtml(m.deadline) : ''}" style="flex:1;min-width:150px">
             ${m.deadline ? `<button type="button" class="btn btn-ghost btn-sm" id="matDeadlineClearBtn" style="color:var(--bad-fg)">Remove</button>` : ''}
           </div>
-          <p class="hint" style="margin-top:6px">Shows a live countdown on the material's cover until 23:59 that day.</p>
+          <p class="hint" style="margin-top:6px">Shows a live countdown in the list until 23:59 that day.</p>
         </div>
         <div class="field">
           <label>Subtasks (optional)</label>
@@ -4167,6 +4327,19 @@ function openMaterialModal(material){
       </form>
     </div>
   `);
+
+  let matEmoji = m.emoji || '';
+  let matColor = m.color || MATERIAL_COLORS[0].hex;
+  $('#matEmojiGrid').addEventListener('click', e => {
+    const b = e.target.closest('[data-mat-emoji]'); if (!b) return;
+    matEmoji = b.dataset.matEmoji;
+    $$('#matEmojiGrid button').forEach(x => x.classList.toggle('active', x === b));
+  });
+  $('#matSwatchRow').addEventListener('click', e => {
+    const b = e.target.closest('[data-mat-color]'); if (!b) return;
+    matColor = b.dataset.matColor;
+    $$('#matSwatchRow .swatch').forEach(x => x.classList.toggle('active', x === b));
+  });
 
   const coverThumb = $('#matCoverThumb');
   const coverFileInput = $('#matCoverFile');
@@ -4262,15 +4435,25 @@ function openMaterialModal(material){
     const title = $('#matTitle').value.trim();
     if (!title) return;
     const type = $('#matType').value;
+    const category = TYPES[type].category;
+    const totalUnitsRaw = $('#matTotalUnits').value.trim();
+    const episodesRaw = $('#matEpisodes').value.trim();
+    const manualUnitsRaw = $('#matManualUnits').value.trim();
     const payload = {
       title,
       creator: $('#matCreator').value.trim(),
       default_input_type: type,
-      default_category: TYPES[type].category,
+      default_category: category,
       status: $('#matStatus').value,
       cover_url: coverUrl,
       deadline: $('#matDeadline').value || null,
-      subtasks
+      subtasks,
+      total_units: totalUnitsRaw ? Math.max(0, Number(totalUnitsRaw) || 0) : null,
+      unit: $('#matUnit').value.trim() || defaultUnitFor(category),
+      episodes_total: episodesRaw ? Math.max(0, Number(episodesRaw) || 0) : null,
+      manual_units: manualUnitsRaw ? Math.max(0, Number(manualUnitsRaw) || 0) : null,
+      emoji: matEmoji,
+      color: matColor
     };
     if (editing){
       const target = state.materials.find(x => x.id === material.id);
@@ -4711,18 +4894,18 @@ document.addEventListener('click', e => {
     return;
   }
 
-  /* Materials view */
-  const viewBtn = e.target.closest('[data-matview]');
-  if (viewBtn){
-    materialsView = viewBtn.dataset.matview === 'list' ? 'list' : 'grid';
-    try { localStorage.setItem(MATVIEW_KEY, materialsView); } catch (err) {}
-    render();
-    return;
-  }
+  /* Materials filters */
   const catBtn = e.target.closest('[data-matcat]');
   if (catBtn){ materialsFilter.category = catBtn.dataset.matcat; render(); return; }
   const typeBtn = e.target.closest('[data-mattype]');
   if (typeBtn){ materialsFilter.type = typeBtn.dataset.mattype; render(); return; }
+  const matViewBtn = e.target.closest('[data-matview]');
+  if (matViewBtn){
+    materialsViewMode = matViewBtn.dataset.matview;
+    try { localStorage.setItem(MATVIEW_KEY, materialsViewMode); } catch (err) {}
+    render();
+    return;
+  }
 
   /* Roadmap view toggle */
   const rmViewBtn = e.target.closest('[data-rmview]');
