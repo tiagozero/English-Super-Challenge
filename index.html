@@ -465,6 +465,7 @@
   .badge.daily{background:var(--tag-bg);color:var(--tag-fg)}
   .badge.weekly{background:var(--info-bg);color:var(--info-fg)}
   .badge.done{background:var(--good-bg);color:var(--good-fg)}
+  .badge.bad{background:var(--bad-bg);color:var(--bad-fg)}
   .chal-bar{height:8px;background:var(--surface-2);border-radius:999px;margin:11px 0 8px;overflow:hidden}
   .chal-bar i{display:block;height:100%;border-radius:999px;transition:width .4s ease}
   .chal-bar.reading i{background:linear-gradient(90deg,var(--reading-2),var(--reading))}
@@ -1815,6 +1816,30 @@ function statusLabel(s){
     today: 'Today', future: 'Planned', current: 'In progress'
   })[s] || s;
 }
+function computeStreaks(rm){
+  const past = rm.days.filter(d => d.isPast);
+  const metDay = d => {
+    const exp = d.expectedRead + d.expectedListen;
+    const act = d.actualRead + d.actualListen;
+    return exp <= 0 ? true : act >= exp;
+  };
+  let best = 0, run = 0;
+  past.forEach(d => {
+    if (metDay(d)){ run++; best = Math.max(best, run); }
+    else run = 0;
+  });
+  let current = 0;
+  for (let i = past.length - 1; i >= 0; i--){
+    if (metDay(past[i])) current++;
+    else break;
+  }
+  const today = rm.days.find(d => d.isToday);
+  if (today && metDay(today)){
+    current++;
+    best = Math.max(best, current);
+  }
+  return { current, best };
+}
 
 /* =========================================================
    Milestones (auto + custom)
@@ -2004,6 +2029,9 @@ function infoRoadmap(){
     Click any past or present day to add a <b>daily note</b> — a mini journal.</p>
     <p><b>Milestones</b> mark key checkpoints. Four auto milestones appear at <b>25% / 50% / 75% / 100%</b>.
     You can add your own custom milestones with any date and description.</p>
+    <p><b>Pace check</b> compares your actual pace to your even-pace plan and tells you the daily
+    rate you'd now need to still hit your goal. <b>Consistency</b> tracks your current and best
+    day-streaks of hitting target, your overall hit rate, and a week-by-week chart of your progress.</p>
   `);
 }
 
@@ -2564,6 +2592,24 @@ function viewRoadmap(){
   const projReadPct = rm.ch.reading_target_pages ? projectedRead / rm.ch.reading_target_pages * 100 : 0;
   const projListenPct = rm.ch.listening_target_minutes ? projectedListen / rm.ch.listening_target_minutes * 100 : 0;
 
+  // Pace check — how you're tracking vs. the even-pace plan, and what's needed to still hit goal
+  const idealSoFarRead = rm.dailyRead * elapsed;
+  const idealSoFarListen = rm.dailyListen * elapsed;
+  const paceRatio = (idealSoFarRead + idealSoFarListen) > 0
+    ? (totalActualRead + totalActualListen) / (idealSoFarRead + idealSoFarListen)
+    : 1;
+  let paceLabel = 'On track', paceBadgeCls = 'weekly', paceStatus = 'ontrack';
+  if (paceRatio >= 1.05){ paceLabel = 'Ahead of pace'; paceBadgeCls = 'done'; paceStatus = 'ahead'; }
+  else if (paceRatio < 0.9){ paceLabel = 'Behind pace'; paceBadgeCls = 'bad'; paceStatus = 'behind'; }
+  const neededDailyRead = remaining > 0 ? Math.max(0, (rm.ch.reading_target_pages || 0) - totalActualRead) / remaining : 0;
+  const neededDailyListen = remaining > 0 ? Math.max(0, (rm.ch.listening_target_minutes || 0) - totalActualListen) / remaining : 0;
+
+  // Streaks & consistency
+  const streaks = computeStreaks(rm);
+  const pastDays = rm.days.filter(d => d.isPast);
+  const metDaysCount = pastDays.filter(d => dayStatus(d) === 'met').length;
+  const hitRate = pastDays.length ? (metDaysCount / pastDays.length * 100) : 0;
+
   // Today banner
   const todayDay = rm.days.find(d => d.isToday);
   const todayPhase = todayDay ? rm.phases[todayDay.phaseIndex] : null;
@@ -2633,13 +2679,45 @@ function viewRoadmap(){
   <div class="rm-projection">
     <div class="proj-icon">📈</div>
     <div class="proj-main">
-      <div class="proj-title">Projection at current pace</div>
+      <div class="proj-title" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        Pace check <span class="badge ${paceBadgeCls}">${paceLabel}</span>
+      </div>
       <div class="proj-sub">
         If you keep reading at <b>${fmt1(readRateSoFar)}</b> pages/day and listening at <b>${fmt1(listenRateSoFar)}</b> min/day,
         you'll finish with <b>${fmt(projectedRead)}</b> pages (<b>${projReadPct.toFixed(0)}%</b> of target) and
         <b>${fmt(projectedListen)}</b> min (<b>${projListenPct.toFixed(0)}%</b> of target).
       </div>
+      ${remaining > 0 ? `
+      <div class="proj-sub" style="margin-top:6px">
+        To still hit your full goal in the <b>${fmt(remaining)}</b> day${remaining === 1 ? '' : 's'} left, you now need
+        <b>${fmt1(neededDailyRead)}</b> pages/day and <b>${fmt1(neededDailyListen)}</b> min/day —
+        ${paceStatus === 'behind' ? 'more than your original even-pace plan.' : paceStatus === 'ahead' ? 'less than your original plan, so you have some cushion.' : 'about the same as your original plan.'}
+      </div>` : ''}
     </div>
+  </div>`;
+
+  // Consistency card — streaks + weekly trend chart
+  const consistencyCard = `
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-head"><h2>Consistency</h2></div>
+    <div class="grid cols-3" style="margin-bottom:18px">
+      <div>
+        <div class="stat-label">Current streak</div>
+        <div class="stat-value">${streaks.current > 0 ? '🔥 ' : ''}${fmt(streaks.current)} <small>${streaks.current === 1 ? 'day' : 'days'}</small></div>
+        <div class="stat-sub">${streaks.current > 0 ? 'Keep it going' : 'Hit today\'s target to start one'}</div>
+      </div>
+      <div>
+        <div class="stat-label">Best streak</div>
+        <div class="stat-value">${fmt(streaks.best)} <small>${streaks.best === 1 ? 'day' : 'days'}</small></div>
+        <div class="stat-sub">Your all-time high</div>
+      </div>
+      <div>
+        <div class="stat-label">Days on target</div>
+        <div class="stat-value">${fmt(metDaysCount)} <small>/ ${fmt(pastDays.length)}</small></div>
+        <div class="stat-sub">${hitRate.toFixed(0)}% hit rate so far</div>
+      </div>
+    </div>
+    ${roadmapWeeklyChartHTML(rm)}
   </div>`;
 
   // Body by view
@@ -2667,6 +2745,7 @@ function viewRoadmap(){
   ${viewToggle}
   ${statStrip}
   ${projCard}
+  ${consistencyCard}
 
   ${body}
 
@@ -2695,6 +2774,46 @@ function viewRoadmap(){
   </div>`;
 }
 
+function roadmapWeeklyChartHTML(rm){
+  const weeks = rm.weeks;
+  const showEvery = weeks.length > 14 ? Math.ceil(weeks.length / 14) : 1;
+  const LABEL_H = 18, BAR_AREA = 170 - LABEL_H;
+  function chartFor(metric){
+    const cls = metric === 'reading' ? 'reading' : 'listening';
+    const unit = metric === 'reading' ? 'pg' : 'min';
+    const vals = weeks.map(w => metric === 'reading' ? w.actualRead : w.actualListen);
+    const exps = weeks.map(w => metric === 'reading' ? w.expectedRead : w.expectedListen);
+    const max = Math.max(...vals, ...exps, 1);
+    const fullWeekExp = (metric === 'reading' ? rm.dailyRead : rm.dailyListen) * 7;
+    return `
+    <div>
+      <div class="stat-label" style="margin-bottom:8px">${metric === 'reading' ? 'Reading' : 'Listening'} by week</div>
+      <div class="chart">
+        <div class="target-line" style="bottom:${LABEL_H + clamp(fullWeekExp / max, 0, 1) * BAR_AREA}px"></div>
+        ${weeks.map((w, i) => {
+          const val = metric === 'reading' ? w.actualRead : w.actualListen;
+          const exp = metric === 'reading' ? w.expectedRead : w.expectedListen;
+          const barHeight = val ? Math.max(3, val / max * 100) : (w.status === 'future' ? 0 : 2);
+          return `
+          <div class="col" title="Week ${w.weekNumber}: ${fmt(val)} ${unit} vs ${fmt(exp)} ${unit} expected">
+            <div class="bar-wrap"><div class="fill ${val ? cls : 'muted'}" style="height:${barHeight}%"></div></div>
+            <span class="lbl">${(i % showEvery === 0) ? w.weekNumber : ''}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
+  return `
+  <div class="grid cols-2" style="margin-bottom:0">
+    ${chartFor('reading')}
+    ${chartFor('listening')}
+  </div>
+  <div class="chart-legend">
+    <span><i style="background:var(--reading)"></i>Pages read</span>
+    <span><i style="background:var(--listening)"></i>Minutes listened</span>
+    <span><i style="background:transparent;border-top:1.5px dashed var(--dash-line);width:14px;height:0;border-radius:0"></i>Full-week pace target</span>
+  </div>`;
+}
 function roadmapPhaseHTML(phase, rm){
   const isOpen = !!roadmapOpenPhases[phase.index];
   const weeks = phase.weekIndices.map(i => rm.weeks[i]).filter(Boolean);
