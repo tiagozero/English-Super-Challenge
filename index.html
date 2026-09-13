@@ -389,6 +389,8 @@
   .mat-icon{width:40px;height:40px;border-radius:11px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:750;letter-spacing:.03em;color:var(--on-accent)}
   .mat-icon.reading{background:linear-gradient(140deg,var(--reading-2),var(--reading))}
   .mat-icon.listening{background:linear-gradient(140deg,var(--listening-2),var(--listening))}
+  .mat-icon.has-cover{background-size:cover;background-position:center;color:transparent}
+  .mat-cover-thumb{width:84px;height:112px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2) center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:11px;text-align:center;padding:6px;flex:0 0 auto}
   .mat-main{flex:1;min-width:0}
   .mat-title{font-size:14.5px;font-weight:600;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
   .mat-sub{font-size:12.5px;color:var(--muted);margin-top:2px}
@@ -426,6 +428,8 @@
   .mat-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
   .mat-card-actions{display:flex;gap:0;flex:0 0 auto;margin:-4px -4px 0 0}
   .mat-card-actions .link-btn{font-size:12px;padding:3px 6px}
+  .mat-card-cover{position:relative;width:100%;aspect-ratio:3/4;border-radius:10px;background:var(--surface-2) center/cover no-repeat;margin:-2px -2px 0}
+  .mat-card-cover .mat-card-actions{position:absolute;top:6px;right:6px;margin:0;background:color-mix(in srgb, var(--surface) 78%, transparent);border-radius:8px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
   .mat-card-title{font-size:14.5px;font-weight:640;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
   .mat-card-sub{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .mat-card-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:1px}
@@ -1010,37 +1014,21 @@ function startTicker(){
    Constants
    ========================================================= */
 const TYPES = {
-  kindle:    { label: 'Kindle',        category: 'reading',   unit: 'pages' },
-  book:      { label: 'Physical book', category: 'reading',   unit: 'pages' },
-  article:   { label: 'Article',       category: 'reading',   unit: 'pages' },
-  manga:     { label: 'Manga',         category: 'reading',   unit: 'pages' },
-  other:     { label: 'Other',         category: 'reading',   unit: 'pages' },
+  kindle:    { label: 'Kindle',        category: 'reading',   unit: 'pages'   },
+  book:      { label: 'Physical book', category: 'reading',   unit: 'pages'   },
+  article:   { label: 'Article',       category: 'reading',   unit: 'pages'   },
+  manga:   { label: 'Manga',       category: 'reading',   unit: 'pages'   },
+  other:     { label: 'Other',         category: 'reading',   unit: 'pages'   },
   audiobook: { label: 'Audiobook',     category: 'listening', unit: 'minutes' },
   podcast:   { label: 'Podcast',       category: 'listening', unit: 'minutes' },
-  anime:     { label: 'Anime',         category: 'listening', unit: 'minutes' },
-  youtube:   { label: 'YouTube',       category: 'listening', unit: 'minutes' },
+  anime:   { label: 'Anime',       category: 'listening', unit: 'minutes' },
+  youTube:   { label: 'YouTube',       category: 'listening', unit: 'minutes' },
   tv:        { label: 'TV',            category: 'listening', unit: 'minutes' },
   film:      { label: 'Film',          category: 'listening', unit: 'minutes' }
 };
-
-const TYPE_ORDER = [
-  'kindle',
-  'book',
-  'article',
-  'other',
-  'youtube',
-  'manga',
-  'audiobook',
-  'podcast',
-  'tv',
-  'film'
-];
-
+const TYPE_ORDER = ['kindle', 'book', 'article', 'manga', 'other', 'youTube', 'anime', 'audiobook', 'podcast', 'tv', 'film'];
 const CATEGORY_ORDER = ['reading', 'listening'];
-
-const CATEGORY_LABEL = {
-  reading: 'Reading',
-  listening: 'Listening'
+const CATEGORY_LABEL = { reading: 'Reading', listening: 'Listening' };
 
 const STORAGE_KEY = 'english-super-challenge-v2-clean';
 const WELCOME_KEY = 'esc-welcome-shown';
@@ -1200,6 +1188,11 @@ function freshData(){
 function normalizeState(s){
   if (!s || typeof s !== 'object') return null;
   if (!Array.isArray(s.materials))    s.materials = [];
+  s.materials = s.materials.map(m => {
+    const cover = (m && typeof m.cover_url === 'string' && (m.cover_url.startsWith('data:image') || /^https?:\/\//.test(m.cover_url)))
+      ? m.cover_url : '';
+    return { ...m, cover_url: cover };
+  });
   if (!Array.isArray(s.activities))   s.activities = [];
   if (!Array.isArray(s.customChallenges)) s.customChallenges = [];
   if (s.profile === undefined) s.profile = null;
@@ -1974,6 +1967,8 @@ function infoMaterials(){
     Type a title when logging and it's saved here automatically for one-tap reuse next time.</p>
     <p>Materials are grouped into <b>Reading</b> and <b>Listening</b>. Switch between <b>Grid</b>
     and <b>List</b> view with the toggle above. Bulk-add via <b>⬆ CSV</b>.</p>
+    <p>Edit a material to add a <b>cover</b> — upload an image or paste a link — so it's easier to
+    spot at a glance in Grid view.</p>
   `);
 }
 function infoXp(){
@@ -3290,9 +3285,12 @@ function materialRowHTML(m){
   const t = materialTotals(m.id);
   const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
   const initials = (m.title || '?').trim().slice(0, 2).toUpperCase();
+  const icon = m.cover_url
+    ? `<div class="mat-icon has-cover" style="background-image:url('${escapeHtml(m.cover_url)}')"></div>`
+    : `<div class="mat-icon ${m.default_category}">${escapeHtml(initials)}</div>`;
   return `
   <div class="mat">
-    <div class="mat-icon ${m.default_category}">${escapeHtml(initials)}</div>
+    ${icon}
     <div class="mat-main">
       <div class="mat-title">${escapeHtml(m.title)}<span class="pill ${m.status}">${m.status}</span></div>
       <div class="mat-sub">${escapeHtml(m.creator || '—')} · ${escapeHtml(typeLabel)}</div>
@@ -3308,15 +3306,20 @@ function materialCardHTML(m){
   const t = materialTotals(m.id);
   const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
   const initials = (m.title || '?').trim().slice(0, 2).toUpperCase();
+  const actions = `
+    <div class="mat-card-actions">
+      <button class="link-btn" data-action="edit-material" data-id="${m.id}">Edit</button>
+      <button class="link-btn danger" data-action="delete-material" data-id="${m.id}" aria-label="Delete">✕</button>
+    </div>`;
+  const top = m.cover_url
+    ? `<div class="mat-card-cover" style="background-image:url('${escapeHtml(m.cover_url)}')">${actions}</div>`
+    : `<div class="mat-card-top">
+         <div class="mat-icon ${m.default_category}">${escapeHtml(initials)}</div>
+         ${actions}
+       </div>`;
   return `
   <div class="mat-card">
-    <div class="mat-card-top">
-      <div class="mat-icon ${m.default_category}">${escapeHtml(initials)}</div>
-      <div class="mat-card-actions">
-        <button class="link-btn" data-action="edit-material" data-id="${m.id}">Edit</button>
-        <button class="link-btn danger" data-action="delete-material" data-id="${m.id}" aria-label="Delete">✕</button>
-      </div>
-    </div>
+    ${top}
     <div class="mat-card-title">${escapeHtml(m.title)}</div>
     <div class="mat-card-sub">${escapeHtml(m.creator || '—')}</div>
     <div class="mat-card-pills">
@@ -4493,7 +4496,9 @@ function openLogModal(activity){
 function openMaterialModal(material){
   const ch = state.challenge;
   const editing = !!material;
-  const m = material || { title: '', creator: '', default_input_type: 'kindle', default_category: 'reading', status: 'active' };
+  const m = material || { title: '', creator: '', default_input_type: 'kindle', default_category: 'reading', status: 'active', cover_url: '' };
+  let coverUrl = m.cover_url || '';
+  const coverIsLink = coverUrl && !coverUrl.startsWith('data:');
 
   openModal(`
     <div class="modal-backdrop" data-action="close-modal"></div>
@@ -4508,6 +4513,21 @@ function openMaterialModal(material){
         </div>
         <div class="field"><label for="matCreator">Creator</label>
           <input type="text" id="matCreator" value="${escapeHtml(m.creator || '')}" placeholder="Author, host or studio">
+        </div>
+        <div class="field">
+          <label>Cover (optional)</label>
+          <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap">
+            <div class="mat-cover-thumb" id="matCoverThumb"></div>
+            <div style="flex:1;min-width:160px;display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button type="button" class="btn btn-ghost btn-sm" id="matCoverUploadBtn">⬆ Upload cover</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="matCoverRemoveBtn" style="color:var(--bad-fg)">Remove</button>
+              </div>
+              <p class="hint" style="margin:0">Or paste an image URL</p>
+              <input type="text" id="matCoverUrl" placeholder="https://…" value="${coverIsLink ? escapeHtml(coverUrl) : ''}">
+            </div>
+          </div>
+          <input type="file" id="matCoverFile" accept="image/*" style="display:none">
         </div>
         <div class="field"><label for="matType">Default input type</label>
           <select id="matType">
@@ -4529,6 +4549,43 @@ function openMaterialModal(material){
     </div>
   `);
 
+  const coverThumb = $('#matCoverThumb');
+  const coverFileInput = $('#matCoverFile');
+  const coverUrlInput = $('#matCoverUrl');
+
+  function refreshCoverThumb(){
+    if (coverUrl){
+      coverThumb.style.backgroundImage = `url('${coverUrl}')`;
+      coverThumb.textContent = '';
+    } else {
+      coverThumb.style.backgroundImage = '';
+      coverThumb.textContent = 'No cover';
+    }
+  }
+  $('#matCoverUploadBtn').addEventListener('click', () => coverFileInput.click());
+  $('#matCoverRemoveBtn').addEventListener('click', () => {
+    coverUrl = ''; coverUrlInput.value = ''; refreshCoverThumb();
+  });
+  coverFileInput.addEventListener('change', e => {
+    const f = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => { coverUrl = encodeImage(img, 500); coverUrlInput.value = ''; refreshCoverThumb(); };
+      img.onerror = () => alert('Could not read that image.');
+      img.src = ev.target.result;
+    };
+    reader.onerror = () => alert('Could not read that file.');
+    reader.readAsDataURL(f);
+  });
+  coverUrlInput.addEventListener('input', () => {
+    coverUrl = coverUrlInput.value.trim();
+    refreshCoverThumb();
+  });
+  refreshCoverThumb();
+
   $('#matForm').addEventListener('submit', e => {
     e.preventDefault();
     const title = $('#matTitle').value.trim();
@@ -4539,13 +4596,14 @@ function openMaterialModal(material){
       creator: $('#matCreator').value.trim(),
       default_input_type: type,
       default_category: TYPES[type].category,
-      status: $('#matStatus').value
+      status: $('#matStatus').value,
+      cover_url: coverUrl
     };
     if (editing){
       const target = state.materials.find(x => x.id === material.id);
       if (target) Object.assign(target, payload);
     } else {
-      state.materials.push({ id: uid('m'), challenge_id: ch.id, ...payload, cover_url: '' });
+      state.materials.push({ id: uid('m'), challenge_id: ch.id, ...payload });
     }
     saveState(); closeModal(); render();
   });
