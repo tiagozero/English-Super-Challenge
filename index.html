@@ -614,14 +614,14 @@
   .rm-progress-top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--muted);font-weight:650;margin-bottom:7px}
   .rm-progress-top .v{color:var(--text);font-variant-numeric:tabular-nums}
   .rm-queue-list{display:flex;flex-direction:column;gap:8px}
-  .rm-queue-item{display:flex;align-items:stretch;gap:11px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:11px 12px;transition:border-color .15s;min-width:0}
-  .rm-queue-item:hover{border-color:var(--hover-line)}
+  .rm-queue-item{display:flex;align-items:stretch;gap:11px;background:color-mix(in srgb, var(--task-color, var(--line)) 9%, var(--surface-2));border:1px solid color-mix(in srgb, var(--task-color, var(--line)) 30%, var(--line));border-radius:12px;padding:11px 12px;transition:border-color .15s,background .15s;min-width:0}
+  .rm-queue-item:hover{border-color:color-mix(in srgb, var(--task-color, var(--hover-line)) 55%, var(--hover-line))}
   .rm-queue-item.done{background:color-mix(in srgb, var(--good-bg) 55%, var(--surface-2));border-color:color-mix(in srgb, var(--good-fg) 25%, var(--line))}
-  .rm-queue-item.next{border-color:var(--reading);box-shadow:0 0 0 3px color-mix(in srgb, var(--reading) 12%, transparent)}
+  .rm-queue-item.next{border-color:color-mix(in srgb, var(--task-color, var(--reading)) 70%, var(--line));box-shadow:0 0 0 3px color-mix(in srgb, var(--task-color, var(--reading)) 16%, transparent)}
   .rq-pos{width:22px;height:22px;flex:0 0 auto;align-self:flex-start;border-radius:50%;background:var(--surface);border:1px solid var(--line);color:var(--muted);font-size:11px;font-weight:750;display:flex;align-items:center;justify-content:center}
   .rm-queue-item.done .rq-pos{background:var(--good-fg);color:var(--on-accent);border-color:var(--good-fg)}
-  .rm-queue-item.next .rq-pos{background:var(--reading);color:var(--on-accent);border-color:var(--reading)}
-  .rq-icon{width:34px;height:34px;flex:0 0 auto;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:750;color:var(--on-accent);align-self:flex-start}
+  .rm-queue-item.next .rq-pos{background:var(--task-color, var(--reading));color:var(--on-accent);border-color:var(--task-color, var(--reading))}
+  .rq-icon{width:34px;height:34px;flex:0 0 auto;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:750;color:var(--on-accent);align-self:flex-start;background:var(--task-color, var(--muted))}
   .rq-icon.has-cover{background-size:cover;background-position:center;color:transparent}
   .rq-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
   .rq-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
@@ -630,7 +630,7 @@
   .rq-sub{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .rq-sub .sep{color:var(--line)}
   .rq-bar{position:relative;height:7px;background:var(--bar-bg);border-radius:999px;overflow:hidden}
-  .rq-bar > i{display:block;height:100%;border-radius:999px;transition:width .4s ease}
+  .rq-bar > i{display:block;height:100%;border-radius:999px;transition:width .4s ease;background:var(--task-color, var(--reading))}
   .rq-bar.complete > i{background:var(--good-fg)}
   .rq-actions{display:flex;flex-direction:column;gap:2px;align-self:flex-start;flex:0 0 auto}
   .rq-action{width:22px;height:20px;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--muted);font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;transition:background .12s,color .12s,border-color .12s}
@@ -642,7 +642,7 @@
   .rm-queue-add{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
   .rm-queue-add select{flex:1;min-width:180px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 11px;font-size:13px;color:var(--text);outline:none}
   .rm-queue-add select:focus{border-color:var(--reading);box-shadow:0 0 0 3px color-mix(in srgb, var(--reading) 14%, transparent)}
-  .badge.next{background:var(--reading);color:var(--on-accent)}
+  .badge.next{background:var(--task-color, var(--reading));color:var(--on-accent)}
 
   .rm-week{
     border-top:1px solid var(--line);
@@ -2805,19 +2805,21 @@ function roadmapQueueItemHTML(phaseIndex, m, index, opts){
               : '';
   const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
   const initials = (m.title || '?').trim().slice(0, 2).toUpperCase();
-  // Tasks mirror their material's own color/cover from the Materials
-  // section — no separate color setting here, and it updates automatically
-  // whenever the material's color or cover changes.
+  // Every color cue on this card — background tint, border, icon, progress
+  // bar, "Now" highlight — derives from this one --task-color variable, set
+  // straight from the material's own color (blended with the theme via
+  // color-mix in CSS) so it updates automatically whenever the material's
+  // color or cover changes in the Materials section. No separate setting.
   const matColor = m.color || MATERIAL_COLORS[0].hex;
   const icon = m.cover_url
     ? `<div class="rq-icon has-cover" style="background-image:url('${escapeHtml(m.cover_url)}')"></div>`
-    : `<div class="rq-icon" style="background:${escapeHtml(matColor)}">${escapeHtml(initials)}</div>`;
+    : `<div class="rq-icon">${escapeHtml(initials)}</div>`;
   const subLabel = hasTarget
     ? `${fmt(materialLoggedUnits(m))} / ${fmt(Number(m.total_units))} ${materialUnitLabel(m).toLowerCase()}`
     : (sp ? `${sp.done}/${sp.total} subtasks` : materialTotalsText(materialTotals(m.id)));
 
   return `
-  <div class="${itemCls}">
+  <div class="${itemCls}" style="--task-color:${escapeHtml(matColor)}">
     <span class="rq-pos">${index + 1}</span>
     ${icon}
     <div class="rq-main">
@@ -2830,7 +2832,7 @@ function roadmapQueueItemHTML(phaseIndex, m, index, opts){
         <span class="sep">·</span>
         <span>${isDone ? 'Complete' : pct + '%'}</span>
       </div>
-      <div class="rq-bar ${isDone ? 'complete' : ''}"><i style="width:${pct}%${isDone ? '' : `;background:${escapeHtml(matColor)}`}"></i></div>
+      <div class="rq-bar ${isDone ? 'complete' : ''}"><i style="width:${pct}%"></i></div>
     </div>
     <div class="rq-actions">
       <button class="rq-action" data-action="rm-queue-up" data-phase="${phaseIndex}" data-idx="${index}" ${opts.isFirst ? 'disabled' : ''} title="Move up" aria-label="Move up">↑</button>
