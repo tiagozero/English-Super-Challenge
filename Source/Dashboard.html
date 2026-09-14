@@ -27,13 +27,66 @@
     padding:64px 40px;
   }
 
+  /* ---------- Home button ---------- */
+  .home{
+    position:fixed;
+    top:26px;
+    left:30px;
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    padding:8px 14px 8px 12px;
+    border:1px solid var(--rule);
+    border-radius:100px;
+    background:transparent;
+    color:var(--muted);
+    font-family:inherit;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    text-decoration:none;
+    cursor:pointer;
+    transition:color .25s ease,
+               border-color .25s ease,
+               background .25s ease,
+               transform .25s ease;
+  }
+
+  .home svg{
+    width:13px;
+    height:13px;
+    stroke:currentColor;
+    fill:none;
+    stroke-width:1.8;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    transition:transform .3s cubic-bezier(.2,.8,.3,1);
+  }
+
+  .home:hover{
+    color:var(--ink);
+    border-color:var(--ink);
+    background:rgba(20,20,20,.03);
+    transform:translateY(-1px);
+  }
+
+  .home:hover svg{transform:translateX(-2px)}
+
+  .home:focus-visible{
+    outline:2px solid var(--ink);
+    outline-offset:3px;
+  }
+
+  .home:active{transform:translateY(0)}
+
+  /* ---------- Index ---------- */
   .index{
     width:100%;
     max-width:820px;
     border-top:1px solid var(--rule);
   }
 
-  /* ---------- Row ---------- */
   .row{
     display:grid;
     grid-template-columns:52px 1fr auto 32px;
@@ -47,7 +100,6 @@
     transition:padding-left .42s cubic-bezier(.2,.8,.3,1);
   }
 
-  /* ink fill */
   .row::before{
     content:"";
     position:absolute;
@@ -78,7 +130,6 @@
     outline-offset:6px;
   }
 
-  /* ---------- Elements ---------- */
   .num{
     font-family:Georgia,"Times New Roman",serif;
     font-style:italic;
@@ -124,7 +175,10 @@
 
   /* ---------- Responsive ---------- */
   @media (max-width:760px){
-    body{padding:40px 22px;align-items:flex-start}
+    body{padding:80px 22px 40px;align-items:flex-start}
+
+    .home{top:18px;left:18px;padding:7px 12px 7px 10px;font-size:10px}
+    .home svg{width:12px;height:12px}
 
     .row{
       grid-template-columns:28px 1fr 26px;
@@ -137,9 +191,7 @@
     .desc{display:none}
 
     .num{font-size:12px}
-
     .name{font-size:15px}
-
     .arrow svg{width:15px;height:15px}
   }
 
@@ -150,9 +202,15 @@
 </head>
 <body>
 
+  <!-- Home button -->
+  <a class="home" href="index.html" aria-label="Home">
+    <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l-6 6 6 6"/></svg>
+    Home
+  </a>
+
   <nav class="index" aria-label="Learning modules">
 
-    <a class="row" href="GrammarStudy.html">
+    <a class="row" href="grammar.html">
       <span class="num">01</span>
       <span class="name">Grammar</span>
       <span class="desc">Rules &amp; structure</span>
@@ -161,7 +219,7 @@
       </span>
     </a>
 
-    <a class="row" href="WritingPath.html">
+    <a class="row" href="writing.html">
       <span class="num">02</span>
       <span class="name">Writing</span>
       <span class="desc">Practice &amp; composition</span>
@@ -170,7 +228,7 @@
       </span>
     </a>
 
-    <a class="row" href="Vocabulary.html">
+    <a class="row" href="vocabulary.html">
       <span class="num">03</span>
       <span class="name">Vocabulary</span>
       <span class="desc">Words &amp; recall</span>
@@ -188,7 +246,7 @@
       </span>
     </a>
 
-    <a class="row" href="Pace.html">
+    <a class="row" href="pace-reading.html">
       <span class="num">05</span>
       <span class="name">Pace-Reading</span>
       <span class="desc">Timed passages</span>
@@ -197,7 +255,7 @@
       </span>
     </a>
 
-    <a class="row" href="Room.html">
+    <a class="row" href="room-kindle.html">
       <span class="num">06</span>
       <span class="name">Room-kindle</span>
       <span class="desc">Shared reading</span>
