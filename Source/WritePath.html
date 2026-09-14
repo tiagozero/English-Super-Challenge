@@ -234,6 +234,7 @@
   .librow .libtext{flex:1;min-width:0;font-weight:500;word-break:break-word}
   .librow input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px;flex:none;cursor:pointer}
   .librow .minichip{margin:0}
+  .danger-zone{border-color:var(--red-line)}
 </style>
 </head>
 <body>
@@ -268,6 +269,8 @@ const REQS = { required:'Required', chooseOne:'Choose one', optional:'Optional' 
 const TEXT_TYPES = ['Journal','Mini-essay','Story','Reddit post','Free writing'];
 const KEY = 'writepath.v1';
 const THEME_KEY = 'writepath.theme';
+const BACKUP_APP = 'WritePath';
+const BACKUP_VERSION = 1;
 
 /* ---------- state ---------- */
 let state = { sessions: [], library: [] };
@@ -277,7 +280,7 @@ let ui = {
   libraryPickForSession:null
 };
 let theme = 'light';
-let pendingImportMode = 'targets'; // 'targets' | 'library'
+let pendingImportMode = 'targets'; // 'targets' | 'library' | 'backup'
 
 /* ---------- persistence ---------- */
 function load(){
@@ -337,7 +340,7 @@ function toast(msg){
   el.textContent = msg;
   el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 1900);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2100);
 }
 
 /* ---------- theme ---------- */
@@ -491,7 +494,7 @@ function normalizeItem(obj){
   const tagsRaw = obj.tags ?? '';
   const tags = Array.isArray(tagsRaw)
     ? tagsRaw.map(x => String(x).trim()).filter(Boolean)
-    : String(tagsRaw).split(',').map(t => t.trim()).filter(Boolean);
+    : String(tagsRaw).split(/[|,]/).map(t => t.trim()).filter(Boolean);
   return { kind, text, requirement, group: requirement === 'chooseOne' ? (group || 'Group 1') : '', tags };
 }
 function parseJSONTargets(text){
@@ -548,6 +551,63 @@ function exportLibraryCSV(){
   return [header, ...rows].join('\n') + '\n';
 }
 
+/* ---------- FULL BACKUP (everything: library + sessions) ---------- */
+function buildBackup(){
+  return {
+    app: BACKUP_APP,
+    version: BACKUP_VERSION,
+    exportedAt: new Date().toISOString(),
+    counts: {
+      sessions: state.sessions.length,
+      library: state.library.length,
+      sentences: state.sessions.reduce((a, s) => a + s.sentences.length, 0),
+      targets: state.sessions.reduce((a, s) => a + s.targets.length, 0)
+    },
+    library: state.library,
+    sessions: state.sessions
+  };
+}
+function downloadBackup(){
+  const backup = buildBackup();
+  if(!backup.sessions.length && !backup.library.length){
+    toast('Nothing to export yet.');
+    return;
+  }
+  const stamp = new Date().toISOString().slice(0,10);
+  download(`writepath-backup-${stamp}.json`, JSON.stringify(backup, null, 2), 'application/json');
+  toast(`Exported ${backup.sessions.length} session${backup.sessions.length===1?'':'s'} + ${backup.library.length} library item${backup.library.length===1?'':'s'}`);
+}
+
+/* ---------- FULL RESTORE ---------- */
+function applyBackup(data, mode /* 'replace' | 'merge' */){
+  const lib = Array.isArray(data.library) ? data.library : [];
+  const sess = Array.isArray(data.sessions) ? data.sessions : [];
+  if(mode === 'replace'){
+    state.library = lib.map(it => hydrateLibraryItem({ ...it, id: uid() }));
+    state.sessions = sess.map(s => hydrate({ ...s, id: uid() }));
+    ui.view = 'home'; ui.sessionId = null; ui.step = 'setup';
+    ui.librarySelected = []; ui.libraryPickForSession = null;
+    return { libAdded: state.library.length, sessAdded: state.sessions.length, replaced: true };
+  }
+  // merge
+  const existingLib = new Set(state.library.map(it => it.kind + '::' + norm(it.text)));
+  let libAdded = 0;
+  lib.forEach(it => {
+    const t = String(it.text || '').trim();
+    if(!t) return;
+    const k = (it.kind || 'vocabulary') + '::' + norm(t);
+    if(existingLib.has(k)) return;
+    state.library.push(hydrateLibraryItem({ ...it, id: uid(), addedAt: Date.now() }));
+    existingLib.add(k); libAdded++;
+  });
+  let sessAdded = 0;
+  sess.forEach(s => {
+    state.sessions.push(hydrate({ ...s, id: uid() }));
+    sessAdded++;
+  });
+  return { libAdded, sessAdded, replaced: false };
+}
+
 /* ============================================================
    RENDER
    ============================================================ */
@@ -590,7 +650,11 @@ function renderHome(){
     <div class="hero">
       <h1>Guided English writing practice</h1>
       <p>Plan your target language, build a sentence path, then write every sentence yourself — one at a time. WritePath never writes for you; it keeps you on track.</p>
-      <button class="btn primary" data-act="new-session">+ New writing session</button>
+      <div class="row">
+        <button class="btn primary" data-act="new-session">+ New writing session</button>
+        <button class="btn" data-act="export-all-json">📤 Export all data</button>
+        <button class="btn" data-act="import-all-data">📥 Import backup</button>
+      </div>
     </div>
     <div class="cards">
       ${sessions.length ? sessions.map(sessionCard).join('') :
@@ -660,9 +724,9 @@ function renderLibrary(){
         <p class="muted" style="margin:0">Your reusable collection of target language across all sessions.</p>
       </div>
       <div class="row">
-        <button class="btn" data-act="import-library">📥 Import JSON / CSV</button>
-        <button class="btn" data-act="export-library-csv">📤 Export CSV</button>
-        <button class="btn" data-act="export-library-json">📤 Export JSON</button>
+        <button class="btn" data-act="import-library">📥 Import terms (JSON / CSV)</button>
+        <button class="btn" data-act="export-library-csv">📤 Export library (CSV)</button>
+        <button class="btn primary" data-act="export-all-json">📤 Export all data</button>
       </div>
     </div>
 
@@ -890,28 +954,29 @@ function targetsStep(s){
 
   <div class="panel">
     <h3>Import &amp; export</h3>
-    <p class="muted small">Import terms from a JSON or CSV file. Export your targets, this session, or all sessions as a backup.</p>
+    <p class="muted small">Import individual terms from JSON/CSV, or back up and restore everything — all sessions and all library items — as one file.</p>
     <div class="row">
-      <button class="btn" data-act="import-targets">📥 Import JSON / CSV</button>
-      <button class="btn" data-act="export-targets-csv">📤 Export targets (CSV)</button>
-      <button class="btn" data-act="export-session-json">📤 Export session (JSON)</button>
-      <button class="btn" data-act="export-all-json">📤 Export all sessions</button>
+      <button class="btn" data-act="import-targets">📥 Import terms (JSON / CSV)</button>
+      <button class="btn" data-act="export-targets-csv">📤 Export this session's targets (CSV)</button>
+      <button class="btn primary" data-act="export-all-json">📤 Export all data</button>
+      <button class="btn" data-act="import-all-data">📥 Import backup</button>
     </div>
     <details style="margin-top:12px">
       <summary class="muted small">File format examples</summary>
       <div class="small" style="margin-top:10px">
-        <div class="eyebrow">JSON</div>
+        <div class="eyebrow">Terms — JSON</div>
         <pre style="background:var(--faint);padding:10px;border-radius:8px;overflow:auto;font-size:12px;margin:4px 0 10px;border:1px solid var(--line)">[
   {"text": "at the end of the day", "kind": "chunk", "requirement": "required"},
   {"text": "make a decision", "kind": "collocation", "requirement": "chooseOne", "group": "decisions"},
   {"text": "used to + verb", "kind": "grammar", "requirement": "optional"}
 ]</pre>
-        <div class="eyebrow">CSV</div>
+        <div class="eyebrow">Terms — CSV</div>
         <pre style="background:var(--faint);padding:10px;border-radius:8px;overflow:auto;font-size:12px;margin:4px 0 10px;border:1px solid var(--line)">text,kind,requirement,group,tags
 at the end of the day,chunk,required,,
 make a decision,collocation,chooseOne,decisions,
 used to + verb,grammar,optional,,</pre>
-        <p class="muted">Valid kinds: <code>chunk</code>, <code>collocation</code>, <code>phrasalVerb</code>, <code>vocabulary</code>, <code>grammar</code>. Valid requirements: <code>required</code>, <code>chooseOne</code>, <code>optional</code>. The header row is optional.</p>
+        <p class="muted">Valid kinds: <code>chunk</code>, <code>collocation</code>, <code>phrasalVerb</code>, <code>vocabulary</code>, <code>grammar</code>. Valid requirements: <code>required</code>, <code>chooseOne</code>, <code>optional</code>.</p>
+        <p class="muted">The <strong>Export all data</strong> file is a full backup (sessions + library) and can be restored with <strong>Import backup</strong>.</p>
       </div>
     </details>
   </div>
@@ -1248,6 +1313,7 @@ function renderProgress(){
   const totalSentences = state.sessions.reduce((a, s) => a + s.sentences.length, 0);
   const totalWords = state.sessions.reduce((a, s) => a + countWords(s), 0);
   const maxTimes = rows.reduce((a, r) => Math.max(a, r.times), 1);
+  const totalLibrary = state.library.length;
 
   return `
   ${topbar('progress')}
@@ -1257,13 +1323,26 @@ function renderProgress(){
         <h1 style="margin-bottom:4px">Progress</h1>
         <p class="muted" style="margin-bottom:18px">How often you have actually used each piece of target language across all sessions.</p>
       </div>
-      <button class="btn" data-act="export-all-json">📤 Export all sessions</button>
     </div>
 
-    <div class="statgrid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="statgrid" style="grid-template-columns:repeat(4,1fr)">
       <div class="stat"><div class="lbl">Sessions</div><div class="num">${totalSessions}</div></div>
       <div class="stat"><div class="lbl">Sentences</div><div class="num">${totalSentences}</div></div>
       <div class="stat"><div class="lbl">Words written</div><div class="num">${totalWords}</div></div>
+      <div class="stat"><div class="lbl">Library items</div><div class="num">${totalLibrary}</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="row between" style="align-items:flex-start; flex-wrap:wrap; gap:10px">
+        <div>
+          <h3 style="margin-bottom:2px">Backup &amp; restore</h3>
+          <p class="muted small" style="margin:0">Export a single file containing every session, every library item, and all settings.</p>
+        </div>
+        <div class="row">
+          <button class="btn primary" data-act="export-all-json">📤 Export all data</button>
+          <button class="btn" data-act="import-all-data">📥 Import backup</button>
+        </div>
+      </div>
     </div>
 
     ${rows.length ? `
@@ -1461,8 +1540,7 @@ document.addEventListener('click', e => {
     case 'nav': {
       ui.view = btn.dataset.view;
       if(ui.view === 'home') ui.sessionId = null;
-      if(ui.view !== 'library') ui.libraryPickForSession = null;
-      if(ui.view !== 'library') ui.librarySelected = [];
+      if(ui.view !== 'library') { ui.libraryPickForSession = null; ui.librarySelected = []; }
       save(); render();
       break;
     }
@@ -1683,14 +1761,18 @@ document.addEventListener('click', e => {
       break;
     }
 
-    case 'export-library-json': {
-      if(!state.library.length){ toast('Library is empty.'); break; }
-      download(`writepath-library-${new Date().toISOString().slice(0,10)}.json`, JSON.stringify(state.library, null, 2), 'application/json');
-      toast('Library exported as JSON');
+    /* ---- full backup ---- */
+    case 'export-all-json': {
+      downloadBackup();
+      break;
+    }
+    case 'import-all-data': {
+      pendingImportMode = 'backup';
+      $('#fileImport').click();
       break;
     }
 
-    /* ---- import / export ---- */
+    /* ---- session-level imports/exports ---- */
     case 'import-targets': {
       if(!s) break;
       pendingImportMode = 'targets';
@@ -1702,17 +1784,6 @@ document.addEventListener('click', e => {
       if(!s.targets.length){ toast('No targets to export.'); break; }
       download(`writepath-targets-${s.id}.csv`, exportTargetsCSV(s), 'text/csv;charset=utf-8');
       toast('Targets exported as CSV');
-      break;
-    }
-    case 'export-session-json': {
-      if(!s) break;
-      download(`writepath-session-${s.id}.json`, JSON.stringify(s, null, 2), 'application/json');
-      toast('Session exported');
-      break;
-    }
-    case 'export-all-json': {
-      download(`writepath-all-${new Date().toISOString().slice(0,10)}.json`, JSON.stringify(state, null, 2), 'application/json');
-      toast('All data exported');
       break;
     }
 
@@ -1944,7 +2015,6 @@ document.addEventListener('click', e => {
 function onField(e){
   const t = e.target;
 
-  // Library search (live filter, refocus after re-render)
   if(t.id === 'libSearch'){
     ui.librarySearch = t.value;
     const pos = t.selectionStart;
@@ -2020,24 +2090,64 @@ function updateSidebarLive(){
   if(counter) counter.textContent = `${wordsIn(s.draft || '')} word${wordsIn(s.draft||'')===1?'':'s'} in this sentence`;
 }
 
-/* ---------- file import (targets OR library) ---------- */
+/* ---------- file import (targets OR library OR full backup) ---------- */
 $('#fileImport').addEventListener('change', async e => {
   const file = e.target.files && e.target.files[0];
   if(!file){ pendingImportMode = 'targets'; return; }
+
+  let text = '';
+  try { text = await file.text(); }
+  catch(err){
+    toast('Could not read file.');
+    e.target.value = ''; pendingImportMode = 'targets';
+    return;
+  }
+
+  /* ----- FULL BACKUP ----- */
+  if(pendingImportMode === 'backup'){
+    let data;
+    try { data = JSON.parse(text); }
+    catch(err){
+      toast('Invalid backup file (not JSON).');
+      e.target.value = ''; pendingImportMode = 'targets';
+      return;
+    }
+    const lib = Array.isArray(data.library) ? data.library : [];
+    const sess = Array.isArray(data.sessions) ? data.sessions : [];
+    if(!lib.length && !sess.length){
+      toast('Backup contains no sessions or library items.');
+      e.target.value = ''; pendingImportMode = 'targets';
+      return;
+    }
+    const replace = confirm(
+      `Import backup?\n\n` +
+      `• ${sess.length} session${sess.length === 1 ? '' : 's'}\n` +
+      `• ${lib.length} library item${lib.length === 1 ? '' : 's'}\n\n` +
+      `OK = Replace all current data\n` +
+      `Cancel = Merge into current data`
+    );
+    const result = applyBackup(data, replace ? 'replace' : 'merge');
+    save(); render();
+    if(result.replaced){
+      toast(`Backup restored — ${result.sessAdded} session(s), ${result.libAdded} library item(s)`);
+    } else {
+      toast(`Merged — added ${result.sessAdded} session(s), ${result.libAdded} library item(s)`);
+    }
+    e.target.value = ''; pendingImportMode = 'targets';
+    return;
+  }
+
+  /* ----- TARGETS / LIBRARY ----- */
   let items = [];
-  try{
-    const text = await file.text();
-    items = parseTargetsFile(file.name, text);
-  }catch(err){
+  try { items = parseTargetsFile(file.name, text); }
+  catch(err){
     toast('Could not parse file: ' + err.message);
-    e.target.value = '';
-    pendingImportMode = 'targets';
+    e.target.value = ''; pendingImportMode = 'targets';
     return;
   }
   if(!items.length){
     toast('No terms found in the file.');
-    e.target.value = '';
-    pendingImportMode = 'targets';
+    e.target.value = ''; pendingImportMode = 'targets';
     return;
   }
 
@@ -2061,8 +2171,7 @@ $('#fileImport').addEventListener('change', async e => {
     const s = currentSession();
     if(!s){
       toast('Open a session first.');
-      e.target.value = '';
-      pendingImportMode = 'targets';
+      e.target.value = ''; pendingImportMode = 'targets';
       return;
     }
     items.forEach(it => {
