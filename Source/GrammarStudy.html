@@ -16,6 +16,8 @@
   --amber:#d97706; --amber-soft:#fef3c7; --amber-text:#b45309; --amber-border:#fde68a;
   --blue:#0369a1;  --blue-soft:#e0f2fe;  --blue-text:#0369a1;  --blue-border:#bae6fd;
   --purple:#8b5cf6; --purple-soft:#faf5ff;
+  --hm-0:var(--bar-bg);
+  --hm-1:#e0e7ff; --hm-2:#a5b4fc; --hm-3:#6366f1; --hm-4:#4338ca;
   --shadow:0 3px 10px rgba(16,24,40,.06);
   --shadow-lg:0 6px 16px rgba(79,70,229,.10);
   --modal-shadow:0 24px 60px rgba(15,23,42,.30);
@@ -33,6 +35,8 @@
   --amber:#fbbf24; --amber-soft:#3a2c10; --amber-text:#fcd34d; --amber-border:#5c4515;
   --blue:#38bdf8;  --blue-soft:#12293a;  --blue-text:#7dd3fc;  --blue-border:#1e3a52;
   --purple:#a78bfa; --purple-soft:#2a1f3d;
+  --hm-0:var(--bar-bg);
+  --hm-1:#252947; --hm-2:#3730a3; --hm-3:#4f46e5; --hm-4:#818cf8;
   --shadow:0 3px 10px rgba(0,0,0,.35);
   --shadow-lg:0 6px 18px rgba(99,102,241,.18);
   --modal-shadow:0 24px 60px rgba(0,0,0,.65);
@@ -41,7 +45,8 @@
 html{transition:background .2s ease}
 body,.card,.list-item,.stat,.btn,.input,select,textarea,.modal,.nav-item,
 .badge,.bar,.cover,.topic-picker,.report,.modal-foot,.modal-head,th,.check-line,
-.import-panel,.alert-card,.example,.issue,table,#topbar,.theme-toggle{
+.import-panel,.alert-card,.example,.issue,table,#topbar,.theme-toggle,
+.seg,.seg-btn,.day-cell,.phase-badge,.hm-cell{
   transition:background-color .2s ease, border-color .2s ease, color .2s ease;
 }
 *{box-sizing:border-box}
@@ -194,6 +199,64 @@ tr:last-child td{border-bottom:none}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--bar-bg);border-radius:10px;border:2px solid var(--panel)}
 ::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+/* ---- Roadmap ---- */
+.seg{display:inline-flex;background:var(--panel-2);border:1px solid var(--border);border-radius:9px;padding:2px;gap:2px}
+.seg-btn{border:none;background:transparent;color:var(--muted-2);font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:7px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;transition:background .12s,color .12s}
+.seg-btn:hover{color:var(--text);background:var(--hover)}
+.seg-btn.active{background:var(--panel);color:var(--accent-text);box-shadow:var(--shadow)}
+.phase-badge{width:36px;height:36px;border-radius:10px;background:var(--accent-soft);color:var(--accent-text);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+.day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:6px}
+.day-cell{border:1px solid var(--border);background:var(--panel-2);color:var(--muted-2);border-radius:8px;height:40px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .12s,border-color .12s,color .12s}
+.day-cell:hover{border-color:var(--accent);color:var(--accent-text);background:var(--accent-soft)}
+.day-cell.done{background:var(--green-soft);border-color:var(--green);color:var(--green-text)}
+.day-cell.today{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.phase-desc{font-size:13.5px;color:var(--muted-2);line-height:1.5}
+/* ---- Heatmap ---- */
+.hm-wrap{display:flex;flex-direction:column;gap:6px}
+.hm-months{
+  display:grid;grid-auto-flow:column;grid-auto-columns:12px;gap:3px;
+  margin-left:32px;font-size:11px;color:var(--muted);white-space:nowrap;
+}
+.hm-months span{grid-row:1;line-height:1;padding-bottom:2px}
+.hm-body{display:flex;gap:8px;align-items:flex-start}
+.hm-daylabels{
+  display:grid;grid-template-rows:repeat(7,12px);gap:3px;
+  width:26px;flex-shrink:0;font-size:10px;color:var(--muted);line-height:12px;padding-top:0;
+}
+.hm-daylabels span:nth-child(1){grid-row:2}
+.hm-daylabels span:nth-child(2){grid-row:4}
+.hm-daylabels span:nth-child(3){grid-row:6}
+.hm-weeks{display:flex;gap:3px}
+.hm-week{display:grid;grid-template-rows:repeat(7,12px);gap:3px}
+.hm-cell{
+  width:12px;height:12px;border-radius:2.5px;border:none;padding:0;
+  background:var(--hm-0);cursor:pointer;flex-shrink:0;display:block;
+}
+.hm-cell.l0{background:var(--hm-0)}
+.hm-cell.l1{background:var(--hm-1)}
+.hm-cell.l2{background:var(--hm-2)}
+.hm-cell.l3{background:var(--hm-3)}
+.hm-cell.l4{background:var(--hm-4)}
+.hm-cell.out{background:transparent;cursor:default;opacity:.35}
+.hm-cell:disabled{cursor:default}
+.hm-cell:not(.out):hover{box-shadow:0 0 0 1.5px var(--text)}
+.hm-cell.today{box-shadow:0 0 0 1.5px var(--accent)}
+.hm-cell.sel{box-shadow:0 0 0 2px var(--text);z-index:1}
+.hm-legend{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)}
+.hm-legend .hm-cell{width:11px;height:11px}
+.hm-weeks.mini{display:flex;gap:2px}
+.hm-weeks.mini .hm-week{grid-template-rows:repeat(7,9px);gap:2px}
+.hm-weeks.mini .hm-cell{width:9px;height:9px;border-radius:2px;cursor:default}
+.hm-weeks.mini .hm-cell:hover{box-shadow:none}
+/* Info button next to a title */
+.title-info{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:50%;border:1px solid var(--border);
+  background:var(--panel-2);color:var(--muted-2);font-size:13px;font-weight:700;
+  cursor:pointer;font-family:inherit;vertical-align:middle;margin-left:8px;
+  transition:background .12s,border-color .12s,color .12s;
+}
+.title-info:hover{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-text)}
 @media (max-width:900px){
   #topbar{padding:8px 14px;gap:10px}
   .topbar-stats{display:none}
@@ -219,6 +282,8 @@ tr:last-child td{border-bottom:none}
     <div class="brand"><span class="dot"></span><span class="txt">Grammar Study</span></div>
     <nav class="nav">
       <div class="nav-item" data-action="go" data-route="dashboard"><span class="ic">◈</span><span class="lbl">Dashboard</span></div>
+      <div class="nav-item" data-action="go" data-route="roadmap"><span class="ic">◐</span><span class="lbl">Roadmap</span></div>
+      <div class="nav-item" data-action="go" data-route="heatmap"><span class="ic">▦</span><span class="lbl">Heatmap</span></div>
       <div class="nav-item" data-action="go" data-route="topics"><span class="ic">▤</span><span class="lbl">Topics</span></div>
       <div class="nav-item" data-action="go" data-route="materials"><span class="ic">▣</span><span class="lbl">Materials</span></div>
       <div class="nav-item" data-action="go" data-route="exercises"><span class="ic">✎</span><span class="lbl">Exercises</span></div>
@@ -279,7 +344,27 @@ let impState = { text:"", format:"auto", createMissing:true, report:null, valid:
 let matImport = null;
 let modal = null;
 
-function emptyDB(){ return { topics: [], materials: [], exercises: [], attempts: [], studySeconds: 0 }; }
+/* Heatmap local state (not persisted in DB) */
+let hmYear = new Date().getFullYear();
+let hmSelectedDay = null;
+
+function defaultRoadmap(){
+  return {
+    view: "grid",
+    phases: [1,2,3].map(i=>({
+      id: "phase-" + i,
+      title: ["Foundations","Development","Consolidation"][i-1],
+      description: "",
+      days: 30,
+      startDate: null,
+      completedDays: [],
+      materials: [],
+      topics: [],
+      notes: ""
+    }))
+  };
+}
+function emptyDB(){ return { topics: [], materials: [], exercises: [], attempts: [], studySeconds: 0, roadmap: defaultRoadmap() }; }
 function loadDB(){
   try{
     const raw = localStorage.getItem(LS_KEY);
@@ -290,6 +375,9 @@ function loadDB(){
       d.exercises = d.exercises || [];
       d.attempts = d.attempts || [];
       d.studySeconds = d.studySeconds || 0;
+      if(!d.roadmap || typeof d.roadmap !== "object") d.roadmap = defaultRoadmap();
+      d.roadmap.phases = d.roadmap.phases || [];
+      d.roadmap.view = d.roadmap.view || "grid";
       return d;
     }
   }catch(e){ console.warn("Load failed", e); }
@@ -317,6 +405,11 @@ function fmtTime(sec){
 function fmtDate(ts){
   const d = new Date(ts);
   return d.toLocaleDateString(undefined,{month:"short",day:"numeric"}) + " " + d.toLocaleTimeString(undefined,{hour:"2-digit",minute:"2-digit"});
+}
+function fmtDay(ts){
+  if(!ts) return "—";
+  const d = new Date(ts);
+  return d.toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"});
 }
 function slugify(s){
   return String(s||"").toLowerCase().trim().replace(/[^a-z0-9\s-]/g,"").replace(/\s+/g,"-").replace(/-+/g,"-").replace(/^-|-$/g,"").slice(0,60);
@@ -363,6 +456,18 @@ function typeLabel(t){
     word_order:"Word order", matching:"Matching", completion:"Completion",
     production:"Production"
   }[t] || t;
+}
+function toDateInput(ts){
+  if(!ts) return "";
+  const d = new Date(ts);
+  const pad = n => String(n).padStart(2,"0");
+  return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate());
+}
+function fromDateInput(v){
+  if(!v) return null;
+  const parts = String(v).split("-").map(Number);
+  if(parts.length !== 3 || parts.some(isNaN)) return null;
+  return new Date(parts[0], parts[1]-1, parts[2]).getTime();
 }
 
 /* =========================================================
@@ -497,12 +602,123 @@ function createStubTopic(id, materialId, levelOverride){
 }
 
 /* =========================================================
+   3b. ROADMAP HELPERS
+   ========================================================= */
+function findPhase(id){ return (DB.roadmap.phases||[]).find(p=>p.id===id); }
+function uniquePhaseId(base){
+  let id = slugify(base) || "phase";
+  if(!findPhase(id)) return id;
+  let i = 2; while(findPhase(id+"-"+i)) i++;
+  return id+"-"+i;
+}
+function phaseProgress(p){
+  const days = p.days || 30;
+  const done = Math.min((p.completedDays||[]).length, days);
+  return { done, days, pct: pct(done, days) };
+}
+function phaseCurrentDay(p){
+  if(!p || !p.startDate) return null;
+  const elapsed = Math.floor((Date.now() - p.startDate) / 86400000) + 1;
+  return Math.max(1, elapsed);
+}
+function phaseStatus(p){
+  const {done, days} = phaseProgress(p);
+  if(days && done >= days) return {cls:"green", label:"Complete"};
+  if(done > 0) return {cls:"amber", label:"In progress"};
+  return {cls:"grey", label:"Not started"};
+}
+function phaseMaterials(p){ return (p.materials||[]).map(findMaterial).filter(Boolean); }
+function phaseTopics(p){ return (p.topics||[]).map(findTopic).filter(Boolean); }
+function barClsFor(p){ return p >= 80 ? "green" : p >= 40 ? "" : "amber"; }
+
+/* =========================================================
+   3c. HEATMAP HELPERS
+   ========================================================= */
+function dateKey(d){
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,"0");
+  const day = String(d.getDate()).padStart(2,"0");
+  return y + "-" + m + "-" + day;
+}
+function parseDayKey(k){
+  const parts = String(k||"").split("-").map(Number);
+  if(parts.length !== 3 || parts.some(isNaN)) return new Date();
+  return new Date(parts[0], parts[1]-1, parts[2]);
+}
+/* Build a map: 'YYYY-MM-DD' -> activity count.
+   Activities = every exercise attempt + every completed roadmap day
+   (roadmap days are mapped to their scheduled date via the phase start date). */
+function activityByDay(){
+  const map = {};
+  const add = (ts) => {
+    if(!ts) return;
+    const key = dateKey(new Date(ts));
+    map[key] = (map[key]||0) + 1;
+  };
+  DB.attempts.forEach(a => add(a.ts));
+  (DB.roadmap.phases||[]).forEach(p => {
+    if(!p.startDate) return;
+    (p.completedDays||[]).forEach(dn => {
+      add(p.startDate + (dn-1) * 86400000);
+    });
+  });
+  return map;
+}
+function hmLevel(n){
+  if(!n) return 0;
+  if(n <= 2) return 1;
+  if(n <= 5) return 2;
+  if(n <= 9) return 3;
+  return 4;
+}
+function computeStreak(activity){
+  let streak = 0;
+  const check = new Date();
+  check.setHours(0,0,0,0);
+  if(!activity[dateKey(check)]) check.setDate(check.getDate() - 1);
+  while(activity[dateKey(check)]){
+    streak++;
+    check.setDate(check.getDate() - 1);
+  }
+  return streak;
+}
+/* Compact mini heatmap: last `weeks` weeks ending with the current week. */
+function miniHeatmapHTML(weeks){
+  weeks = weeks || 15;
+  const activity = activityByDay();
+  const today = new Date(); today.setHours(0,0,0,0);
+  const start = new Date(today);
+  start.setDate(start.getDate() - start.getDay() - (weeks - 1) * 7);
+  let html = "";
+  const cur = new Date(start);
+  for(let w = 0; w < weeks; w++){
+    html += `<div class="hm-week">`;
+    for(let d = 0; d < 7; d++){
+      const k = dateKey(cur);
+      const count = activity[k] || 0;
+      const isFuture = cur.getTime() > today.getTime();
+      const level = isFuture ? 0 : hmLevel(count);
+      const cls = "hm-cell" + (isFuture ? " out" : " l" + level) + (k === dateKey(today) ? " today" : "");
+      html += `<span class="${cls}" title="${esc(cur.toDateString())} — ${count} activit${count===1?"y":"ies"}"></span>`;
+      cur.setDate(cur.getDate() + 1);
+    }
+    html += `</div>`;
+  }
+  return `<div class="hm-weeks mini">${html}</div>`;
+}
+
+/* =========================================================
    4. MODAL
    ========================================================= */
 function openTopicModal(topicId, type){
   const t = findTopic(topicId);
   if(!t) return;
-  modal = { topicId, type, editing: false };
+  modal = { kind:"topic", topicId, type, editing: false };
+  document.body.style.overflow = "hidden";
+  paintModal();
+}
+function openInfoModal(title, bodyHTML){
+  modal = { kind:"info", title: title || "Info", bodyHTML: bodyHTML || "" };
   document.body.style.overflow = "hidden";
   paintModal();
 }
@@ -516,6 +732,26 @@ function paintModal(){
   const root = document.getElementById("modal-root");
   if(!root) return;
   if(!modal){ root.innerHTML = ""; return; }
+
+  /* ---- Info modal ---- */
+  if(modal.kind === "info"){
+    root.innerHTML = `
+      <div class="modal-backdrop" data-action="modal-backdrop">
+        <div class="modal">
+          <div class="modal-head">
+            <div>
+              <div style="font-weight:700;font-size:15px">${esc(modal.title)}</div>
+            </div>
+            <button class="modal-close" data-action="modal-close" title="Close (Esc)">×</button>
+          </div>
+          <div class="modal-body">${modal.bodyHTML}</div>
+          <div class="modal-foot"><button class="btn primary" data-action="modal-close">Got it</button></div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  /* ---- Topic modal ---- */
   const t = findTopic(modal.topicId);
   if(!t){ closeModal(); return; }
   const isExpl = modal.type === "explanation";
@@ -561,12 +797,47 @@ She's been working since 8am.">${esc((t.examples||[]).join("\n"))}</textarea>`;
     </div>`;
 }
 
+/* Heatmap info content (used by the ⓘ button) */
+function heatmapInfoHTML(){
+  return `<div style="line-height:1.7;font-size:14px;color:var(--text-2)">
+    <h3 style="margin-top:0;color:var(--text)">What counts as an activity</h3>
+    <div class="small muted" style="margin-bottom:18px">
+      • Every exercise attempt you make (correct or not)<br>
+      • Every roadmap day you mark as complete, mapped to its scheduled date via the phase's start date
+    </div>
+
+    <h3 style="color:var(--text)">Reading the colours</h3>
+    <div class="small muted" style="margin-bottom:18px">
+      Each square shows how many activities you completed that day, using five intensity levels —
+      from empty (no activity) to darkest (10+ activities).
+    </div>
+
+    <h3 style="color:var(--text)">Streaks</h3>
+    <div class="small muted" style="margin-bottom:18px">
+      The streak counter follows the GitHub convention — it counts consecutive days ending today
+      (or yesterday, if today hasn't been touched yet).
+    </div>
+
+    <h3 style="color:var(--text)">Year navigation</h3>
+    <div class="small muted" style="margin-bottom:18px">
+      Use the arrows to flip between years. You can't go past the current year — future days are hidden.
+    </div>
+
+    <h3 style="color:var(--text)">Drilling into a day</h3>
+    <div class="small muted">
+      Click any square to see exactly what you did that day — which exercises you attempted and
+      which roadmap days you completed.
+    </div>
+  </div>`;
+}
+
 /* =========================================================
    5. ROUTER
    ========================================================= */
 function go(name, id){
   if(name === "material"){ if(matImport && matImport.materialId !== id) matImport = null; } else { matImport = null; }
   if(modal) closeModal();
+  if(name === "heatmap") hmSelectedDay = null;
   view = {name, id: id||null};
   if(name !== "practice"){ session = null; }
   render();
@@ -578,6 +849,10 @@ function render(){
   let html = "";
   switch(view.name){
     case "dashboard":      html = viewDashboard(); break;
+    case "roadmap":        html = viewRoadmap(); break;
+    case "phase":          html = viewPhase(view.id); break;
+    case "phase-form":     html = viewPhaseForm(view.id); break;
+    case "heatmap":        html = viewHeatmap(); break;
     case "topics":         html = viewTopics(); break;
     case "topic-form":     html = viewTopicForm(view.id); break;
     case "topic":          html = viewTopicDetail(view.id); break;
@@ -599,6 +874,7 @@ function render(){
     let on = route === view.name;
     if(view.name === "topic" || view.name === "topic-form") on = route === "topics";
     if(view.name === "material" || view.name === "material-form") on = route === "materials";
+    if(view.name === "phase" || view.name === "phase-form") on = route === "roadmap";
     n.classList.toggle("active", on);
   });
   const sf = document.getElementById("sideFoot");
@@ -629,9 +905,9 @@ function welcomeScreen(){
       <button class="btn" data-action="go" data-route="import">Import Data</button>
     </div>
     <div class="card">
-      <h3>Then: practice, review, track</h3>
-      <div class="small muted" style="margin:8px 0 14px">Every answer is saved. Mistakes and weak topics rise to the top automatically.</div>
-      <button class="btn" data-action="go" data-route="progress">See Progress</button>
+      <h3>Plan it out on the Roadmap</h3>
+      <div class="small muted" style="margin:8px 0 14px">Split your study into 30-day phases and attach the materials and topics you'll cover.</div>
+      <button class="btn" data-action="go" data-route="roadmap">Open Roadmap</button>
     </div>
   </div>`;
 }
@@ -651,6 +927,17 @@ function viewDashboard(){
   const materials = DB.materials.slice(0,3);
   const unknown = exercisesWithUnknownTopics();
   const mismatched = topicsWithMismatchedLevels();
+  const phases = DB.roadmap.phases || [];
+  const rmTotalDays = phases.reduce((a,p)=>a+(p.days||0),0);
+  const rmDoneDays = phases.reduce((a,p)=>a+Math.min((p.completedDays||[]).length, p.days||0),0);
+
+  const activity = activityByDay();
+  const yearNow = new Date().getFullYear();
+  let yrTotal = 0, yrActive = 0;
+  Object.entries(activity).forEach(([k,v])=>{
+    if(Number(k.slice(0,4)) === yearNow){ yrTotal += v; if(v) yrActive++; }
+  });
+  const streak = computeStreak(activity);
 
   const unknownCard = unknown.list.length ? `
     <div class="alert-card">
@@ -708,6 +995,35 @@ function viewDashboard(){
     </div>`;
   }).join("") : `<div class="empty">No materials yet.</div>`;
 
+  const roadmapCard = phases.length ? `
+    <div class="card clickable" data-action="go" data-route="roadmap" style="margin-top:18px">
+      <div class="between" style="margin-bottom:10px">
+        <h3 style="margin:0">Roadmap</h3>
+        <span class="open-hint" style="font-size:11px;font-weight:600;color:var(--accent-text);background:var(--accent-soft);padding:2px 9px;border-radius:20px">Open ↗</span>
+      </div>
+      <div class="between small muted" style="margin-bottom:6px">
+        <span>${phases.length} phase${phases.length===1?"":"s"} · ${rmDoneDays} / ${rmTotalDays} days</span>
+        <span>${pct(rmDoneDays, rmTotalDays)}%</span>
+      </div>
+      <div class="bar ${barClsFor(pct(rmDoneDays, rmTotalDays))}"><i style="width:${pct(rmDoneDays, rmTotalDays)}%"></i></div>
+      <div class="row wrap" style="margin-top:12px">
+        ${phases.slice(0,6).map((p,i)=>`<span class="badge ${phaseStatus(p).cls}">Phase ${i+1} · ${phaseProgress(p).pct}%</span>`).join("")}
+      </div>
+    </div>` : "";
+
+  const heatmapCard = `
+    <div class="card clickable" data-action="go" data-route="heatmap" style="margin-top:18px">
+      <div class="between" style="margin-bottom:12px">
+        <h3 style="margin:0">Activity heatmap</h3>
+        <span class="open-hint" style="font-size:11px;font-weight:600;color:var(--accent-text);background:var(--accent-soft);padding:2px 9px;border-radius:20px">Open ↗</span>
+      </div>
+      <div class="between small muted" style="margin-bottom:12px">
+        <span>${yrTotal} activit${yrTotal===1?"y":"ies"} in ${yearNow} · ${yrActive} active day${yrActive===1?"":"s"}</span>
+        <span>🔥 ${streak}-day streak</span>
+      </div>
+      <div style="overflow-x:auto;padding-bottom:4px">${miniHeatmapHTML(15)}</div>
+    </div>`;
+
   return `
   <h1>Dashboard</h1>
   <div class="sub">Your grammar study at a glance.</div>
@@ -720,6 +1036,8 @@ function viewDashboard(){
     <div class="stat"><div class="n">${o.totalAt}</div><div class="l">Exercises completed</div></div>
     <div class="stat"><div class="n">${fmtTime(o.studySeconds)}</div><div class="l">Study time</div></div>
   </div>
+  ${heatmapCard}
+  ${roadmapCard}
   <div class="grid-2" style="margin-top:18px">
     <div class="card">
       <div class="between" style="margin-bottom:12px">
@@ -741,6 +1059,8 @@ function viewDashboard(){
   <h2>Quick start</h2>
   <div class="btn-row">
     <button class="btn primary" data-action="go" data-route="exercises">Practice exercises</button>
+    <button class="btn" data-action="go" data-route="heatmap">View heatmap</button>
+    <button class="btn" data-action="go" data-route="roadmap">Open roadmap</button>
     <button class="btn" data-action="go" data-route="review">Review weak topics</button>
     <button class="btn" data-action="go" data-route="import">Import data</button>
   </div>`;
@@ -1141,6 +1461,482 @@ function materialImportPanelHTML(m){
 }
 
 /* =========================================================
+   8b. ROADMAP
+   ========================================================= */
+function phaseCardHTML(p, i){
+  const prog = phaseProgress(p);
+  const st = phaseStatus(p);
+  const cur = phaseCurrentDay(p);
+  const mats = (p.materials||[]).length;
+  const tops = (p.topics||[]).length;
+  const dayLabel = cur
+    ? `Day ${Math.min(cur, prog.days)} of ${prog.days}`
+    : `${prog.days} days`;
+  return `<div class="card clickable topic-card" data-action="phase" data-id="${esc(p.id)}">
+    <div class="between">
+      <span class="badge lvl">Phase ${i+1}</span>
+      <span class="badge ${st.cls}">${st.label}</span>
+    </div>
+    <div class="t">${esc(p.title)}</div>
+    <div class="small muted" style="min-height:18px">${esc(p.description || "No description")}</div>
+    <div class="bar ${barClsFor(prog.pct)}"><i style="width:${prog.pct}%"></i></div>
+    <div class="between small muted">
+      <span>${dayLabel}</span>
+      <span>${prog.done}/${prog.days} · ${prog.pct}%</span>
+    </div>
+    <div class="row wrap">
+      <span class="badge grey">${mats} material${mats===1?"":"s"}</span>
+      <span class="badge grey">${tops} topic${tops===1?"":"s"}</span>
+    </div>
+  </div>`;
+}
+function phaseRowHTML(p, i){
+  const prog = phaseProgress(p);
+  const st = phaseStatus(p);
+  const cur = phaseCurrentDay(p);
+  const mats = (p.materials||[]).length;
+  const tops = (p.topics||[]).length;
+  return `<div class="list-item clickable" data-action="phase" data-id="${esc(p.id)}">
+    <div class="row" style="gap:14px;min-width:0;flex:1">
+      <div class="phase-badge">${i+1}</div>
+      <div style="min-width:0;flex:1">
+        <div class="row wrap" style="gap:8px">
+          <strong style="font-size:14.5px">${esc(p.title)}</strong>
+          <span class="badge ${st.cls}">${st.label}</span>
+          <span class="badge grey">${mats} mat · ${tops} top</span>
+        </div>
+        <div class="small muted" style="margin:3px 0 7px">${esc(p.description || "No description")}</div>
+        <div class="bar ${barClsFor(prog.pct)}" style="max-width:460px"><i style="width:${prog.pct}%"></i></div>
+      </div>
+    </div>
+    <div style="text-align:right;flex-shrink:0;min-width:80px">
+      <div style="font-weight:700;font-size:16px">${prog.pct}%</div>
+      <div class="small muted">${cur ? `Day ${Math.min(cur, prog.days)}` : "—"} / ${prog.days}</div>
+    </div>
+  </div>`;
+}
+function viewRoadmap(){
+  const phases = DB.roadmap.phases || [];
+  const mode = DB.roadmap.view || "grid";
+  const totalDays = phases.reduce((a,p)=>a+(p.days||0),0);
+  const doneDays = phases.reduce((a,p)=>a+Math.min((p.completedDays||[]).length, p.days||0),0);
+  const matSet = new Set(), topSet = new Set();
+  phases.forEach(p=>{
+    (p.materials||[]).forEach(x=>matSet.add(x));
+    (p.topics||[]).forEach(x=>topSet.add(x));
+  });
+  const overallPct = pct(doneDays, totalDays);
+
+  const header = `
+  <div class="between wrap" style="align-items:flex-start;margin-bottom:6px">
+    <div>
+      <h1>Roadmap</h1>
+      <div class="sub" style="margin-bottom:0">
+        ${phases.length} phase${phases.length===1?"":"s"} · ${totalDays} day${totalDays===1?"":"s"} planned.
+        Attach materials and topics to each phase, then tick off the days as you go.
+      </div>
+    </div>
+    <div class="btn-row">
+      <div class="seg">
+        <button class="seg-btn ${mode==="grid"?"active":""}" data-action="roadmap-view" data-view="grid">▦ Grid</button>
+        <button class="seg-btn ${mode==="list"?"active":""}" data-action="roadmap-view" data-view="list">☰ List</button>
+      </div>
+      <button class="btn primary" data-action="new-phase">+ Add phase</button>
+    </div>
+  </div>`;
+
+  if(!phases.length){
+    return header + `<div class="empty" style="margin-top:20px">
+      No phases yet.<br><br>
+      <span class="small">A phase is a block of study days (30 by default) with its own materials and topics.</span>
+      <div class="btn-row" style="justify-content:center;margin-top:16px">
+        <button class="btn primary" data-action="new-phase">Create your first phase</button>
+        <button class="btn" data-action="seed-roadmap">Create the 3 × 30-day starter plan</button>
+      </div>
+    </div>`;
+  }
+
+  const stats = `
+  <div class="stat-grid">
+    <div class="stat"><div class="n">${phases.length}</div><div class="l">Phases</div></div>
+    <div class="stat"><div class="n">${doneDays}<span class="muted" style="font-size:15px">/${totalDays}</span></div><div class="l">Days completed</div></div>
+    <div class="stat"><div class="n">${overallPct}%</div><div class="l">Roadmap progress</div></div>
+    <div class="stat"><div class="n">${matSet.size}</div><div class="l">Materials used</div></div>
+    <div class="stat"><div class="n">${topSet.size}</div><div class="l">Topics covered</div></div>
+  </div>
+  <div class="card" style="margin-bottom:20px">
+    <div class="between small muted" style="margin-bottom:6px"><span>Overall roadmap progress</span><span>${overallPct}%</span></div>
+    <div class="bar ${barClsFor(overallPct)}"><i style="width:${overallPct}%"></i></div>
+  </div>`;
+
+  const body = mode === "list"
+    ? `<div class="list">${phases.map((p,i)=>phaseRowHTML(p,i)).join("")}</div>`
+    : `<div class="grid">${phases.map((p,i)=>phaseCardHTML(p,i)).join("")}</div>`;
+
+  return header + stats + body +
+    `<div class="btn-row" style="margin-top:22px">
+      <button class="btn" data-action="new-phase">+ Add phase</button>
+      <span class="small muted">You can keep extending the roadmap with as many phases as you need.</span>
+    </div>`;
+}
+function viewPhase(id){
+  const p = findPhase(id);
+  if(!p) return `<div class="empty">Phase not found.</div>`;
+  const idx = DB.roadmap.phases.indexOf(p) + 1;
+  const totalPhases = DB.roadmap.phases.length;
+  const prog = phaseProgress(p);
+  const cur = phaseCurrentDay(p);
+  const st = phaseStatus(p);
+  const doneSet = new Set(p.completedDays||[]);
+  const mats = phaseMaterials(p);
+  const tops = phaseTopics(p);
+  const availMats = DB.materials.filter(m=>!(p.materials||[]).includes(m.id));
+  const availTops = DB.topics.filter(t=>!(p.topics||[]).includes(t.id));
+
+  const daysHTML = Array.from({length: p.days || 30}, (_,i)=>{
+    const d = i + 1;
+    const cls = "day-cell" + (doneSet.has(d) ? " done" : "") + (cur === d ? " today" : "");
+    return `<button class="${cls}" data-action="toggle-day" data-id="${esc(p.id)}" data-day="${d}" title="Day ${d}">${d}</button>`;
+  }).join("");
+
+  const matHTML = mats.length ? mats.map(m=>{
+    const ms = materialStats(m.id);
+    return `<div class="list-item" style="padding:9px 13px">
+      <div class="row" style="gap:12px;min-width:0">
+        ${coverHTML(m)}
+        <div style="min-width:0">
+          <div style="font-weight:600;font-size:13.5px">${esc(m.title)}</div>
+          <div class="small muted">${esc(m.author||"")} · ${ms.progress}% complete</div>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn sm" data-action="material" data-id="${esc(m.id)}">Open</button>
+        <button class="btn sm danger" data-action="phase-unlink-material" data-id="${esc(p.id)}" data-mid="${esc(m.id)}" title="Remove from phase">✕</button>
+      </div>
+    </div>`;
+  }).join("") : `<div class="empty small">No materials linked to this phase yet.</div>`;
+
+  const topHTML = tops.length ? tops.map(t=>{
+    const ts = topicStats(t.id);
+    return `<div class="list-item" style="padding:9px 13px">
+      <div class="row" style="gap:10px;min-width:0">
+        <span class="badge lvl">${esc(t.level)}</span>
+        <div style="min-width:0">
+          <div style="font-weight:600;font-size:13.5px">${esc(t.title)}</div>
+          <div class="small muted">${ts.exercises} exercise${ts.exercises===1?"":"s"} · ${ts.progress}% mastered</div>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn sm" data-action="topic" data-id="${esc(t.id)}">Open</button>
+        <button class="btn sm danger" data-action="phase-unlink-topic" data-id="${esc(p.id)}" data-tid="${esc(t.id)}" title="Remove from phase">✕</button>
+      </div>
+    </div>`;
+  }).join("") : `<div class="empty small">No topics linked to this phase yet.</div>`;
+
+  const startInfo = p.startDate
+    ? `<span>Started ${esc(fmtDay(p.startDate))}${cur ? ` · day ${Math.min(cur, prog.days)}` : ""}</span>`
+    : `<span>No start date set</span>`;
+
+  return `
+  <div class="btn-row" style="margin-bottom:14px"><button class="btn sm" data-action="go" data-route="roadmap">← Roadmap</button></div>
+  <div class="between wrap" style="align-items:flex-start">
+    <div>
+      <h1>${esc(p.title)}</h1>
+      <div class="sub" style="margin-bottom:10px">
+        <span class="badge lvl">Phase ${idx} of ${totalPhases}</span>
+        <span class="badge ${st.cls}" style="margin-left:6px">${st.label}</span>
+        <span class="small muted" style="margin-left:10px">${prog.days} days</span>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn sm" data-action="edit-phase" data-id="${esc(p.id)}">Edit</button>
+      <button class="btn sm danger" data-action="delete-phase" data-id="${esc(p.id)}">Delete</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px">
+    <div class="between small muted" style="margin-bottom:6px">
+      ${startInfo}
+      <span>${prog.done} / ${prog.days} days · ${prog.pct}%</span>
+    </div>
+    <div class="bar ${barClsFor(prog.pct)}"><i style="width:${prog.pct}%"></i></div>
+    ${p.description ? `<div class="phase-desc" style="margin-top:12px">${esc(p.description)}</div>` : ""}
+  </div>
+
+  <div class="between wrap" style="margin-bottom:12px">
+    <h2 style="margin:0">Day tracker</h2>
+    <div class="btn-row">
+      ${p.startDate ? `<button class="btn sm" data-action="phase-clear-start" data-id="${esc(p.id)}">Clear start date</button>` : `<button class="btn sm" data-action="phase-start-today" data-id="${esc(p.id)}">Start today</button>`}
+      <button class="btn sm" data-action="phase-mark-all" data-id="${esc(p.id)}">Mark all</button>
+      <button class="btn sm danger" data-action="phase-reset-days" data-id="${esc(p.id)}">Reset</button>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:22px">
+    <div class="small muted" style="margin-bottom:12px">Click a day to mark it complete. The ringed day is "today" based on the start date.</div>
+    <div class="day-grid">${daysHTML}</div>
+  </div>
+
+  <div class="between wrap" style="margin-bottom:12px">
+    <h2 style="margin:0">Materials (${mats.length})</h2>
+    <button class="btn sm" data-action="go" data-route="materials">Manage materials</button>
+  </div>
+  <div class="list" style="margin-bottom:10px">${matHTML}</div>
+  <div class="row wrap" style="gap:8px;margin-bottom:26px">
+    <select id="phase-mat-select" style="max-width:340px" ${availMats.length?"":"disabled"}>
+      ${availMats.length
+        ? availMats.map(m=>`<option value="${esc(m.id)}">${esc(m.title)}</option>`).join("")
+        : `<option value="">No materials available</option>`}
+    </select>
+    <button class="btn primary" data-action="phase-link-material" data-id="${esc(p.id)}" ${availMats.length?"":"disabled"}>+ Add material</button>
+  </div>
+
+  <div class="between wrap" style="margin-bottom:12px">
+    <h2 style="margin:0">Topics (${tops.length})</h2>
+    <button class="btn sm" data-action="go" data-route="topics">Manage topics</button>
+  </div>
+  <div class="list" style="margin-bottom:10px">${topHTML}</div>
+  <div class="row wrap" style="gap:8px;margin-bottom:26px">
+    <select id="phase-top-select" style="max-width:340px" ${availTops.length?"":"disabled"}>
+      ${availTops.length
+        ? availTops.map(t=>`<option value="${esc(t.id)}">${esc(t.level)} · ${esc(t.title)}</option>`).join("")
+        : `<option value="">No topics available</option>`}
+    </select>
+    <button class="btn primary" data-action="phase-link-topic" data-id="${esc(p.id)}" ${availTops.length?"":"disabled"}>+ Add topic</button>
+  </div>
+
+  ${p.notes ? `<h2>Notes</h2><div class="card"><div class="phase-desc" style="white-space:pre-wrap">${esc(p.notes)}</div></div>` : ""}`;
+}
+function viewPhaseForm(id){
+  const editing = id && id !== "new";
+  const p = editing ? findPhase(id) : null;
+  if(editing && !p) return `<div class="empty">Phase not found.</div>`;
+  const d = p || { title:"", description:"", days:30, startDate:null, notes:"" };
+  const nextNum = (DB.roadmap.phases||[]).length + 1;
+  return `
+  <div class="btn-row" style="margin-bottom:14px"><button class="btn sm" data-action="go" data-route="roadmap">← Roadmap</button></div>
+  <h1>${editing ? "Edit phase" : "Add phase"}</h1>
+  <div class="sub">${editing ? "Update this phase's details." : "Add another block of study days to your roadmap."}</div>
+  <div class="card">
+    <form id="phase-form" onsubmit="return false">
+      <div class="form-grid">
+        <div class="form-field full"><label>Title *</label>
+          <input class="input" name="title" value="${esc(d.title)}" placeholder="e.g. Foundations, Past Tenses Deep Dive…" required>
+        </div>
+        <div class="form-field"><label>Days</label>
+          <input class="input" name="days" type="number" min="1" max="365" value="${d.days||30}">
+        </div>
+        <div class="form-field"><label>Start date (optional)</label>
+          <input class="input" name="startDate" type="date" value="${esc(toDateInput(d.startDate))}">
+        </div>
+        <div class="form-field full"><label>Description</label>
+          <textarea class="input" name="description" rows="3" placeholder="What is the goal of this phase?">${esc(d.description)}</textarea>
+        </div>
+        <div class="form-field full"><label>Notes</label>
+          <textarea class="input" name="notes" rows="4" placeholder="Anything else about this phase…">${esc(d.notes)}</textarea>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:18px">
+        <button class="btn primary" data-action="save-phase" data-editing="${editing?"1":"0"}">${editing?"Save changes":"Create phase"}</button>
+        <button class="btn" data-action="go" data-route="roadmap">Cancel</button>
+        <span class="small muted" style="margin-left:auto">Suggested number: phase ${nextNum}</span>
+      </div>
+    </form>
+  </div>`;
+}
+
+/* =========================================================
+   8c. HEATMAP VIEW
+   ========================================================= */
+function viewHeatmap(){
+  const activity = activityByDay();
+  const year = hmYear;
+  const startOfYear = new Date(year, 0, 1);
+  const endOfYear = new Date(year, 11, 31);
+
+  /* Grid begins on the Sunday of the week containing Jan 1 */
+  const gridStart = new Date(startOfYear);
+  gridStart.setDate(gridStart.getDate() - gridStart.getDay());
+
+  const weeks = [];
+  const cur = new Date(gridStart);
+  while(cur <= endOfYear){
+    const week = [];
+    for(let d = 0; d < 7; d++){
+      week.push(new Date(cur));
+      cur.setDate(cur.getDate() + 1);
+    }
+    weeks.push(week);
+  }
+
+  /* Month labels: label the week column where the month changes (within the year) */
+  const monthLabels = [];
+  let lastMonth = -1;
+  weeks.forEach((w, wi)=>{
+    const inYearDays = w.filter(d => d.getFullYear() === year);
+    if(!inYearDays.length) return;
+    const m = inYearDays[0].getMonth();
+    if(m !== lastMonth){
+      monthLabels.push({ week: wi, label: inYearDays[0].toLocaleString(undefined, {month:"short"}) });
+      lastMonth = m;
+    }
+  });
+
+  /* Year stats */
+  let yrTotal = 0, yrActive = 0, yrCorrect = 0, yrAttempts = 0;
+  Object.entries(activity).forEach(([k,v])=>{
+    if(Number(k.slice(0,4)) !== year) return;
+    yrTotal += v;
+    if(v > 0) yrActive++;
+  });
+  DB.attempts.forEach(a=>{
+    const y = new Date(a.ts).getFullYear();
+    if(y !== year) return;
+    yrAttempts++;
+    if(a.correct) yrCorrect++;
+  });
+  const yrAccuracy = pct(yrCorrect, yrAttempts);
+  const streak = computeStreak(activity);
+
+  /* Best day */
+  let bestCount = 0, bestKey = null;
+  Object.entries(activity).forEach(([k,v])=>{
+    if(Number(k.slice(0,4)) !== year) return;
+    if(v > bestCount){ bestCount = v; bestKey = k; }
+  });
+
+  /* Heatmap body: one column per week */
+  const todayKey = dateKey(new Date());
+  const cellsHTML = weeks.map(week => {
+    const daysHTML = week.map(d => {
+      const k = dateKey(d);
+      const inYear = d.getFullYear() === year;
+      const count = inYear ? (activity[k] || 0) : 0;
+      const level = inYear ? hmLevel(count) : 0;
+      const isToday = k === todayKey;
+      const isSel = hmSelectedDay === k;
+      const cls = "hm-cell" + (inYear ? " l" + level : " out") + (isToday ? " today" : "") + (isSel ? " sel" : "");
+      const title = inYear ? `${d.toDateString()} — ${count} activit${count===1?"y":"ies"}` : "";
+      return `<button class="${cls}" data-action="hm-day" data-key="${k}" title="${esc(title)}" ${inYear ? "" : "disabled"}></button>`;
+    }).join("");
+    return `<div class="hm-week">${daysHTML}</div>`;
+  }).join("");
+
+  /* Selected day details */
+  let detailsHTML = "";
+  if(hmSelectedDay){
+    const d = parseDayKey(hmSelectedDay);
+    const attempts = DB.attempts.filter(a => dateKey(new Date(a.ts)) === hmSelectedDay);
+    const correctCount = attempts.filter(a => a.correct).length;
+    const roadmapDone = [];
+    (DB.roadmap.phases||[]).forEach(p => {
+      if(!p.startDate) return;
+      (p.completedDays||[]).forEach(dn => {
+        const ts = p.startDate + (dn-1) * 86400000;
+        if(dateKey(new Date(ts)) === hmSelectedDay) roadmapDone.push({phase: p, day: dn});
+      });
+    });
+    const dayTotal = attempts.length + roadmapDone.length;
+
+    const attemptList = attempts.sort((a,b)=>b.ts-a.ts).map(a=>{
+      const ex = findEx(a.exerciseId);
+      if(!ex) return "";
+      const t = findTopic(ex.topic_id);
+      const time = new Date(a.ts).toLocaleTimeString(undefined,{hour:"2-digit",minute:"2-digit"});
+      return `<div class="list-item" style="padding:9px 13px">
+        <div style="min-width:0;flex:1">
+          <div class="small" style="font-weight:500">${esc(ex.question.split("\n")[0]).slice(0,100)}</div>
+          <div class="small muted">${esc(t?t.title:"—")} · ${esc(time)}</div>
+        </div>
+        <span class="badge ${a.correct?'green':'red'}">${a.correct?"Correct":"Wrong"}</span>
+      </div>`;
+    }).join("");
+
+    const roadmapList = roadmapDone.map(r=>`
+      <div class="list-item clickable" data-action="phase" data-id="${esc(r.phase.id)}" style="padding:9px 13px">
+        <div style="min-width:0">
+          <div class="small" style="font-weight:600">${esc(r.phase.title)}</div>
+          <div class="small muted">Day ${r.day} of ${r.phase.days}</div>
+        </div>
+        <span class="badge green">Completed</span>
+      </div>`).join("");
+
+    detailsHTML = `<div class="card" style="margin-top:18px;border-color:var(--accent)">
+      <div class="between wrap" style="margin-bottom:14px">
+        <div>
+          <h3 style="margin:0 0 4px">${esc(d.toLocaleDateString(undefined,{weekday:"long", year:"numeric", month:"long", day:"numeric"}))}</h3>
+          <div class="small muted">
+            ${dayTotal} activit${dayTotal===1?"y":"ies"}
+            ${attempts.length ? `· ${correctCount}/${attempts.length} exercise${attempts.length===1?"":"s"} correct` : ""}
+            ${roadmapDone.length ? `· ${roadmapDone.length} roadmap day${roadmapDone.length===1?"":"s"}` : ""}
+          </div>
+        </div>
+        <button class="btn sm" data-action="hm-clear-selection">Close</button>
+      </div>
+      ${attempts.length ? `<h4 style="margin:0 0 8px;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)">Exercise attempts (${attempts.length})</h4>
+        <div class="list" style="margin-bottom:16px">${attemptList}</div>` : ""}
+      ${roadmapDone.length ? `<h4 style="margin:0 0 8px;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)">Roadmap days completed (${roadmapDone.length})</h4>
+        <div class="list">${roadmapList}</div>` : ""}
+      ${!attempts.length && !roadmapDone.length ? `<div class="empty small">No activity recorded for this day.</div>` : ""}
+    </div>`;
+  }
+
+  /* Year navigation bounds */
+  const currentYear = new Date().getFullYear();
+  const canGoNext = year < currentYear;
+
+  return `
+  <h1>Activity Heatmap<button class="title-info" data-action="heatmap-info" title="How it works" aria-label="How it works">i</button></h1>
+  <div class="sub">Every completed activity, day by day. Each square is one day — darker means more done. Click a day to see exactly what you did.</div>
+
+  <div class="stat-grid">
+    <div class="stat"><div class="n">${yrTotal}</div><div class="l">Activities in ${year}</div></div>
+    <div class="stat"><div class="n">${yrActive}</div><div class="l">Active days</div></div>
+    <div class="stat"><div class="n">${streak}</div><div class="l">Current streak</div></div>
+    <div class="stat"><div class="n">${bestCount}</div><div class="l">Best day</div></div>
+    <div class="stat"><div class="n">${yrAccuracy}%</div><div class="l">Accuracy</div></div>
+  </div>
+
+  <div class="card" style="margin-top:18px;overflow-x:auto">
+    <div class="between wrap" style="margin-bottom:16px;gap:12px">
+      <div class="row" style="gap:8px">
+        <button class="btn sm" data-action="hm-prev-year">← ${year-1}</button>
+        <span style="font-weight:700;font-size:17px;min-width:60px;text-align:center">${year}</span>
+        <button class="btn sm" data-action="hm-next-year" ${canGoNext ? "" : "disabled"}>${year+1} →</button>
+      </div>
+      <div class="hm-legend">
+        <span class="small muted" style="margin-right:4px">Less</span>
+        <span class="hm-cell l0" title="No activity"></span>
+        <span class="hm-cell l1" title="1–2 activities"></span>
+        <span class="hm-cell l2" title="3–5 activities"></span>
+        <span class="hm-cell l3" title="6–9 activities"></span>
+        <span class="hm-cell l4" title="10+ activities"></span>
+        <span class="small muted" style="margin-left:4px">More</span>
+      </div>
+    </div>
+    <div class="hm-wrap">
+      <div class="hm-months">
+        ${monthLabels.map(m=>`<span style="grid-column:${m.week+1}">${esc(m.label)}</span>`).join("")}
+      </div>
+      <div class="hm-body">
+        <div class="hm-daylabels"><span>Mon</span><span>Wed</span><span>Fri</span></div>
+        <div class="hm-weeks">${cellsHTML}</div>
+      </div>
+    </div>
+    <div class="small muted" style="margin-top:12px">
+      ${yrTotal === 0 ? "No activity recorded for this year yet. Start practising and the squares will fill in." : "Tip: hover over a square for a quick summary."}
+    </div>
+  </div>
+
+  ${detailsHTML}
+
+  <div class="btn-row" style="margin-top:22px">
+    <button class="btn primary" data-action="go" data-route="exercises">Practice exercises</button>
+    <button class="btn" data-action="go" data-route="roadmap">Open roadmap</button>
+    <button class="btn" data-action="go" data-route="progress">See progress</button>
+  </div>`;
+}
+
+/* =========================================================
    9. IMPORT DATA — exercises + materials + topics + backups
    ========================================================= */
 function viewImport(){
@@ -1229,7 +2025,7 @@ Materials (JSON):
   "description": "…", "topics": ["present-perfect"], "total": 145, "current": 42 } ] }
 
 Full backup (JSON) — the file from Export → Full backup:
-{ "topics": […], "materials": […], "exercises": […], "attempts": […], "studySeconds": 0 }
+{ "topics": […], "materials": […], "exercises": […], "attempts": […], "studySeconds": 0, "roadmap": {…} }
 
 You can also paste a plain array — the type will be guessed from the fields.'>${esc(impState.text||"")}</textarea>
     <div class="btn-row" style="margin-top:12px">
@@ -1341,7 +2137,7 @@ function runImportValidation(text, format){
     invalid:[], duplicates:[], warnings:[],
     counts: { materials:0, exercises:0, topics:0 }
   };
-  const valid = { materials: [], exercises: [], topics: [], attempts: [], studySeconds: null };
+  const valid = { materials: [], exercises: [], topics: [], attempts: [], studySeconds: null, roadmap: null };
 
   let bucket = { materials: [], exercises: [], topics: [] };
 
@@ -1369,6 +2165,7 @@ function runImportValidation(text, format){
           if(Array.isArray(obj.topics))    bucket.topics    = obj.topics;
           if(Array.isArray(obj.attempts))  valid.attempts   = obj.attempts;
           if(typeof obj.studySeconds === "number") valid.studySeconds = obj.studySeconds;
+          if(obj.roadmap && typeof obj.roadmap === "object") valid.roadmap = obj.roadmap;
         } else {
           const kind = detectObjectKind(obj);
           if(!kind){
@@ -1465,6 +2262,7 @@ function runImportValidation(text, format){
   }
 
   report.validCount = valid.materials.length + valid.exercises.length + valid.topics.length;
+  if(valid.roadmap) report.validCount += 1;
   return {report, valid};
 }
 
@@ -1509,6 +2307,23 @@ function confirmImport(){
     DB.studySeconds = Math.max(DB.studySeconds || 0, impState.valid.studySeconds);
   }
 
+  /* Roadmap (optional, from full backup) */
+  let restoredRoadmap = false;
+  if(impState.valid.roadmap){
+    const rm = impState.valid.roadmap;
+    rm.phases = Array.isArray(rm.phases) ? rm.phases : [];
+    rm.view = rm.view || "grid";
+    rm.phases.forEach(p=>{
+      p.id = p.id || uid();
+      p.days = p.days || 30;
+      p.completedDays = p.completedDays || [];
+      p.materials = p.materials || [];
+      p.topics = p.topics || [];
+    });
+    DB.roadmap = rm;
+    restoredRoadmap = true;
+  }
+
   save();
   impState = { text:"", format:"auto", createMissing: impState.createMissing, report:null, valid:null };
 
@@ -1517,6 +2332,7 @@ function confirmImport(){
   if(addedM) parts.push(`${addedM} material${addedM===1?"":"s"}`);
   if(addedE) parts.push(`${addedE} exercise${addedE===1?"":"s"}`);
   if(addedA) parts.push(`${addedA} attempt${addedA===1?"":"s"}`);
+  if(restoredRoadmap) parts.push("roadmap");
 
   let msg = `Imported: ${parts.join(", ") || "nothing"}.`;
   if(createdTopics) msg += `\nCreated ${createdTopics} missing topic${createdTopics===1?"":"s"}.`;
@@ -1526,6 +2342,7 @@ function confirmImport(){
   if(addedE) go("exercises");
   else if(addedM) go("materials");
   else if(addedT) go("topics");
+  else if(restoredRoadmap) go("roadmap");
   else go("dashboard");
 }
 
@@ -1904,6 +2721,18 @@ function viewProgress(){
       <td>${s.progress}%</td>
     </tr>`;
   }).join("");
+  const phaseRows = (DB.roadmap.phases||[]).map((p,i)=>{
+    const pr = phaseProgress(p);
+    return `<tr>
+      <td>${i+1}. ${esc(p.title)}</td>
+      <td>${pr.days}</td>
+      <td>${pr.done}</td>
+      <td>${(p.materials||[]).length}</td>
+      <td>${(p.topics||[]).length}</td>
+      <td style="width:160px"><div class="bar ${barClsFor(pr.pct)}"><i style="width:${pr.pct}%"></i></div></td>
+      <td>${pr.pct}%</td>
+    </tr>`;
+  }).join("");
   return `<h1>Progress</h1>
   <div class="sub">Everything you have studied so far.</div>
   <div class="stat-grid">
@@ -1917,6 +2746,9 @@ function viewProgress(){
   <h2>Progress by CEFR level</h2>
   <table><thead><tr><th>Level</th><th>Exercises</th><th>Mastered</th><th>Attempts</th><th>Accuracy</th><th>Progress</th></tr></thead>
   <tbody>${levelRows || `<tr><td colspan="6" class="muted">No exercises yet.</td></tr>`}</tbody></table>
+  <h2>Roadmap progress</h2>
+  <table><thead><tr><th>Phase</th><th>Days</th><th>Done</th><th>Materials</th><th>Topics</th><th>Progress</th><th>%</th></tr></thead>
+  <tbody>${phaseRows || `<tr><td colspan="7" class="muted">No phases yet.</td></tr>`}</tbody></table>
   <h2>Progress by grammar topic</h2>
   <table><thead><tr><th>Topic</th><th>Level</th><th>Ex.</th><th>Attempts</th><th>Accuracy</th><th>Mistakes</th><th>Mastery</th></tr></thead>
   <tbody>${topicRows || `<tr><td colspan="7" class="muted">No topics yet.</td></tr>`}</tbody></table>
@@ -1957,11 +2789,18 @@ function exportTopicsCSV(){
   const rows = DB.topics.map(t=>({...t, examples: (t.examples||[]).join("|")}));
   download("topics.csv", toCSV(rows, headers), "text/csv");
 }
+function exportRoadmapJSON(){ download("roadmap.json", JSON.stringify(DB.roadmap, null, 2)); }
 function exportProgressJSON(){
   const data = {
     exportedAt: new Date().toISOString(),
     studySeconds: DB.studySeconds || 0,
     overall: overallStats(),
+    roadmap: (DB.roadmap.phases||[]).map((p,i)=>({
+      order: i+1, id: p.id, title: p.title, days: p.days,
+      completedDays: (p.completedDays||[]).length,
+      materials: (p.materials||[]).length, topics: (p.topics||[]).length,
+      progress: phaseProgress(p).pct
+    })),
     topics: DB.topics.map(t=>({id:t.id, title:t.title, level:t.level, ...topicStats(t.id)})),
     materials: DB.materials.map(m=>({id:m.id, title:m.title, current:m.current||0, total:m.total||0,
       progress: m.total ? Math.round((m.current/m.total)*100) : 0})),
@@ -2011,6 +2850,13 @@ function viewExport(){
       </div>
     </div>
     <div class="card">
+      <h3>Roadmap</h3>
+      <div class="small muted" style="margin-bottom:12px">${(DB.roadmap.phases||[]).length} phases — data only</div>
+      <div class="btn-row">
+        <button class="btn" data-action="exp-roadmap-json" ${(DB.roadmap.phases||[]).length?"":"disabled"}>JSON</button>
+      </div>
+    </div>
+    <div class="card">
       <h3>Progress data</h3>
       <div class="small muted" style="margin-bottom:12px">${DB.attempts.length} attempts · ${fmtTime(DB.studySeconds||0)} study time — report only</div>
       <div class="btn-row">
@@ -2022,7 +2868,7 @@ function viewExport(){
   <h2>Full backup</h2>
   <div class="card" style="border-color:var(--accent)">
     <div class="small muted" style="margin-bottom:12px">
-      <strong>Everything</strong> — topics, materials, exercises, attempts and study time —
+      <strong>Everything</strong> — topics, materials, exercises, attempts, roadmap and study time —
       in one JSON file. <strong>Re-importable</strong> via Import Data.
     </div>
     <div class="btn-row">
@@ -2173,11 +3019,176 @@ document.addEventListener("click", (e)=>{
     case "new-material": go("material-form", "new"); break;
     case "edit-material": go("material-form", el.dataset.id); break;
 
+    /* ---------- ROADMAP ---------- */
+    case "roadmap-view": {
+      DB.roadmap.view = el.dataset.view === "list" ? "list" : "grid";
+      save(); render();
+      break;
+    }
+    case "phase": go("phase", el.dataset.id); break;
+    case "new-phase": go("phase-form", "new"); break;
+    case "edit-phase": go("phase-form", el.dataset.id); break;
+    case "seed-roadmap": {
+      if(!DB.roadmap.phases.length){
+        DB.roadmap.phases = defaultRoadmap().phases;
+        save(); render();
+      }
+      break;
+    }
+    case "save-phase": {
+      const form = document.getElementById("phase-form");
+      if(!form) break;
+      const title = form.querySelector('[name="title"]').value.trim();
+      if(!title){ alert("Title is required."); break; }
+      const description = form.querySelector('[name="description"]').value.trim();
+      const notes = form.querySelector('[name="notes"]').value;
+      const daysRaw = Number(form.querySelector('[name="days"]').value);
+      const days = Math.max(1, Math.min(365, isNaN(daysRaw) ? 30 : daysRaw));
+      const startDate = fromDateInput(form.querySelector('[name="startDate"]').value);
+      const editing = el.dataset.editing === "1";
+      if(editing){
+        const p = findPhase(view.id);
+        if(!p) break;
+        p.title = title;
+        p.description = description;
+        p.notes = notes;
+        if(days !== p.days){
+          p.days = days;
+          p.completedDays = (p.completedDays||[]).filter(d=>d <= days);
+        }
+        p.startDate = startDate;
+        save(); go("phase", p.id);
+      } else {
+        const phase = {
+          id: uniquePhaseId("phase-" + ((DB.roadmap.phases||[]).length + 1)),
+          title, description, days, startDate, notes,
+          completedDays: [], materials: [], topics: []
+        };
+        DB.roadmap.phases.push(phase);
+        save(); go("phase", phase.id);
+      }
+      break;
+    }
+    case "delete-phase": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      if(!confirm(`Delete phase "${p.title}" and its day progress? This cannot be undone.`)) break;
+      DB.roadmap.phases = DB.roadmap.phases.filter(x=>x.id !== p.id);
+      save(); go("roadmap");
+      break;
+    }
+    case "toggle-day": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      const d = Number(el.dataset.day);
+      const set = new Set(p.completedDays||[]);
+      if(set.has(d)) set.delete(d); else set.add(d);
+      p.completedDays = Array.from(set).sort((a,b)=>a-b);
+      save(); render();
+      break;
+    }
+    case "phase-mark-all": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      p.completedDays = Array.from({length: p.days || 30}, (_,i)=>i+1);
+      save(); render();
+      break;
+    }
+    case "phase-reset-days": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      if(!confirm("Clear all completed days for this phase?")) break;
+      p.completedDays = [];
+      save(); render();
+      break;
+    }
+    case "phase-start-today": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      p.startDate = Date.now();
+      save(); render();
+      break;
+    }
+    case "phase-clear-start": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      p.startDate = null;
+      save(); render();
+      break;
+    }
+    case "phase-link-material": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      const sel = document.getElementById("phase-mat-select");
+      const mid = sel ? sel.value : "";
+      if(!mid) break;
+      p.materials = Array.from(new Set([...(p.materials||[]), mid]));
+      save(); render();
+      break;
+    }
+    case "phase-unlink-material": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      p.materials = (p.materials||[]).filter(x=>x !== el.dataset.mid);
+      save(); render();
+      break;
+    }
+    case "phase-link-topic": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      const sel = document.getElementById("phase-top-select");
+      const tid = sel ? sel.value : "";
+      if(!tid) break;
+      p.topics = Array.from(new Set([...(p.topics||[]), tid]));
+      save(); render();
+      break;
+    }
+    case "phase-unlink-topic": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      p.topics = (p.topics||[]).filter(x=>x !== el.dataset.tid);
+      save(); render();
+      break;
+    }
+
+    /* ---------- HEATMAP ---------- */
+    case "hm-day": {
+      const k = el.dataset.key;
+      hmSelectedDay = (hmSelectedDay === k) ? null : k;
+      render();
+      /* Scroll the details card into view when selecting */
+      if(hmSelectedDay){
+        setTimeout(()=>{
+          const card = document.querySelector('main .card[style*="border-color:var(--accent)"]');
+          if(card) card.scrollIntoView({behavior:"smooth", block:"nearest"});
+        }, 0);
+      }
+      break;
+    }
+    case "hm-clear-selection":
+      hmSelectedDay = null;
+      render();
+      break;
+    case "hm-prev-year":
+      hmYear = hmYear - 1;
+      hmSelectedDay = null;
+      render();
+      break;
+    case "hm-next-year": {
+      const curY = new Date().getFullYear();
+      if(hmYear < curY){ hmYear = hmYear + 1; hmSelectedDay = null; render(); }
+      break;
+    }
+    case "heatmap-info":
+      openInfoModal("How the heatmap works", heatmapInfoHTML());
+      break;
+
+    /* ---------- TOPIC MODAL ---------- */
     case "open-topic-modal": openTopicModal(el.dataset.id, el.dataset.type); break;
     case "modal-close": closeModal(); break;
     case "modal-backdrop": if(e.target === el) closeModal(); break;
     case "modal-edit":
-      if(!modal) break;
+      if(!modal || modal.kind === "info") break;
       modal.editing = true;
       paintModal();
       setTimeout(()=>{
@@ -2185,9 +3196,9 @@ document.addEventListener("click", (e)=>{
         if(ta){ ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
       }, 0);
       break;
-    case "modal-cancel": if(!modal) break; modal.editing = false; paintModal(); break;
+    case "modal-cancel": if(!modal || modal.kind === "info") break; modal.editing = false; paintModal(); break;
     case "modal-save": {
-      if(!modal) break;
+      if(!modal || modal.kind === "info") break;
       const t = findTopic(modal.topicId);
       if(!t) break;
       const ta = document.getElementById("modal-input");
@@ -2217,6 +3228,7 @@ document.addEventListener("click", (e)=>{
           if(findTopic(newId)){ alert(`A topic with ID "${newId}" already exists.`); break; }
           DB.exercises.forEach(ex=>{ if(ex.topic_id===t.id) ex.topic_id = newId; });
           DB.materials.forEach(m=>{ if(m.topics) m.topics = m.topics.map(x=> x===t.id ? newId : x); });
+          DB.roadmap.phases.forEach(p=>{ if(p.topics) p.topics = p.topics.map(x=> x===t.id ? newId : x); });
           t.id = newId;
         }
         t.title = title; t.level = level; t.explanation = explanation; t.examples = examples;
@@ -2248,6 +3260,7 @@ document.addEventListener("click", (e)=>{
       DB.topics = DB.topics.filter(x=>x.id!==t.id);
       DB.exercises = DB.exercises.filter(e=>e.topic_id!==t.id);
       DB.materials.forEach(m=>{ if(m.topics) m.topics = m.topics.filter(x=>x!==t.id); });
+      DB.roadmap.phases.forEach(p=>{ if(p.topics) p.topics = p.topics.filter(x=>x!==t.id); });
       save(); go("topics");
       break;
     }
@@ -2290,6 +3303,7 @@ document.addEventListener("click", (e)=>{
       if(!confirm(msg)) break;
       DB.materials = DB.materials.filter(x=>x.id!==m.id);
       DB.exercises.forEach(e=>{ if(e.material_id===m.id) e.material_id = null; });
+      DB.roadmap.phases.forEach(p=>{ if(p.materials) p.materials = p.materials.filter(x=>x!==m.id); });
       save(); go("materials");
       break;
     }
@@ -2557,6 +3571,7 @@ ex-002,${topicId},${materialId},B1,fill_blank,She _____ (live) in London since 2
     case "exp-mat-csv":  exportMaterialsCSV(); break;
     case "exp-top-json": exportTopicsJSON(); break;
     case "exp-top-csv":  exportTopicsCSV(); break;
+    case "exp-roadmap-json": exportRoadmapJSON(); break;
     case "exp-prog-json": exportProgressJSON(); break;
     case "exp-prog-csv":  exportProgressCSV(); break;
     case "exp-all": exportAll(); break;
@@ -2568,6 +3583,7 @@ ex-002,${topicId},${materialId},B1,fill_blank,She _____ (live) in London since 2
         save();
         impState = { text:"", format:"auto", createMissing:true, report:null, valid:null };
         matImport = null; modal = null;
+        hmYear = new Date().getFullYear(); hmSelectedDay = null;
         document.body.style.overflow = "";
         go("dashboard");
       }
@@ -2642,7 +3658,7 @@ document.addEventListener("change", (e)=>{
 
 document.addEventListener("keydown", (e)=>{
   if(e.key === "Escape" && modal){
-    if(modal.editing){ modal.editing = false; paintModal(); }
+    if(modal.kind !== "info" && modal.editing){ modal.editing = false; paintModal(); }
     else closeModal();
   }
 });
