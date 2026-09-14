@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Modules</title>
+<style>
+  :root{
+    --paper:#f7f5f0;
+    --ink:#141414;
+    --muted:#8a8578;
+    --rule:#ded9cf;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html,body{height:100%}
+
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Helvetica Neue",Inter,system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:64px 40px;
+  }
+
+  .index{
+    width:100%;
+    max-width:820px;
+    border-top:1px solid var(--rule);
+  }
+
+  /* ---------- Row ---------- */
+  .row{
+    display:grid;
+    grid-template-columns:52px 1fr auto 32px;
+    align-items:center;
+    gap:26px;
+    padding:22px 0;
+    border-bottom:1px solid var(--rule);
+    text-decoration:none;
+    color:inherit;
+    position:relative;
+    transition:padding-left .42s cubic-bezier(.2,.8,.3,1);
+  }
+
+  /* ink fill */
+  .row::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:var(--ink);
+    transform:scaleY(0);
+    transform-origin:bottom;
+    transition:transform .42s cubic-bezier(.2,.8,.3,1);
+    z-index:0;
+  }
+
+  .row > *{
+    position:relative;
+    z-index:1;
+    transition:color .3s ease;
+  }
+
+  .row:hover{padding-left:24px}
+  .row:hover::before{transform:scaleY(1);transform-origin:top}
+
+  .row:hover .num,
+  .row:hover .name,
+  .row:hover .desc,
+  .row:hover .arrow{color:var(--paper)}
+
+  .row:focus-visible{
+    outline:2px solid var(--ink);
+    outline-offset:6px;
+  }
+
+  /* ---------- Elements ---------- */
+  .num{
+    font-family:Georgia,"Times New Roman",serif;
+    font-style:italic;
+    font-size:13px;
+    color:var(--muted);
+    letter-spacing:.02em;
+  }
+
+  .name{
+    font-size:clamp(16px,2vw,20px);
+    font-weight:500;
+    letter-spacing:-.015em;
+    line-height:1.2;
+  }
+
+  .desc{
+    font-size:10.5px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--muted);
+    text-align:right;
+    white-space:nowrap;
+  }
+
+  .arrow{
+    display:grid;
+    place-items:center;
+    color:var(--muted);
+    transition:transform .42s cubic-bezier(.2,.8,.3,1),color .3s ease;
+  }
+
+  .row:hover .arrow{transform:translateX(6px)}
+
+  .arrow svg{
+    width:16px;
+    height:16px;
+    stroke:currentColor;
+    fill:none;
+    stroke-width:1.6;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:760px){
+    body{padding:40px 22px;align-items:flex-start}
+
+    .row{
+      grid-template-columns:28px 1fr 26px;
+      gap:14px;
+      padding:18px 0;
+    }
+
+    .row:hover{padding-left:14px}
+
+    .desc{display:none}
+
+    .num{font-size:12px}
+
+    .name{font-size:15px}
+
+    .arrow svg{width:15px;height:15px}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important}
+  }
+</style>
+</head>
+<body>
+
+  <nav class="index" aria-label="Learning modules">
+
+    <a class="row" href="grammar.html">
+      <span class="num">01</span>
+      <span class="name">Grammar</span>
+      <span class="desc">Rules &amp; structure</span>
+      <span class="arrow">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </span>
+    </a>
+
+    <a class="row" href="writing.html">
+      <span class="num">02</span>
+      <span class="name">Writing</span>
+      <span class="desc">Practice &amp; composition</span>
+      <span class="arrow">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </span>
+    </a>
+
+    <a class="row" href="vocabulary.html">
+      <span class="num">03</span>
+      <span class="name">Vocabulary</span>
+      <span class="desc">Words &amp; recall</span>
+      <span class="arrow">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </span>
+    </a>
+
+    <a class="row" href="pronunciation.html">
+      <span class="num">04</span>
+      <span class="name">Pronunciation</span>
+      <span class="desc">Speech &amp; accent</span>
+      <span class="arrow">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </span>
+    </a>
+
+    <a class="row" href="pace-reading.html">
+      <span class="num">05</span>
+      <span class="name">Pace-Reading</span>
+      <span class="desc">Timed passages</span>
+      <span class="arrow">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </span>
+    </a>
+
+    <a class="row" href="room-kindle.html">
+      <span class="num">06</span>
+      <span class="name">Room-kindle</span>
+      <span class="desc">Shared reading</span>
+      <span class="arrow">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </span>
+    </a>
+
+  </nav>
+
+</body>
+</html>
