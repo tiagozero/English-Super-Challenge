@@ -53,10 +53,11 @@
   .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 22px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
   .brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.02em}
   .logo{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--accent);color:#fff;font-size:14px}
-  nav{display:flex;gap:4px;align-items:center}
+  nav{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
   .navbtn{background:transparent;border:0;padding:6px 12px;border-radius:999px;color:var(--muted);font-weight:500}
   .navbtn:hover{background:var(--hover2);color:var(--text)}
   .navbtn.active{background:var(--accent-soft);color:var(--accent)}
+  a.navbtn{text-decoration:none;display:inline-block;cursor:pointer}
   .iconbtn{background:transparent;border:1px solid transparent;padding:5px 9px;border-radius:9px;font-size:16px;line-height:1;color:var(--muted)}
   .iconbtn:hover{background:var(--hover2);color:var(--text)}
 
@@ -70,6 +71,7 @@
   .btn.danger{color:var(--red);border-color:var(--red-line)}
   .btn.danger:hover{background:var(--red-soft)}
   .btn.sm{padding:4px 9px;font-size:13px;border-radius:7px}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
 
   /* hero */
   .hero{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px;margin-bottom:18px}
@@ -131,7 +133,6 @@
   .trow:last-child{border-bottom:0}
   .kdot{width:8px;height:8px;border-radius:50%;flex:none;background:#9ca3af}
   .trow .ttext{flex:1;min-width:0;font-weight:500}
-  .trow .tkind{font-size:12px;color:var(--muted)}
   .trow select{width:auto;padding:3px 6px;font-size:12.5px;border-radius:7px}
 
   /* sidebar chips */
@@ -223,6 +224,16 @@
 
   /* reset row */
   .resetrow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);flex-wrap:wrap}
+
+  /* library */
+  .pickbanner{background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:var(--radius);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+  .selbar{background:var(--panel);border:1px solid var(--accent-line);border-radius:var(--radius);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;position:sticky;top:100px;z-index:10;box-shadow:0 2px 8px var(--shadow)}
+  .librow{display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid var(--hover2);border-radius:6px}
+  .librow:last-child{border-bottom:0}
+  .librow.sel{background:var(--accent-soft)}
+  .librow .libtext{flex:1;min-width:0;font-weight:500;word-break:break-word}
+  .librow input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px;flex:none;cursor:pointer}
+  .librow .minichip{margin:0}
 </style>
 </head>
 <body>
@@ -259,9 +270,14 @@ const KEY = 'writepath.v1';
 const THEME_KEY = 'writepath.theme';
 
 /* ---------- state ---------- */
-let state = { sessions: [] };
-let ui = { view:'home', sessionId:null, step:'setup', reviseDraft:{} };
+let state = { sessions: [], library: [] };
+let ui = {
+  view:'home', sessionId:null, step:'setup', reviseDraft:{},
+  librarySearch:'', libraryFilter:'all', librarySelected:[],
+  libraryPickForSession:null
+};
 let theme = 'light';
+let pendingImportMode = 'targets'; // 'targets' | 'library'
 
 /* ---------- persistence ---------- */
 function load(){
@@ -277,7 +293,9 @@ function load(){
     }
   }catch(e){ console.warn('load failed', e); }
   if(!Array.isArray(state.sessions)) state.sessions = [];
+  if(!Array.isArray(state.library)) state.library = [];
   state.sessions.forEach(hydrate);
+  state.library.forEach(hydrateLibraryItem);
   theme = localStorage.getItem(THEME_KEY) || 'light';
 }
 function hydrate(s){
@@ -294,6 +312,14 @@ function hydrate(s){
   s.nodes.forEach(n => { n.branches = n.branches || []; n.targetIds = n.targetIds || []; n.instruction = n.instruction || ''; });
   s.sentences.forEach(x => { x.usedTargetIds = x.usedTargetIds || []; x.manualUsedIds = x.manualUsedIds || []; x.original = x.original ?? x.text; });
   return s;
+}
+function hydrateLibraryItem(it){
+  it.tags = Array.isArray(it.tags) ? it.tags : [];
+  it.kind = it.kind || 'vocabulary';
+  it.requirement = it.requirement || 'optional';
+  it.group = it.group || '';
+  it.text = it.text || '';
+  return it;
 }
 function save(){
   try{
@@ -373,6 +399,44 @@ function nodeLabel(s, id){
 function kindName(k){ return KINDS[k] || k; }
 
 /* ============================================================
+   LIBRARY HELPERS
+   ============================================================ */
+function addLibraryItemsToSession(libIds, session){
+  let added = 0;
+  const existing = new Set(session.targets.map(t => t.kind + '::' + norm(t.text)));
+  libIds.forEach(id => {
+    const it = state.library.find(x => x.id === id);
+    if(!it) return;
+    const key = it.kind + '::' + norm(it.text);
+    if(existing.has(key)) return;
+    session.targets.push({
+      id: uid(), kind: it.kind, text: it.text,
+      requirement: it.requirement, group: it.group || ''
+    });
+    existing.add(key);
+    added++;
+  });
+  if(added) session.updatedAt = Date.now();
+  return added;
+}
+function saveTargetsToLibrary(targets){
+  let added = 0;
+  const existing = new Set(state.library.map(it => it.kind + '::' + norm(it.text)));
+  targets.forEach(t => {
+    const key = t.kind + '::' + norm(t.text);
+    if(existing.has(key)) return;
+    state.library.push({
+      id: uid(), kind: t.kind, text: t.text,
+      requirement: t.requirement, group: t.group || '',
+      tags: [], addedAt: Date.now()
+    });
+    existing.add(key);
+    added++;
+  });
+  return added;
+}
+
+/* ============================================================
    IMPORT / EXPORT
    ============================================================ */
 function download(filename, content, type){
@@ -424,18 +488,23 @@ function normalizeItem(obj){
   const kind = normalizeKind(obj.kind ?? obj.type ?? obj.category);
   const requirement = normalizeReq(obj.requirement ?? obj.req ?? obj.priority);
   const group = String(obj.group ?? obj.groupName ?? obj.category_group ?? '').trim();
-  return { kind, text, requirement, group: requirement === 'chooseOne' ? (group || 'Group 1') : '' };
+  const tagsRaw = obj.tags ?? '';
+  const tags = Array.isArray(tagsRaw)
+    ? tagsRaw.map(x => String(x).trim()).filter(Boolean)
+    : String(tagsRaw).split(',').map(t => t.trim()).filter(Boolean);
+  return { kind, text, requirement, group: requirement === 'chooseOne' ? (group || 'Group 1') : '', tags };
 }
 function parseJSONTargets(text){
   let data = JSON.parse(text);
   if(data && !Array.isArray(data)){
     if(Array.isArray(data.targets)) data = data.targets;
     else if(Array.isArray(data.items)) data = data.items;
+    else if(Array.isArray(data.library)) data = data.library;
     else throw new Error('Expected an array of items');
   }
   if(!Array.isArray(data)) throw new Error('Expected an array of items');
   return data.map(item => typeof item === 'string'
-    ? { kind:'vocabulary', text:item.trim(), requirement:'optional', group:'' }
+    ? { kind:'vocabulary', text:item.trim(), requirement:'optional', group:'', tags:[] }
     : normalizeItem(item)
   ).filter(Boolean);
 }
@@ -443,10 +512,10 @@ function parseCSVTargets(text){
   const lines = text.split(/\r?\n/).filter(l => l.trim().length);
   if(!lines.length) return [];
   const first = lines[0].toLowerCase();
-  const hasHeader = /\b(text|term|item|kind|type|requirement|group)\b/.test(first);
+  const hasHeader = /\b(text|term|item|kind|type|requirement|group|tags)\b/.test(first);
   const header = hasHeader
     ? splitCSVLine(lines[0]).map(h => h.toLowerCase().trim())
-    : ['text','kind','requirement','group'];
+    : ['text','kind','requirement','group','tags'];
   const rows = hasHeader ? lines.slice(1) : lines;
   return rows.map(line => {
     const cells = splitCSVLine(line);
@@ -470,6 +539,14 @@ function exportTargetsCSV(s){
   ].join(','));
   return [header, ...rows].join('\n') + '\n';
 }
+function exportLibraryCSV(){
+  const header = 'text,kind,requirement,group,tags';
+  const rows = state.library.map(it => [
+    csvCell(it.text), it.kind, it.requirement, csvCell(it.group || ''),
+    csvCell((it.tags || []).join('|'))
+  ].join(','));
+  return [header, ...rows].join('\n') + '\n';
+}
 
 /* ============================================================
    RENDER
@@ -479,6 +556,8 @@ function render(){
   const app = $('#app');
   if(ui.view === 'progress'){
     app.innerHTML = renderProgress();
+  } else if(ui.view === 'library'){
+    app.innerHTML = renderLibrary();
   } else if(ui.view === 'session' && currentSession()){
     app.innerHTML = renderSession();
   } else {
@@ -493,7 +572,9 @@ function topbar(active){
   return `<header class="topbar">
     <div class="brand"><span class="logo">✎</span> WritePath</div>
     <nav>
+      <a class="navbtn" href="Dashboard.html" title="Back to Dashboard">🏠 Home</a>
       <button class="navbtn ${active==='home'?'active':''}" data-act="nav" data-view="home">Sessions</button>
+      <button class="navbtn ${active==='library'?'active':''}" data-act="nav" data-view="library">Library</button>
       <button class="navbtn ${active==='progress'?'active':''}" data-act="nav" data-view="progress">Progress</button>
       <button class="iconbtn" data-act="toggle-theme" title="Toggle dark mode">${icon}</button>
     </nav>
@@ -536,6 +617,137 @@ function sessionCard(s){
       <button class="btn danger sm" data-act="del-session" data-id="${s.id}">Delete</button>
     </div>
   </div>`;
+}
+
+/* ---------- LIBRARY ---------- */
+function renderLibrary(){
+  const lib = state.library;
+  const search = ui.librarySearch.trim().toLowerCase();
+  const filter = ui.libraryFilter;
+  const filtered = lib.filter(it => {
+    if(filter !== 'all' && it.kind !== filter) return false;
+    if(search){
+      const hay = (it.text + ' ' + (it.tags||[]).join(' ') + ' ' + (it.group||'')).toLowerCase();
+      if(!hay.includes(search)) return false;
+    }
+    return true;
+  });
+  const selected = new Set(ui.librarySelected);
+  const byKind = {};
+  filtered.forEach(it => (byKind[it.kind] = byKind[it.kind] || []).push(it));
+  const counts = {};
+  KIND_ORDER.forEach(k => counts[k] = lib.filter(it => it.kind === k).length);
+  const pickFor = ui.libraryPickForSession ? state.sessions.find(s => s.id === ui.libraryPickForSession) : null;
+  const sessions = state.sessions;
+  const defaultSession = ui.sessionId || (sessions[0] && sessions[0].id) || '';
+
+  return `
+  ${topbar('library')}
+  <main class="wrap">
+    ${pickFor ? `
+      <div class="pickbanner">
+        <div>
+          <strong>Choose items to add to “${esc(pickFor.title || pickFor.topic || 'Untitled session')}”</strong>
+          <div class="muted small">Tick items below, then click “Add selected”.</div>
+        </div>
+        <button class="btn ghost" data-act="cancel-library-picker">Cancel</button>
+      </div>
+    ` : ''}
+
+    <div class="row between" style="align-items:flex-start; flex-wrap:wrap; gap:12px">
+      <div>
+        <h1 style="margin-bottom:4px">Library</h1>
+        <p class="muted" style="margin:0">Your reusable collection of target language across all sessions.</p>
+      </div>
+      <div class="row">
+        <button class="btn" data-act="import-library">📥 Import JSON / CSV</button>
+        <button class="btn" data-act="export-library-csv">📤 Export CSV</button>
+        <button class="btn" data-act="export-library-json">📤 Export JSON</button>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px">
+      <h3>Add new item</h3>
+      <div class="grid2">
+        <label class="field"><span>Type</span>
+          <select id="libKind">${Object.entries(KINDS).map(([k,v]) => `<option value="${k}">${v}</option>`).join('')}</select>
+        </label>
+        <label class="field"><span>Requirement</span>
+          <select id="libReq">
+            <option value="optional" selected>Optional</option>
+            <option value="required">Required</option>
+            <option value="chooseOne">Choose one</option>
+          </select>
+        </label>
+      </div>
+      <label class="field"><span>Item</span>
+        <input type="text" id="libText" placeholder="e.g. take into account / as far as I'm concerned" />
+      </label>
+      <div class="grid2">
+        <label class="field"><span>Group <span class="muted">(only for “choose one”)</span></span>
+          <input type="text" id="libGroup" placeholder="e.g. Linking words" />
+        </label>
+        <label class="field"><span>Tags <span class="muted">(comma-separated, optional)</span></span>
+          <input type="text" id="libTags" placeholder="e.g. B2, essay, opinion" />
+        </label>
+      </div>
+      <button class="btn primary" data-act="add-library-item">+ Add to library</button>
+    </div>
+
+    <div class="panel">
+      <div class="row between" style="margin-bottom:10px">
+        <input type="text" id="libSearch" value="${esc(ui.librarySearch)}" placeholder="Search library…" style="max-width:320px" />
+        <span class="muted small">${filtered.length} of ${lib.length} item${lib.length===1?'':'s'}</span>
+      </div>
+      <div class="row" style="gap:6px">
+        <button class="chip ${ui.libraryFilter==='all'?'on':''}" data-act="filter-library" data-kind="all">All (${lib.length})</button>
+        ${KIND_ORDER.map(k => `<button class="chip ${ui.libraryFilter===k?'on':''}" data-act="filter-library" data-kind="${k}">${KINDS[k]} (${counts[k]})</button>`).join('')}
+      </div>
+    </div>
+
+    ${selected.size ? `
+      <div class="selbar">
+        <span><strong>${selected.size}</strong> selected</span>
+        <div class="row">
+          ${pickFor ? `
+            <button class="btn primary" data-act="confirm-library-picker">Add selected to session</button>
+          ` : `
+            <select id="bulkSessionSelect" style="width:auto; padding:6px 10px" ${sessions.length ? '' : 'disabled'}>
+              ${sessions.length ? sessions.map(s => `<option value="${s.id}" ${defaultSession===s.id?'selected':''}>${esc(s.title || s.topic || 'Untitled session')}</option>`).join('') : '<option>— no sessions —</option>'}
+            </select>
+            <button class="btn primary" data-act="bulk-add-to-session" ${sessions.length ? '' : 'disabled'}>Add to session</button>
+            <button class="btn danger" data-act="bulk-delete-library">Delete</button>
+          `}
+          <button class="btn ghost" data-act="clear-library-selection">Clear</button>
+        </div>
+      </div>
+    ` : ''}
+
+    ${lib.length === 0 ? `
+      <div class="empty">Your library is empty. Add items above, or save target language from a session.</div>
+    ` : filtered.length === 0 ? `
+      <div class="empty">No items match your search or filter.</div>
+    ` : KIND_ORDER.filter(k => byKind[k] && byKind[k].length).map(kind => `
+      <div class="panel">
+        <div class="eyebrow" style="display:flex;align-items:center;gap:6px">
+          <span class="kdot k-${kind}"></span>${KINDS[kind]} (${byKind[kind].length})
+        </div>
+        ${byKind[kind].map(it => {
+          const isSel = selected.has(it.id);
+          return `
+          <label class="librow ${isSel?'sel':''}">
+            <input type="checkbox" ${isSel?'checked':''} data-act="toggle-library-select" data-id="${it.id}" />
+            <span class="kdot k-${it.kind}"></span>
+            <span class="libtext">${esc(it.text)}</span>
+            ${it.requirement === 'chooseOne' && it.group ? `<span class="badge chooseOne">${esc(it.group)}</span>`
+              : it.requirement !== 'optional' ? `<span class="badge ${it.requirement}">${REQS[it.requirement]}</span>` : ''}
+            ${(it.tags||[]).map(tg => `<span class="minichip">${esc(tg)}</span>`).join('')}
+            <button class="btn ghost sm" data-act="del-library-item" data-id="${it.id}" title="Delete from library" type="button">✕</button>
+          </label>`;
+        }).join('')}
+      </div>
+    `).join('')}
+  </main>`;
 }
 
 /* ---------- SESSION SHELL ---------- */
@@ -644,6 +856,15 @@ function targetsStep(s){
   </div>
 
   <div class="panel">
+    <h3>Library</h3>
+    <p class="muted small">Save the targets below to your library for reuse, or pull in items you've saved before.</p>
+    <div class="row">
+      <button class="btn" data-act="save-targets-to-library" ${s.targets.length ? '' : 'disabled'}>💾 Save all to library</button>
+      <button class="btn" data-act="open-library-picker">📚 Load from library</button>
+    </div>
+  </div>
+
+  <div class="panel">
     <div class="row between">
       <h3 style="margin:0">Your target language</h3>
       <span class="muted small">${s.targets.length} item${s.targets.length===1?'':'s'} · ${reqCount} required</span>
@@ -661,6 +882,7 @@ function targetsStep(s){
             <select data-target-id="${t.id}" data-tfield="requirement">
               ${Object.entries(REQS).map(([k,v]) => `<option value="${k}" ${t.requirement===k?'selected':''}>${v}</option>`).join('')}
             </select>
+            <button class="btn ghost sm" data-act="save-one-to-library" data-id="${t.id}" title="Save this item to library">📚</button>
             <button class="btn ghost sm" data-act="del-target" data-id="${t.id}">✕</button>
           </div>`).join('')}
       </div>`).join('') : `<p class="muted small" style="margin-top:10px">Nothing added yet.</p>`}
@@ -685,10 +907,10 @@ function targetsStep(s){
   {"text": "used to + verb", "kind": "grammar", "requirement": "optional"}
 ]</pre>
         <div class="eyebrow">CSV</div>
-        <pre style="background:var(--faint);padding:10px;border-radius:8px;overflow:auto;font-size:12px;margin:4px 0 10px;border:1px solid var(--line)">text,kind,requirement,group
-at the end of the day,chunk,required,
-make a decision,collocation,chooseOne,decisions
-used to + verb,grammar,optional,</pre>
+        <pre style="background:var(--faint);padding:10px;border-radius:8px;overflow:auto;font-size:12px;margin:4px 0 10px;border:1px solid var(--line)">text,kind,requirement,group,tags
+at the end of the day,chunk,required,,
+make a decision,collocation,chooseOne,decisions,
+used to + verb,grammar,optional,,</pre>
         <p class="muted">Valid kinds: <code>chunk</code>, <code>collocation</code>, <code>phrasalVerb</code>, <code>vocabulary</code>, <code>grammar</code>. Valid requirements: <code>required</code>, <code>chooseOne</code>, <code>optional</code>. The header row is optional.</p>
       </div>
     </details>
@@ -711,7 +933,6 @@ function pathStep(s){
 }
 
 function nodeCard(s, n, i){
-  // Group targets by kind for this node
   const byKind = {};
   s.targets.forEach(t => (byKind[t.kind] = byKind[t.kind] || []).push(t));
 
@@ -1239,7 +1460,9 @@ document.addEventListener('click', e => {
 
     case 'nav': {
       ui.view = btn.dataset.view;
-      ui.sessionId = null;
+      if(ui.view === 'home') ui.sessionId = null;
+      if(ui.view !== 'library') ui.libraryPickForSession = null;
+      if(ui.view !== 'library') ui.librarySelected = [];
       save(); render();
       break;
     }
@@ -1316,9 +1539,161 @@ document.addEventListener('click', e => {
       break;
     }
 
+    /* ---- library: save from session ---- */
+    case 'save-targets-to-library': {
+      if(!s) break;
+      if(!s.targets.length){ toast('No targets to save.'); break; }
+      const added = saveTargetsToLibrary(s.targets);
+      save(); render();
+      toast(added ? `Saved ${added} new item${added===1?'':'s'} to library` : 'All items already in library.');
+      break;
+    }
+
+    case 'save-one-to-library': {
+      if(!s) break;
+      const t = s.targets.find(x => x.id === btn.dataset.id);
+      if(!t) break;
+      const added = saveTargetsToLibrary([t]);
+      save(); render();
+      toast(added ? 'Saved to library' : 'Already in library.');
+      break;
+    }
+
+    case 'open-library-picker': {
+      if(!s) break;
+      ui.libraryPickForSession = s.id;
+      ui.librarySelected = [];
+      ui.view = 'library';
+      save(); render();
+      window.scrollTo({ top:0, behavior:'smooth' });
+      break;
+    }
+
+    case 'cancel-library-picker': {
+      const sid = ui.libraryPickForSession;
+      ui.libraryPickForSession = null;
+      ui.librarySelected = [];
+      if(sid){ ui.view = 'session'; ui.sessionId = sid; ui.step = 'targets'; }
+      save(); render();
+      break;
+    }
+
+    case 'confirm-library-picker': {
+      const sid = ui.libraryPickForSession;
+      const ts = state.sessions.find(x => x.id === sid);
+      if(!ts){ toast('Session not found.'); ui.libraryPickForSession = null; ui.librarySelected = []; save(); render(); break; }
+      if(!ui.librarySelected.length){ toast('Nothing selected.'); break; }
+      const added = addLibraryItemsToSession(ui.librarySelected, ts);
+      ui.libraryPickForSession = null;
+      ui.librarySelected = [];
+      ui.view = 'session'; ui.sessionId = sid; ui.step = 'targets';
+      save(); render();
+      toast(added ? `Added ${added} item${added===1?'':'s'} to session` : 'All selected items were already in the session.');
+      break;
+    }
+
+    /* ---- library: main view ---- */
+    case 'add-library-item': {
+      const kind = $('#libKind').value;
+      const text = $('#libText').value.trim();
+      const requirement = $('#libReq').value;
+      const group = $('#libGroup').value.trim();
+      const tags = $('#libTags').value.split(',').map(t => t.trim()).filter(Boolean);
+      if(!text){ toast('Type the item first.'); break; }
+      const dup = state.library.some(it => it.kind === kind && norm(it.text) === norm(text));
+      if(dup){ toast('That item is already in your library.'); break; }
+      state.library.push({
+        id: uid(), kind, text, requirement,
+        group: requirement === 'chooseOne' ? (group || 'Group 1') : '',
+        tags, addedAt: Date.now()
+      });
+      $('#libText').value = ''; $('#libGroup').value = ''; $('#libTags').value = '';
+      save(); render();
+      toast('Added to library');
+      break;
+    }
+
+    case 'del-library-item': {
+      e.preventDefault();
+      e.stopPropagation();
+      if(!confirm('Remove this item from your library?')) break;
+      state.library = state.library.filter(it => it.id !== btn.dataset.id);
+      ui.librarySelected = ui.librarySelected.filter(id => id !== btn.dataset.id);
+      save(); render();
+      break;
+    }
+
+    case 'toggle-library-select': {
+      const id = btn.dataset.id;
+      const set = new Set(ui.librarySelected);
+      if(set.has(id)) set.delete(id); else set.add(id);
+      ui.librarySelected = Array.from(set);
+      render();
+      break;
+    }
+
+    case 'clear-library-selection': {
+      ui.librarySelected = [];
+      render();
+      break;
+    }
+
+    case 'filter-library': {
+      ui.libraryFilter = btn.dataset.kind;
+      ui.librarySelected = [];
+      render();
+      break;
+    }
+
+    case 'bulk-delete-library': {
+      const ids = ui.librarySelected.slice();
+      if(!ids.length) break;
+      if(!confirm(`Delete ${ids.length} item${ids.length===1?'':'s'} from your library?`)) break;
+      state.library = state.library.filter(it => !ids.includes(it.id));
+      ui.librarySelected = [];
+      save(); render();
+      toast('Deleted');
+      break;
+    }
+
+    case 'bulk-add-to-session': {
+      const targetSid = $('#bulkSessionSelect') ? $('#bulkSessionSelect').value : '';
+      if(!targetSid){ toast('Choose a session.'); break; }
+      const ts = state.sessions.find(x => x.id === targetSid);
+      if(!ts){ toast('Session not found.'); break; }
+      if(!ui.librarySelected.length){ toast('Nothing selected.'); break; }
+      const added = addLibraryItemsToSession(ui.librarySelected, ts);
+      const count = ui.librarySelected.length;
+      ui.librarySelected = [];
+      save(); render();
+      toast(added ? `Added ${added} item${added===1?'':'s'} to session` : `${count} item${count===1?'':'s'} already in that session.`);
+      break;
+    }
+
+    case 'import-library': {
+      pendingImportMode = 'library';
+      $('#fileImport').click();
+      break;
+    }
+
+    case 'export-library-csv': {
+      if(!state.library.length){ toast('Library is empty.'); break; }
+      download(`writepath-library-${new Date().toISOString().slice(0,10)}.csv`, exportLibraryCSV(), 'text/csv;charset=utf-8');
+      toast('Library exported as CSV');
+      break;
+    }
+
+    case 'export-library-json': {
+      if(!state.library.length){ toast('Library is empty.'); break; }
+      download(`writepath-library-${new Date().toISOString().slice(0,10)}.json`, JSON.stringify(state.library, null, 2), 'application/json');
+      toast('Library exported as JSON');
+      break;
+    }
+
     /* ---- import / export ---- */
     case 'import-targets': {
       if(!s) break;
+      pendingImportMode = 'targets';
       $('#fileImport').click();
       break;
     }
@@ -1337,7 +1712,7 @@ document.addEventListener('click', e => {
     }
     case 'export-all-json': {
       download(`writepath-all-${new Date().toISOString().slice(0,10)}.json`, JSON.stringify(state, null, 2), 'application/json');
-      toast('All sessions exported');
+      toast('All data exported');
       break;
     }
 
@@ -1493,7 +1868,6 @@ document.addEventListener('click', e => {
       s.sentences.pop();
       s.awaitingChoice = false;
       s.pathComplete = false;
-      // Move the cursor back to the node the sentence came from
       if(last.nodeId && s.nodes.some(n => n.id === last.nodeId)){
         s.currentNodeId = last.nodeId;
       } else {
@@ -1569,6 +1943,17 @@ document.addEventListener('click', e => {
 /* ---------- live field updates (no re-render, keeps focus) ---------- */
 function onField(e){
   const t = e.target;
+
+  // Library search (live filter, refocus after re-render)
+  if(t.id === 'libSearch'){
+    ui.librarySearch = t.value;
+    const pos = t.selectionStart;
+    render();
+    const el = $('#libSearch');
+    if(el){ el.focus(); el.setSelectionRange(pos, pos); }
+    return;
+  }
+
   if(!t.dataset) return;
   const s = currentSession();
 
@@ -1635,12 +2020,10 @@ function updateSidebarLive(){
   if(counter) counter.textContent = `${wordsIn(s.draft || '')} word${wordsIn(s.draft||'')===1?'':'s'} in this sentence`;
 }
 
-/* ---------- file import ---------- */
+/* ---------- file import (targets OR library) ---------- */
 $('#fileImport').addEventListener('change', async e => {
   const file = e.target.files && e.target.files[0];
-  if(!file) return;
-  const s = currentSession();
-  if(!s){ e.target.value = ''; return; }
+  if(!file){ pendingImportMode = 'targets'; return; }
   let items = [];
   try{
     const text = await file.text();
@@ -1648,22 +2031,53 @@ $('#fileImport').addEventListener('change', async e => {
   }catch(err){
     toast('Could not parse file: ' + err.message);
     e.target.value = '';
+    pendingImportMode = 'targets';
     return;
   }
-  if(!items.length){ toast('No terms found in the file.'); e.target.value = ''; return; }
+  if(!items.length){
+    toast('No terms found in the file.');
+    e.target.value = '';
+    pendingImportMode = 'targets';
+    return;
+  }
 
-  items.forEach(it => {
-    s.targets.push({
-      id: uid(),
-      kind: it.kind,
-      text: it.text,
-      requirement: it.requirement,
-      group: it.requirement === 'chooseOne' ? (it.group || 'Group 1') : ''
+  if(pendingImportMode === 'library'){
+    const existing = new Set(state.library.map(it => it.kind + '::' + norm(it.text)));
+    let added = 0;
+    items.forEach(it => {
+      const key = it.kind + '::' + norm(it.text);
+      if(existing.has(key)) return;
+      state.library.push({
+        id: uid(), kind: it.kind, text: it.text,
+        requirement: it.requirement, group: it.group || '',
+        tags: it.tags || [], addedAt: Date.now()
+      });
+      existing.add(key);
+      added++;
     });
-  });
-  touch(s); render();
-  toast(`Imported ${items.length} item${items.length === 1 ? '' : 's'}`);
+    save(); render();
+    toast(added ? `Imported ${added} item${added === 1 ? '' : 's'} to library` : 'All items already in library.');
+  } else {
+    const s = currentSession();
+    if(!s){
+      toast('Open a session first.');
+      e.target.value = '';
+      pendingImportMode = 'targets';
+      return;
+    }
+    items.forEach(it => {
+      s.targets.push({
+        id: uid(), kind: it.kind, text: it.text,
+        requirement: it.requirement,
+        group: it.requirement === 'chooseOne' ? (it.group || 'Group 1') : ''
+      });
+    });
+    touch(s); render();
+    toast(`Imported ${items.length} item${items.length === 1 ? '' : 's'}`);
+  }
+
   e.target.value = '';
+  pendingImportMode = 'targets';
 });
 
 /* ---------- keyboard shortcut: Ctrl/Cmd + Enter adds a sentence ---------- */
