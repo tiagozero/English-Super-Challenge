@@ -396,6 +396,7 @@
   .mat-sub{font-size:12.5px;color:var(--muted);margin-top:2px}
   .pill{font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase}
   .pill.active{background:var(--good-bg);color:var(--good-fg)}
+  .pill.scheduled{background:var(--warn-bg);color:var(--warn-fg)}
   .pill.completed{background:var(--info-bg);color:var(--info-fg)}
   .pill.archived{background:var(--neutral-bg);color:var(--neutral-fg)}
   .mat-tot{font-size:12.5px;color:var(--muted);margin-top:5px;font-variant-numeric:tabular-nums}
@@ -416,6 +417,10 @@
   .mat-group-head .gdot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
   .mat-group-head .gdot.reading{background:var(--reading)}
   .mat-group-head .gdot.listening{background:var(--listening)}
+  .mat-group-head .gdot.status-active{background:var(--good-fg)}
+  .mat-group-head .gdot.status-scheduled{background:var(--warn-fg)}
+  .mat-group-head .gdot.status-completed{background:var(--info-fg)}
+  .mat-group-head .gdot.status-archived{background:var(--neutral-fg)}
   .mat-group-head .gt{font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
   .mat-group-head .gn{font-size:11.5px;font-weight:700;color:var(--muted);background:var(--surface-2);padding:2px 9px;border-radius:999px}
   .mat-group-head .gline{flex:1;height:1px;background:var(--line);border-radius:1px}
@@ -498,6 +503,7 @@
   .status-pill{font-size:10px;font-weight:750;padding:3px 9px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase}
   .status-pill.good{background:var(--good-bg);color:var(--good-fg)}
   .status-pill.warn{background:var(--warn-bg);color:var(--warn-fg)}
+  .status-pill.info{background:var(--info-bg);color:var(--info-fg)}
   .status-pill.neutral{background:var(--neutral-bg);color:var(--neutral-fg)}
   .mat-card-queued{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding-top:8px;border-top:1px dashed var(--dash-line)}
   .mat-card-queued .qlabel{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
@@ -605,6 +611,89 @@
   .rm-dbar-row .lbl{width:70px;flex:0 0 auto;text-transform:uppercase;letter-spacing:.06em;font-weight:700;font-size:10.5px}
   .rm-dbar-row .bar{flex:1}
   .rm-dbar-row .v{min-width:92px;text-align:right;flex:0 0 auto}
+
+  /* Phase activity calendar heatmap */
+  .rm-heatmap{padding:16px 18px 18px;border-top:1px solid var(--line)}
+  .rm-heat-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+  .rm-heat-toolbar-label{font-size:12px;font-weight:650;color:var(--muted)}
+  .heat-colorby{display:inline-flex;align-items:center;gap:2px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px}
+  .hcb-btn{
+    display:flex;align-items:center;gap:6px;border:0;background:transparent;
+    padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:600;color:var(--muted);
+    cursor:pointer;transition:background .15s,color .15s;font-family:inherit;white-space:nowrap;
+  }
+  .hcb-btn:hover{color:var(--text)}
+  .hcb-btn.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
+  .hcb-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+  .hcb-dot.combined{background:color-mix(in srgb, var(--reading) 60%, var(--listening) 40%)}
+  .hcb-dot.reading{background:var(--reading)}
+  .hcb-dot.listening{background:var(--listening)}
+
+  .cal-month{margin-top:18px}
+  .cal-month-label{font-size:12.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:0 2px 10px}
+  .cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px}
+  .cal-weekdays span{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-left:2px}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .cal-cell{
+    position:relative;border-radius:11px;padding:9px;min-height:72px;
+    background:var(--bar-bg);display:flex;flex-direction:column;justify-content:space-between;
+    box-sizing:border-box;color:var(--text);
+  }
+  .cal-cell.pad{background:transparent;visibility:hidden}
+  .cal-cell.out{background:transparent;color:var(--muted);opacity:.4}
+  .cal-cell.clickable{cursor:pointer;transition:filter .12s ease,transform .08s ease}
+  .cal-cell.clickable:hover{filter:brightness(.96)}
+  .cal-cell.clickable:active{transform:scale(.98)}
+  .cal-cell.empty{background:var(--surface-2);color:var(--muted)}
+  .cal-cell.future{background:var(--tag-bg);color:var(--muted)}
+  .cal-cell.lvl-1{background:color-mix(in srgb, var(--heat-accent) 28%, var(--bar-bg))}
+  .cal-cell.lvl-2{background:color-mix(in srgb, var(--heat-accent) 55%, var(--bar-bg))}
+  .cal-cell.lvl-3{background:color-mix(in srgb, var(--heat-accent) 80%, var(--bar-bg));color:var(--on-accent)}
+  .cal-cell.lvl-4{background:var(--heat-accent);color:var(--on-accent)}
+  .cal-cell.today{outline:2px solid var(--text);outline-offset:-2px}
+  .cal-num{font-size:13px;font-weight:700}
+  .cal-sub{font-size:10.5px;opacity:.85}
+  .cal-dot{position:absolute;top:9px;right:9px;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.8}
+  .rm-heat-legend{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:14px;font-size:10.5px;color:var(--muted)}
+  .rm-heat-swatch{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .rm-heat-swatch.lvl-1{background:color-mix(in srgb, var(--heat-accent) 28%, var(--bar-bg))}
+  .rm-heat-swatch.lvl-2{background:color-mix(in srgb, var(--heat-accent) 55%, var(--bar-bg))}
+  .rm-heat-swatch.lvl-3{background:color-mix(in srgb, var(--heat-accent) 80%, var(--bar-bg))}
+  .rm-heat-swatch.lvl-4{background:var(--heat-accent)}
+  .rm-heat-empty{padding:16px 18px;font-size:12.5px;color:var(--muted)}
+
+  /* Day-detail modal */
+  .rm-detail-sub{font-size:12px;color:var(--muted);margin-top:2px;font-weight:500}
+  .rm-detail-summary{display:flex;gap:14px;align-items:center;background:var(--surface-2);border-radius:14px;padding:14px;margin-bottom:16px}
+  .rm-detail-daybox{
+    flex:0 0 auto;width:56px;height:56px;border-radius:14px;background:var(--reading);color:var(--on-accent);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;
+  }
+  .rm-detail-daybox small{font-size:9px;font-weight:700;letter-spacing:.06em;opacity:.85}
+  .rm-detail-daybox b{font-size:19px;font-weight:800}
+  .rm-detail-summary-main{flex:1;min-width:0}
+  .rm-detail-summary-title{font-size:14.5px;font-weight:700}
+  .rm-detail-summary-sub{font-size:12.5px;color:var(--muted);margin:2px 0 8px}
+  .badge-pill{display:inline-block;font-size:10px;font-weight:750;letter-spacing:.04em;padding:3px 10px;border-radius:999px}
+  .badge-pill.good{background:var(--good-bg);color:var(--good-fg)}
+  .badge-pill.warn{background:var(--warn-bg);color:var(--warn-fg)}
+  .badge-pill.bad{background:var(--bad-bg);color:var(--bad-fg)}
+  .badge-pill.info{background:var(--info-bg);color:var(--info-fg)}
+  .badge-pill.neutral{background:var(--neutral-bg);color:var(--neutral-fg)}
+  .rm-detail-section{margin-bottom:16px}
+  .rm-detail-section-head{
+    display:flex;align-items:center;justify-content:space-between;
+    font-size:10.5px;font-weight:750;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;
+  }
+  .rm-detail-empty{font-size:12.5px;color:var(--muted);padding:10px 2px 16px}
+  .rm-detail-targets{margin-top:4px}
+  .rm-detail-targets-head{font-size:10.5px;font-weight:750;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  .rm-detail-targets-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .rm-detail-target-box{background:var(--surface-2);border-radius:12px;padding:12px}
+  .rm-detail-target-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+  .rm-detail-target-val{font-size:16px;font-weight:750;margin-bottom:8px}
+  .rm-detail-target-val small{font-size:12px;font-weight:600;color:var(--muted)}
+  .rm-detail-target-pct{font-size:11px;color:var(--muted);margin-top:6px}
 
   .rm-queue{padding:0 18px 18px}
   .rm-queue-label{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
@@ -969,6 +1058,12 @@ function shortDate(iso){
   const d = parseISO(iso);
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
+function daysRemainingLabel(endIso){
+  const today = todayISO();
+  if (today > endIso) return 'Phase ended';
+  const remaining = diffDays(today, endIso);
+  return `${remaining} Day${remaining === 1 ? '' : 's'} Remaining`;
+}
 function initialsOf(name){
   const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
   if (!parts.length) return '?';
@@ -1115,12 +1210,15 @@ const TYPES = {
 const TYPE_ORDER = ['kindle', 'book', 'article', 'manga', 'other', 'youTube', 'anime', 'audiobook', 'podcast', 'tv', 'film'];
 const CATEGORY_ORDER = ['reading', 'listening'];
 const CATEGORY_LABEL = { reading: 'Reading', listening: 'Listening' };
+const STATUS_ORDER = ['active', 'scheduled', 'completed', 'archived'];
+const STATUS_LABEL = { active: 'Active', scheduled: 'Scheduled', completed: 'Completed', archived: 'Archived' };
 
 const STORAGE_KEY = 'english-super-challenge-v2-clean';
 const WELCOME_KEY = 'esc-welcome-shown';
 const MATFILTERS_KEY = 'esc-materials-filters-open';
 const QUICKADD_KEY = 'esc-quickadd-open';
 const RMVIEW_KEY = 'esc-roadmap-view';
+const HEATCOLORBY_KEY = 'esc-heat-colorby';
 
 const XP_PER_UNIT = 5 / 10;
 function xpFrom(pages, minutes){ return (Number(pages) || 0) * XP_PER_UNIT + (Number(minutes) || 0) * XP_PER_UNIT; }
@@ -1261,6 +1359,10 @@ if (!['phases','weeks','days','materials'].includes(roadmapView)) roadmapView = 
 
 let roadmapOpenPhases = {}; // phaseIndex -> true (ui state)
 let roadmapOpenWeeks = {};  // weekIndex -> true (ui state)
+
+let heatColorBy = 'combined'; // 'combined' | 'reading' | 'listening'
+try { heatColorBy = localStorage.getItem(HEATCOLORBY_KEY) || 'combined'; } catch (e) {}
+if (!['combined', 'reading', 'listening'].includes(heatColorBy)) heatColorBy = 'combined';
 
 /* =========================================================
    Fresh state
@@ -2666,7 +2768,6 @@ function roadmapWeeklyChartHTML(rm){
 }
 function roadmapPhaseHTML(phase, rm){
   const isOpen = !!roadmapOpenPhases[phase.index];
-  const weeks = phase.weekIndices.map(i => rm.weeks[i]).filter(Boolean);
   const statusCls = phase.status;
 
   return `
@@ -2679,14 +2780,14 @@ function roadmapPhaseHTML(phase, rm){
           <span class="badge ${statusCls === 'met' ? 'done' : ''}">${statusLabel(statusCls)}</span>
         </div>
         <div class="rm-phase-meta">
-          Day ${phase.startDay} – ${phase.endDay} · ${shortDate(phase.startDate)} → ${shortDate(phase.endDate)}
+          Day ${phase.startDay} – ${phase.endDay} · ${shortDate(phase.startDate)} → ${shortDate(phase.endDate)} (${daysRemainingLabel(phase.endDate)})
         </div>
         ${phase.focus ? `<div class="rm-phase-focus">${escapeHtml(phase.focus)}</div>` : ''}
       </div>
       <div class="rm-phase-right">
         <div class="rm-phase-pct">${phase.pct.toFixed(0)}%</div>
         <button class="btn btn-ghost btn-sm" data-action="rm-toggle-phase" data-idx="${phase.index}">
-          ${isOpen ? 'Hide' : 'Show'} weeks
+          ${isOpen ? 'Hide' : 'Show'} Heatmap
         </button>
       </div>
     </div>
@@ -2711,8 +2812,221 @@ function roadmapPhaseHTML(phase, rm){
       </div>
     </div>
     ${roadmapQueueHTML(phase)}
-    ${isOpen ? weeks.map(w => roadmapWeekHTML(w, rm, false)).join('') : ''}
+    ${isOpen ? roadmapPhaseHeatmapHTML(phase, rm) : ''}
   </div>`;
+}
+
+/* Calendar-style activity heatmap for a phase (one real calendar month
+   block per month the phase spans), colored by how much of that day's
+   target was logged. Colour source (combined / reading / listening) is
+   switchable and persisted. Clicking a day opens its detail modal. */
+function monthKeyOf(iso){ return iso.slice(0, 7); }
+function nextMonthKey(key){
+  const [y, m] = key.split('-').map(Number);
+  const d = new Date(y, m, 1);
+  return d.getFullYear() + '-' + pad2(d.getMonth() + 1);
+}
+function monthLabelFromKey(key){
+  const [y, m] = key.split('-').map(Number);
+  return new Date(y, m - 1, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+}
+function firstOfMonthISO(key){ return key + '-01'; }
+function lastOfMonthISO(key){
+  const [y, m] = key.split('-').map(Number);
+  return toISO(new Date(y, m, 0));
+}
+function heatMetricValue(d, mode){
+  if (mode === 'reading') return { act: d.actualRead, exp: d.expectedRead };
+  if (mode === 'listening') return { act: d.actualListen, exp: d.expectedListen };
+  return { act: d.actualRead + d.actualListen, exp: d.expectedRead + d.expectedListen };
+}
+function heatCellLevel(d, mode){
+  if (d.isFuture) return 'future';
+  const { act, exp } = heatMetricValue(d, mode);
+  if (act <= 0) return 'empty';
+  const r = exp > 0 ? act / exp : 2;
+  if (r >= 1.5) return '4';
+  if (r >= 1.0) return '3';
+  if (r >= 0.5) return '2';
+  return '1';
+}
+function heatCellText(d){
+  if (d.isFuture) return 'planned';
+  const parts = [];
+  if (d.actualRead > 0) parts.push(fmt(d.actualRead) + 'pg');
+  if (d.actualListen > 0) parts.push(fmt(d.actualListen) + 'm');
+  return parts.length ? parts.join(' · ') : '–';
+}
+function heatAccentVar(mode){
+  if (mode === 'listening') return 'var(--listening)';
+  if (mode === 'reading') return 'var(--reading)';
+  return 'color-mix(in srgb, var(--reading) 60%, var(--listening) 40%)';
+}
+function roadmapCalendarMonthHTML(key, phase, colorBy){
+  const byDate = {};
+  phase.days.forEach(d => { byDate[d.date] = d; });
+  const monthStart = firstOfMonthISO(key);
+  const monthEnd = lastOfMonthISO(key);
+  const gridStart = startOfWeekISO(monthStart);
+  const gridEnd = addDays(startOfWeekISO(monthEnd), 6);
+  const totalCells = diffDays(gridStart, gridEnd) + 1;
+
+  const cells = [];
+  for (let i = 0; i < totalCells; i++){
+    const date = addDays(gridStart, i);
+    if (monthKeyOf(date) !== key){
+      cells.push(`<div class="cal-cell pad"></div>`);
+      continue;
+    }
+    const dayNum = parseISO(date).getDate();
+    const d = byDate[date];
+    if (!d){
+      cells.push(`<div class="cal-cell out"><span class="cal-num">${dayNum}</span></div>`);
+      continue;
+    }
+    const level = heatCellLevel(d, colorBy);
+    const cls = level === 'future' ? 'future' : (level === 'empty' ? 'empty' : 'lvl-' + level);
+    const hasNote = !!d.note;
+    cells.push(`
+      <div class="cal-cell clickable ${cls}${d.isToday ? ' today' : ''}"
+           data-action="rm-day-detail" data-date="${date}"
+           ${hasNote ? `title="${escapeHtml(d.note)}"` : ''}>
+        ${hasNote ? '<span class="cal-dot"></span>' : ''}
+        <span class="cal-num">${dayNum}</span>
+        <span class="cal-sub">${escapeHtml(heatCellText(d))}</span>
+      </div>`);
+  }
+
+  return `
+  <div class="cal-month">
+    <div class="cal-month-label">${escapeHtml(monthLabelFromKey(key))}</div>
+    <div class="cal-weekdays">
+      <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+    </div>
+    <div class="cal-grid">${cells.join('')}</div>
+  </div>`;
+}
+function roadmapPhaseHeatmapHTML(phase, rm){
+  const days = phase.days || [];
+  if (!days.length){
+    return `<div class="rm-heat-empty">No days in this phase yet.</div>`;
+  }
+  const colorBy = heatColorBy;
+  const months = [];
+  let mk = monthKeyOf(days[0].date);
+  const endKey = monthKeyOf(days[days.length - 1].date);
+  while (mk <= endKey){
+    months.push(mk);
+    mk = nextMonthKey(mk);
+  }
+
+  return `
+  <div class="rm-heatmap" style="--heat-accent:${heatAccentVar(colorBy)}">
+    <div class="rm-heat-toolbar">
+      <span class="rm-heat-toolbar-label">Color by</span>
+      <div class="heat-colorby">
+        <button type="button" class="hcb-btn ${colorBy === 'combined' ? 'active' : ''}" data-action="rm-heat-colorby" data-mode="combined"><span class="hcb-dot combined"></span>Combined</button>
+        <button type="button" class="hcb-btn ${colorBy === 'reading' ? 'active' : ''}" data-action="rm-heat-colorby" data-mode="reading"><span class="hcb-dot reading"></span>Reading</button>
+        <button type="button" class="hcb-btn ${colorBy === 'listening' ? 'active' : ''}" data-action="rm-heat-colorby" data-mode="listening"><span class="hcb-dot listening"></span>Listening</button>
+      </div>
+    </div>
+    ${months.map(k => roadmapCalendarMonthHTML(k, phase, colorBy)).join('')}
+    <div class="rm-heat-legend">
+      <span>Less</span>
+      <span class="rm-heat-swatch lvl-1"></span>
+      <span class="rm-heat-swatch lvl-2"></span>
+      <span class="rm-heat-swatch lvl-3"></span>
+      <span class="rm-heat-swatch lvl-4"></span>
+      <span>More</span>
+    </div>
+  </div>`;
+}
+function roadmapDayDetailModalHTML(date, phase, rm){
+  const d = phase.days.find(x => x.date === date);
+  if (!d) return '';
+  const acts = state.activities.filter(a => a.logged_on === date);
+  const readActs = acts.filter(a => a.category === 'reading');
+  const listenActs = acts.filter(a => a.category === 'listening');
+  const status = dayStatus(d);
+  const badgeCls = { met: 'good', partial: 'warn', missed: 'bad', today: 'info', future: 'neutral' }[status] || 'neutral';
+  const badgeLabel = {
+    met: '✓ Target hit', partial: 'Light day', missed: 'Missed day',
+    today: 'In progress', future: 'Planned'
+  }[status] || statusLabel(status);
+  const totalPages = sumCategory(acts, 'reading');
+  const totalMinutes = sumCategory(acts, 'listening');
+  const entriesLine = acts.length
+    ? `${fmt(totalPages)} pages · ${fmt(totalMinutes)} minutes`
+    : 'Nothing logged';
+
+  const section = (label, list) => !list.length ? '' : `
+    <div class="rm-detail-section">
+      <div class="rm-detail-section-head">
+        <span>${label}</span>
+        <span>${label === 'READING' ? fmt(sumCategory(list, 'reading')) + ' pg' : fmt(sumCategory(list, 'listening')) + ' min'}</span>
+      </div>
+      ${list.map(a => activityRow(a, false)).join('')}
+    </div>`;
+
+  const readPct = d.expectedRead > 0 ? clamp(d.actualRead / d.expectedRead * 100, 0, 100) : (d.actualRead > 0 ? 100 : 0);
+  const listenPct = d.expectedListen > 0 ? clamp(d.actualListen / d.expectedListen * 100, 0, 100) : (d.actualListen > 0 ? 100 : 0);
+
+  return `
+  <div class="modal-backdrop" data-action="close-modal"></div>
+  <div class="modal" role="dialog" aria-modal="true" style="max-width:480px">
+    <div class="modal-head">
+      <div>
+        <h2>${escapeHtml(prettyDate(date))}</h2>
+        <div class="rm-detail-sub">Day ${d.dayNumber} of ${rm.totalDays} · ${escapeHtml(phase.name)}</div>
+      </div>
+      <button class="icon-btn" data-action="close-modal" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="rm-detail-summary">
+        <div class="rm-detail-daybox">
+          <small>DAY</small>
+          <b>${d.dayNumber}</b>
+        </div>
+        <div class="rm-detail-summary-main">
+          <div class="rm-detail-summary-title">${acts.length} entr${acts.length === 1 ? 'y' : 'ies'} logged</div>
+          <div class="rm-detail-summary-sub">${escapeHtml(entriesLine)}</div>
+          <span class="badge-pill ${badgeCls}">${escapeHtml(badgeLabel.toUpperCase())}</span>
+        </div>
+      </div>
+      ${section('READING', readActs)}
+      ${section('LISTENING', listenActs)}
+      ${!acts.length ? `<div class="rm-detail-empty">${d.isFuture ? 'This day hasn\'t happened yet.' : 'No activity was logged on this day.'}</div>` : ''}
+      <div class="rm-detail-targets">
+        <div class="rm-detail-targets-head">AGAINST DAILY TARGETS</div>
+        <div class="rm-detail-targets-grid">
+          <div class="rm-detail-target-box">
+            <div class="rm-detail-target-label">Pages</div>
+            <div class="rm-detail-target-val">${fmt(d.actualRead)} <small>/ ${fmt1(d.expectedRead)}</small></div>
+            <div class="mini-bar"><i style="width:${readPct}%"></i></div>
+            <div class="rm-detail-target-pct">${readPct.toFixed(0)}% of daily target</div>
+          </div>
+          <div class="rm-detail-target-box">
+            <div class="rm-detail-target-label">Minutes</div>
+            <div class="rm-detail-target-val">${fmt(d.actualListen)} <small>/ ${fmt1(d.expectedListen)}</small></div>
+            <div class="mini-bar"><i style="width:${listenPct}%"></i></div>
+            <div class="rm-detail-target-pct">${listenPct.toFixed(0)}% of daily target</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-action="rm-day-note" data-date="${date}">${d.note ? 'Edit note' : '+ Add note'}</button>
+        <button type="button" class="btn btn-primary" data-action="close-modal">Close</button>
+      </div>
+    </div>
+  </div>`;
+}
+function openRmDayDetailModal(date){
+  const rm = buildRoadmap();
+  const day = rm.days.find(x => x.date === date);
+  if (!day) return;
+  const phase = rm.phases[day.phaseIndex];
+  if (!phase) return;
+  openModal(roadmapDayDetailModalHTML(date, phase, rm));
 }
 
 /* Ordered, reorderable "read this then that" material queue per phase —
@@ -2762,16 +3076,6 @@ function roadmapQueueHTML(phase){
   const completeBanner = allDone
     ? `<div class="rm-queue-complete">✓ All materials in this phase are complete</div>` : '';
 
-  const ut = phaseUnitsTotals(phase);
-  const phaseBar = ut.targeted > 0 ? `
-    <div class="rm-queue-progress">
-      <div class="rm-progress-top">
-        <span>Queue progress</span>
-        <span class="v">${fmt(ut.logged)} / ${fmt(ut.total)} units${allDone ? ' · ✓ Complete' : ''}</span>
-      </div>
-      <div class="mat-progress-bar ${allDone ? 'complete' : 'reading'}"><i style="width:${ut.total ? clamp(ut.logged / ut.total * 100, 0, 100) : 0}%"></i></div>
-    </div>` : '';
-
   const claimedElsewhere = materialsClaimedByOtherPhases(phase.index);
   const options = state.materials
     .filter(m => m.status !== 'archived' && !rawIds.includes(m.id) && !claimedElsewhere.has(m.id))
@@ -2783,7 +3087,6 @@ function roadmapQueueHTML(phase){
       <span class="ql">Reading &amp; listening queue</span>
       <span class="qn">${items.length} item${items.length === 1 ? '' : 's'}</span>
     </div>
-    ${phaseBar}
     <div class="rm-queue-list">${rows}</div>
     ${completeBanner}
     <div class="rm-queue-add">
@@ -3325,7 +3628,7 @@ function materialProgressBarHTML(m){
       <div class="mat-progress-bar ${barCls}"><i style="width:${pct}%"></i></div>
     </div>`;
 }
-const MATERIAL_STATUS_RANK = { active: 0, completed: 1, archived: 2 };
+const MATERIAL_STATUS_RANK = { active: 0, scheduled: 1, completed: 2, archived: 3 };
 function materialSorter(a, b){
   const r = (MATERIAL_STATUS_RANK[a.status] ?? 3) - (MATERIAL_STATUS_RANK[b.status] ?? 3);
   return r !== 0 ? r : a.title.localeCompare(b.title);
@@ -3399,8 +3702,9 @@ function materialCardHTML(m){
   const episodesTotal = Number(m.episodes_total) || 0;
   const episodesRow = episodesTotal > 0
     ? `<span class="mat-card-episodes">${fmt(materialEpisodesLogged(m))} / ${fmt(episodesTotal)} episodes</span>` : '';
-  const statusKind = isDone ? 'good' : (pct > 0 ? 'warn' : 'neutral');
-  const statusText = isDone ? '✓ Complete' : (pct > 0 ? 'In progress' : 'Not started');
+  const isScheduled = m.status === 'scheduled' && !isDone;
+  const statusKind = isDone ? 'good' : (isScheduled ? 'info' : (pct > 0 ? 'warn' : 'neutral'));
+  const statusText = isDone ? '✓ Complete' : (isScheduled ? '🗓 Scheduled' : (pct > 0 ? 'In progress' : 'Not started'));
   const figure = hasTarget
     ? `${fmt(logged)} / ${fmt(total)} ${escapeHtml(unit)}`
     : materialTotalsText(materialTotals(m.id));
@@ -3471,6 +3775,10 @@ function materialsLibraryHTML(){
     id: cat, label: CATEGORY_LABEL[cat],
     items: filtered.filter(m => m.default_category === cat).sort(materialSorter)
   })).filter(g => g.items.length);
+  const statusGroups = STATUS_ORDER.map(st => ({
+    id: st, label: STATUS_LABEL[st],
+    items: filtered.filter(m => (m.status || 'active') === st).sort((a, b) => a.title.localeCompare(b.title))
+  })).filter(g => g.items.length);
   const hasFilter = !!q || materialsFilter.type !== 'all' || materialsFilter.category !== 'all';
   const hiddenActiveCount = (!materialsFiltersOpen && materialsFilter.type !== 'all') ? 1 : 0;
 
@@ -3500,8 +3808,16 @@ function materialsLibraryHTML(){
               </div>`}
        </div>`;
 
-  const gridBody = filtered.length
-    ? `<div class="mat-grid">${filtered.slice().sort(materialSorter).map(materialCardHTML).join('')}</div>`
+  const gridBody = statusGroups.length
+    ? statusGroups.map(g => `
+        <div class="mat-group-head">
+          <span class="gdot status-${g.id}"></span>
+          <span class="gt">${escapeHtml(g.label)}</span>
+          <span class="gn">${g.items.length}</span>
+          <span class="gline"></span>
+        </div>
+        <div class="mat-grid">${g.items.map(materialCardHTML).join('')}</div>
+      `).join('')
     : emptyState;
 
   const listBody = groups.length
@@ -3556,7 +3872,7 @@ function materialsLibraryHTML(){
   </div>
   <div class="card" style="margin-bottom:14px">
     <div class="card-head">
-      <h2>${materialsViewMode === 'grid' ? 'Library' : 'Materials by type'}</h2>
+      <h2>${materialsViewMode === 'grid' ? 'Library by status' : 'Materials by type'}</h2>
       <button class="info-btn" data-action="info-materials" title="How materials work" aria-label="How materials work">i</button>
     </div>
     ${materialsViewMode === 'grid' ? gridBody : listBody}
@@ -4356,6 +4672,7 @@ function openMaterialModal(material){
         <div class="field"><label for="matStatus">Status</label>
           <select id="matStatus">
             <option value="active" ${m.status === 'active' ? 'selected' : ''}>Active</option>
+            <option value="scheduled" ${m.status === 'scheduled' ? 'selected' : ''}>Scheduled</option>
             <option value="completed" ${m.status === 'completed' ? 'selected' : ''}>Completed</option>
             <option value="archived" ${m.status === 'archived' ? 'selected' : ''}>Archived</option>
           </select>
@@ -4566,6 +4883,7 @@ function normalizeMaterialStatus(raw){
   const s = String(raw || '').trim().toLowerCase();
   if (s === 'completed' || s === 'complete' || s === 'done' || s === 'finished') return 'completed';
   if (s === 'archived' || s === 'archive' || s === 'inactive') return 'archived';
+  if (s === 'scheduled' || s === 'schedule' || s === 'upcoming' || s === 'planned') return 'scheduled';
   return 'active';
 }
 function parseMaterialsCSV(text){
@@ -4611,7 +4929,7 @@ function materialsCSVTemplate(){
   const lines = ['title,creator,type,status'];
   lines.push('Project Hail Mary,Andy Weir,book,active');
   lines.push('Atomic Habits,James Clear,kindle,active');
-  lines.push('The Daily,The New York Times,podcast,active');
+  lines.push('The Daily,The New York Times,podcast,scheduled');
   lines.push('Dune,Frank Herbert,audiobook,completed');
   lines.push('How to Learn a Language,Benny Lewis,article,archived');
   return lines.join('\n');
@@ -4631,7 +4949,7 @@ function openMaterialsImportModal(){
         <p class="hint" style="margin:0 0 14px">
           <b>title</b> is required. <b>type</b> accepts keys like <code>kindle</code>, <code>book</code>,
           <code>podcast</code>, <code>audiobook</code>, <code>tv</code>, <code>film</code>.<br>
-          <b>status</b> can be <code>active</code>, <code>completed</code> or <code>archived</code>.
+          <b>status</b> can be <code>active</code>, <code>scheduled</code>, <code>completed</code> or <code>archived</code>.
         </p>
         <div class="csv-drop" id="csvDrop">
           <span class="big">📄</span>
@@ -5023,6 +5341,12 @@ document.addEventListener('click', e => {
     case 'rm-edit-phases': openRmEditPhases(); break;
     case 'rm-add-milestone': openRmMilestoneModal(null); break;
     case 'rm-day-note': openRmDayNoteModal(actionEl.dataset.date); break;
+    case 'rm-day-detail': openRmDayDetailModal(actionEl.dataset.date); break;
+    case 'rm-heat-colorby':
+      heatColorBy = actionEl.dataset.mode;
+      try { localStorage.setItem(HEATCOLORBY_KEY, heatColorBy); } catch (err) {}
+      render();
+      break;
     case 'rm-clear-day-note': {
       delete state.roadmap.dailyNotes[actionEl.dataset.date];
       saveState(); closeModal(); render();
