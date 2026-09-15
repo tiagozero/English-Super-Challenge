@@ -197,6 +197,18 @@
   .phase-banner.ended .pb-badge{
     background:var(--bad-bg);border-color:color-mix(in srgb,var(--bad-fg) 30%,var(--line));color:var(--bad-fg);
   }
+  .phase-strip{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .phase-chip{
+    flex:1 1 150px;display:flex;flex-direction:column;gap:2px;
+    border:1px solid var(--line);border-radius:12px;padding:9px 12px;background:var(--surface);
+    cursor:pointer;transition:border-color .15s,background .15s;
+  }
+  .phase-chip:hover{border-color:var(--hover-line)}
+  .phase-chip.current{border-color:var(--reading);background:color-mix(in srgb,var(--reading) 8%,var(--surface))}
+  .phase-chip .pc-num{font-size:10px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+  .phase-chip.current .pc-num{color:var(--reading)}
+  .phase-chip .pc-name{font-size:13px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .phase-chip .pc-range{font-size:11px;color:var(--muted)}
 
   .btn{
     border:1px solid transparent;border-radius:11px;padding:9px 15px;font-size:13.5px;
@@ -690,229 +702,97 @@ function coverHTML(m, size){
 }
 
 /* =========================================================
-   Phase gate — only "In progress" materials
+   Phases — the main app splits the challenge into exactly four
+   quarters (state.roadmap.phases: [{id,name,focus,materials}]).
+   Phases have NO date fields of their own; their date ranges are
+   *computed* by dividing the challenge's total days into four
+   equal slices (see buildRoadmap() in the main app). A material
+   belongs to a phase only if its id is listed in that phase's
+   `materials` array — materials do not carry a `phase` field.
+   This planner mirrors that exact model so "current phase" means
+   the same thing here as it does in the main app's Roadmap tab.
    ========================================================= */
-const IN_PROGRESS_RE = /(^|[^a-z0-9])(in[ _-]?progress|inprogress|wip|active|current|ongoing|started|doing|working)([^a-z0-9]|$)/;
-
-function phaseText(v){
-  if (v == null) return '';
-  if (typeof v === 'number') return '';
-  if (typeof v === 'object'){
-    const raw = v.name ?? v.label ?? v.title ?? v.slug ?? v.id ?? '';
-    return String(raw).trim().toLowerCase();
-  }
-  return String(v).trim().toLowerCase();
-}
-function materialPhase(m){
-  if (!m) return '';
-  return phaseText(m.phase) || phaseText(m.phase_id) || phaseText(m.phase_name) ||
-         phaseText(m.stage) || phaseText(m.status);
-}
-function isInProgress(m){
-  const p = materialPhase(m);
-  if (!p) return true;
-  return IN_PROGRESS_RE.test(p);
-}
-function countExcludedByPhase(){
-  return (shared && shared.materials ? shared.materials : [])
-    .filter(m => (m.status || 'active') !== 'archived')
-    .filter(m => !isInProgress(m))
-    .length;
-}
-function inferInProgressPhase(){
-  const sample = (shared && shared.materials ? shared.materials : [])
-    .find(m => m.phase && isInProgress(m));
-  return sample ? sample.phase : 'in_progress';
-}
-
-/* =========================================================
-   Phase discovery — gather every phase-like object we can
-   find, no matter where the main app stored it.
-
-   Sources searched, in order:
-     · challenge.phases[]           (array)
-     · challenge.phases.{...}       (keyed object)
-     · shared.phases[] / shared.phases.{...}
-     · shared.phase_1, phase_2, …   (flat on root)
-     · challenge.phase_1, phase_2, …(flat on challenge)
-     · challenge.current_phase      (object)
-     · challenge.phase / phase_name (string, name only)
-   ========================================================= */
-const START_KEYS = [
-  'start_date','startDate','date_start','dateStart','start','from',
-  'starts_on','startsOn','starts','begin','begin_date','beginDate','day_start','dayStart'
-];
-const END_KEYS = [
-  'end_date','endDate','date_end','dateEnd','end','to',
-  'ends_on','endsOn','ends','finish','finish_date','finishDate','day_end','dayEnd'
-];
-const NAME_KEYS = [
-  'name','label','title','phase_name','phaseName','slug','id'
-];
-const ORDER_KEYS = ['index','order','position','sort','seq','number','no','phase_number','phaseNumber'];
-
-function pickFirst(obj, keys){
-  if (!obj) return undefined;
-  for (const k of keys){
-    if (obj[k] !== undefined && obj[k] !== null && obj[k] !== '') return obj[k];
-  }
-  return undefined;
-}
-
-function extractPhase(raw, fallbackIndex, challengeStart){
-  if (!raw || typeof raw !== 'object') return null;
-
-  let start = normISO(pickFirst(raw, START_KEYS));
-  let end   = normISO(pickFirst(raw, END_KEYS));
-
-  // Derive from numeric day boundaries if we have a challenge start
-  if (!start && challengeStart){
-    const ds = raw.day_start != null ? raw.day_start : raw.dayStart;
-    if (ds != null && !isNaN(Number(ds))) start = addDays(challengeStart, Number(ds) - 1);
-  }
-  if (!end && challengeStart){
-    const de = raw.day_end != null ? raw.day_end : raw.dayEnd;
-    if (de != null && !isNaN(Number(de))) end = addDays(challengeStart, Number(de) - 1);
-  }
-
-  const rawName = pickFirst(raw, NAME_KEYS);
-  const name = rawName != null ? String(rawName) : '';
-
-  let order = pickFirst(raw, ORDER_KEYS);
-  order = order != null && !isNaN(Number(order)) ? Number(order) : fallbackIndex;
-
-  // Skip entries that are clearly not phases (no name, no dates)
-  if (!name && !start && !end) return null;
-
-  return { name, start, end, order, _raw: raw };
-}
-
-function collectPhaseCandidates(){
-  const out = [];
-  if (!shared) return out;
+function computedPhases(){
+  if (!shared) return [];
   const ch = shared.challenge || {};
-  const chStart = normISO(ch.start_date || ch.startDate || ch.start);
+  const start = normISO(ch.start_date) || todayISO();
+  const end   = normISO(ch.end_date)   || addDays(start, 89);
+  const totalDays = Math.max(1, (daysBetween(start, end) || 0) + 1);
 
-  const push = (raw) => {
-    const p = extractPhase(raw, out.length, chStart);
-    if (p) out.push(p);
-  };
+  const fallback = [
+    { id: 'ph1', name: 'Foundation',   focus: '', materials: [] },
+    { id: 'ph2', name: 'Momentum',     focus: '', materials: [] },
+    { id: 'ph3', name: 'Acceleration', focus: '', materials: [] },
+    { id: 'ph4', name: 'Final Sprint', focus: '', materials: [] }
+  ];
+  const raw = (shared.roadmap && Array.isArray(shared.roadmap.phases) && shared.roadmap.phases.length === 4)
+    ? shared.roadmap.phases
+    : fallback;
 
-  // 1) challenge.phases as array
-  if (Array.isArray(ch.phases)) ch.phases.forEach(push);
-  // 2) challenge.phases as keyed object
-  else if (ch.phases && typeof ch.phases === 'object') Object.values(ch.phases).forEach(push);
-
-  // 3) shared.phases
-  if (Array.isArray(shared.phases)) shared.phases.forEach(push);
-  else if (shared.phases && typeof shared.phases === 'object') Object.values(shared.phases).forEach(push);
-
-  // 4) flat on challenge: phase_1, phase1, phase_2, …
-  Object.keys(ch).forEach(k => {
-    if (/^phase[_\-\s]?\d+$/i.test(k)) push(ch[k]);
+  return raw.map((p, i) => {
+    const startIdx = Math.floor(i * totalDays / 4);
+    const endIdx   = Math.max(startIdx, Math.floor((i + 1) * totalDays / 4) - 1);
+    return {
+      index: i,
+      id: p.id || fallback[i].id,
+      name: p.name || fallback[i].name,
+      focus: p.focus || '',
+      materials: Array.isArray(p.materials) ? p.materials.slice() : [],
+      startDate: addDays(start, startIdx),
+      endDate: addDays(start, endIdx)
+    };
   });
-  // 5) flat on shared root: phase_1, phase1, phase_2, …
-  Object.keys(shared).forEach(k => {
-    if (/^phase[_\-\s]?\d+$/i.test(k)) push(shared[k]);
-  });
-
-  // 6) challenge.current_phase as object (may include full range)
-  if (ch.current_phase && typeof ch.current_phase === 'object') push(ch.current_phase);
-
-  // Sort by order if available, else keep discovery order
-  out.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
-
-  return out;
 }
 
-/* Expose a diagnostic for the console */
-window.__roadmapPhases = function(){
-  const list = collectPhaseCandidates();
-  console.log('[Roadmap] Found ' + list.length + ' phase candidate(s):');
-  console.table(list.map(p => ({
-    order: p.order, name: p.name, start: p.start, end: p.end
-  })));
-  console.log('[Roadmap] Full shared.challenge:', (shared && shared.challenge) || null);
-  console.log('[Roadmap] Full shared keys:', shared ? Object.keys(shared) : []);
-  return list;
-};
-
-/* Decide which phase is "current". Prefers the one whose range
-   contains today; falls back to nearest past / soonest upcoming. */
+/* Decide which of the 4 phases is "current": the one whose
+   computed date range contains today, else the nearest one. */
 function currentPhaseInfo(){
-  if (!shared) return null;
+  const phases = computedPhases();
+  if (!phases.length) return null;
   const today = todayISO();
-  const phases = collectPhaseCandidates();
 
-  let chosen = null;
-
-  if (phases.length){
-    // a) contains today
-    chosen = phases.find(p => p.start && p.end && today >= p.start && today <= p.end);
-
-    // b) started but no end, or end missing
-    if (!chosen){
-      chosen = phases.find(p => p.start && !p.end && today >= p.start);
-    }
-
-    // c) soonest upcoming
-    if (!chosen){
-      const upcoming = phases
-        .filter(p => p.start && p.start > today)
-        .sort((a, b) => a.start.localeCompare(b.start));
-      if (upcoming.length) chosen = upcoming[0];
-    }
-
-    // d) last one that ended
-    if (!chosen){
-      const past = phases
-        .filter(p => p.end && p.end < today)
-        .sort((a, b) => a.end.localeCompare(b.end));
-      if (past.length) chosen = past[past.length - 1];
-    }
-
-    // e) anything with an end date
-    if (!chosen) chosen = phases.find(p => p.end);
-
-    // f) first phase as last resort
-    if (!chosen) chosen = phases[0];
+  let chosen = phases.find(p => today >= p.startDate && today <= p.endDate);
+  if (!chosen){
+    chosen = today < phases[0].startDate
+      ? phases[0]
+      : phases[phases.length - 1];
   }
 
-  let name = '', startISO = '', endISO = '';
-
-  if (chosen){
-    name = chosen.name;
-    startISO = chosen.start;
-    endISO = chosen.end;
-  }
-
-  // Name-only fallbacks if the phase object didn't have a name
-  if (!name){
-    const ch = shared.challenge || {};
-    name = (typeof ch.current_phase_name === 'string' && ch.current_phase_name) ||
-           (typeof ch.phase_name === 'string' && ch.phase_name) ||
-           (typeof ch.phase === 'string' && ch.phase) ||
-           (typeof ch.current_phase === 'string' && ch.current_phase) ||
-           '';
-  }
-
-  // If we have literally nothing, try the challenge as a last resort
-  if (!startISO && !endISO && !name){
-    const ch = shared.challenge || {};
-    startISO = normISO(ch.start_date);
-    endISO   = normISO(ch.end_date);
-    name = 'Challenge';
-  }
-
-  if (!name && !startISO && !endISO) return null;
-
-  const daysLeft = endISO ? daysBetween(today, endISO) : null;
+  const daysLeft = daysBetween(today, chosen.endDate);
   return {
-    name: name || 'In progress',
-    startISO: startISO || '',
-    endISO: endISO || '',
+    index: chosen.index,
+    name: chosen.name,
+    startISO: chosen.startDate,
+    endISO: chosen.endDate,
     daysLeft
   };
+}
+
+/* Whether the person has actually used the phase-queue feature
+   (assigned any material to any of the 4 phases). If they never
+   have, we don't want the planner to look empty — we show every
+   material instead, same as if phases weren't in play at all. */
+function anyPhaseHasAssignments(){
+  return computedPhases().some(p => p.materials.length > 0);
+}
+function currentPhaseMaterialIds(){
+  const info = currentPhaseInfo();
+  if (!info) return new Set();
+  const phase = computedPhases()[info.index];
+  return new Set(phase ? phase.materials : []);
+}
+function isInCurrentPhase(m){
+  if (!m) return false;
+  if (!anyPhaseHasAssignments()) return true;
+  return currentPhaseMaterialIds().has(m.id);
+}
+function countExcludedByPhase(){
+  if (!anyPhaseHasAssignments()) return 0;
+  const ids = currentPhaseMaterialIds();
+  return (shared && shared.materials ? shared.materials : [])
+    .filter(m => (m.status || 'active') !== 'archived')
+    .filter(m => !ids.has(m.id))
+    .length;
 }
 
 function phaseBannerHTML(){
@@ -964,6 +844,17 @@ function phaseBannerHTML(){
                 `<span class="pb-end">since ${esc(shortDate(info.startISO))}</span>`;
   }
 
+  const strip = `
+  <div class="phase-strip">
+    ${computedPhases().map(p => `
+      <div class="phase-chip ${p.index === info.index ? 'current' : ''}" data-pick-phase="${p.index}">
+        <span class="pc-num">Phase ${p.index + 1}</span>
+        <span class="pc-name">${esc(p.name)}</span>
+        <span class="pc-range">${esc(shortDate(p.startDate))} – ${esc(shortDate(p.endDate))}</span>
+      </div>
+    `).join('')}
+  </div>`;
+
   return `
   <div class="phase-banner ${state}">
     <span class="pb-icon" aria-hidden="true">${icon}</span>
@@ -973,7 +864,8 @@ function phaseBannerHTML(){
       <span class="pb-sub">${sub}</span>
     </div>
     <span class="pb-badge">${esc(badge)}</span>
-  </div>`;
+  </div>
+  ${strip}`;
 }
 
 /* =========================================================
@@ -1003,6 +895,15 @@ function applyTheme(id){
 const SHARED_KEY = 'english-super-challenge-v2-clean';
 let shared = null;
 
+function defaultRoadmapPhases(){
+  return [
+    { id: 'ph1', name: 'Foundation',   focus: 'Build the daily habit and explore formats.',      materials: [] },
+    { id: 'ph2', name: 'Momentum',     focus: 'Increase reading volume; add a second material.', materials: [] },
+    { id: 'ph3', name: 'Acceleration', focus: 'Push pace and grow listening time.',               materials: [] },
+    { id: 'ph4', name: 'Final Sprint', focus: 'Finish strong and hit your targets.',               materials: [] }
+  ];
+}
+
 function loadShared(){
   try {
     const raw = localStorage.getItem(SHARED_KEY);
@@ -1023,6 +924,20 @@ function loadShared(){
       };
     }
     if (!s.studyPlan || typeof s.studyPlan !== 'object') s.studyPlan = {};
+    // Mirror the main app's roadmap.phases shape (4 named phases with
+    // a materials[] queue each) so both apps agree on what "current
+    // phase" and "which materials are in it" mean.
+    if (!s.roadmap || typeof s.roadmap !== 'object') s.roadmap = {};
+    if (!Array.isArray(s.roadmap.phases) || s.roadmap.phases.length !== 4){
+      s.roadmap.phases = defaultRoadmapPhases();
+    } else {
+      s.roadmap.phases = s.roadmap.phases.map((p, i) => ({
+        id: p.id || defaultRoadmapPhases()[i].id,
+        name: p.name || defaultRoadmapPhases()[i].name,
+        focus: p.focus || '',
+        materials: Array.isArray(p.materials) ? p.materials.filter(id => typeof id === 'string') : []
+      }));
+    }
     return s;
   } catch(e){ return null; }
 }
@@ -1038,7 +953,7 @@ function materialById(id){ return (shared.materials || []).find(m => m.id === id
 function plannedMaterials(){
   return (shared.materials || [])
     .filter(m => (m.status || 'active') !== 'archived')
-    .filter(isInProgress)
+    .filter(isInCurrentPhase)
     .slice()
     .sort((a, b) => {
       const ca = a.default_category === 'listening' ? 1 : 0;
@@ -1516,7 +1431,8 @@ function viewDaily(){
     appears so you can reset back to the plan.<br>
     Ticks are written into the shared activity log, so they count toward
     <b>Dashboard</b>, <b>History</b> and <b>Progress</b> in the main app.<br>
-    This planner always shows only materials whose phase is <b>In progress</b>.
+    This planner always shows only materials queued in the <b>current phase</b> — tap a phase
+    chip above, or use <b>✎ Edit phases</b> in the main app, to change what's queued.
   </p>`;
 }
 
@@ -1589,18 +1505,20 @@ function planRowHTML(m){
 function planEditorHTML(){
   const mats = plannedMaterials();
   const excluded = countExcludedByPhase();
+  const info = currentPhaseInfo();
+  const phaseName = info ? info.name : 'current phase';
 
   if (!mats.length){
-    const nothingInProgress = excluded > 0;
+    const nothingInPhase = excluded > 0;
     return `
     <div class="card" style="margin-bottom:14px">
       <div class="card-head"><h2>Weekly plan</h2></div>
       <div class="empty">
-        <span class="em-icon">${nothingInProgress ? '⏳' : '📚'}</span>
-        <div class="em-title">${nothingInProgress ? 'No materials in progress' : 'No materials yet'}</div>
+        <span class="em-icon">${nothingInPhase ? '⏳' : '📚'}</span>
+        <div class="em-title">${nothingInPhase ? `No materials queued in ${esc(phaseName)}` : 'No materials yet'}</div>
         <div class="em-sub">
-          ${nothingInProgress
-            ? `${excluded} material${excluded === 1 ? '' : 's'} exist but ${excluded === 1 ? 'is' : 'are'} not in the <b>In progress</b> phase, so ${excluded === 1 ? 'it is' : 'they are'} not shown here. Move them into <b>In progress</b> in the main app to plan them.`
+          ${nothingInPhase
+            ? `${excluded} material${excluded === 1 ? '' : 's'} exist but ${excluded === 1 ? 'is' : 'are'} queued in a different phase, so ${excluded === 1 ? 'it is' : 'they are'} not shown here. Use <b>✎ Edit phases</b> in the main app to move a material into <b>${esc(phaseName)}</b>.`
             : 'Add materials in the main app, or create one right here to start planning.'}
         </div>
         <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
@@ -1615,7 +1533,7 @@ function planEditorHTML(){
   return `
   <div class="card" style="margin-bottom:14px">
     <div class="card-head">
-      <h2>Weekly plan · In progress</h2>
+      <h2>Weekly plan · ${esc(phaseName)}</h2>
       <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
         <button class="btn btn-ghost btn-sm" data-action="quick-add-material">+ Add material</button>
         <button class="btn btn-ghost btn-sm" data-action="reset-plan">Reset plan</button>
@@ -1627,8 +1545,8 @@ function planEditorHTML(){
       Set a <b>weekly target</b> for each material and pick the <b>days</b> you want to study it.
       The per-day amount is calculated automatically as <b>weekly ÷ active days</b>.
       You can override any single day from the <b>Daily</b> tab.
-      Only materials whose phase is <b>In progress</b> appear here.
-      ${excluded ? `<br><span style="color:var(--muted)">${excluded} material${excluded === 1 ? '' : 's'} in other phases ${excluded === 1 ? 'is' : 'are'} hidden.</span>` : ''}
+      Only materials queued in <b>${esc(phaseName)}</b> (the phase covering today) appear here.
+      ${excluded ? `<br><span style="color:var(--muted)">${excluded} material${excluded === 1 ? '' : 's'} queued in other phases ${excluded === 1 ? 'is' : 'are'} hidden.</span>` : ''}
     </p>
     <div class="plan-table">
       <div class="plan-row plan-head">
@@ -1875,7 +1793,8 @@ function viewWeekly(){
   <p class="footnote">
     Edit the <b>weekly target</b> or the <b>active days</b> above — the per-day amount and every
     progress bar update instantly.<br>
-    This planner always shows only materials whose phase is <b>In progress</b>.<br>
+    This planner always shows only materials queued in the <b>current phase</b> (tap a phase chip
+    above, or use <b>✎ Edit phases</b> in the main app).<br>
     The plan lives inside the same shared state as the main app, so it travels with JSON backups.
   </p>`;
 }
@@ -1965,8 +1884,8 @@ function openAddMaterialModal(){
           </select>
         </div>
         <p class="hint" style="margin:0 0 8px">
-          The material is added to the shared library with the <b>In progress</b> phase —
-          it will show up in the main app as well.
+          The material is added to the shared library and queued in the current phase —
+          it will show up in the main app's Roadmap tab as well.
         </p>
         <div class="modal-actions">
           <button type="button" class="btn btn-ghost" data-action="close-modal">Cancel</button>
@@ -1988,11 +1907,20 @@ function openAddMaterialModal(){
       default_input_type: type,
       default_category: TYPES[type].category,
       status: 'active',
-      phase: inferInProgressPhase(),
       cover_url: '',
       priority: DEFAULT_PRIORITY
     };
     shared.materials.push(mat);
+
+    // Queue the new material in the phase that covers today, matching
+    // how the main app's Edit phases modal assigns materials.
+    const info = currentPhaseInfo();
+    if (info && shared.roadmap && Array.isArray(shared.roadmap.phases) && shared.roadmap.phases[info.index]){
+      const phase = shared.roadmap.phases[info.index];
+      if (!Array.isArray(phase.materials)) phase.materials = [];
+      if (!phase.materials.includes(mat.id)) phase.materials.push(mat.id);
+    }
+
     saveShared();
     closeModal();
     render();
@@ -2064,6 +1992,22 @@ document.addEventListener('click', e => {
     if (isTaskDone(mid, date)) untickTask(mid, date);
     else tickTask(mid, date);
     renderPreservingFocus();
+    return;
+  }
+
+  const pickPhase = e.target.closest('[data-pick-phase]');
+  if (pickPhase){
+    const idx = Number(pickPhase.dataset.pickPhase);
+    const phases = computedPhases();
+    const phase = phases[idx];
+    if (phase){
+      selectedDate = phase.startDate > todayISO() ? phase.startDate : todayISO();
+      if (selectedDate > phase.endDate) selectedDate = phase.endDate;
+      selectedWeekStart = startOfWeekISO(selectedDate);
+      currentView = 'weekly';
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
     return;
   }
 
