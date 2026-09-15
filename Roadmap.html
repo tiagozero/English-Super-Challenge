@@ -237,10 +237,22 @@
     font-size:12px;color:transparent;transition:all .15s ease;
   }
   .task-row.done .task-check{background:var(--good-fg);border-color:var(--good-fg);color:var(--on-accent)}
-  .task-icon{
-    width:36px;height:36px;flex:0 0 auto;border-radius:10px;display:flex;
-    align-items:center;justify-content:center;font-size:17px;color:#fff;
+
+  /* ---------- Miniature cover (same tile as index.html) ---------- */
+  .mini-cover{
+    position:relative;flex:0 0 auto;
+    width:var(--cover-size,36px);height:var(--cover-size,36px);
+    border-radius:calc(var(--cover-size,36px) * .28);
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;color:#fff;line-height:1;
+    font-size:calc(var(--cover-size,36px) * .46);
+    user-select:none;
   }
+  .mini-cover .mc-emoji{display:block;line-height:1;
+    filter:drop-shadow(0 1px 1px rgba(0,0,0,.18))}
+  .mini-cover .mc-img{position:absolute;inset:0;width:100%;height:100%;
+    object-fit:cover;display:block}
+
   .task-main{flex:1;min-width:0}
   .task-title{font-size:14px;font-weight:620;letter-spacing:-.005em;white-space:nowrap;
     overflow:hidden;text-overflow:ellipsis;display:block}
@@ -309,8 +321,6 @@
   }
 
   .pr-mat{display:flex;align-items:center;gap:10px;min-width:0}
-  .pr-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;
-    justify-content:center;font-size:15px;flex:0 0 auto;color:#fff}
   .pr-mat-txt{min-width:0}
   .pr-title{font-size:13.5px;font-weight:620;white-space:nowrap;overflow:hidden;
     text-overflow:ellipsis;display:block}
@@ -356,6 +366,10 @@
     .pr-target{justify-content:flex-start}
   }
 
+  /* ---------- Collapsed weekly plan bar ---------- */
+  .plan-collapsed .card-head{margin:0}
+  .plan-collapsed .pc-meta{font-size:12.5px;color:var(--muted)}
+
   /* =========================================================
      WEEK CALENDAR
      ========================================================= */
@@ -389,8 +403,6 @@
     border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:middle;
     font-size:12.5px;font-weight:620;color:var(--text);
   }
-  .wc-icon{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;
-    justify-content:center;font-size:13px;color:#fff;flex:0 0 auto}
   .wc-title{overflow:hidden;text-overflow:ellipsis;max-width:130px}
 
   .wc-cell{padding:6px 5px;text-align:center;border-bottom:1px solid var(--line);
@@ -436,8 +448,6 @@
   .mq-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
   .mq-item:last-child{border-bottom:0;padding-bottom:0}
   .mq-item:first-child{padding-top:0}
-  .mq-icon{width:40px;height:40px;border-radius:11px;flex:0 0 auto;display:flex;
-    align-items:center;justify-content:center;font-size:19px;color:#fff}
   .mq-main{flex:1;min-width:0}
   .mq-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
   .mq-title{font-size:14px;font-weight:620;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -490,7 +500,7 @@
     .ws-day{padding:7px 3px;border-radius:10px}
     .ws-day .ws-num{font-size:14px}
     .task-row{flex-wrap:wrap;padding:11px}
-    .task-icon{width:32px;height:32px;font-size:15px}
+    .task-row .mini-cover{--cover-size:32px}
     .task-amount-edit{flex:1 1 100%;justify-content:center;margin-top:6px}
     .wc-table{min-width:620px}
     .wc-th.wc-material-col{min-width:140px}
@@ -614,6 +624,69 @@ function materialEmoji(m){
 }
 
 /* =========================================================
+   Miniature cover — the same little tile the main app shows
+   for a material (cover image when present, tinted emoji tile
+   otherwise).
+   ========================================================= */
+function coverHTML(m, size){
+  const url = (m && (m.cover_url || m.cover || m.image_url)) || '';
+  const tint = m ? materialTint(m) : 'var(--neutral-bg)';
+  return '<span class="mini-cover" aria-hidden="true" ' +
+           'style="--cover-size:' + size + 'px;background:' + tint + '">' +
+           '<span class="mc-emoji">' + esc(materialEmoji(m)) + '</span>' +
+           (url
+             ? '<img class="mc-img" src="' + esc(url) + '" alt="" loading="lazy" ' +
+               'decoding="async" onerror="this.remove()">'
+             : '') +
+         '</span>';
+}
+
+/* =========================================================
+   Phase filter — the planner only surfaces materials that are
+   currently "in progress". The phase lives on the material
+   (written by index.html). Unknown / unset phases are kept
+   visible so nothing silently disappears.
+   ========================================================= */
+const PHASE_KEY = 'esc-roadmap-all-phases';
+let showAllPhases = false;
+try { showAllPhases = localStorage.getItem(PHASE_KEY) === '1'; } catch(e){}
+
+const IN_PROGRESS_RE = /(^|[^a-z0-9])(in[ _-]?progress|inprogress|wip|active|current|ongoing|started|doing)([^a-z0-9]|$)/;
+
+function phaseText(v){
+  if (v == null) return '';
+  if (typeof v === 'number') return '';           // numeric phase → unknown, keep visible
+  if (typeof v === 'object'){
+    return String(v.id ?? v.slug ?? v.name ?? v.label ?? v.title ?? '').trim().toLowerCase();
+  }
+  return String(v).trim().toLowerCase();
+}
+function materialPhase(m){
+  if (!m) return '';
+  return phaseText(m.phase) || phaseText(m.phase_id) || phaseText(m.phase_name) ||
+         phaseText(m.stage) || phaseText(m.status);
+}
+function isInProgress(m){
+  const p = materialPhase(m);
+  if (!p) return true;                            // no phase info → never hide
+  return IN_PROGRESS_RE.test(p);
+}
+function countHiddenByPhase(){
+  if (showAllPhases) return 0;
+  return (shared && shared.materials ? shared.materials : [])
+    .filter(m => (m.status || 'active') !== 'archived')
+    .filter(m => !isInProgress(m))
+    .length;
+}
+/* When creating a material from here, reuse whatever phase value the
+   library already uses for "in progress" so index.html stays happy. */
+function inferInProgressPhase(){
+  const sample = (shared && shared.materials ? shared.materials : [])
+    .find(m => m.phase && isInProgress(m));
+  return sample ? sample.phase : 'in_progress';
+}
+
+/* =========================================================
    Theme (shares esc-theme with index.html)
    ========================================================= */
 const THEME_KEY = 'esc-theme';
@@ -675,6 +748,7 @@ function materialById(id){ return (shared.materials || []).find(m => m.id === id
 function plannedMaterials(){
   return (shared.materials || [])
     .filter(m => (m.status || 'active') !== 'archived')
+    .filter(m => showAllPhases || isInProgress(m))
     .slice()
     .sort((a, b) => {
       const ca = a.default_category === 'listening' ? 1 : 0;
@@ -906,6 +980,18 @@ let currentView = 'daily';
 let selectedDate = todayISO();
 let selectedWeekStart = startOfWeekISO(todayISO());
 
+/* Weekly-plan visibility toggle (persisted) */
+const PLAN_VIS_KEY = 'esc-roadmap-show-plan';
+let showPlanEditor = true;
+try {
+  const v = localStorage.getItem(PLAN_VIS_KEY);
+  if (v !== null) showPlanEditor = v === '1';
+} catch(e){}
+function setPlanVisible(v){
+  showPlanEditor = !!v;
+  try { localStorage.setItem(PLAN_VIS_KEY, showPlanEditor ? '1' : '0'); } catch(e){}
+}
+
 /* =========================================================
    Theme dots
    ========================================================= */
@@ -985,7 +1071,7 @@ function taskRowHTML(iso, task){
        style="--task-color:${tint}"
        role="checkbox" aria-checked="${done}" tabindex="0">
     <span class="task-check" aria-hidden="true">✓</span>
-    <span class="task-icon" style="background:${tint}" aria-hidden="true">${esc(materialEmoji(m))}</span>
+    ${coverHTML(m, 36)}
     <span class="task-main">
       <span class="task-title">${esc(m.title)}</span>
       <span class="task-sub">
@@ -1148,6 +1234,16 @@ function viewDaily(){
 /* =========================================================
    WEEKLY VIEW — plan editor
    ========================================================= */
+function phaseToggleHTML(){
+  const hidden = countHiddenByPhase();
+  if (showAllPhases){
+    return `<button class="btn btn-ghost btn-sm" data-action="toggle-phase-filter"
+                    title="Only show materials in the In progress phase">Showing all phases</button>`;
+  }
+  return `<button class="btn btn-ghost btn-sm" data-action="toggle-phase-filter"
+                  title="Include materials from every phase">In progress only${hidden ? ` · ${hidden} hidden` : ''}</button>`;
+}
+
 function planRowHTML(m){
   const p = readPlan(m.id);
   const active = p.weekly > 0;
@@ -1162,7 +1258,7 @@ function planRowHTML(m){
        data-plan-row="${esc(m.id)}"
        style="--mc:${tint}">
     <div class="pr-mat">
-      <span class="pr-icon" style="background:${tint}">${esc(materialEmoji(m))}</span>
+      ${coverHTML(m, 32)}
       <span class="pr-mat-txt">
         <span class="pr-title">${esc(m.title)}</span>
         <span class="pr-cat">${m.default_category === 'listening' ? 'Listening' : 'Reading'}</span>
@@ -1213,39 +1309,51 @@ function planRowHTML(m){
 
 function planEditorHTML(){
   const mats = plannedMaterials();
+  const hiddenCount = countHiddenByPhase();
+
   if (!mats.length){
+    const phaseEmpty = hiddenCount > 0 && !showAllPhases;
     return `
     <div class="card" style="margin-bottom:14px">
       <div class="card-head">
         <h2>Weekly plan</h2>
+        ${phaseToggleHTML()}
       </div>
       <div class="empty">
-        <span class="em-icon">📚</span>
-        <div class="em-title">No materials yet</div>
+        <span class="em-icon">${phaseEmpty ? '⏳' : '📚'}</span>
+        <div class="em-title">${phaseEmpty ? 'Nothing in progress' : 'No materials yet'}</div>
         <div class="em-sub">
-          Add materials in the main app, or create one right here to start planning.
+          ${phaseEmpty
+            ? `${hiddenCount} material${hiddenCount === 1 ? '' : 's'} ${hiddenCount === 1 ? 'is' : 'are'} outside the <b>In progress</b> phase, so ${hiddenCount === 1 ? 'it is' : 'they are'} hidden from the planner.`
+            : 'Add materials in the main app, or create one right here to start planning.'}
         </div>
         <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
           <button class="btn btn-primary" data-action="quick-add-material">+ Add material</button>
+          ${phaseEmpty ? '<button class="btn btn-ghost" data-action="toggle-phase-filter">Show all phases</button>' : ''}
           <a href="index.html" class="btn btn-ghost">Open main app</a>
         </div>
       </div>
     </div>`;
   }
+
   const rows = mats.map(planRowHTML).join('');
   return `
   <div class="card" style="margin-bottom:14px">
     <div class="card-head">
       <h2>Weekly plan</h2>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+        ${phaseToggleHTML()}
         <button class="btn btn-ghost btn-sm" data-action="quick-add-material">+ Add material</button>
         <button class="btn btn-ghost btn-sm" data-action="reset-plan">Reset plan</button>
+        <button class="btn btn-ghost btn-sm" data-action="toggle-plan-editor"
+                title="Hide the weekly plan">Hide</button>
       </div>
     </div>
     <p class="plan-hint">
       Set a <b>weekly target</b> for each material and pick the <b>days</b> you want to study it.
       The per-day amount is calculated automatically as <b>weekly ÷ active days</b>.
       You can override any single day from the <b>Daily</b> tab.
+      Only materials currently <b>in progress</b> are listed.
     </p>
     <div class="plan-table">
       <div class="plan-row plan-head">
@@ -1255,6 +1363,23 @@ function planEditorHTML(){
         <span>Per day</span>
       </div>
       ${rows}
+    </div>
+  </div>`;
+}
+
+function planHiddenBarHTML(){
+  const active = plannedMaterials().filter(m => readPlan(m.id).weekly > 0).length;
+  const hiddenCount = countHiddenByPhase();
+  return `
+  <div class="card plan-collapsed" style="margin-bottom:14px">
+    <div class="card-head">
+      <h2>Weekly plan</h2>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span class="pc-meta">
+          ${active} material${active === 1 ? '' : 's'} with a target${hiddenCount ? ` · ${hiddenCount} outside “In progress”` : ''}
+        </span>
+        <button class="btn btn-ghost btn-sm" data-action="toggle-plan-editor">Show</button>
+      </div>
     </div>
   </div>`;
 }
@@ -1313,7 +1438,7 @@ function weekCalendarHTML(weekStart){
     return `
       <tr>
         <td class="wc-row-head">
-          <span class="wc-icon" style="background:${tint}">${esc(materialEmoji(m))}</span>
+          ${coverHTML(m, 26)}
           <span class="wc-title">${esc(m.title)}</span>
         </td>
         ${cells}
@@ -1377,7 +1502,7 @@ function materialQueueHTML(weekStart){
     const tint = materialTint(m);
     return `
     <div class="mq-item" style="--task-color:${tint}">
-      <div class="mq-icon" style="background:${tint}">${esc(materialEmoji(m))}</div>
+      ${coverHTML(m, 40)}
       <div class="mq-main">
         <div class="mq-top">
           <span class="mq-title">${esc(m.title)}</span>
@@ -1419,6 +1544,9 @@ function viewWeekly(){
       <button class="icon-btn" data-shift-week="1" aria-label="Next week">›</button>
     </div>
     <div class="nb-btns">
+      <button class="btn btn-ghost btn-sm" data-action="toggle-plan-editor">
+        ${showPlanEditor ? 'Hide weekly plan' : 'Show weekly plan'}
+      </button>
       ${!isThisWeek ? '<button class="btn btn-ghost btn-sm" data-goto-this-week>This week</button>' : ''}
       <button class="btn btn-ghost btn-sm" data-goto-daily>Open daily view</button>
     </div>
@@ -1452,7 +1580,7 @@ function viewWeekly(){
     </div>
   </div>
 
-  ${planEditorHTML()}
+  ${showPlanEditor ? planEditorHTML() : planHiddenBarHTML()}
 
   <div class="card" style="margin-bottom:14px">
     <div class="card-head">
@@ -1473,6 +1601,8 @@ function viewWeekly(){
   <p class="footnote">
     Edit the <b>weekly target</b> or the <b>active days</b> above — the per-day amount and every
     progress bar update instantly.<br>
+    The planner only lists materials whose phase is <b>In progress</b>; use the filter button to
+    include every phase.<br>
     The plan lives inside the same shared state as the main app, so it travels with JSON backups.
   </p>`;
 }
@@ -1562,7 +1692,8 @@ function openAddMaterialModal(){
           </select>
         </div>
         <p class="hint" style="margin:0 0 8px">
-          The material is added to the shared library — it will show up in the main app as well.
+          The material is added to the shared library with the <b>In progress</b> phase —
+          it will show up in the main app as well.
         </p>
         <div class="modal-actions">
           <button type="button" class="btn btn-ghost" data-action="close-modal">Cancel</button>
@@ -1584,6 +1715,7 @@ function openAddMaterialModal(){
       default_input_type: type,
       default_category: TYPES[type].category,
       status: 'active',
+      phase: inferInProgressPhase(),
       cover_url: '',
       priority: DEFAULT_PRIORITY
     };
@@ -1732,12 +1864,23 @@ document.addEventListener('click', e => {
     return;
   }
 
-  /* ---- Modal actions ---- */
+  /* ---- Modal + toolbar actions ---- */
   const actionEl = e.target.closest('[data-action]');
   if (actionEl){
     const action = actionEl.dataset.action;
     if (action === 'close-modal'){ closeModal(); return; }
     if (action === 'quick-add-material'){ openAddMaterialModal(); return; }
+    if (action === 'toggle-plan-editor'){
+      setPlanVisible(!showPlanEditor);
+      render();
+      return;
+    }
+    if (action === 'toggle-phase-filter'){
+      showAllPhases = !showAllPhases;
+      try { localStorage.setItem(PHASE_KEY, showAllPhases ? '1' : '0'); } catch(e2){}
+      render();
+      return;
+    }
     if (action === 'reset-plan'){
       if (confirm('Reset every weekly target and active day back to zero? Your ticks stay in the activity log.')){
         shared.studyPlan = {};
