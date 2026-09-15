@@ -197,19 +197,6 @@
   .phase-banner.ended .pb-badge{
     background:var(--bad-bg);border-color:color-mix(in srgb,var(--bad-fg) 30%,var(--line));color:var(--bad-fg);
   }
-  .phase-strip{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-  .phase-chip{
-    flex:1 1 150px;display:flex;flex-direction:column;gap:2px;
-    border:1px solid var(--line);border-radius:12px;padding:9px 12px;background:var(--surface);
-    cursor:pointer;transition:border-color .15s,background .15s;
-  }
-  .phase-chip:hover{border-color:var(--hover-line)}
-  .phase-chip.current{border-color:var(--reading);background:color-mix(in srgb,var(--reading) 8%,var(--surface))}
-  .phase-chip .pc-num{font-size:10px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
-  .phase-chip.current .pc-num{color:var(--reading)}
-  .phase-chip .pc-name{font-size:13px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .phase-chip .pc-range{font-size:11px;color:var(--muted)}
-
   .btn{
     border:1px solid transparent;border-radius:11px;padding:9px 15px;font-size:13.5px;
     font-weight:600;cursor:pointer;white-space:nowrap;
@@ -844,17 +831,6 @@ function phaseBannerHTML(){
                 `<span class="pb-end">since ${esc(shortDate(info.startISO))}</span>`;
   }
 
-  const strip = `
-  <div class="phase-strip">
-    ${computedPhases().map(p => `
-      <div class="phase-chip ${p.index === info.index ? 'current' : ''}" data-pick-phase="${p.index}">
-        <span class="pc-num">Phase ${p.index + 1}</span>
-        <span class="pc-name">${esc(p.name)}</span>
-        <span class="pc-range">${esc(shortDate(p.startDate))} – ${esc(shortDate(p.endDate))}</span>
-      </div>
-    `).join('')}
-  </div>`;
-
   return `
   <div class="phase-banner ${state}">
     <span class="pb-icon" aria-hidden="true">${icon}</span>
@@ -864,8 +840,7 @@ function phaseBannerHTML(){
       <span class="pb-sub">${sub}</span>
     </div>
     <span class="pb-badge">${esc(badge)}</span>
-  </div>
-  ${strip}`;
+  </div>`;
 }
 
 /* =========================================================
@@ -1992,22 +1967,6 @@ document.addEventListener('click', e => {
     if (isTaskDone(mid, date)) untickTask(mid, date);
     else tickTask(mid, date);
     renderPreservingFocus();
-    return;
-  }
-
-  const pickPhase = e.target.closest('[data-pick-phase]');
-  if (pickPhase){
-    const idx = Number(pickPhase.dataset.pickPhase);
-    const phases = computedPhases();
-    const phase = phases[idx];
-    if (phase){
-      selectedDate = phase.startDate > todayISO() ? phase.startDate : todayISO();
-      if (selectedDate > phase.endDate) selectedDate = phase.endDate;
-      selectedWeekStart = startOfWeekISO(selectedDate);
-      currentView = 'weekly';
-      render();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
     return;
   }
 
