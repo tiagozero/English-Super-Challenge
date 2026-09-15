@@ -182,6 +182,35 @@
   .nav-bar .nb-sub{font-size:12.5px;color:var(--muted);margin-top:1px}
   .nav-bar .nb-btns{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 
+  /* ---------- Phase chip / banner ---------- */
+  .phase-banner{
+    display:flex;justify-content:flex-start;margin:-4px 0 14px;
+  }
+  .phase-chip{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:12.5px;font-weight:650;letter-spacing:.005em;
+    padding:6px 12px;border-radius:999px;
+    background:color-mix(in srgb,var(--reading) 12%,var(--surface));
+    color:var(--reading);
+    border:1px solid color-mix(in srgb,var(--reading) 28%,var(--line));
+    white-space:nowrap;
+  }
+  .phase-chip.muted{
+    background:var(--surface-2);
+    color:var(--muted);
+    border-color:var(--line);
+  }
+  .phase-chip .pc-dot{
+    width:8px;height:8px;border-radius:50%;flex:0 0 auto;
+    background:var(--reading);
+    box-shadow:0 0 0 3px color-mix(in srgb,var(--reading) 22%,transparent);
+  }
+  .phase-chip.muted .pc-dot{
+    background:var(--muted);
+    box-shadow:0 0 0 3px color-mix(in srgb,var(--muted) 18%,transparent);
+  }
+  .phase-chip .pc-rel{color:var(--muted);font-weight:600}
+
   /* ---------- Week strip ---------- */
   .week-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:14px}
   .ws-day{
@@ -326,6 +355,10 @@
     text-overflow:ellipsis;display:block}
   .pr-cat{font-size:10px;color:var(--muted);text-transform:uppercase;
     letter-spacing:.06em;font-weight:700;margin-top:1px;display:block}
+  .pr-cat .pr-phase-end{
+    text-transform:none;letter-spacing:0;font-weight:650;
+    color:var(--reading);
+  }
 
   .pr-target{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .stepper{display:flex;align-items:center;gap:3px;background:var(--surface-2);
@@ -505,6 +538,7 @@
     .wc-table{min-width:620px}
     .wc-th.wc-material-col{min-width:140px}
     .wc-title{max-width:100px}
+    .phase-chip{font-size:11.5px;padding:5px 10px}
   }
 </style>
 <script>
@@ -551,7 +585,7 @@ const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 const pad2 = n => String(n).padStart(2, '0');
 
 function toISO(d){ return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
-function parseISO(s){ const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); }
+function parseISO(s){ const [y, m, d] = String(s).slice(0,10).split('-').map(Number); return new Date(y, m - 1, d); }
 function addDays(iso, n){ const d = parseISO(iso); d.setDate(d.getDate() + n); return toISO(d); }
 function todayISO(){ return toISO(new Date()); }
 function startOfWeekISO(iso){
@@ -603,8 +637,6 @@ const PRIORITIES = [
 const DEFAULT_PRIORITY = 'p4';
 function priorityMeta(id){ return PRIORITIES.find(p => p.id === id) || PRIORITIES[PRIORITIES.length - 1]; }
 function materialTint(m){
-  // Reading → theme reading colour, listening → theme listening colour.
-  // Falls back gracefully so older materials still get a colour.
   return m.default_category === 'listening' ? 'var(--listening)' : 'var(--reading)';
 }
 function materialEmoji(m){
@@ -642,52 +674,199 @@ function coverHTML(m, size){
 }
 
 /* =========================================================
-   Phase gate — the planner ALWAYS shows only materials whose
-   phase is "In progress". There is no toggle, no setting, and
-   no way to bypass this.
+   PHASE GATE — only materials whose phase is "In progress"
+   are ever shown. This is strict and non-configurable.
 
-   A material is considered "In progress" when its phase (or
-   phase_name / stage / status) matches one of the accepted
-   in-progress keywords. Materials with no phase information at
-   all are kept visible as a safety net so nothing silently
-   disappears from the planner.
+   resolvePhase(m) returns { name, end } where:
+     • name is a compact lowercase key ("inprogress", "scheduled", …)
+     • end  is a YYYY-MM-DD string or '' when unknown
+
+   The resolver understands several shapes the main app might use:
+     • m.phase as a string                 → "In progress"
+     • m.phase as an object                → { id, name, end_date }
+     • m.phase_id / m.phase_name / m.stage → flat fields
+     • m.phase_end / m.phase_end_date      → end date on the material
+     • shared.phases[] lookup by id/slug/name
+     • shared.challenge.phases[] lookup
    ========================================================= */
-const IN_PROGRESS_RE = /(^|[^a-z0-9])(in[ _-]?progress|inprogress|wip|active|current|ongoing|started|doing|working)([^a-z0-9]|$)/;
+const IN_PROGRESS_KEYS = new Set([
+  'inprogress',          // "In progress", "in-progress", "in_progress"
+  'wip',                 // "WIP"
+  'working',             // "Working"
+  'workingon',
+  'ongoing',             // "Ongoing"
+  'current',             // "Current"
+  'currentphase',
+  'active',              // "Active"
+  'started',             // "Started"
+  'currentlyreading',
+  'currentlylistening',
+  'currentlywatching'
+]);
 
-function phaseText(v){
-  if (v == null) return '';
-  if (typeof v === 'number') return '';           // numeric phase → unknown, keep visible
-  if (typeof v === 'object'){
-    // Prefer the human-readable name over a numeric id.
-    const raw = v.name ?? v.label ?? v.title ?? v.slug ?? v.id ?? '';
-    return String(raw).trim().toLowerCase();
+function compactKey(s){
+  return String(s ?? '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '');
+}
+
+function getPhaseList(){
+  if (!shared) return [];
+  if (Array.isArray(shared.phases)) return shared.phases;
+  if (Array.isArray(shared.phaseList)) return shared.phaseList;
+  if (Array.isArray(shared.phase_list)) return shared.phase_list;
+  if (shared.challenge){
+    if (Array.isArray(shared.challenge.phases)) return shared.challenge.phases;
+    if (Array.isArray(shared.challenge.phaseList)) return shared.challenge.phaseList;
   }
-  return String(v).trim().toLowerCase();
+  return [];
 }
-function materialPhase(m){
-  if (!m) return '';
-  return phaseText(m.phase) || phaseText(m.phase_id) || phaseText(m.phase_name) ||
-         phaseText(m.stage) || phaseText(m.status);
+
+function phaseEndOf(rec){
+  if (!rec || typeof rec !== 'object') return '';
+  const raw = rec.end_date ?? rec.endDate ?? rec.end ?? rec.ends_on ?? rec.endsOn ??
+              rec.due ?? rec.due_date ?? rec.dueDate ?? '';
+  return raw ? String(raw).slice(0, 10) : '';
 }
+
+function phaseNameOf(rec){
+  if (!rec) return '';
+  if (typeof rec === 'string' || typeof rec === 'number') return String(rec);
+  return String(rec.name ?? rec.label ?? rec.title ?? rec.slug ?? '').trim();
+}
+
+function findPhaseInList(idOrName){
+  const list = getPhaseList();
+  if (!list.length || idOrName == null) return null;
+  const s = String(idOrName);
+  const lower = s.toLowerCase();
+  return list.find(p =>
+    String(p.id) === s ||
+    String(p.slug ?? '') === s ||
+    String(p.name ?? '').toLowerCase() === lower ||
+    String(p.label ?? '').toLowerCase() === lower
+  ) || null;
+}
+
+/* Resolve { name, end } for a material's phase. */
+function resolvePhase(m){
+  if (!m) return { name: '', end: '' };
+
+  // Material-level end date (some apps keep the phase end on the material)
+  const flatEnd = m.phase_end || m.phase_end_date || m.phaseEnd || m.phaseEndDate || '';
+
+  // 1. Rich phase object on the material
+  if (m.phase && typeof m.phase === 'object'){
+    const rec = m.phase;
+    let name = phaseNameOf(rec);
+    let end  = phaseEndOf(rec) || (flatEnd ? String(flatEnd).slice(0, 10) : '');
+    if (!name && rec.id != null){
+      const found = findPhaseInList(rec.id);
+      if (found){
+        name = phaseNameOf(found);
+        end  = end || phaseEndOf(found);
+      }
+    }
+    return { name: compactKey(name), end };
+  }
+
+  // 2. Flat fields on the material
+  const rawFlat = m.phase ?? m.phase_id ?? m.phaseId ??
+                  m.phase_name ?? m.phaseName ??
+                  m.phase_slug ?? m.phaseSlug ??
+                  m.stage ?? m.current_phase ?? m.currentPhase ?? null;
+
+  if (rawFlat == null){
+    return { name: '', end: flatEnd ? String(flatEnd).slice(0, 10) : '' };
+  }
+
+  // 2a. Try to resolve via the phase list (id / slug / name)
+  const found = findPhaseInList(rawFlat);
+  if (found){
+    return {
+      name: compactKey(phaseNameOf(found)),
+      end:  phaseEndOf(found) || (flatEnd ? String(flatEnd).slice(0, 10) : '')
+    };
+  }
+
+  // 2b. Plain string phase name
+  return {
+    name: compactKey(rawFlat),
+    end: flatEnd ? String(flatEnd).slice(0, 10) : ''
+  };
+}
+
 function isInProgress(m){
-  const p = materialPhase(m);
-  if (!p) return true;                            // no phase info → keep visible
-  return IN_PROGRESS_RE.test(p);
+  const { name } = resolvePhase(m);
+  if (!name) return false;                // strict: no phase → not shown
+  return IN_PROGRESS_KEYS.has(name);
 }
-/* Count of materials that exist but are excluded by the phase gate.
-   Used only for informational copy — never to offer a way around it. */
+
 function countExcludedByPhase(){
   return (shared && shared.materials ? shared.materials : [])
     .filter(m => (m.status || 'active') !== 'archived')
     .filter(m => !isInProgress(m))
     .length;
 }
+
+/* End date of the current "In progress" phase (best effort). */
+function currentPhaseEnd(){
+  // 1. A material that resolves an end date + is in progress
+  const mats = (shared && shared.materials ? shared.materials : [])
+    .filter(m => (m.status || 'active') !== 'archived');
+  let best = null;
+  for (const m of mats){
+    const { name, end } = resolvePhase(m);
+    if (!end) continue;
+    if (!IN_PROGRESS_KEYS.has(name)) continue;
+    if (!best || end < best.end) best = { name, end };   // earliest end
+  }
+  if (best) return best;
+
+  // 2. Fall back to the phase list
+  const list = getPhaseList();
+  for (const p of list){
+    const n = compactKey(phaseNameOf(p));
+    if (!IN_PROGRESS_KEYS.has(n)) continue;
+    const end = phaseEndOf(p);
+    if (end && (!best || end < best.end)) best = { name: n, end };
+  }
+  return best;
+}
+
 /* When creating a material from here, reuse whatever phase value the
    library already uses for "in progress" so index.html stays happy. */
 function inferInProgressPhase(){
   const sample = (shared && shared.materials ? shared.materials : [])
     .find(m => m.phase && isInProgress(m));
-  return sample ? sample.phase : 'in_progress';
+  if (sample) return sample.phase;
+  const list = getPhaseList();
+  const found = list.find(p => IN_PROGRESS_KEYS.has(compactKey(phaseNameOf(p))));
+  if (found) return found.id ?? found.slug ?? found.name ?? 'in_progress';
+  return 'in_progress';
+}
+
+/* ---------- Phase chip / banner ---------- */
+function phaseChipHTML(){
+  const info = currentPhaseEnd();
+  if (!info){
+    return `<span class="phase-chip muted" title="No end date is set on the current phase">
+      <span class="pc-dot"></span>In progress · no end date set
+    </span>`;
+  }
+  const days = Math.round((parseISO(info.end) - parseISO(todayISO())) / 86400000);
+  let rel;
+  if (days < 0)       rel = `${Math.abs(days)}d overdue`;
+  else if (days === 0) rel = 'ends today';
+  else if (days === 1) rel = 'ends tomorrow';
+  else                rel = `${days}d left`;
+  return `<span class="phase-chip" title="In progress phase ends ${esc(longDate(info.end))}">
+    <span class="pc-dot"></span>Phase ends ${esc(shortDate(info.end))}
+    <span class="pc-rel">· ${esc(rel)}</span>
+  </span>`;
+}
+function phaseBannerHTML(){
+  const chip = phaseChipHTML();
+  if (!chip) return '';
+  return `<div class="phase-banner">${chip}</div>`;
 }
 
 /* =========================================================
@@ -766,7 +945,6 @@ function materialUnitLong(m){ return m && m.default_category === 'listening' ? '
 
 /* =========================================================
    Plan model
-   plan = { [materialId]: { weekly, days:[0-6], overrides:{ 'YYYY-MM-DD': number } } }
    ========================================================= */
 function readPlan(mid){
   const p = shared && shared.studyPlan ? shared.studyPlan[mid] : null;
@@ -829,10 +1007,7 @@ function clearOverride(mid, date){
 }
 
 /* =========================================================
-   Activity logging — ticks write real activities into the
-   shared state so Dashboard / History / Progress all see them.
-   Roadmap-created entries are tagged with origin:'roadmap' so
-   unticking only removes the ones we added.
+   Activity logging
    ========================================================= */
 function totalLogged(mid, date){
   return (shared.activities || [])
@@ -890,7 +1065,6 @@ function untickTask(mid, date){
   removeRoadmapActivities(mid, date);
   saveShared();
 }
-/* Keep a roadmap entry in sync when its scheduled amount changes (override edit). */
 function syncRoadmapActivity(mid, date){
   const existing = roadmapActivities(mid, date);
   if (!existing.length) return;
@@ -1193,6 +1367,8 @@ function viewDaily(){
     </div>
   </div>
 
+  ${phaseBannerHTML()}
+
   <div class="grid cols-2">
     ${progressCardHTML('Reading today', 'reading', t.readDone, t.readPlan, '%')}
     ${progressCardHTML('Listening today', 'listening', t.listenDone, t.listenPlan, 'min')}
@@ -1247,6 +1423,8 @@ function planRowHTML(m){
   const overrideCount = Object.keys(p.overrides || {}).length;
   const step = weeklyStep(m);
   const tint = materialTint(m);
+  const phaseInfo = resolvePhase(m);
+  const phaseEndTxt = phaseInfo.end ? ` · ends ${shortDate(phaseInfo.end)}` : '';
 
   return `
   <div class="plan-row ${active ? '' : 'inactive'}"
@@ -1256,7 +1434,7 @@ function planRowHTML(m){
       ${coverHTML(m, 32)}
       <span class="pr-mat-txt">
         <span class="pr-title">${esc(m.title)}</span>
-        <span class="pr-cat">${m.default_category === 'listening' ? 'Listening' : 'Reading'}</span>
+        <span class="pr-cat">${m.default_category === 'listening' ? 'Listening' : 'Reading'}${phaseEndTxt ? `<span class="pr-phase-end">${esc(phaseEndTxt)}</span>` : ''}</span>
       </span>
     </div>
 
@@ -1311,7 +1489,7 @@ function planEditorHTML(){
     return `
     <div class="card" style="margin-bottom:14px">
       <div class="card-head">
-        <h2>Weekly plan</h2>
+        <h2>Weekly plan · In progress</h2>
       </div>
       <div class="empty">
         <span class="em-icon">${nothingInProgress ? '⏳' : '📚'}</span>
@@ -1544,6 +1722,8 @@ function viewWeekly(){
       <button class="btn btn-ghost btn-sm" data-goto-daily>Open daily view</button>
     </div>
   </div>
+
+  ${phaseBannerHTML()}
 
   <div class="grid cols-3">
     <div class="card">
