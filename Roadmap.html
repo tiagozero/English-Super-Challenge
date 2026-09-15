@@ -189,6 +189,7 @@
   .phase-banner .pb-v .pb-name{color:var(--text)}
   .phase-banner .pb-v .pb-sep{color:var(--muted);font-weight:500;margin:0 6px}
   .phase-banner .pb-v .pb-end{color:var(--info-fg);font-weight:620}
+  .phase-banner .pb-v .pb-arrow{color:var(--muted);font-weight:500;margin:0 4px}
   .phase-banner.warn .pb-v .pb-end{color:var(--warn-fg)}
   .phase-banner.ended .pb-v .pb-end{color:var(--bad-fg)}
   .phase-banner .pb-sub{
@@ -297,7 +298,7 @@
   }
   .task-row.done .task-check{background:var(--good-fg);border-color:var(--good-fg);color:var(--on-accent)}
 
-  /* ---------- Miniature cover (same tile as index.html) ---------- */
+  /* ---------- Miniature cover ---------- */
   .mini-cover{
     position:relative;flex:0 0 auto;
     width:var(--cover-size,36px);height:var(--cover-size,36px);
@@ -632,7 +633,8 @@ function mediumDate(iso){
   return parseISO(iso).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 }
 function daysBetween(a, b){
-  // Whole-day difference b - a (both ISO yyyy-mm-dd, local date semantics)
+  if (!a || !b) return null;
+  // Local-midnight date difference → whole days.
   return Math.round((parseISO(b) - parseISO(a)) / 86400000);
 }
 function esc(s){
@@ -663,7 +665,6 @@ const TYPES = {
 };
 const TYPE_ORDER = ['kindle','book','article','manga','other','youTube','anime','audiobook','podcast','tv','film'];
 
-/* Priority colour palette (mirrors index.html) */
 const PRIORITIES = [
   { id:'p1', hex:'#D5473F', fg:'#FFFFFF', border:false },
   { id:'p2', hex:'#E8B93A', fg:'#3B2F0A', border:false },
@@ -690,12 +691,6 @@ function materialEmoji(m){
   if (t === 'kindle')    return '📖';
   return '📚';
 }
-
-/* =========================================================
-   Miniature cover — the same little tile the main app shows
-   for a material (cover image when present, tinted emoji tile
-   otherwise).
-   ========================================================= */
 function coverHTML(m, size){
   const url = (m && (m.cover_url || m.cover || m.image_url)) || '';
   const tint = m ? materialTint(m) : 'var(--neutral-bg)';
@@ -710,19 +705,13 @@ function coverHTML(m, size){
 }
 
 /* =========================================================
-   Phase gate — the planner ALWAYS shows only materials whose
-   phase is "In progress". No toggle, no setting, no bypass.
-
-   A material is "In progress" when its phase (or phase_name /
-   stage / status) matches one of the accepted in-progress
-   keywords. Materials with no phase information at all are
-   kept visible as a safety net.
+   Phase gate — hard filter, only "In progress" materials
    ========================================================= */
 const IN_PROGRESS_RE = /(^|[^a-z0-9])(in[ _-]?progress|inprogress|wip|active|current|ongoing|started|doing|working)([^a-z0-9]|$)/;
 
 function phaseText(v){
   if (v == null) return '';
-  if (typeof v === 'number') return '';           // numeric phase → unknown, keep visible
+  if (typeof v === 'number') return '';
   if (typeof v === 'object'){
     const raw = v.name ?? v.label ?? v.title ?? v.slug ?? v.id ?? '';
     return String(raw).trim().toLowerCase();
@@ -736,7 +725,7 @@ function materialPhase(m){
 }
 function isInProgress(m){
   const p = materialPhase(m);
-  if (!p) return true;                            // no phase info → keep visible
+  if (!p) return true;
   return IN_PROGRESS_RE.test(p);
 }
 function countExcludedByPhase(){
@@ -752,62 +741,105 @@ function inferInProgressPhase(){
 }
 
 /* =========================================================
-   Current-phase info — find when the phase the planner is
-   tracking ("In progress") will end.
+   Current-phase info — find the active phase and its range.
 
-   Searches, in order:
-     1. challenge.phases[]   → the active / matching / date-containing phase
-     2. challenge.current_phase (object)
-     3. challenge scalar fields (current_phase_end, phase_end_date, …)
-     4. Material-level phase_end_* fields on in-progress materials
-        (the latest one wins, because the phase isn't over until
-        every material in it is done)
-     5. Fallback: the challenge end_date, when nothing else is set
+   Very deliberately tolerant about field names, because the
+   main app may store phases in many shapes:
+     · challenge.phases[]               → { name, start_date, end_date, active }
+     · challenge.current_phase          → object OR string
+     · challenge.current_phase_end etc. → scalar fields
+     · phase.day_start / day_end        → numeric days (derived
+                                          from challenge start_date)
+     · material.phase_end_date          → per-material deadline
+     · challenge.end_date               → final fallback
    ========================================================= */
+function extractPhase(p, challengeStart){
+  if (!p || typeof p !== 'object') return null;
+  const s = p.start_date || p.startDate || p.start || p.from ||
+            p.starts_on  || p.begin     || p.begin_date || '';
+  const e = p.end_date   || p.endDate   || p.end   || p.to   ||
+            p.ends_on    || p.finish    || p.finish_date || '';
+  let start = s, end = e;
+  // Derive dates from numeric day boundaries when possible
+  if (!start && challengeStart && p.day_start != null)
+    start = addDays(challengeStart, Number(p.day_start) - 1);
+  if (!end && challengeStart && p.day_end != null)
+    end = addDays(challengeStart, Number(p.day_end) - 1);
+  const n = p.name || p.label || p.title || p.phase_name || p.phaseName || p.id || '';
+  return { name: String(n || ''), start: start || '', end: end || '' };
+}
+
 function currentPhaseInfo(){
   if (!shared) return null;
   const ch = shared.challenge || {};
   const today = todayISO();
-  let name = '';
-  let endISO = '';
+  const chStart = ch.start_date || '';
+  let name = '', startISO = '', endISO = '';
 
   /* ---- 1. challenge.phases[] ---- */
   const phases = Array.isArray(ch.phases) ? ch.phases : [];
   if (phases.length){
-    let phase = phases.find(p => p && (p.active === true || p.current === true || p.is_current === true));
+    const ex = phases.map(p => extractPhase(p, chStart));
 
-    if (!phase){
-      phase = phases.find(p => p && isInProgress({ phase: p.name || p.label || p.title || p.id }));
+    // a) explicit active/current flag
+    let idx = phases.findIndex(p => p && (p.active === true || p.current === true || p.is_current === true));
+
+    // b) phase whose range contains today (most reliable signal)
+    if (idx < 0){
+      idx = ex.findIndex(x => x && x.start && x.end && today >= x.start && today <= x.end);
     }
-    if (!phase){
-      phase = phases.find(p => {
-        if (!p) return false;
-        const s = p.start_date || p.start || p.from || p.starts_on;
-        const e = p.end_date   || p.end   || p.to   || p.ends_on;
-        return s && e && today >= s && today <= e;
-      });
+
+    // c) phase whose name reads like "in progress"
+    if (idx < 0){
+      idx = phases.findIndex(p => p && isInProgress({ phase: p.name || p.label || p.title || p.id }));
     }
-    if (!phase){
-      // Soonest upcoming phase with a start date
-      const upcoming = phases
-        .map(p => ({ p, s: (p && (p.start_date || p.start || p.from || p.starts_on)) || '' }))
-        .filter(x => x.s && x.s > today)
-        .sort((a, b) => a.s.localeCompare(b.s));
-      if (upcoming.length) phase = upcoming[0].p;
+
+    // d) soonest upcoming phase that has a start date
+    if (idx < 0){
+      const upcoming = ex
+        .map((x, i) => ({ x, i }))
+        .filter(o => o.x && o.x.start && o.x.start > today)
+        .sort((a, b) => a.x.start.localeCompare(b.x.start));
+      if (upcoming.length) idx = upcoming[0].i;
     }
-    if (phase){
-      name = phase.name || phase.label || phase.title || phase.id || '';
-      endISO = phase.end_date || phase.end || phase.to || phase.ends_on || '';
+
+    // e) nearest phase whose end date is still ahead (or the last one)
+    if (idx < 0){
+      const withEnd = ex
+        .map((x, i) => ({ x, i }))
+        .filter(o => o.x && o.x.end)
+        .sort((a, b) => a.x.end.localeCompare(b.x.end));
+      const after = withEnd.filter(o => o.x.end >= today);
+      if (after.length) idx = after[0].i;
+      else if (withEnd.length) idx = withEnd[withEnd.length - 1].i;
+    }
+
+    if (idx >= 0 && ex[idx]){
+      name = ex[idx].name;
+      startISO = ex[idx].start;
+      endISO = ex[idx].end;
     }
   }
 
-  /* ---- 2. challenge.current_phase (object) ---- */
-  if (ch.current_phase && typeof ch.current_phase === 'object'){
-    if (!name)   name   = ch.current_phase.name || ch.current_phase.label || ch.current_phase.title || '';
-    if (!endISO) endISO = ch.current_phase.end_date || ch.current_phase.end || ch.current_phase.to || '';
+  /* ---- 2. challenge.current_phase (object or string) ---- */
+  const cp = ch.current_phase;
+  if (cp){
+    if (typeof cp === 'object'){
+      const x = extractPhase(cp, chStart);
+      if (x){
+        if (!name     && x.name)  name = x.name;
+        if (!startISO && x.start) startISO = x.start;
+        if (!endISO   && x.end)   endISO = x.end;
+      }
+    } else if (typeof cp === 'string' && !name){
+      name = cp;
+    }
   }
 
-  /* ---- 3. challenge scalar fields ---- */
+  /* ---- 3. scalar challenge fields ---- */
+  if (!startISO){
+    startISO = ch.current_phase_start || ch.phase_start_date || ch.phase_start || ch.phaseStart || '';
+  }
   if (!endISO){
     endISO = ch.current_phase_end || ch.phase_end_date || ch.phase_end || ch.phaseEnd || '';
   }
@@ -817,79 +849,79 @@ function currentPhaseInfo(){
     else if (typeof ch.phase === 'string')         name = ch.phase;
   }
 
-  /* ---- 4. Material-level phase_end_* on in-progress materials ---- */
+  /* ---- 4. material-level phase_end_* on in-progress materials ---- */
   if (!endISO){
     const ends = plannedMaterials()
       .map(m => m.phase_end_date || m.phase_end || m.phaseEnd)
       .filter(Boolean)
       .sort();
-    if (ends.length) endISO = ends[ends.length - 1];   // latest
+    if (ends.length) endISO = ends[ends.length - 1];
   }
 
-  /* ---- 5. Fallback: challenge end_date ---- */
-  if (!endISO && ch.end_date) endISO = ch.end_date;
+  /* ---- 5. Fallback: challenge start/end ---- */
+  if (!startISO && ch.start_date) startISO = ch.start_date;
+  if (!endISO   && ch.end_date)   endISO   = ch.end_date;
 
-  if (!name && !endISO) return null;
+  if (!name && !endISO && !startISO) return null;
 
   const daysLeft = endISO ? daysBetween(today, endISO) : null;
-
   return {
     name: name || 'In progress',
-    endISO: endISO || '',
+    startISO: startISO || '',
+    endISO:   endISO   || '',
     daysLeft
   };
 }
 
-/* Banner copy + visual state from the phase info */
 function phaseBannerHTML(){
   const info = currentPhaseInfo();
   if (!info) return '';
 
-  const hasEnd = !!info.endISO;
-  let state = '';          // '', 'warn', 'ended'
-  let icon  = '⏳';
-  let badge = '';
-  let sub   = '';
-  let endLabel = '';
+  const hasEnd   = !!info.endISO;
+  const hasStart = !!info.startISO;
+  const hasRange = hasStart && hasEnd;
+
+  let state = '', icon = '⏳', badge = '', sub = '', endLabel = '';
 
   if (hasEnd){
-    endLabel = mediumDate(info.endISO);
+    endLabel = shortDate(info.endISO);
     const d = info.daysLeft;
     if (d < 0){
-      state = 'ended';
-      icon  = '⚠️';
+      state = 'ended'; icon = '⚠️';
       badge = `${Math.abs(d)} day${Math.abs(d) === 1 ? '' : 's'} ago`;
-      sub   = `The ${esc(info.name)} phase ended on ${esc(endLabel)}.`;
+      sub = `The ${esc(info.name)} phase ended on ${esc(mediumDate(info.endISO))}.`;
     } else if (d === 0){
-      state = 'warn';
-      icon  = '🔥';
-      badge = 'Ends today';
-      sub   = `Final day of the ${esc(info.name)} phase.`;
+      state = 'warn'; icon = '🔥'; badge = 'Ends today';
+      sub = `Final day of the ${esc(info.name)} phase.`;
     } else if (d === 1){
-      state = 'warn';
-      icon  = '🔥';
-      badge = '1 day left';
-      sub   = `Wrap up the ${esc(info.name)} phase by tomorrow.`;
+      state = 'warn'; icon = '🔥'; badge = '1 day left';
+      sub = `Wrap up the ${esc(info.name)} phase by tomorrow.`;
     } else if (d <= 3){
-      state = 'warn';
-      icon  = '🔥';
-      badge = `${d} days left`;
-      sub   = `Only ${d} days left in the ${esc(info.name)} phase.`;
+      state = 'warn'; icon = '🔥'; badge = `${d} days left`;
+      sub = `Only ${d} days left in the ${esc(info.name)} phase.`;
     } else {
       badge = `${d} days left`;
-      sub   = `${d} days remaining in the ${esc(info.name)} phase.`;
+      sub = `${d} days remaining in the ${esc(info.name)} phase.`;
     }
   } else {
-    // No end date known — still worth showing the phase name
-    sub   = 'No end date set for this phase.';
+    sub = 'No end date set for this phase.';
     badge = 'No deadline';
   }
 
-  const mainLine = hasEnd
-    ? `<span class="pb-name">${esc(info.name)}</span>` +
-      `<span class="pb-sep">·</span>` +
-      `<span class="pb-end">ends ${esc(endLabel)}</span>`
-    : `<span class="pb-name">${esc(info.name)}</span>`;
+  // Main line: Phase name · Sep 14 → Oct 5  (or "· ends Oct 5")
+  let mainLine = `<span class="pb-name">${esc(info.name)}</span>`;
+  if (hasRange){
+    mainLine += `<span class="pb-sep">·</span>` +
+                `<span class="pb-end">${esc(shortDate(info.startISO))}</span>` +
+                `<span class="pb-arrow">→</span>` +
+                `<span class="pb-end">${esc(shortDate(info.endISO))}</span>`;
+  } else if (hasEnd){
+    mainLine += `<span class="pb-sep">·</span>` +
+                `<span class="pb-end">ends ${esc(endLabel)}</span>`;
+  } else if (hasStart){
+    mainLine += `<span class="pb-sep">·</span>` +
+                `<span class="pb-end">since ${esc(shortDate(info.startISO))}</span>`;
+  }
 
   return `
   <div class="phase-banner ${state}">
@@ -1192,7 +1224,6 @@ let currentView = 'daily';
 let selectedDate = todayISO();
 let selectedWeekStart = startOfWeekISO(todayISO());
 
-/* Weekly-plan visibility toggle (persisted) */
 const PLAN_VIS_KEY = 'esc-roadmap-show-plan';
 let showPlanEditor = true;
 try {
@@ -1232,8 +1263,8 @@ function updateHeader(){
   const ch = shared.challenge || {};
   const start = ch.start_date || todayISO();
   const end   = ch.end_date   || addDays(start, 89);
-  const totalDays = Math.max(1, daysBetween(start, end) + 1);
-  const elapsed = clamp(daysBetween(start, todayISO()) + 1, 0, totalDays);
+  const totalDays = Math.max(1, (daysBetween(start, end) || 0) + 1);
+  const elapsed = clamp((daysBetween(start, todayISO()) || 0) + 1, 0, totalDays);
   const dt = dayTotals(todayISO());
   const wt = weekTotals(selectedWeekStart);
 
@@ -1943,15 +1974,12 @@ function openAddMaterialModal(){
    Events
    ========================================================= */
 document.addEventListener('click', e => {
-  /* ---- Theme ---- */
   const themeBtn = e.target.closest('[data-theme-pick]');
   if (themeBtn){ applyTheme(themeBtn.dataset.themePick); render(); return; }
 
-  /* ---- Tabs ---- */
   const tab = e.target.closest('#tabs button[data-view]');
   if (tab){ currentView = tab.dataset.view; render(); return; }
 
-  /* ---- Daily amount steppers ---- */
   const dayStep = e.target.closest('[data-day-step]');
   if (dayStep){
     e.stopPropagation();
@@ -1972,7 +2000,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  /* ---- Weekly target steppers ---- */
   const wkStep = e.target.closest('[data-weekly-step]');
   if (wkStep){
     const mid = wkStep.dataset.mid;
@@ -1987,7 +2014,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  /* ---- Active day toggles ---- */
   const dayPill = e.target.closest('[data-toggle-day]');
   if (dayPill){
     const mid = dayPill.dataset.mid;
@@ -2001,7 +2027,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  /* ---- Toggle a task ---- */
   const taskEl = e.target.closest('[data-toggle-task]');
   if (taskEl && !e.target.closest('[data-no-toggle]')){
     const mid = taskEl.dataset.toggleTask;
@@ -2012,7 +2037,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  /* ---- Pick a day ---- */
   const pickDay = e.target.closest('[data-pick-day]');
   if (pickDay){
     selectedDate = pickDay.dataset.pickDay;
@@ -2023,7 +2047,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  /* ---- Navigation ---- */
   const shiftDay = e.target.closest('[data-shift-day]');
   if (shiftDay){
     selectedDate = addDays(selectedDate, Number(shiftDay.dataset.shiftDay));
@@ -2061,7 +2084,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  /* ---- Complete / clear a whole day ---- */
   const completeDay = e.target.closest('[data-complete-day]');
   if (completeDay){
     const iso = completeDay.dataset.completeDay;
@@ -2076,7 +2098,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  /* ---- Modal + toolbar actions ---- */
   const actionEl = e.target.closest('[data-action]');
   if (actionEl){
     const action = actionEl.dataset.action;
@@ -2098,7 +2119,6 @@ document.addEventListener('click', e => {
   }
 });
 
-/* Number inputs commit on change */
 document.addEventListener('change', e => {
   const t = e.target;
   if (!t || !t.matches) return;
@@ -2123,7 +2143,6 @@ document.addEventListener('change', e => {
   }
 });
 
-/* Keyboard: Enter / Space toggles tasks and day cards */
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && $('#modalRoot').innerHTML){ closeModal(); return; }
   if (e.key !== 'Enter' && e.key !== ' ') return;
@@ -2150,7 +2169,6 @@ document.addEventListener('keydown', e => {
   }
 });
 
-/* Live sync: react to writes from index.html in another tab */
 window.addEventListener('storage', e => {
   if (e.key === SHARED_KEY){
     const next = loadShared();
