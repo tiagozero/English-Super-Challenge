@@ -1146,6 +1146,32 @@ function fmtDeadlineDate(iso){
     ? { month: 'short', day: 'numeric' }
     : { month: 'short', day: 'numeric', year: 'numeric' });
 }
+function fmtDeadlineHoursLeft(ms){
+  const totalHours = Math.ceil(ms / 3600000);
+  if (totalHours >= 48){
+    const days = Math.floor(totalHours / 24), h = totalHours % 24;
+    return `${days}d ${h}h left`;
+  }
+  return `${totalHours}h left`;
+}
+/* Shared deadline line used in Materials list/grid views and the Phases
+   queue — respects the Date/Hours display toggle so all three stay in sync. */
+function materialDeadlineLineHTML(m){
+  if (!m.deadline) return '';
+  const ms = msUntilDeadline(m.deadline);
+  const overdue = ms <= 0;
+  if (deadlineDisplayMode === 'hours'){
+    return `<div class="mat-deadline-line">⏳ <b class="mono${overdue ? ' overdue' : ''}" data-countdown="material:${m.id}">--:--:--</b></div>`;
+  }
+  return `<div class="mat-deadline-line">📅 Due <b class="${overdue ? 'overdue' : ''}">${escapeHtml(fmtDeadlineDate(m.deadline))}</b></div>`;
+}
+function deadlineModeToggleHTML(){
+  return `
+    <div class="seg" title="How deadlines are shown">
+      <button class="${deadlineDisplayMode === 'date' ? 'active' : ''}" data-deadlinemode="date">Date</button>
+      <button class="${deadlineDisplayMode === 'hours' ? 'active' : ''}" data-deadlinemode="hours">Hours</button>
+    </div>`;
+}
 function resetTimeLabel(kind){
   const now = new Date();
   if (kind === 'day') return '00:00';
@@ -1352,6 +1378,11 @@ const MATVIEW_KEY = 'esc-materials-view-mode';
 let materialsViewMode = 'grid';
 try { materialsViewMode = localStorage.getItem(MATVIEW_KEY) || 'grid'; } catch (e) {}
 if (!['grid', 'list'].includes(materialsViewMode)) materialsViewMode = 'grid';
+
+const DEADLINE_MODE_KEY = 'esc-deadline-display-mode';
+let deadlineDisplayMode = 'date'; // 'date' | 'hours'
+try { deadlineDisplayMode = localStorage.getItem(DEADLINE_MODE_KEY) || 'date'; } catch (e) {}
+if (!['date', 'hours'].includes(deadlineDisplayMode)) deadlineDisplayMode = 'date';
 
 let roadmapView = 'phases';
 try { roadmapView = localStorage.getItem(RMVIEW_KEY) || 'phases'; } catch (e) {}
@@ -2580,7 +2611,8 @@ function viewRoadmap(){
       <button data-rmview="days"      class="${roadmapView === 'days'      ? 'active' : ''}">All days</button>
       <button data-rmview="materials" class="${roadmapView === 'materials' ? 'active' : ''}">Materials</button>
     </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      ${roadmapView === 'phases' ? deadlineModeToggleHTML() : ''}
       <button class="btn btn-ghost btn-sm" data-action="rm-edit-phases">✎ Edit phases</button>
       <button class="btn btn-ghost btn-sm" data-action="rm-add-milestone">＋ Milestone</button>
       <button class="info-btn" data-action="info-roadmap" title="How the roadmap works" aria-label="How the roadmap works">i</button>
@@ -3127,6 +3159,7 @@ function roadmapQueueItemHTML(phaseIndex, m, index, opts){
         <span>${isDone ? 'Complete' : pct + '%'}</span>
       </div>
       <div class="rq-bar ${isDone ? 'complete' : ''}"><i style="width:${pct}%"></i></div>
+      ${materialDeadlineLineHTML(m)}
     </div>
     <div class="rq-actions">
       <button class="rq-action" data-action="rm-queue-up" data-phase="${phaseIndex}" data-idx="${index}" ${opts.isFirst ? 'disabled' : ''} title="Move up" aria-label="Move up">↑</button>
@@ -3667,7 +3700,7 @@ function materialRowHTML(m){
       <div class="mat-title">${escapeHtml(m.title)}<span class="pill ${m.status}">${m.status}</span></div>
       <div class="mat-sub">${escapeHtml(m.creator || '—')} · ${escapeHtml(typeLabel)}</div>
       ${materialProgressBarHTML(m)}
-      ${m.deadline ? `<div class="mat-deadline-line">📅 Due ${escapeHtml(fmtDeadlineDate(m.deadline))} · <b class="mono" data-countdown="material:${m.id}">--:--:--</b></div>` : ''}
+      ${materialDeadlineLineHTML(m)}
       ${materialSubtaskProgressHTML(m)}
     </div>
     <div class="act-actions">
@@ -3719,6 +3752,7 @@ function materialCardHTML(m){
       <span class="status-pill ${statusKind}">${statusText}</span>
       <span class="mat-card-pct">${pct}%</span>
     </div>
+    ${materialDeadlineLineHTML(m)}
     ${phaseTags.length ? `
     <div class="mat-card-queued">
       <span class="qlabel">Queued in</span>
@@ -3845,6 +3879,7 @@ function materialsLibraryHTML(){
         <button class="${materialsViewMode === 'grid' ? 'active' : ''}" data-matview="grid">Grid</button>
         <button class="${materialsViewMode === 'list' ? 'active' : ''}" data-matview="list">List</button>
       </div>
+      ${deadlineModeToggleHTML()}
       <button class="btn btn-ghost filter-toggle" data-action="toggle-mat-filters"
               aria-expanded="${materialsFiltersOpen ? 'true' : 'false'}"
               title="${materialsFiltersOpen ? 'Hide filters' : 'Show filters'}">
@@ -4904,11 +4939,12 @@ function parseMaterialsCSV(text){
       creator: first.findIndex(h => h === 'creator' || h === 'author' || h === 'host'),
       type: first.findIndex(h => h === 'type' || h === 'input_type' || h === 'default_input_type' || h === 'format'),
       category: first.findIndex(h => h === 'category'),
-      status: first.findIndex(h => h === 'status')
+      status: first.findIndex(h => h === 'status'),
+      cover: first.findIndex(h => h === 'cover' || h === 'cover_url' || h === 'cover url' || h === 'image' || h === 'image_url')
     };
     startIdx = 1;
   } else {
-    idx = { title: 0, creator: 1, type: 2, category: -1, status: 3 };
+    idx = { title: 0, creator: 1, type: 2, category: -1, status: 3, cover: -1 };
     startIdx = 0;
   }
   if (idx.title < 0) errors.push('No "title" column found — the first column will be used as the title.');
@@ -4920,23 +4956,27 @@ function parseMaterialsCSV(text){
     const title = get('title');
     if (!title){ errors.push(`Row ${i + 1}: missing title — skipped.`); continue; }
     const typeKey = normalizeMaterialType(get('type'), get('category'));
+    const coverRaw = get('cover');
+    const cover = /^https?:\/\//.test(coverRaw) ? coverRaw : '';
+    if (coverRaw && !cover) errors.push(`Row ${i + 1}: cover link ignored — must start with http:// or https://.`);
     out.push({
       title,
       creator: get('creator'),
       default_input_type: typeKey,
       default_category: TYPES[typeKey].category,
-      status: normalizeMaterialStatus(get('status'))
+      status: normalizeMaterialStatus(get('status')),
+      cover_url: cover
     });
   }
   return { rows: out, errors };
 }
 function materialsCSVTemplate(){
-  const lines = ['title,creator,type,status'];
-  lines.push('Project Hail Mary,Andy Weir,book,active');
-  lines.push('Atomic Habits,James Clear,kindle,active');
-  lines.push('The Daily,The New York Times,podcast,scheduled');
-  lines.push('Dune,Frank Herbert,audiobook,completed');
-  lines.push('How to Learn a Language,Benny Lewis,article,archived');
+  const lines = ['title,creator,type,status,cover'];
+  lines.push('Project Hail Mary,Andy Weir,book,active,https://covers.example.com/hail-mary.jpg');
+  lines.push('Atomic Habits,James Clear,kindle,active,');
+  lines.push('The Daily,The New York Times,podcast,scheduled,');
+  lines.push('Dune,Frank Herbert,audiobook,completed,https://covers.example.com/dune.jpg');
+  lines.push('How to Learn a Language,Benny Lewis,article,archived,');
   return lines.join('\n');
 }
 function openMaterialsImportModal(){
@@ -4950,11 +4990,12 @@ function openMaterialsImportModal(){
       </div>
       <div class="modal-body">
         <p class="hint" style="margin:0 0 6px">Upload a CSV with a header row. These columns are recognised:</p>
-        <div class="csv-cols"><code>title</code><code>creator</code><code>type</code><code>status</code></div>
+        <div class="csv-cols"><code>title</code><code>creator</code><code>type</code><code>status</code><code>cover</code></div>
         <p class="hint" style="margin:0 0 14px">
           <b>title</b> is required. <b>type</b> accepts keys like <code>kindle</code>, <code>book</code>,
           <code>podcast</code>, <code>audiobook</code>, <code>tv</code>, <code>film</code>.<br>
-          <b>status</b> can be <code>active</code>, <code>scheduled</code>, <code>completed</code> or <code>archived</code>.
+          <b>status</b> can be <code>active</code>, <code>scheduled</code>, <code>completed</code> or <code>archived</code>.<br>
+          <b>cover</b> (optional) is a direct image link starting with <code>http://</code> or <code>https://</code> — it's used as the material's cover.
         </p>
         <div class="csv-drop" id="csvDrop">
           <span class="big">📄</span>
@@ -4990,10 +5031,11 @@ function openMaterialsImportModal(){
           <td>${escapeHtml(r.creator || '—')}</td>
           <td>${escapeHtml((TYPES[r.default_input_type] || { label: 'Other' }).label)}</td>
           <td>${escapeHtml(r.status)}</td>
+          <td>${r.cover_url ? '🖼 Yes' : '—'}</td>
         </tr>`).join('');
       preview.innerHTML = `
         <div class="csv-preview">
-          <table><thead><tr><th>Title</th><th>Creator</th><th>Type</th><th>Status</th></tr></thead>
+          <table><thead><tr><th>Title</th><th>Creator</th><th>Type</th><th>Status</th><th>Cover</th></tr></thead>
           <tbody>${rowsHtml}</tbody></table>
         </div>
         ${pending.length > 50 ? `<div style="font-size:12px;color:var(--muted);margin-top:8px">Showing first 50 of ${pending.length} rows.</div>` : ''}
@@ -5050,7 +5092,7 @@ function openMaterialsImportModal(){
         title: r.title, creator: r.creator,
         default_input_type: r.default_input_type,
         default_category: r.default_category,
-        status: r.status, cover_url: ''
+        status: r.status, cover_url: r.cover_url || ''
       });
       added++;
     });
@@ -5282,6 +5324,15 @@ document.addEventListener('click', e => {
   if (matViewBtn){
     materialsViewMode = matViewBtn.dataset.matview;
     try { localStorage.setItem(MATVIEW_KEY, materialsViewMode); } catch (err) {}
+    render();
+    return;
+  }
+
+  /* Deadline display mode: Date vs Hours */
+  const deadlineModeBtn = e.target.closest('[data-deadlinemode]');
+  if (deadlineModeBtn){
+    deadlineDisplayMode = deadlineModeBtn.dataset.deadlinemode;
+    try { localStorage.setItem(DEADLINE_MODE_KEY, deadlineDisplayMode); } catch (err) {}
     render();
     return;
   }
