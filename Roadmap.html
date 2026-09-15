@@ -182,51 +182,6 @@
   .nav-bar .nb-sub{font-size:12.5px;color:var(--muted);margin-top:1px}
   .nav-bar .nb-btns{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 
-  /* ---------- Phase chip / banner ---------- */
-  .phase-banner{display:flex;justify-content:flex-start;gap:8px;flex-wrap:wrap;margin:-4px 0 14px}
-  .phase-chip{
-    display:inline-flex;align-items:center;gap:8px;
-    font-size:12.5px;font-weight:650;letter-spacing:.005em;
-    padding:6px 12px;border-radius:999px;
-    background:color-mix(in srgb,var(--reading) 12%,var(--surface));
-    color:var(--reading);
-    border:1px solid color-mix(in srgb,var(--reading) 28%,var(--line));
-    white-space:nowrap;
-  }
-  .phase-chip.muted{
-    background:var(--surface-2);color:var(--muted);border-color:var(--line);
-  }
-  .phase-chip .pc-dot{
-    width:8px;height:8px;border-radius:50%;flex:0 0 auto;
-    background:var(--reading);
-    box-shadow:0 0 0 3px color-mix(in srgb,var(--reading) 22%,transparent);
-  }
-  .phase-chip.muted .pc-dot{
-    background:var(--muted);
-    box-shadow:0 0 0 3px color-mix(in srgb,var(--muted) 18%,transparent);
-  }
-  .phase-chip .pc-rel{color:var(--muted);font-weight:600}
-
-  /* ---------- Phase badge (per material) ---------- */
-  .phase-badge{
-    display:inline-block;font-size:9.5px;font-weight:750;
-    text-transform:uppercase;letter-spacing:.06em;
-    padding:1px 6px;border-radius:6px;margin-right:5px;
-    background:var(--surface-2);color:var(--muted);
-    border:1px solid var(--line);
-    vertical-align:middle;
-  }
-  .phase-badge.ok{
-    background:color-mix(in srgb,var(--good-fg) 14%,transparent);
-    color:var(--good-fg);
-    border-color:color-mix(in srgb,var(--good-fg) 26%,var(--line));
-  }
-  .phase-badge.unknown{
-    background:color-mix(in srgb,var(--warn-fg) 14%,transparent);
-    color:var(--warn-fg);
-    border-color:color-mix(in srgb,var(--warn-fg) 26%,var(--line));
-  }
-
   /* ---------- Week strip ---------- */
   .week-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:14px}
   .ws-day{
@@ -283,7 +238,7 @@
   }
   .task-row.done .task-check{background:var(--good-fg);border-color:var(--good-fg);color:var(--on-accent)}
 
-  /* ---------- Miniature cover ---------- */
+  /* ---------- Miniature cover (same tile as index.html) ---------- */
   .mini-cover{
     position:relative;flex:0 0 auto;
     width:var(--cover-size,36px);height:var(--cover-size,36px);
@@ -342,7 +297,7 @@
   .empty{padding:28px 16px;text-align:center;color:var(--muted);font-size:13px}
   .empty .em-icon{font-size:28px;opacity:.5;display:block;margin-bottom:10px}
   .empty .em-title{font-size:15px;font-weight:620;color:var(--text);margin-bottom:6px}
-  .empty .em-sub{max-width:420px;margin:0 auto 14px;line-height:1.55}
+  .empty .em-sub{max-width:400px;margin:0 auto 14px;line-height:1.55}
 
   /* =========================================================
      PLAN EDITOR
@@ -370,12 +325,7 @@
   .pr-title{font-size:13.5px;font-weight:620;white-space:nowrap;overflow:hidden;
     text-overflow:ellipsis;display:block}
   .pr-cat{font-size:10px;color:var(--muted);text-transform:uppercase;
-    letter-spacing:.06em;font-weight:700;margin-top:2px;display:flex;
-    align-items:center;gap:5px;flex-wrap:wrap}
-  .pr-cat .pr-phase-end{
-    text-transform:none;letter-spacing:0;font-weight:650;
-    color:var(--reading);
-  }
+    letter-spacing:.06em;font-weight:700;margin-top:1px;display:block}
 
   .pr-target{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .stepper{display:flex;align-items:center;gap:3px;background:var(--surface-2);
@@ -416,6 +366,7 @@
     .pr-target{justify-content:flex-start}
   }
 
+  /* ---------- Collapsed weekly plan bar ---------- */
   .plan-collapsed .card-head{margin:0}
   .plan-collapsed .pc-meta{font-size:12.5px;color:var(--muted)}
 
@@ -554,7 +505,6 @@
     .wc-table{min-width:620px}
     .wc-th.wc-material-col{min-width:140px}
     .wc-title{max-width:100px}
-    .phase-chip{font-size:11.5px;padding:5px 10px}
   }
 </style>
 <script>
@@ -601,12 +551,12 @@ const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 const pad2 = n => String(n).padStart(2, '0');
 
 function toISO(d){ return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
-function parseISO(s){ const [y, m, d] = String(s).slice(0,10).split('-').map(Number); return new Date(y, m - 1, d); }
+function parseISO(s){ const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); }
 function addDays(iso, n){ const d = parseISO(iso); d.setDate(d.getDate() + n); return toISO(d); }
 function todayISO(){ return toISO(new Date()); }
 function startOfWeekISO(iso){
   const d = parseISO(iso);
-  const dow = (d.getDay() + 6) % 7;
+  const dow = (d.getDay() + 6) % 7;      // Monday = 0
   d.setDate(d.getDate() - dow);
   return toISO(d);
 }
@@ -643,6 +593,7 @@ const TYPES = {
 };
 const TYPE_ORDER = ['kindle','book','article','manga','other','youTube','anime','audiobook','podcast','tv','film'];
 
+/* Priority colour palette (mirrors index.html) */
 const PRIORITIES = [
   { id:'p1', hex:'#D5473F', fg:'#FFFFFF', border:false },
   { id:'p2', hex:'#E8B93A', fg:'#3B2F0A', border:false },
@@ -650,7 +601,10 @@ const PRIORITIES = [
   { id:'p4', hex:'#FFFFFF', fg:'#26211C', border:true  }
 ];
 const DEFAULT_PRIORITY = 'p4';
+function priorityMeta(id){ return PRIORITIES.find(p => p.id === id) || PRIORITIES[PRIORITIES.length - 1]; }
 function materialTint(m){
+  // Reading → theme reading colour, listening → theme listening colour.
+  // Falls back gracefully so older materials still get a colour.
   return m.default_category === 'listening' ? 'var(--listening)' : 'var(--reading)';
 }
 function materialEmoji(m){
@@ -670,7 +624,9 @@ function materialEmoji(m){
 }
 
 /* =========================================================
-   Miniature cover
+   Miniature cover — the same little tile the main app shows
+   for a material (cover image when present, tinted emoji tile
+   otherwise).
    ========================================================= */
 function coverHTML(m, size){
   const url = (m && (m.cover_url || m.cover || m.image_url)) || '';
@@ -686,216 +642,56 @@ function coverHTML(m, size){
 }
 
 /* =========================================================
-   PHASE DETECTION — blacklist-first.
+   Phase gate — the planner ALWAYS shows only materials whose
+   phase is "In progress". There is no toggle, no setting, and
+   no way to bypass this.
 
-   The planner hides any material whose phase matches a known
-   inactive phase (Scheduled, Backlog, Planned, Finished, Paused,
-   Archived …). Everything else — including unrecognised values
-   and materials with no phase at all — stays visible, so nothing
-   silently disappears.
-
-   If your data stores phases differently, tweak the resolver or
-   the EXCLUDED_KEYS set below.
+   A material is considered "In progress" when its phase (or
+   phase_name / stage / status) matches one of the accepted
+   in-progress keywords. Materials with no phase information at
+   all are kept visible as a safety net so nothing silently
+   disappears from the planner.
    ========================================================= */
+const IN_PROGRESS_RE = /(^|[^a-z0-9])(in[ _-]?progress|inprogress|wip|active|current|ongoing|started|doing|working)([^a-z0-9]|$)/;
 
-/* Known inactive phases (compact key form — lowercase, no spaces/punct). */
-const EXCLUDED_KEYS = new Set([
-  'scheduled','schedule','sched',
-  'backlog','planned','plan','planning','upcoming','future','queued','queue',
-  'tostart','notstarted','notyetstarted','yetstarted','unstarted','upnext',
-  'paused','onhold','hold','parked','deferred','snoozed','waiting',
-  'archived','archive','completed','complete','finished','finish','done',
-  'dropped','abandoned','inactive','closed','cancelled','canceled',
-  'skipped','retired','expired'
-]);
-
-/* Friendly labels for the phase badge. */
-const PHASE_LABELS = {
-  inprogress:'In progress', in_progress:'In progress', wip:'WIP',
-  working:'Working', workingon:'Working on', ongoing:'Ongoing',
-  current:'Current', active:'Active', started:'Started',
-  reading:'Reading', listening:'Listening', watching:'Watching',
-  doing:'Doing',
-  scheduled:'Scheduled', backlog:'Backlog', planned:'Planned',
-  upcoming:'Upcoming', queued:'Queued', tostart:'To start',
-  notstarted:'Not started', paused:'Paused', onhold:'On hold',
-  archived:'Archived', completed:'Completed', finished:'Finished',
-  done:'Done', dropped:'Dropped', inactive:'Inactive', closed:'Closed',
-  cancelled:'Cancelled', canceled:'Canceled'
-};
-
-/* Compatible with "In progress", "in-progress", "in_progress", "InProgress"… */
-function compactKey(s){
-  return String(s ?? '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '');
-}
-function labelFor(key){
-  if (!key) return 'No phase';
-  if (PHASE_LABELS[key]) return PHASE_LABELS[key];
-  // Camel-ish reconstruction: capitalize the raw string instead.
-  return String(key);
-}
-
-function getPhaseList(){
-  if (!shared) return [];
-  if (Array.isArray(shared.phases)) return shared.phases;
-  if (Array.isArray(shared.phaseList)) return shared.phaseList;
-  if (Array.isArray(shared.phase_list)) return shared.phase_list;
-  if (shared.challenge){
-    if (Array.isArray(shared.challenge.phases)) return shared.challenge.phases;
-    if (Array.isArray(shared.challenge.phaseList)) return shared.challenge.phaseList;
+function phaseText(v){
+  if (v == null) return '';
+  if (typeof v === 'number') return '';           // numeric phase → unknown, keep visible
+  if (typeof v === 'object'){
+    // Prefer the human-readable name over a numeric id.
+    const raw = v.name ?? v.label ?? v.title ?? v.slug ?? v.id ?? '';
+    return String(raw).trim().toLowerCase();
   }
-  return [];
+  return String(v).trim().toLowerCase();
 }
-function phaseEndOf(rec){
-  if (!rec || typeof rec !== 'object') return '';
-  const raw = rec.end_date ?? rec.endDate ?? rec.end ?? rec.ends_on ?? rec.endsOn ??
-              rec.due ?? rec.due_date ?? rec.dueDate ?? '';
-  return raw ? String(raw).slice(0, 10) : '';
+function materialPhase(m){
+  if (!m) return '';
+  return phaseText(m.phase) || phaseText(m.phase_id) || phaseText(m.phase_name) ||
+         phaseText(m.stage) || phaseText(m.status);
 }
-function phaseNameOf(rec){
-  if (!rec) return '';
-  if (typeof rec === 'string' || typeof rec === 'number') return String(rec);
-  return String(rec.name ?? rec.label ?? rec.title ?? rec.slug ?? '').trim();
-}
-function findPhaseInList(idOrName){
-  const list = getPhaseList();
-  if (!list.length || idOrName == null) return null;
-  const s = String(idOrName);
-  const lower = s.toLowerCase();
-  return list.find(p =>
-    String(p.id) === s ||
-    String(p.slug ?? '') === s ||
-    String(p.name ?? '').toLowerCase() === lower ||
-    String(p.label ?? '').toLowerCase() === lower
-  ) || null;
-}
-
-/* Resolve { key, raw, end } for a material's phase. */
-function resolvePhase(m){
-  if (!m) return { key: '', raw: '', end: '' };
-
-  const flatEnd = m.phase_end || m.phase_end_date || m.phaseEnd || m.phaseEndDate || '';
-  const endStr  = flatEnd ? String(flatEnd).slice(0, 10) : '';
-
-  // 1. Rich phase object
-  if (m.phase && typeof m.phase === 'object'){
-    const rec = m.phase;
-    let raw = phaseNameOf(rec);
-    let end = phaseEndOf(rec) || endStr;
-    if (!raw && rec.id != null){
-      const found = findPhaseInList(rec.id);
-      if (found){ raw = phaseNameOf(found); end = end || phaseEndOf(found); }
-    }
-    return { key: compactKey(raw), raw: raw || String(rec.id ?? ''), end };
-  }
-
-  // 2. Flat fields on the material
-  const rawFlat = m.phase ?? m.phase_id ?? m.phaseId ??
-                  m.phase_name ?? m.phaseName ??
-                  m.phase_slug ?? m.phaseSlug ??
-                  m.stage ?? m.current_phase ?? m.currentPhase ?? null;
-
-  if (rawFlat == null){
-    return { key: '', raw: '', end: endStr };
-  }
-
-  // 2a. Try to resolve via the phase list
-  const found = findPhaseInList(rawFlat);
-  if (found){
-    const raw = phaseNameOf(found) || String(rawFlat);
-    return { key: compactKey(phaseNameOf(found)), raw, end: phaseEndOf(found) || endStr };
-  }
-
-  // 2b. Plain string
-  return { key: compactKey(rawFlat), raw: String(rawFlat), end: endStr };
-}
-
-/* Show only materials NOT in a known inactive phase. */
 function isInProgress(m){
-  const { key } = resolvePhase(m);
-  if (!key) return true;                 // no phase → keep visible
-  return !EXCLUDED_KEYS.has(key);
+  const p = materialPhase(m);
+  if (!p) return true;                            // no phase info → keep visible
+  return IN_PROGRESS_RE.test(p);
 }
-
+/* Count of materials that exist but are excluded by the phase gate.
+   Used only for informational copy — never to offer a way around it. */
 function countExcludedByPhase(){
   return (shared && shared.materials ? shared.materials : [])
     .filter(m => (m.status || 'active') !== 'archived')
     .filter(m => !isInProgress(m))
     .length;
 }
-
-/* End date of the current "In progress"-ish phase (best effort). */
-function currentPhaseEnd(){
-  const mats = (shared && shared.materials ? shared.materials : [])
-    .filter(m => (m.status || 'active') !== 'archived');
-  let best = null;
-  for (const m of mats){
-    const { key, end } = resolvePhase(m);
-    if (!end) continue;
-    if (EXCLUDED_KEYS.has(key)) continue;      // skip scheduled/finished
-    if (!best || end < best.end) best = { key, end };
-  }
-  if (best) return best;
-
-  for (const p of getPhaseList()){
-    const n = compactKey(phaseNameOf(p));
-    if (EXCLUDED_KEYS.has(n)) continue;
-    const end = phaseEndOf(p);
-    if (end && (!best || end < best.end)) best = { key: n, end };
-  }
-  return best;
-}
-
 /* When creating a material from here, reuse whatever phase value the
-   library already uses for an active material. */
+   library already uses for "in progress" so index.html stays happy. */
 function inferInProgressPhase(){
   const sample = (shared && shared.materials ? shared.materials : [])
     .find(m => m.phase && isInProgress(m));
-  if (sample) return sample.phase;
-  const list = getPhaseList();
-  const found = list.find(p => !EXCLUDED_KEYS.has(compactKey(phaseNameOf(p))));
-  if (found) return found.id ?? found.slug ?? found.name ?? 'in_progress';
-  return 'in_progress';
-}
-
-/* ---------- Phase badge / banner ---------- */
-function phaseBadgeHTML(m){
-  const { key, raw } = resolvePhase(m);
-  if (!key && !raw){
-    return `<span class="phase-badge unknown" title="No phase information on this material">No phase</span>`;
-  }
-  const excluded = EXCLUDED_KEYS.has(key);
-  const cls = excluded ? 'unknown' : 'ok';
-  const label = raw || labelFor(key);
-  return `<span class="phase-badge ${cls}" title="Detected phase: ${esc(label)}">${esc(label)}</span>`;
-}
-
-function phaseChipHTML(){
-  const info = currentPhaseEnd();
-  if (!info){
-    return `<span class="phase-chip muted" title="No end date is set on the current phase">
-      <span class="pc-dot"></span>In progress · no end date set
-    </span>`;
-  }
-  const days = Math.round((parseISO(info.end) - parseISO(todayISO())) / 86400000);
-  let rel;
-  if (days < 0)        rel = `${Math.abs(days)}d overdue`;
-  else if (days === 0) rel = 'ends today';
-  else if (days === 1) rel = 'ends tomorrow';
-  else                 rel = `${days}d left`;
-  return `<span class="phase-chip" title="Current phase ends ${esc(longDate(info.end))}">
-    <span class="pc-dot"></span>Phase ends ${esc(shortDate(info.end))}
-    <span class="pc-rel">· ${esc(rel)}</span>
-  </span>`;
-}
-function phaseBannerHTML(){
-  const chip = phaseChipHTML();
-  if (!chip) return '';
-  return `<div class="phase-banner">${chip}</div>`;
+  return sample ? sample.phase : 'in_progress';
 }
 
 /* =========================================================
-   Theme
+   Theme (shares esc-theme with index.html)
    ========================================================= */
 const THEME_KEY = 'esc-theme';
 const THEMES = [
@@ -916,7 +712,7 @@ function applyTheme(id){
 }
 
 /* =========================================================
-   Shared state
+   Shared state  (same key as index.html)
    ========================================================= */
 const SHARED_KEY = 'english-super-challenge-v2-clean';
 let shared = null;
@@ -956,7 +752,7 @@ function materialById(id){ return (shared.materials || []).find(m => m.id === id
 function plannedMaterials(){
   return (shared.materials || [])
     .filter(m => (m.status || 'active') !== 'archived')
-    .filter(isInProgress)
+    .filter(isInProgress)                         // ← hard gate: only In progress
     .slice()
     .sort((a, b) => {
       const ca = a.default_category === 'listening' ? 1 : 0;
@@ -970,6 +766,7 @@ function materialUnitLong(m){ return m && m.default_category === 'listening' ? '
 
 /* =========================================================
    Plan model
+   plan = { [materialId]: { weekly, days:[0-6], overrides:{ 'YYYY-MM-DD': number } } }
    ========================================================= */
 function readPlan(mid){
   const p = shared && shared.studyPlan ? shared.studyPlan[mid] : null;
@@ -1032,7 +829,10 @@ function clearOverride(mid, date){
 }
 
 /* =========================================================
-   Activity logging
+   Activity logging — ticks write real activities into the
+   shared state so Dashboard / History / Progress all see them.
+   Roadmap-created entries are tagged with origin:'roadmap' so
+   unticking only removes the ones we added.
    ========================================================= */
 function totalLogged(mid, date){
   return (shared.activities || [])
@@ -1090,6 +890,7 @@ function untickTask(mid, date){
   removeRoadmapActivities(mid, date);
   saveShared();
 }
+/* Keep a roadmap entry in sync when its scheduled amount changes (override edit). */
 function syncRoadmapActivity(mid, date){
   const existing = roadmapActivities(mid, date);
   if (!existing.length) return;
@@ -1183,6 +984,7 @@ let currentView = 'daily';
 let selectedDate = todayISO();
 let selectedWeekStart = startOfWeekISO(todayISO());
 
+/* Weekly-plan visibility toggle (persisted) */
 const PLAN_VIS_KEY = 'esc-roadmap-show-plan';
 let showPlanEditor = true;
 try {
@@ -1277,7 +1079,7 @@ function taskRowHTML(iso, task){
     <span class="task-main">
       <span class="task-title">${esc(m.title)}</span>
       <span class="task-sub">
-        ${phaseBadgeHTML(m)}${esc((TYPES[m.default_input_type] || { label: 'Other' }).label)} · ${esc(m.creator || '—')}${overridden ? ' · <b>custom</b>' : ''}
+        ${esc((TYPES[m.default_input_type] || { label: 'Other' }).label)} · ${esc(m.creator || '—')}${overridden ? ' · <b>custom</b>' : ''}
       </span>
     </span>
     <span class="task-amount-edit" data-no-toggle>
@@ -1391,8 +1193,6 @@ function viewDaily(){
     </div>
   </div>
 
-  ${phaseBannerHTML()}
-
   <div class="grid cols-2">
     ${progressCardHTML('Reading today', 'reading', t.readDone, t.readPlan, '%')}
     ${progressCardHTML('Listening today', 'listening', t.listenDone, t.listenPlan, 'min')}
@@ -1432,7 +1232,7 @@ function viewDaily(){
     appears so you can reset back to the plan.<br>
     Ticks are written into the shared activity log, so they count toward
     <b>Dashboard</b>, <b>History</b> and <b>Progress</b> in the main app.<br>
-    Materials in <b>Scheduled</b> or other inactive phases are hidden.
+    This planner always shows only materials whose phase is <b>In progress</b>.
   </p>`;
 }
 
@@ -1447,8 +1247,6 @@ function planRowHTML(m){
   const overrideCount = Object.keys(p.overrides || {}).length;
   const step = weeklyStep(m);
   const tint = materialTint(m);
-  const phaseInfo = resolvePhase(m);
-  const phaseEndTxt = phaseInfo.end ? ` · ends ${shortDate(phaseInfo.end)}` : '';
 
   return `
   <div class="plan-row ${active ? '' : 'inactive'}"
@@ -1458,7 +1256,7 @@ function planRowHTML(m){
       ${coverHTML(m, 32)}
       <span class="pr-mat-txt">
         <span class="pr-title">${esc(m.title)}</span>
-        <span class="pr-cat">${phaseBadgeHTML(m)}${m.default_category === 'listening' ? 'Listening' : 'Reading'}${phaseEndTxt ? `<span class="pr-phase-end">${esc(phaseEndTxt)}</span>` : ''}</span>
+        <span class="pr-cat">${m.default_category === 'listening' ? 'Listening' : 'Reading'}</span>
       </span>
     </div>
 
@@ -1509,18 +1307,18 @@ function planEditorHTML(){
   const excluded = countExcludedByPhase();
 
   if (!mats.length){
-    const nothingActive = excluded > 0;
+    const nothingInProgress = excluded > 0;
     return `
     <div class="card" style="margin-bottom:14px">
       <div class="card-head">
         <h2>Weekly plan</h2>
       </div>
       <div class="empty">
-        <span class="em-icon">${nothingActive ? '⏳' : '📚'}</span>
-        <div class="em-title">${nothingActive ? 'No active materials' : 'No materials yet'}</div>
+        <span class="em-icon">${nothingInProgress ? '⏳' : '📚'}</span>
+        <div class="em-title">${nothingInProgress ? 'No materials in progress' : 'No materials yet'}</div>
         <div class="em-sub">
-          ${nothingActive
-            ? `${excluded} material${excluded === 1 ? '' : 's'} ${excluded === 1 ? 'is' : 'are'} in <b>Scheduled</b> or another inactive phase, so ${excluded === 1 ? 'it is' : 'they are'} not shown here. Move ${excluded === 1 ? 'it' : 'them'} to an active phase in the main app to plan.`
+          ${nothingInProgress
+            ? `${excluded} material${excluded === 1 ? '' : 's'} exist but ${excluded === 1 ? 'is' : 'are'} not in the <b>In progress</b> phase, so ${excluded === 1 ? 'it is' : 'they are'} not shown here. Move them into <b>In progress</b> in the main app to plan them.`
             : 'Add materials in the main app, or create one right here to start planning.'}
         </div>
         <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
@@ -1547,8 +1345,8 @@ function planEditorHTML(){
       Set a <b>weekly target</b> for each material and pick the <b>days</b> you want to study it.
       The per-day amount is calculated automatically as <b>weekly ÷ active days</b>.
       You can override any single day from the <b>Daily</b> tab.
-      Materials in <b>Scheduled</b> (and other inactive phases) are hidden.
-      ${excluded ? `<br><span style="color:var(--muted)">${excluded} material${excluded === 1 ? '' : 's'} in inactive phases ${excluded === 1 ? 'is' : 'are'} hidden.</span>` : ''}
+      Only materials whose phase is <b>In progress</b> appear here.
+      ${excluded ? `<br><span style="color:var(--muted)">${excluded} material${excluded === 1 ? '' : 's'} in other phases ${excluded === 1 ? 'is' : 'are'} hidden.</span>` : ''}
     </p>
     <div class="plan-table">
       <div class="plan-row plan-head">
@@ -1571,7 +1369,7 @@ function planHiddenBarHTML(){
       <h2>Weekly plan</h2>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <span class="pc-meta">
-          ${active} material${active === 1 ? '' : 's'} with a target${excluded ? ` · ${excluded} in inactive phases` : ''}
+          ${active} material${active === 1 ? '' : 's'} with a target${excluded ? ` · ${excluded} in other phases` : ''}
         </span>
         <button class="btn btn-ghost btn-sm" data-action="toggle-plan-editor">Show</button>
       </div>
@@ -1747,8 +1545,6 @@ function viewWeekly(){
     </div>
   </div>
 
-  ${phaseBannerHTML()}
-
   <div class="grid cols-3">
     <div class="card">
       <div class="stat-label">Weekly reading</div>
@@ -1798,7 +1594,7 @@ function viewWeekly(){
   <p class="footnote">
     Edit the <b>weekly target</b> or the <b>active days</b> above — the per-day amount and every
     progress bar update instantly.<br>
-    Materials in <b>Scheduled</b> or other inactive phases are hidden from the planner.<br>
+    This planner always shows only materials whose phase is <b>In progress</b>.<br>
     The plan lives inside the same shared state as the main app, so it travels with JSON backups.
   </p>`;
 }
@@ -1888,7 +1684,7 @@ function openAddMaterialModal(){
           </select>
         </div>
         <p class="hint" style="margin:0 0 8px">
-          The material is added to the shared library with an <b>active</b> phase —
+          The material is added to the shared library with the <b>In progress</b> phase —
           it will show up in the main app as well.
         </p>
         <div class="modal-actions">
@@ -1927,12 +1723,15 @@ function openAddMaterialModal(){
    Events
    ========================================================= */
 document.addEventListener('click', e => {
+  /* ---- Theme ---- */
   const themeBtn = e.target.closest('[data-theme-pick]');
   if (themeBtn){ applyTheme(themeBtn.dataset.themePick); render(); return; }
 
+  /* ---- Tabs ---- */
   const tab = e.target.closest('#tabs button[data-view]');
   if (tab){ currentView = tab.dataset.view; render(); return; }
 
+  /* ---- Daily amount steppers (must run before the row toggle) ---- */
   const dayStep = e.target.closest('[data-day-step]');
   if (dayStep){
     e.stopPropagation();
@@ -1953,6 +1752,7 @@ document.addEventListener('click', e => {
     return;
   }
 
+  /* ---- Weekly target steppers ---- */
   const wkStep = e.target.closest('[data-weekly-step]');
   if (wkStep){
     const mid = wkStep.dataset.mid;
@@ -1967,6 +1767,7 @@ document.addEventListener('click', e => {
     return;
   }
 
+  /* ---- Active day toggles ---- */
   const dayPill = e.target.closest('[data-toggle-day]');
   if (dayPill){
     const mid = dayPill.dataset.mid;
@@ -1980,6 +1781,7 @@ document.addEventListener('click', e => {
     return;
   }
 
+  /* ---- Toggle a task (only outside the amount editor) ---- */
   const taskEl = e.target.closest('[data-toggle-task]');
   if (taskEl && !e.target.closest('[data-no-toggle]')){
     const mid = taskEl.dataset.toggleTask;
@@ -1990,6 +1792,7 @@ document.addEventListener('click', e => {
     return;
   }
 
+  /* ---- Pick a day ---- */
   const pickDay = e.target.closest('[data-pick-day]');
   if (pickDay){
     selectedDate = pickDay.dataset.pickDay;
@@ -2000,6 +1803,7 @@ document.addEventListener('click', e => {
     return;
   }
 
+  /* ---- Navigation ---- */
   const shiftDay = e.target.closest('[data-shift-day]');
   if (shiftDay){
     selectedDate = addDays(selectedDate, Number(shiftDay.dataset.shiftDay));
@@ -2037,6 +1841,7 @@ document.addEventListener('click', e => {
     return;
   }
 
+  /* ---- Complete / clear a whole day ---- */
   const completeDay = e.target.closest('[data-complete-day]');
   if (completeDay){
     const iso = completeDay.dataset.completeDay;
@@ -2051,6 +1856,7 @@ document.addEventListener('click', e => {
     return;
   }
 
+  /* ---- Modal + toolbar actions ---- */
   const actionEl = e.target.closest('[data-action]');
   if (actionEl){
     const action = actionEl.dataset.action;
@@ -2072,6 +1878,7 @@ document.addEventListener('click', e => {
   }
 });
 
+/* Number inputs commit on change (blur / Enter) so typing isn't interrupted */
 document.addEventListener('change', e => {
   const t = e.target;
   if (!t || !t.matches) return;
@@ -2096,6 +1903,7 @@ document.addEventListener('change', e => {
   }
 });
 
+/* Keyboard: Enter / Space toggles tasks and day cards */
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && $('#modalRoot').innerHTML){ closeModal(); return; }
   if (e.key !== 'Enter' && e.key !== ' ') return;
@@ -2122,6 +1930,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
+/* Live sync: react to writes from index.html in another tab */
 window.addEventListener('storage', e => {
   if (e.key === SHARED_KEY){
     const next = loadShared();
