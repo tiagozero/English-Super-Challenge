@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="sand">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Study Plan — Functional Demo</title>
+<style>
+  /* =========================================================
+     Themes
+     ========================================================= */
+  :root, html[data-theme="sand"]{
+    --bg:#FAF7F3; --surface:#FFFFFF; --surface-2:#F4EFE9; --line:#EAE2D8;
+    --text:#26211C; --muted:#8A7F73; --reading:#C2703D; --reading-2:#D89A6C;
+    --listening:#3F7A6E; --listening-2:#66A093; --xp:#A9855C;
+    --good-bg:#E2F0E9;  --good-fg:#2F6B54;
+    --warn-bg:#FBF0DC;  --warn-fg:#8A6420;
+    --bad-bg:#FBE6E1;   --bad-fg:#9C4230;
+    --info-bg:#EAEFF5;  --info-fg:#3E5B78;
+    --neutral-bg:#F0ECE6; --neutral-fg:#8A7F73;
+    --tag-bg:#F1E7DC;   --tag-fg:#8A5A2B;
+    --hover-line:#D6C7B4; --focus-line:#CDBBA6; --dash-line:#C9B9A6;
+    --bar-bg:#E5DCD0;
+    --hdr-bg:rgba(250,247,243,.88); --backdrop:rgba(38,33,28,.34);
+    --on-accent:#FFFFFF;
+    --shadow:0 1px 2px rgba(38,33,28,.04), 0 10px 26px -16px rgba(38,33,28,.28);
+    --radius:16px; color-scheme:light;
+  }
+  html[data-theme="mint"]{
+    --bg:#F3F8F4; --surface:#FFFFFF; --surface-2:#E9F1EB; --line:#DAE7DE;
+    --text:#1A2620; --muted:#6E8378; --reading:#2F7A57; --reading-2:#68A98A;
+    --listening:#2F6E8A; --listening-2:#6EA0B8; --xp:#7A8C4A;
+    --good-bg:#DDF0E4; --good-fg:#25674A; --warn-bg:#F7EFD9; --warn-fg:#836018;
+    --bad-bg:#F9E3DD; --bad-fg:#943D2B; --info-bg:#E2EEF3; --info-fg:#356278;
+    --neutral-bg:#EBEFEA; --neutral-fg:#6E8378; --tag-bg:#E2EFE6; --tag-fg:#2F6B50;
+    --hover-line:#C4D6CB; --focus-line:#B6CCBF; --dash-line:#B6CCBF;
+    --bar-bg:#DCE8E0; --hdr-bg:rgba(243,248,244,.88); --backdrop:rgba(20,35,27,.34);
+    --on-accent:#FFFFFF;
+    --shadow:0 1px 2px rgba(26,38,32,.04), 0 10px 26px -16px rgba(26,38,32,.25);
+    color-scheme:light;
+  }
+  html[data-theme="lavender"]{
+    --bg:#F8F6FC; --surface:#FFFFFF; --surface-2:#F0EBF7; --line:#E3DCF0;
+    --text:#211C2B; --muted:#7C7489; --reading:#7A5EA8; --reading-2:#A98FD0;
+    --listening:#3E7C8A; --listening-2:#74A7B3; --xp:#A9855C;
+    --good-bg:#E4F0E8; --good-fg:#2E6B52; --warn-bg:#FBF0DC; --warn-fg:#8A6420;
+    --bad-bg:#FBE6E1; --bad-fg:#9C4230; --info-bg:#E7E9F6; --info-fg:#47528F;
+    --neutral-bg:#EDE9F1; --neutral-fg:#7C7489; --tag-bg:#EDE4F6; --tag-fg:#6A4E9A;
+    --hover-line:#CFC4E0; --focus-line:#C0B2D6; --dash-line:#C0B2D6;
+    --bar-bg:#E3DAF0; --hdr-bg:rgba(248,246,252,.88); --backdrop:rgba(28,22,40,.34);
+    --on-accent:#FFFFFF;
+    --shadow:0 1px 2px rgba(33,28,43,.04), 0 10px 26px -16px rgba(33,28,43,.28);
+    color-scheme:light;
+  }
+  html[data-theme="midnight"]{
+    --bg:#11141A; --surface:#181D25; --surface-2:#212832; --line:#2C3542;
+    --text:#E7ECF3; --muted:#8A95A6; --reading:#E29A62; --reading-2:#B9743F;
+    --listening:#63B3A2; --listening-2:#3F7A6E; --xp:#CBA97C;
+    --good-bg:#17352A; --good-fg:#7FD3AD; --warn-bg:#382C15; --warn-fg:#E8C377;
+    --bad-bg:#3A1E19; --bad-fg:#EFA08A; --info-bg:#1B2A3A; --info-fg:#96BEE6;
+    --neutral-bg:#262C35; --neutral-fg:#9AA4B2; --tag-bg:#38291B; --tag-fg:#E5BA85;
+    --hover-line:#3B4653; --focus-line:#4A5765; --dash-line:#4A5765;
+    --bar-bg:#2C3542; --hdr-bg:rgba(17,20,26,.88); --backdrop:rgba(0,0,0,.58);
+    --on-accent:#14181E;
+    --shadow:0 1px 2px rgba(0,0,0,.32), 0 10px 26px -16px rgba(0,0,0,.72);
+    color-scheme:dark;
+  }
+  html[data-theme="espresso"]{
+    --bg:#16120F; --surface:#1F1A15; --surface-2:#2A231C; --line:#392F26;
+    --text:#F0E8DF; --muted:#9E9184; --reading:#E39A62; --reading-2:#B9743F;
+    --listening:#6FB6A6; --listening-2:#3F7A6E; --xp:#CFAC7C;
+    --good-bg:#1B352A; --good-fg:#84D2AE; --warn-bg:#3A2D16; --warn-fg:#EAC57B;
+    --bad-bg:#3C1F19; --bad-fg:#F0A48D; --info-bg:#2A2A38; --info-fg:#A0B4D8;
+    --neutral-bg:#2C2520; --neutral-fg:#A69A8C; --tag-bg:#3A2A1A; --tag-fg:#E5BA85;
+    --hover-line:#463A2F; --focus-line:#54463A; --dash-line:#54463A;
+    --bar-bg:#392F26; --hdr-bg:rgba(22,18,15,.88); --backdrop:rgba(0,0,0,.6);
+    --on-accent:#1A1512;
+    --shadow:0 1px 2px rgba(0,0,0,.38), 0 10px 26px -16px rgba(0,0,0,.78);
+    color-scheme:dark;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--text);font-size:15px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;transition:background .2s ease,color .2s ease;
+  }
+  button{font-family:inherit}
+
+  /* ---------- Header ---------- */
+  .hdr{
+    position:sticky;top:0;z-index:50;background:var(--hdr-bg);
+    backdrop-filter:saturate(180%) blur(14px);-webkit-backdrop-filter:saturate(180%) blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .hdr-top{
+    max-width:1080px;margin:0 auto;padding:14px 20px 10px;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+  }
+  .brand{display:flex;align-items:center;gap:11px;min-width:0}
+  .mark{
+    width:36px;height:36px;flex:0 0 auto;border-radius:11px;
+    background:linear-gradient(140deg,var(--reading-2),var(--reading));
+    color:var(--on-accent);font-size:11px;font-weight:800;letter-spacing:.06em;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 14px -6px color-mix(in srgb,var(--reading) 70%,transparent);
+  }
+  .brand-txt h1{font-size:15.5px;font-weight:650;letter-spacing:-.01em}
+  .brand-txt p{font-size:12.5px;color:var(--muted)}
+  .hdr-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+  .theme-dots{display:flex;gap:6px;align-items:center;padding:5px 9px;background:var(--surface);
+    border:1px solid var(--line);border-radius:999px}
+  .tdot{width:16px;height:16px;border-radius:50%;border:2px solid transparent;cursor:pointer;
+    transition:transform .12s ease;padding:0}
+  .tdot:hover{transform:scale(1.15)}
+  .tdot.active{border-color:var(--text);box-shadow:0 0 0 2px var(--surface)}
+  @media(max-width:640px){ .theme-dots{display:none} }
+
+  .tabs{
+    max-width:1080px;margin:0 auto;padding:0 20px 10px;
+    display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;
+  }
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs button{
+    flex:0 0 auto;border:0;background:transparent;padding:7px 16px;border-radius:999px;
+    font-size:13.5px;font-weight:550;color:var(--muted);cursor:pointer;
+    transition:background .15s,color .15s;
+  }
+  .tabs button:hover{color:var(--text)}
+  .tabs button.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
+
+  /* ---------- Layout ---------- */
+  main{max-width:1080px;margin:0 auto;padding:20px 20px 90px}
+  .grid{display:grid;gap:14px;margin-bottom:14px}
+  .cols-2{grid-template-columns:1fr}
+  .cols-3{grid-template-columns:1fr}
+  @media(min-width:780px){
+    .cols-2{grid-template-columns:1fr 1fr}
+    .cols-3{grid-template-columns:repeat(3,1fr)}
+  }
+  .card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px;box-shadow:var(--shadow);
+  }
+  .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+  .card-head h2{font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+  .mono{font-variant-numeric:tabular-nums}
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    border:1px solid transparent;border-radius:11px;padding:9px 15px;font-size:13.5px;
+    font-weight:600;cursor:pointer;white-space:nowrap;
+    transition:transform .08s ease,filter .15s ease,background .15s ease;
+  }
+  .btn:active{transform:scale(.975)}
+  .btn-primary{background:var(--reading);color:var(--on-accent);
+    box-shadow:0 6px 16px -8px color-mix(in srgb,var(--reading) 75%,transparent)}
+  .btn-primary:hover{filter:brightness(1.06)}
+  .btn-ghost{background:transparent;color:var(--muted);border-color:var(--line)}
+  .btn-ghost:hover{background:var(--surface-2);color:var(--text)}
+  .btn-sm{padding:6px 11px;font-size:12.5px;border-radius:9px}
+  .icon-btn{
+    width:34px;height:34px;border-radius:10px;border:1px solid var(--line);
+    background:var(--surface);color:var(--muted);font-size:14px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s;
+  }
+  .icon-btn:hover{background:var(--surface-2);color:var(--text)}
+
+  /* ---------- Nav bar ---------- */
+  .nav-bar{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    background:linear-gradient(90deg,color-mix(in srgb,var(--reading) 10%,transparent),
+      color-mix(in srgb,var(--reading) 2%,transparent));
+    border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-bottom:14px;
+    flex-wrap:wrap;
+  }
+  .nav-bar .nb-main{display:flex;align-items:center;gap:14px;min-width:0}
+  .nav-bar .nb-date{display:flex;flex-direction:column;min-width:0}
+  .nav-bar .nb-k{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .nav-bar .nb-v{font-size:17px;font-weight:680;letter-spacing:-.015em}
+  .nav-bar .nb-sub{font-size:12.5px;color:var(--muted);margin-top:1px}
+  .nav-bar .nb-btns{display:flex;gap:6px;align-items:center}
+
+  /* ---------- Week strip ---------- */
+  .week-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:14px}
+  .ws-day{
+    border:1px solid var(--line);background:var(--surface);border-radius:12px;
+    padding:9px 6px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;
+  }
+  .ws-day:hover{border-color:var(--hover-line)}
+  .ws-day .ws-dow{font-size:10px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+  .ws-day .ws-num{font-size:16px;font-weight:700;margin-top:2px}
+  .ws-day .ws-dot{width:6px;height:6px;border-radius:50%;background:var(--bar-bg);margin:5px auto 0}
+  .ws-day.today{border-color:var(--reading);background:color-mix(in srgb,var(--reading) 8%,var(--surface))}
+  .ws-day.today .ws-num{color:var(--reading)}
+  .ws-day.selected{box-shadow:0 0 0 3px color-mix(in srgb,var(--reading) 20%,transparent)}
+  .ws-day.past{opacity:.72}
+
+  /* ---------- Progress ---------- */
+  .prog-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:8px}
+  .prog-top .pt-label{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .prog-top .pt-val{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--muted)}
+  .big-numbers{display:flex;align-items:baseline;gap:7px;margin-bottom:12px;flex-wrap:wrap}
+  .big-numbers strong{font-size:28px;font-weight:680;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+  .big-numbers span{font-size:13.5px;color:var(--muted)}
+  .bar{position:relative;height:10px;background:var(--surface-2);border-radius:999px;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:999px;transition:width .45s cubic-bezier(.4,0,.2,1)}
+  .bar.reading i{background:linear-gradient(90deg,var(--reading-2),var(--reading))}
+  .bar.listening i{background:linear-gradient(90deg,var(--listening-2),var(--listening))}
+
+  /* ---------- Task list ---------- */
+  .task-group{margin-bottom:6px}
+  .task-group-head{display:flex;align-items:center;gap:9px;margin:16px 2px 8px}
+  .task-group-head:first-child{margin-top:0}
+  .gdot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+  .gdot.reading{background:var(--reading)}
+  .gdot.listening{background:var(--listening)}
+  .task-group-head .gt{font-size:11.5px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .task-group-head .gn{font-size:11px;font-weight:700;color:var(--muted);background:var(--surface-2);
+    padding:2px 9px;border-radius:999px;font-variant-numeric:tabular-nums}
+  .task-group-head .gline{flex:1;height:1px;background:var(--line);border-radius:1px}
+
+  .task-row{
+    display:flex;align-items:center;gap:12px;padding:10px 12px;margin-bottom:8px;
+    border:1px solid var(--line);border-radius:13px;background:var(--surface);
+    cursor:pointer;transition:border-color .15s,background .15s;
+    border-left:3px solid var(--task-color,var(--line));
+  }
+  .task-row:hover{border-color:var(--hover-line)}
+  .task-row.done{background:color-mix(in srgb,var(--good-bg) 45%,var(--surface));
+    border-color:color-mix(in srgb,var(--good-fg) 22%,var(--line));
+    border-left-color:var(--good-fg)}
+  .task-check{
+    width:20px;height:20px;flex:0 0 auto;border-radius:6px;border:1.5px solid var(--line);
+    background:var(--surface);display:flex;align-items:center;justify-content:center;
+    font-size:12px;color:transparent;transition:all .15s ease;
+  }
+  .task-row.done .task-check{background:var(--good-fg);border-color:var(--good-fg);color:var(--on-accent)}
+  .task-icon{
+    width:36px;height:36px;flex:0 0 auto;border-radius:10px;display:flex;
+    align-items:center;justify-content:center;font-size:17px;color:#fff;
+  }
+  .task-main{flex:1;min-width:0}
+  .task-title{font-size:14px;font-weight:620;letter-spacing:-.005em;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;display:block}
+  .task-row.done .task-title{color:var(--muted);text-decoration:line-through}
+  .task-sub{font-size:11.5px;color:var(--muted);margin-top:1px;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;display:block}
+  .task-sub b{color:var(--reading);font-weight:700}
+
+  /* amount editor inside a task row */
+  .task-amount-edit{
+    display:flex;align-items:center;gap:3px;flex:0 0 auto;
+    background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:3px;
+  }
+  .amt-btn{
+    width:24px;height:24px;border-radius:6px;border:0;background:transparent;
+    color:var(--muted);font-size:15px;font-weight:700;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;padding:0;line-height:1;
+    transition:background .12s,color .12s;
+  }
+  .amt-btn:hover{background:var(--surface);color:var(--text)}
+  .amt-input{
+    width:46px;border:0;background:transparent;text-align:center;font-size:14px;
+    font-weight:750;font-variant-numeric:tabular-nums;color:var(--text);outline:none;padding:0;
+    -moz-appearance:textfield;font-family:inherit;
+  }
+  .amt-input::-webkit-outer-spin-button,
+  .amt-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .amt-input:focus{color:var(--reading)}
+  .amt-unit{font-size:11px;color:var(--muted);font-weight:650;padding-right:2px;white-space:nowrap}
+  .amt-reset{
+    width:22px;height:22px;border-radius:6px;border:0;background:transparent;
+    color:var(--reading);font-size:12px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;padding:0;
+  }
+  .amt-reset:hover{background:var(--surface)}
+
+  /* ---------- Stat tiles ---------- */
+  .stat-label{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .stat-value{font-size:26px;font-weight:680;letter-spacing:-.025em;margin-top:6px;font-variant-numeric:tabular-nums}
+  .stat-value small{font-size:13px;font-weight:550;color:var(--muted);letter-spacing:0}
+  .stat-sub{font-size:12.5px;color:var(--muted);margin-top:3px}
+
+  .empty{padding:28px 16px;text-align:center;color:var(--muted);font-size:13px}
+  .empty .em-icon{font-size:28px;opacity:.5;display:block;margin-bottom:10px}
+
+  /* =========================================================
+     PLAN EDITOR
+     ========================================================= */
+  .plan-hint{font-size:12.5px;color:var(--muted);line-height:1.55;margin:0 0 16px}
+  .plan-table{display:flex;flex-direction:column}
+  .plan-row{
+    --mc:var(--reading);
+    display:grid;
+    grid-template-columns: minmax(150px,1.6fr) minmax(170px,1.15fr) minmax(200px,1.5fr) minmax(90px,.8fr);
+    gap:14px;align-items:center;
+    padding:11px 0;border-bottom:1px solid var(--line);
+    transition:opacity .2s;
+  }
+  .plan-row:first-child{padding-top:0}
+  .plan-row:last-child{border-bottom:0;padding-bottom:0}
+  .plan-row.inactive{opacity:.55}
+  .plan-head{
+    font-size:10.5px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--muted);padding-bottom:10px;border-bottom:1px solid var(--line);
+    grid-template-columns: minmax(150px,1.6fr) minmax(170px,1.15fr) minmax(200px,1.5fr) minmax(90px,.8fr);
+  }
+
+  .pr-mat{display:flex;align-items:center;gap:10px;min-width:0}
+  .pr-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;
+    justify-content:center;font-size:15px;flex:0 0 auto;color:#fff}
+  .pr-mat-txt{min-width:0}
+  .pr-title{font-size:13.5px;font-weight:620;white-space:nowrap;overflow:hidden;
+    text-overflow:ellipsis;display:block}
+  .pr-cat{font-size:10px;color:var(--muted);text-transform:uppercase;
+    letter-spacing:.06em;font-weight:700;margin-top:1px;display:block}
+
+  .pr-target{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .stepper{display:flex;align-items:center;gap:3px;background:var(--surface-2);
+    border:1px solid var(--line);border-radius:10px;padding:3px}
+  .step-btn{width:26px;height:26px;border-radius:7px;border:0;background:var(--surface);
+    color:var(--text);font-size:15px;font-weight:700;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;line-height:1;padding:0;
+    box-shadow:0 1px 2px rgba(0,0,0,.06);transition:background .12s,color .12s}
+  .step-btn:hover{background:var(--mc);color:var(--on-accent)}
+  .step-input{width:56px;border:0;background:transparent;text-align:center;font-size:14.5px;
+    font-weight:750;font-variant-numeric:tabular-nums;color:var(--text);outline:none;padding:0;
+    -moz-appearance:textfield;font-family:inherit}
+  .step-input::-webkit-outer-spin-button,
+  .step-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .step-input:focus{color:var(--mc)}
+  .pr-unit{font-size:11px;color:var(--muted);font-weight:650;white-space:nowrap}
+
+  .pr-days{display:flex;gap:4px;flex-wrap:wrap}
+  .day-pill{
+    width:29px;height:29px;border-radius:9px;border:1px solid var(--line);
+    background:var(--surface);color:var(--muted);font-size:11px;font-weight:750;
+    cursor:pointer;transition:all .15s;padding:0;font-family:inherit;
+  }
+  .day-pill:hover{border-color:var(--mc);color:var(--text)}
+  .day-pill.on{background:var(--mc);border-color:var(--mc);color:var(--on-accent)}
+  .day-pill:focus-visible{outline:2px solid var(--mc);outline-offset:1px}
+
+  .pr-daily{text-align:right;min-width:0}
+  .pr-daily-val{font-size:15px;font-weight:750;font-variant-numeric:tabular-nums;display:block}
+  .pr-daily-val.custom{color:var(--reading)}
+  .pr-daily-sub{font-size:10.5px;color:var(--muted);display:block;margin-top:1px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  @media(max-width:780px){
+    .plan-row{grid-template-columns:1fr;gap:9px;padding:14px 0}
+    .plan-head{display:none}
+    .pr-daily{text-align:left}
+    .pr-target{justify-content:flex-start}
+  }
+
+  /* =========================================================
+     WEEK CALENDAR
+     ========================================================= */
+  .week-calendar{overflow-x:auto;margin:0 -6px;padding:0 6px 4px;-webkit-overflow-scrolling:touch}
+  .week-calendar::-webkit-scrollbar{height:8px}
+  .week-calendar::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+  .week-calendar::-webkit-scrollbar-track{background:transparent}
+
+  .wc-table{width:100%;min-width:680px;border-collapse:separate;border-spacing:0;font-size:12.5px}
+
+  .wc-th{
+    font-size:10.5px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--muted);padding:8px 6px 10px;text-align:center;
+    border-bottom:1.5px solid var(--line);background:var(--surface);
+    white-space:nowrap;vertical-align:bottom;
+  }
+  .wc-th.wc-material-col{text-align:left;padding-left:0;min-width:170px}
+  .wc-th[data-pick-day]{cursor:pointer;transition:background .15s;border-radius:10px 10px 0 0}
+  .wc-th[data-pick-day]:hover{background:var(--surface-2)}
+  .wc-th[data-pick-day]:focus-visible{outline:2px solid var(--reading);outline-offset:-2px}
+  .wc-th.today{color:var(--reading)}
+  .wc-th.past{opacity:.62}
+  .wc-dow{display:block;font-size:10px;font-weight:750;letter-spacing:.08em}
+  .wc-day-num{display:block;font-size:15px;font-weight:700;color:var(--text);
+    letter-spacing:-.01em;margin-top:2px;font-variant-numeric:tabular-nums}
+  .wc-th.today .wc-day-num{color:var(--reading)}
+  .wc-th.wc-total-col{min-width:78px;text-align:right;padding-right:0}
+
+  .wc-row-head{
+    display:flex;align-items:center;gap:9px;padding:9px 10px 9px 0;
+    border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:middle;
+    font-size:12.5px;font-weight:620;color:var(--text);
+  }
+  .wc-icon{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;
+    justify-content:center;font-size:13px;color:#fff;flex:0 0 auto}
+  .wc-title{overflow:hidden;text-overflow:ellipsis;max-width:130px}
+
+  .wc-cell{padding:6px 5px;text-align:center;border-bottom:1px solid var(--line);
+    border-left:1px solid var(--line);vertical-align:middle;transition:background .15s}
+  .wc-cell.past{background:color-mix(in srgb,var(--surface-2) 40%,transparent)}
+  .wc-cell.today{background:color-mix(in srgb,var(--reading) 7%,transparent)}
+
+  .wc-task{
+    display:inline-flex;align-items:center;justify-content:center;gap:3px;
+    width:100%;min-width:44px;border:0;border-radius:8px;padding:6px 4px;
+    font-family:inherit;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;
+    cursor:pointer;color:var(--task-color,var(--reading));
+    background:color-mix(in srgb,var(--task-color,var(--reading)) 15%,transparent);
+    transition:background .15s,transform .08s,color .15s;
+  }
+  .wc-task:hover{background:color-mix(in srgb,var(--task-color,var(--reading)) 27%,transparent)}
+  .wc-task:active{transform:scale(.93)}
+  .wc-task:focus-visible{outline:2px solid var(--task-color,var(--reading));outline-offset:1px}
+  .wc-task.done{background:color-mix(in srgb,var(--good-fg) 18%,transparent);color:var(--good-fg)}
+  .wc-task.done::after{content:'✓';font-size:10px;margin-left:1px}
+  .wc-task.custom{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--task-color,var(--reading)) 55%,transparent)}
+
+  .wc-total{text-align:right;padding-right:0;padding-left:8px;
+    border-left:1.5px solid var(--line);min-width:78px}
+  .wc-total-val{font-size:12px;font-weight:750;font-variant-numeric:tabular-nums;
+    color:var(--text);margin-bottom:5px}
+  .wc-total-bar{height:4px;background:var(--bar-bg);border-radius:99px;overflow:hidden}
+  .wc-total-bar i{display:block;height:100%;border-radius:99px;background:var(--reading);
+    transition:width .4s ease}
+
+  .wc-footer .wc-row-head,
+  .wc-footer .wc-cell{border-bottom:0;padding-top:12px}
+  .wc-footer-head{font-size:10.5px;font-weight:750;letter-spacing:.07em;
+    text-transform:uppercase;color:var(--muted)}
+  .wc-footer-count{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--muted)}
+  .wc-footer-count.complete{color:var(--good-fg)}
+  .wc-footer-bar{height:4px;background:var(--bar-bg);border-radius:99px;
+    overflow:hidden;margin-top:5px}
+  .wc-footer-bar i{display:block;height:100%;border-radius:99px;
+    background:linear-gradient(90deg,var(--reading-2),var(--reading));transition:width .4s ease}
+
+  /* ---------- Material queue ---------- */
+  .mq-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .mq-item:last-child{border-bottom:0;padding-bottom:0}
+  .mq-item:first-child{padding-top:0}
+  .mq-icon{width:40px;height:40px;border-radius:11px;flex:0 0 auto;display:flex;
+    align-items:center;justify-content:center;font-size:19px;color:#fff}
+  .mq-main{flex:1;min-width:0}
+  .mq-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  .mq-title{font-size:14px;font-weight:620;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mq-pct{font-size:12.5px;font-weight:750;font-variant-numeric:tabular-nums;
+    color:var(--reading);flex:0 0 auto}
+  .mq-sub{font-size:12px;color:var(--muted);margin:2px 0 7px}
+  .mq-bar{height:7px;background:var(--bar-bg);border-radius:99px;overflow:hidden}
+  .mq-bar i{display:block;height:100%;border-radius:99px;
+    background:var(--task-color,var(--reading));transition:width .4s ease}
+
+  .footnote{font-size:12px;color:var(--muted);text-align:center;margin-top:22px;line-height:1.6}
+  .footnote b{color:var(--text)}
+
+  @media(max-width:640px){
+    main{padding:16px 14px 80px}
+    .hdr-top{padding:12px 14px 8px}
+    .tabs{padding:0 14px 9px}
+    .card{padding:16px}
+    .week-strip{gap:4px}
+    .ws-day{padding:7px 3px;border-radius:10px}
+    .ws-day .ws-num{font-size:14px}
+    .task-row{flex-wrap:wrap;padding:11px}
+    .task-icon{width:32px;height:32px;font-size:15px}
+    .task-amount-edit{flex:1 1 100%;justify-content:center;margin-top:6px}
+    .wc-table{min-width:620px}
+    .wc-th.wc-material-col{min-width:140px}
+    .wc-title{max-width:100px}
+  }
+</style>
+<script>
+  (function(){
+    try {
+      var t = localStorage.getItem('sp-theme') || 'sand';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch(e){ document.documentElement.setAttribute('data-theme','sand'); }
+  })();
+</script>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-top">
+    <div class="brand">
+      <div class="mark">SP</div>
+      <div class="brand-txt">
+        <h1>Study Plan</h1>
+        <p id="hdrSub">Demo</p>
+      </div>
+    </div>
+    <div class="hdr-actions">
+      <div class="theme-dots" id="themeDots"></div>
+      <button class="btn btn-ghost btn-sm" id="resetBtn">Reset demo</button>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-view="daily" class="active">Daily</button>
+    <button data-view="weekly">Weekly</button>
+  </nav>
+</header>
+
+<main id="app"></main>
+
+<script>
+/* =========================================================
+   Utilities
+   ========================================================= */
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const clamp = (n,a,b) => Math.max(a, Math.min(b, n));
+const pad2 = n => String(n).padStart(2,'0');
+
+function toISO(d){ return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
+function parseISO(s){ const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); }
+function addDays(iso, n){ const d = parseISO(iso); d.setDate(d.getDate()+n); return toISO(d); }
+function todayISO(){ return toISO(new Date()); }
+function startOfWeekISO(iso){
+  const d = parseISO(iso);
+  const dow = (d.getDay()+6)%7;      // Monday = 0
+  d.setDate(d.getDate()-dow);
+  return toISO(d);
+}
+function dowOf(iso){ return (parseISO(iso).getDay()+6)%7; }
+function shortDate(iso){ return parseISO(iso).toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+function longDate(iso){
+  return parseISO(iso).toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+}
+function esc(s){
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function fmtAmount(n){
+  const v = Number(n) || 0;
+  const r = Math.round(v * 10) / 10;
+  return Number.isInteger(r) ? String(r) : r.toFixed(1);
+}
+const DOW_SHORT = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const DOW_LONG  = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const DOW_INITIAL = ['M','T','W','T','F','S','S'];
+
+/* =========================================================
+   Themes
+   ========================================================= */
+const THEME_KEY = 'sp-theme';
+const THEMES = [
+  { id:'sand',     name:'Sand',     color:'#C2703D' },
+  { id:'mint',     name:'Mint',     color:'#2F7A57' },
+  { id:'lavender', name:'Lavender', color:'#7A5EA8' },
+  { id:'midnight', name:'Midnight', color:'#E29A62' },
+  { id:'espresso', name:'Espresso', color:'#E39A62' }
+];
+let currentTheme = 'sand';
+try { currentTheme = localStorage.getItem(THEME_KEY) || 'sand'; } catch(e){}
+if (!THEMES.some(t => t.id === currentTheme)) currentTheme = 'sand';
+function applyTheme(id){
+  if (!THEMES.some(t => t.id === id)) id = 'sand';
+  currentTheme = id;
+  document.documentElement.setAttribute('data-theme', id);
+  try { localStorage.setItem(THEME_KEY, id); } catch(e){}
+}
+
+/* =========================================================
+   MATERIALS (placeholders)
+   ========================================================= */
+const MATERIALS = [
+  { id:'m1', emoji:'🚀', color:'#C2703D', title:'Project Hail Mary',       creator:'Andy Weir',         type:'Book',      category:'reading',   unit:'%'   },
+  { id:'m2', emoji:'⚛️', color:'#3F7A6E', title:'Atomic Habits',          creator:'James Clear',       type:'Kindle',    category:'reading',   unit:'%'   },
+  { id:'m3', emoji:'📰', color:'#7A5EA8', title:'How to Learn a Language', creator:'Benny Lewis',       type:'Article',   category:'reading',   unit:'%'   },
+  { id:'m4', emoji:'🎧', color:'#4A6FA5', title:'The Daily',               creator:'The New York Times',type:'Podcast',   category:'listening', unit:'min' },
+  { id:'m5', emoji:'🎬', color:'#B0563F', title:'Dune',                    creator:'Frank Herbert',     type:'Audiobook', category:'listening', unit:'min' },
+  { id:'m6', emoji:'📺', color:'#A8567A', title:'Planet Earth II',         creator:'BBC',               type:'TV',        category:'listening', unit:'min' }
+];
+function materialById(id){ return MATERIALS.find(m => m.id === id) || null; }
+
+/* =========================================================
+   PLAN  — the heart of this demo
+   Each material gets a weekly target and a set of active days.
+   The per-day amount is derived: weekly / activeDays.
+   The user can override a specific day from the Daily view.
+   ========================================================= */
+const PLAN_KEY = 'sp-demo-plan-v2';
+
+function defaultPlan(){
+  return {
+    //           weekly  active days (0=Mon … 6=Sun)   per-date overrides
+    m1: { weekly: 84,  days: [0,1,2,3,4,5,6], overrides: {} },  // 12 %/day
+    m2: { weekly: 40,  days: [0,1,2,3,4],     overrides: {} },  // 8 %/day × 5
+    m3: { weekly: 25,  days: [5],             overrides: {} },  // 25 % on Sat
+    m4: { weekly: 150, days: [0,1,2,3,4],     overrides: {} },  // 30 min × 5
+    m5: { weekly: 315, days: [0,1,2,3,4,5,6], overrides: {} },  // 45 min × 7
+    m6: { weekly: 100, days: [5,6],           overrides: {} }   // 50 min × 2
+  };
+}
+let plan = defaultPlan();
+
+function loadPlan(){
+  try {
+    const raw = localStorage.getItem(PLAN_KEY);
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object') return;
+    MATERIALS.forEach(m => {
+      const p = parsed[m.id];
+      if (p && typeof p === 'object'){
+        plan[m.id] = {
+          weekly: Math.max(0, Number(p.weekly) || 0),
+          days: Array.isArray(p.days) ? p.days.filter(d => d >= 0 && d <= 6) : [],
+          overrides: (p.overrides && typeof p.overrides === 'object') ? p.overrides : {}
+        };
+      }
+    });
+  } catch(e){}
+}
+function savePlan(){
+  try { localStorage.setItem(PLAN_KEY, JSON.stringify(plan)); } catch(e){}
+}
+
+/* Auto (derived) daily amount for a material */
+function autoAmount(mid){
+  const p = plan[mid];
+  if (!p || !p.days || !p.days.length) return 0;
+  if (p.weekly <= 0) return 0;
+  return p.weekly / p.days.length;
+}
+/* Actual scheduled amount for a material on a given date */
+function scheduledFor(mid, date){
+  const p = plan[mid];
+  if (!p) return 0;
+  if (p.overrides && p.overrides[date] !== undefined){
+    const v = Number(p.overrides[date]);
+    if (v > 0) return v;
+  }
+  if (p.weekly <= 0) return 0;
+  if (!p.days.includes(dowOf(date))) return 0;
+  if (!p.days.length) return 0;
+  return p.weekly / p.days.length;
+}
+function isOverridden(mid, date){
+  const p = plan[mid];
+  return !!(p && p.overrides && p.overrides[date] !== undefined);
+}
+function setOverride(mid, date, val){
+  const p = plan[mid];
+  if (!p) return;
+  if (!p.overrides) p.overrides = {};
+  const auto = autoAmount(mid);
+  if (Math.abs(val - auto) < 0.01){
+    delete p.overrides[date];
+  } else {
+    p.overrides[date] = Math.max(0, val);
+  }
+  savePlan();
+}
+function clearOverride(mid, date){
+  const p = plan[mid];
+  if (p && p.overrides) delete p.overrides[date];
+  savePlan();
+}
+function clearAllOverrides(mid){
+  const p = plan[mid];
+  if (p) p.overrides = {};
+  savePlan();
+}
+
+/* Steppers */
+function weeklyStep(m){ return m.category === 'reading' ? 5 : 15; }
+function dailyStep(m){ return m.category === 'reading' ? 1 : 5; }
+
+/* =========================================================
+   Done state
+   ========================================================= */
+let doneState = {};   // "YYYY-MM-DD|materialId" -> true
+const DONE_KEY = 'sp-demo-done-v2';
+
+function loadDone(){
+  try {
+    const raw = localStorage.getItem(DONE_KEY);
+    if (raw){ doneState = JSON.parse(raw) || {}; return true; }
+  } catch(e){}
+  return false;
+}
+function saveDone(){
+  try { localStorage.setItem(DONE_KEY, JSON.stringify(doneState)); } catch(e){}
+}
+function isDone(date, mid){ return !!doneState[date + '|' + mid]; }
+function toggleDone(date, mid){
+  const k = date + '|' + mid;
+  if (doneState[k]) delete doneState[k]; else doneState[k] = true;
+  saveDone();
+}
+
+/* =========================================================
+   Derived day / week helpers
+   ========================================================= */
+function dayTasks(iso){
+  const out = [];
+  MATERIALS.forEach(m => {
+    const amt = scheduledFor(m.id, iso);
+    if (amt > 0) out.push({ mid: m.id, material: m, amount: amt });
+  });
+  return out;
+}
+function dayTotals(iso){
+  const tasks = dayTasks(iso);
+  let readPlan = 0, listenPlan = 0, readDone = 0, listenDone = 0;
+  tasks.forEach(t => {
+    const m = t.material;
+    const done = isDone(iso, m.id);
+    if (m.category === 'reading'){
+      readPlan += t.amount;
+      if (done) readDone += t.amount;
+    } else {
+      listenPlan += t.amount;
+      if (done) listenDone += t.amount;
+    }
+  });
+  const total = tasks.length;
+  const doneCount = tasks.filter(t => isDone(iso, t.mid)).length;
+  return {
+    tasks, total, doneCount,
+    readPlan, listenPlan, readDone, listenDone,
+    pct: total ? Math.round(doneCount / total * 100) : 0
+  };
+}
+function weekDays(weekStart){
+  const out = [];
+  for (let i = 0; i < 7; i++) out.push(addDays(weekStart, i));
+  return out;
+}
+function weekTotals(weekStart){
+  const days = weekDays(weekStart);
+  let readPlan = 0, listenPlan = 0, readDone = 0, listenDone = 0, total = 0, doneCount = 0;
+  days.forEach(d => {
+    const t = dayTotals(d);
+    readPlan += t.readPlan; listenPlan += t.listenPlan;
+    readDone += t.readDone; listenDone += t.listenDone;
+    total += t.total; doneCount += t.doneCount;
+  });
+  return {
+    days, readPlan, listenPlan, readDone, listenDone, total, doneCount,
+    pct: total ? Math.round(doneCount / total * 100) : 0
+  };
+}
+function materialWeekProgress(weekStart){
+  const days = weekDays(weekStart);
+  const map = {};
+  MATERIALS.forEach(m => { map[m.id] = { plan:0, done:0 }; });
+  days.forEach(d => {
+    MATERIALS.forEach(m => {
+      const amt = scheduledFor(m.id, d);
+      if (amt <= 0) return;
+      map[m.id].plan += amt;
+      if (isDone(d, m.id)) map[m.id].done += amt;
+    });
+  });
+  return MATERIALS.map(m => ({ m, ...map[m.id] })).filter(x => x.plan > 0);
+}
+
+/* Seed some completed days so the demo looks alive on first run */
+function seedDemo(){
+  const today = todayISO();
+  const ws = startOfWeekISO(today);
+  for (let i = 0; i < 7; i++){
+    const date = addDays(ws, i);
+    if (date >= today) break;
+    dayTasks(date).forEach((t, idx) => {
+      if ((idx + i) % 4 !== 0) doneState[date + '|' + t.mid] = true;
+    });
+  }
+  saveDone();
+}
+
+/* =========================================================
+   State
+   ========================================================= */
+let currentView = 'daily';
+let selectedDate = todayISO();
+let selectedWeekStart = startOfWeekISO(todayISO());
+
+/* =========================================================
+   Header
+   ========================================================= */
+function renderThemeDots(){
+  $('#themeDots').innerHTML = THEMES.map(t => `
+    <button class="tdot ${currentTheme === t.id ? 'active' : ''}"
+            data-theme-pick="${t.id}"
+            style="background:${t.color}"
+            title="${esc(t.name)}"
+            aria-label="Theme ${esc(t.name)}"></button>
+  `).join('');
+}
+function updateHeader(){
+  const dt = dayTotals(todayISO());
+  const wt = weekTotals(selectedWeekStart);
+  $('#hdrSub').textContent =
+    `${dt.doneCount}/${dt.total} tasks today · Week ${wt.pct}% complete`;
+}
+
+/* =========================================================
+   Daily view
+   ========================================================= */
+function weekStripHTML(){
+  const ws = startOfWeekISO(selectedDate);
+  const today = todayISO();
+  return `
+  <div class="week-strip">
+    ${weekDays(ws).map(d => {
+      const t = dayTotals(d);
+      const cls = [
+        'ws-day',
+        d === today ? 'today' : '',
+        d < today ? 'past' : '',
+        d === selectedDate ? 'selected' : ''
+      ].filter(Boolean).join(' ');
+      const dotStyle = t.total && t.pct === 100
+        ? 'background:var(--good-fg)'
+        : (t.total ? 'background:var(--reading)' : '');
+      return `
+      <div class="${cls}" data-pick-day="${d}" role="button" tabindex="0"
+           title="${esc(longDate(d))}">
+        <div class="ws-dow">${DOW_SHORT[dowOf(d)]}</div>
+        <div class="ws-num">${parseISO(d).getDate()}</div>
+        <div class="ws-dot" style="${dotStyle}"></div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function taskRowHTML(iso, task){
+  const m = task.material;
+  const done = isDone(iso, m.id);
+  const overridden = isOverridden(m.id, iso);
+  const unitLabel = m.unit === 'min' ? 'min' : '%';
+  const step = dailyStep(m);
+
+  return `
+  <div class="task-row ${done ? 'done' : ''}"
+       data-toggle-task="${m.id}" data-date="${iso}"
+       style="--task-color:${esc(m.color)}"
+       role="checkbox" aria-checked="${done}" tabindex="0">
+    <span class="task-check" aria-hidden="true">✓</span>
+    <span class="task-icon" style="background:${esc(m.color)}" aria-hidden="true">${esc(m.emoji)}</span>
+    <span class="task-main">
+      <span class="task-title">${esc(m.title)}</span>
+      <span class="task-sub">
+        ${esc(m.type)} · ${esc(m.creator)}${overridden ? ' · <b>custom</b>' : ''}
+      </span>
+    </span>
+    <span class="task-amount-edit" data-no-toggle>
+      <button class="amt-btn" type="button"
+              data-day-step="${-step}" data-mid="${m.id}" data-date="${iso}"
+              data-focus-key="dy-dec-${m.id}-${iso}"
+              aria-label="Decrease ${esc(m.title)}">−</button>
+      <input class="amt-input" type="number" inputmode="decimal"
+             data-day-input="${m.id}" data-date="${iso}"
+             data-focus-key="dy-in-${m.id}-${iso}"
+             value="${fmtAmount(task.amount)}" min="0" step="${step}"
+             aria-label="${esc(m.title)} amount for this day">
+      <span class="amt-unit">${unitLabel}</span>
+      <button class="amt-btn" type="button"
+              data-day-step="${step}" data-mid="${m.id}" data-date="${iso}"
+              data-focus-key="dy-inc-${m.id}-${iso}"
+              aria-label="Increase ${esc(m.title)}">+</button>
+      ${overridden ? `
+      <button class="amt-reset" type="button"
+              data-day-reset="${m.id}" data-date="${iso}"
+              data-focus-key="dy-rst-${m.id}-${iso}"
+              title="Reset to plan (${fmtAmount(autoAmount(m.id))}${unitLabel})"
+              aria-label="Reset to plan">↺</button>` : ''}
+    </span>
+  </div>`;
+}
+
+function taskGroupHTML(iso, category){
+  const tasks = dayTasks(iso).filter(t => t.material.category === category);
+  if (!tasks.length) return '';
+  const doneCount = tasks.filter(t => isDone(iso, t.mid)).length;
+  const isRead = category === 'reading';
+  return `
+  <div class="task-group">
+    <div class="task-group-head">
+      <span class="gdot ${category}"></span>
+      <span class="gt">${isRead ? 'Reading' : 'Listening'}</span>
+      <span class="gn">${doneCount}/${tasks.length}</span>
+      <span class="gline"></span>
+    </div>
+    ${tasks.map(t => taskRowHTML(iso, t)).join('')}
+  </div>`;
+}
+
+function progressCardHTML(label, cls, doneAmt, planAmt, unit){
+  const pct = planAmt > 0 ? clamp(doneAmt / planAmt * 100, 0, 100) : 0;
+  return `
+  <div class="card">
+    <div class="prog-top">
+      <span class="pt-label">${label}</span>
+      <span class="pt-val">${Math.round(pct)}%</span>
+    </div>
+    <div class="big-numbers">
+      <strong>${fmtAmount(doneAmt)}</strong>
+      <span>/ ${fmtAmount(planAmt)} ${unit}</span>
+    </div>
+    <div class="bar ${cls}"><i style="width:${pct}%"></i></div>
+    <div class="stat-sub" style="margin-top:10px">
+      ${planAmt > doneAmt
+        ? fmtAmount(planAmt - doneAmt) + ' ' + unit + ' still to go'
+        : 'Target reached — nice work'}
+    </div>
+  </div>`;
+}
+
+function viewDaily(){
+  const iso = selectedDate;
+  const today = todayISO();
+  const t = dayTotals(iso);
+  const isToday = iso === today;
+  const isFuture = iso > today;
+
+  const relative =
+    isToday ? 'Today' :
+    iso === addDays(today, -1) ? 'Yesterday' :
+    iso === addDays(today, 1) ? 'Tomorrow' :
+    DOW_LONG[dowOf(iso)];
+
+  const tasksHtml = t.tasks.length
+    ? taskGroupHTML(iso, 'reading') + taskGroupHTML(iso, 'listening')
+    : `<div class="empty">
+         <span class="em-icon">🌤️</span>
+         Nothing scheduled for this day — a rest day.
+         <div style="margin-top:12px">
+           <button class="btn btn-ghost btn-sm" data-goto-weekly>Edit weekly plan</button>
+         </div>
+       </div>`;
+
+  return `
+  ${weekStripHTML()}
+
+  <div class="nav-bar">
+    <div class="nb-main">
+      <button class="icon-btn" data-shift-day="-1" aria-label="Previous day">‹</button>
+      <div class="nb-date">
+        <span class="nb-k">${esc(relative)}</span>
+        <span class="nb-v">${esc(longDate(iso))}</span>
+        <span class="nb-sub">
+          ${t.doneCount} of ${t.total} tasks · ${fmtAmount(t.readPlan)}% reading ·
+          ${fmtAmount(t.listenPlan)} min listening
+        </span>
+      </div>
+      <button class="icon-btn" data-shift-day="1" aria-label="Next day">›</button>
+    </div>
+    <div class="nb-btns">
+      ${!isToday ? '<button class="btn btn-ghost btn-sm" data-goto-today>Jump to today</button>' : ''}
+      ${t.total ? `
+      <button class="btn btn-primary btn-sm" data-complete-day="${iso}">
+        ${t.doneCount === t.total ? 'Clear day' : 'Complete all'}
+      </button>` : ''}
+    </div>
+  </div>
+
+  <div class="grid cols-2">
+    ${progressCardHTML('Reading today', 'reading', t.readDone, t.readPlan, '%')}
+    ${progressCardHTML('Listening today', 'listening', t.listenDone, t.listenPlan, 'min')}
+  </div>
+
+  <div class="grid cols-3">
+    <div class="card">
+      <div class="stat-label">Tasks</div>
+      <div class="stat-value">${t.doneCount} <small>/ ${t.total}</small></div>
+      <div class="stat-sub">${isFuture ? 'Planned for this day' : 'Completed so far'}</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">Materials</div>
+      <div class="stat-value">${new Set(t.tasks.map(x => x.mid)).size} <small>in play</small></div>
+      <div class="stat-sub">
+        ${t.tasks.filter(x => x.material.category === 'reading').length} reading ·
+        ${t.tasks.filter(x => x.material.category === 'listening').length} listening
+      </div>
+    </div>
+    <div class="card">
+      <div class="stat-label">Day progress</div>
+      <div class="stat-value">${t.pct} <small>%</small></div>
+      <div class="stat-sub">${t.pct === 100 ? 'Day complete 🎉' : 'Keep going'}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>Plan for ${esc(relative.toLowerCase())}</h2>
+      <span style="font-size:11.5px;color:var(--muted)">Tap a row to tick it off · edit the amount inline</span>
+    </div>
+    ${tasksHtml}
+  </div>
+
+  <p class="footnote">
+    Amounts here <b>override</b> the weekly plan for this one day only — a small <b>↺</b>
+    appears so you can reset back to the plan.<br>
+    Change the weekly targets and active days on the <b>Weekly</b> tab.
+  </p>`;
+}
+
+/* =========================================================
+   Weekly view — plan editor
+   ========================================================= */
+function planEditorHTML(){
+  const rows = MATERIALS.map(m => {
+    const p = plan[m.id];
+    const active = p.weekly > 0;
+    const daily = autoAmount(m.id);
+    const unitLabel = m.unit === 'min' ? 'min' : '%';
+    const overrideCount = Object.keys(p.overrides || {}).length;
+    const step = weeklyStep(m);
+
+    return `
+    <div class="plan-row ${active ? '' : 'inactive'}"
+         data-plan-row="${m.id}"
+         style="--mc:${esc(m.color)}">
+      <div class="pr-mat">
+        <span class="pr-icon" style="background:${esc(m.color)}">${esc(m.emoji)}</span>
+        <span class="pr-mat-txt">
+          <span class="pr-title">${esc(m.title)}</span>
+          <span class="pr-cat">${m.category === 'reading' ? 'Reading' : 'Listening'}</span>
+        </span>
+      </div>
+
+      <div class="pr-target">
+        <div class="stepper">
+          <button class="step-btn" type="button"
+                  data-weekly-step="${-step}" data-mid="${m.id}"
+                  data-focus-key="wk-dec-${m.id}"
+                  aria-label="Decrease weekly target">−</button>
+          <input class="step-input" type="number" inputmode="numeric"
+                 data-weekly-input="${m.id}"
+                 data-focus-key="wk-in-${m.id}"
+                 value="${fmtAmount(p.weekly)}" min="0" step="1"
+                 aria-label="${esc(m.title)} weekly target">
+          <button class="step-btn" type="button"
+                  data-weekly-step="${step}" data-mid="${m.id}"
+                  data-focus-key="wk-inc-${m.id}"
+                  aria-label="Increase weekly target">+</button>
+        </div>
+        <span class="pr-unit">${unitLabel} / week</span>
+      </div>
+
+      <div class="pr-days">
+        ${DOW_INITIAL.map((d, i) => `
+          <button class="day-pill ${p.days.includes(i) ? 'on' : ''}"
+                  type="button"
+                  data-toggle-day="${i}" data-mid="${m.id}"
+                  data-focus-key="day-${m.id}-${i}"
+                  title="${DOW_LONG[i]}"
+                  aria-pressed="${p.days.includes(i)}"
+                  aria-label="${DOW_LONG[i]}">${d}</button>
+        `).join('')}
+      </div>
+
+      <div class="pr-daily">
+        <span class="pr-daily-val ${overrideCount ? 'custom' : ''}">
+          ${fmtAmount(daily)}${unitLabel === 'min' ? ' min' : '%'}
+        </span>
+        <span class="pr-daily-sub">
+          per day · ${p.days.length} day${p.days.length === 1 ? '' : 's'}${overrideCount ? ` · ${overrideCount} override${overrideCount === 1 ? '' : 's'}` : ''}
+        </span>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-head">
+      <h2>Weekly plan</h2>
+      <button class="btn btn-ghost btn-sm" data-action="reset-plan">Reset to defaults</button>
+    </div>
+    <p class="plan-hint">
+      Set a <b>weekly target</b> for each material and pick the <b>days</b> you want to study it.
+      The per-day amount is calculated automatically as <b>weekly ÷ active days</b>.
+      You can override any single day from the <b>Daily</b> tab.
+    </p>
+    <div class="plan-table">
+      <div class="plan-row plan-head">
+        <span>Material</span>
+        <span>Weekly target</span>
+        <span>Active days</span>
+        <span>Per day</span>
+      </div>
+      ${rows}
+    </div>
+  </div>`;
+}
+
+/* =========================================================
+   Weekly view — calendar
+   ========================================================= */
+function weekCalendarHTML(weekStart){
+  const days = weekDays(weekStart);
+  const today = todayISO();
+
+  const mats = MATERIALS.filter(m => days.some(d => scheduledFor(m.id, d) > 0));
+  if (!mats.length){
+    return `<div class="empty"><span class="em-icon">🌤️</span>No tasks scheduled this week.</div>`;
+  }
+
+  const headerCells = days.map((d, i) => {
+    const cls = ['wc-th', d === today ? 'today' : '', d < today ? 'past' : ''].filter(Boolean).join(' ');
+    return `
+      <th class="${cls}" data-pick-day="${d}" role="button" tabindex="0"
+          title="Open ${esc(longDate(d))}">
+        <span class="wc-dow">${DOW_SHORT[i]}</span>
+        <span class="wc-day-num">${parseISO(d).getDate()}</span>
+      </th>`;
+  }).join('');
+
+  const bodyRows = mats.map(m => {
+    let plan = 0, done = 0;
+
+    const cells = days.map(d => {
+      const amt = scheduledFor(m.id, d);
+      const cls = ['wc-cell', d === today ? 'today' : '', d < pastCls(d) ? 'past' : ''].filter(Boolean).join(' ');
+      if (amt <= 0) return `<td class="${cls}"></td>`;
+
+      plan += amt;
+      const taskDone = isDone(d, m.id);
+      if (taskDone) done += amt;
+      const unit = m.unit === 'min' ? 'm' : '%';
+      const overridden = isOverridden(m.id, d);
+
+      return `
+      <td class="${cls}">
+        <button type="button" class="wc-task ${taskDone ? 'done' : ''} ${overridden ? 'custom' : ''}"
+                data-toggle-task="${m.id}" data-date="${d}"
+                style="--task-color:${esc(m.color)}"
+                title="${esc(m.title)} · ${fmtAmount(amt)}${unit}${overridden ? ' (custom)' : ''}${taskDone ? ' · done' : ''}"
+                aria-pressed="${taskDone}">
+          ${fmtAmount(amt)}${unit}
+        </button>
+      </td>`;
+    }).join('');
+
+    const pct = plan > 0 ? clamp(Math.round(done / plan * 100), 0, 100) : 0;
+    const unitLabel = m.unit === 'min' ? 'min' : '%';
+
+    return `
+      <tr>
+        <td class="wc-row-head">
+          <span class="wc-icon" style="background:${esc(m.color)}">${esc(m.emoji)}</span>
+          <span class="wc-title">${esc(m.title)}</span>
+        </td>
+        ${cells}
+        <td class="wc-cell wc-total">
+          <div class="wc-total-val">${fmtAmount(plan)}${unitLabel}</div>
+          <div class="wc-total-bar"><i style="width:${pct}%;background:${esc(m.color)}"></i></div>
+        </td>
+      </tr>`;
+  }).join('');
+
+  const dayStats = days.map(d => dayTotals(d));
+  const weekDone = dayStats.reduce((s, t) => s + t.doneCount, 0);
+  const weekPlan = dayStats.reduce((s, t) => s + t.total, 0);
+  const weekPct = weekPlan ? Math.round(weekDone / weekPlan * 100) : 0;
+
+  const footerCells = days.map((d, i) => {
+    const t = dayStats[i];
+    const cls = ['wc-cell', d === today ? 'today' : '', d < today ? 'past' : ''].filter(Boolean).join(' ');
+    const pct = t.total ? Math.round(t.doneCount / t.total * 100) : 0;
+    const complete = t.total > 0 && t.doneCount === t.total;
+    return `
+      <td class="${cls}">
+        <div class="wc-footer-count ${complete ? 'complete' : ''}">${t.doneCount}/${t.total}</div>
+        <div class="wc-footer-bar"><i style="width:${pct}%"></i></div>
+      </td>`;
+  }).join('');
+
+  return `
+  <div class="week-calendar">
+    <table class="wc-table">
+      <thead>
+        <tr>
+          <th class="wc-th wc-material-col">Material</th>
+          ${headerCells}
+          <th class="wc-th wc-total-col">Week</th>
+        </tr>
+      </thead>
+      <tbody>${bodyRows}</tbody>
+      <tfoot>
+        <tr class="wc-footer">
+          <td class="wc-row-head wc-footer-head">Completed</td>
+          ${footerCells}
+          <td class="wc-cell wc-total">
+            <div class="wc-total-val">${weekPct}%</div>
+            <div class="wc-total-bar"><i style="width:${weekPct}%"></i></div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>`;
+}
+/* tiny helper used above — keeps past-day styling consistent */
+function pastCls(d){ return d; }
+
+function materialQueueHTML(weekStart){
+  const rows = materialWeekProgress(weekStart);
+  if (!rows.length){
+    return `<div class="empty"><span class="em-icon">📚</span>No materials scheduled this week.</div>`;
+  }
+  return rows.map(({ m, plan: planned, done }) => {
+    const pct = planned > 0 ? clamp(Math.round(done / planned * 100), 0, 100) : 0;
+    const unit = m.unit === 'min' ? 'min' : '%';
+    return `
+    <div class="mq-item" style="--task-color:${esc(m.color)}">
+      <div class="mq-icon" style="background:${esc(m.color)}">${esc(m.emoji)}</div>
+      <div class="mq-main">
+        <div class="mq-top">
+          <span class="mq-title">${esc(m.title)}</span>
+          <span class="mq-pct">${pct}%</span>
+        </div>
+        <div class="mq-sub">${esc(m.type)} · ${fmtAmount(done)} / ${fmtAmount(planned)} ${unit} this week</div>
+        <div class="mq-bar"><i style="width:${pct}%"></i></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function viewWeekly(){
+  const ws = selectedWeekStart;
+  const today = todayISO();
+  const thisWeekStart = startOfWeekISO(today);
+  const w = weekTotals(ws);
+  const we = addDays(ws, 6);
+
+  const isThisWeek = ws === thisWeekStart;
+  const weekLabel = isThisWeek ? 'This week'
+    : ws > thisWeekStart ? 'Upcoming week'
+    : 'Past week';
+
+  const readPct = w.readPlan > 0 ? clamp(w.readDone / w.readPlan * 100, 0, 100) : 0;
+  const listenPct = w.listenPlan > 0 ? clamp(w.listenDone / w.listenPlan * 100, 0, 100) : 0;
+
+  return `
+  <div class="nav-bar">
+    <div class="nb-main">
+      <button class="icon-btn" data-shift-week="-1" aria-label="Previous week">‹</button>
+      <div class="nb-date">
+        <span class="nb-k">${esc(weekLabel)}</span>
+        <span class="nb-v">${esc(shortDate(ws))} – ${esc(shortDate(we))}</span>
+        <span class="nb-sub">
+          ${w.doneCount} of ${w.total} tasks complete · ${w.pct}%
+        </span>
+      </div>
+      <button class="icon-btn" data-shift-week="1" aria-label="Next week">›</button>
+    </div>
+    <div class="nb-btns">
+      ${!isThisWeek ? '<button class="btn btn-ghost btn-sm" data-goto-this-week>This week</button>' : ''}
+      <button class="btn btn-ghost btn-sm" data-goto-daily>Open daily view</button>
+    </div>
+  </div>
+
+  <div class="grid cols-3">
+    <div class="card">
+      <div class="stat-label">Weekly reading</div>
+      <div class="stat-value">${fmtAmount(w.readDone)} <small>/ ${fmtAmount(w.readPlan)}%</small></div>
+      <div class="stat-sub">
+        ${w.readPlan > w.readDone
+          ? fmtAmount(w.readPlan - w.readDone) + '% remaining'
+          : 'Target reached'}
+      </div>
+      <div class="bar reading" style="margin-top:12px"><i style="width:${readPct}%"></i></div>
+    </div>
+    <div class="card">
+      <div class="stat-label">Weekly listening</div>
+      <div class="stat-value">${fmtAmount(w.listenDone)} <small>/ ${fmtAmount(w.listenPlan)} min</small></div>
+      <div class="stat-sub">
+        ${w.listenPlan > w.listenDone
+          ? fmtAmount(w.listenPlan - w.listenDone) + ' min remaining'
+          : 'Target reached'}
+      </div>
+      <div class="bar listening" style="margin-top:12px"><i style="width:${listenPct}%"></i></div>
+    </div>
+    <div class="card">
+      <div class="stat-label">Week progress</div>
+      <div class="stat-value">${w.pct} <small>%</small></div>
+      <div class="stat-sub">${w.doneCount} of ${w.total} scheduled tasks</div>
+    </div>
+  </div>
+
+  ${planEditorHTML()}
+
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-head">
+      <h2>Week at a glance</h2>
+      <span style="font-size:11.5px;color:var(--muted)">Tap a cell to tick it off · tap a day header to open</span>
+    </div>
+    ${weekCalendarHTML(ws)}
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>Materials this week</h2>
+      <span style="font-size:11.5px;color:var(--muted)">${materialWeekProgress(ws).length} active</span>
+    </div>
+    ${materialQueueHTML(ws)}
+  </div>
+
+  <p class="footnote">
+    Edit the <b>weekly target</b> or the <b>active days</b> above — the per-day amount and every
+    progress bar update instantly.<br>
+    Your plan is saved in this browser via localStorage.
+  </p>`;
+}
+
+/* =========================================================
+   Render
+   ========================================================= */
+function render(){
+  const app = $('#app');
+  app.innerHTML = currentView === 'daily' ? viewDaily() : viewWeekly();
+  $$('#tabs button').forEach(b => b.classList.toggle('active', b.dataset.view === currentView));
+  renderThemeDots();
+  updateHeader();
+}
+function renderPreservingFocus(){
+  const active = document.activeElement;
+  let key = null, selStart = null, selEnd = null;
+  if (active){
+    key = active.getAttribute && active.getAttribute('data-focus-key');
+    if (key && typeof active.selectionStart === 'number'){
+      selStart = active.selectionStart;
+      selEnd = active.selectionEnd;
+    }
+  }
+  render();
+  if (key){
+    const el = document.querySelector('[data-focus-key="' + key + '"]');
+    if (el){
+      el.focus();
+      if (selStart !== null && el.setSelectionRange){
+        try { el.setSelectionRange(selStart, selEnd); } catch(e){}
+      }
+    }
+  }
+}
+
+/* =========================================================
+   Events
+   ========================================================= */
+document.addEventListener('click', e => {
+  /* ---- Theme ---- */
+  const themeBtn = e.target.closest('[data-theme-pick]');
+  if (themeBtn){ applyTheme(themeBtn.dataset.themePick); render(); return; }
+
+  /* ---- Tabs ---- */
+  const tab = e.target.closest('#tabs button[data-view]');
+  if (tab){ currentView = tab.dataset.view; render(); return; }
+
+  /* ---- Daily amount steppers (must run before the row toggle) ---- */
+  const dayStep = e.target.closest('[data-day-step]');
+  if (dayStep){
+    e.stopPropagation();
+    const mid = dayStep.dataset.mid;
+    const date = dayStep.dataset.date;
+    const delta = Number(dayStep.dataset.dayStep) || 0;
+    const cur = scheduledFor(mid, date);
+    let next = Math.max(0, Math.round((cur + delta) * 10) / 10);
+    setOverride(mid, date, next);
+    renderPreservingFocus();
+    return;
+  }
+  const dayReset = e.target.closest('[data-day-reset]');
+  if (dayReset){
+    e.stopPropagation();
+    clearOverride(dayReset.dataset.mid, dayReset.dataset.date);
+    renderPreservingFocus();
+    return;
+  }
+
+  /* ---- Weekly target steppers ---- */
+  const wkStep = e.target.closest('[data-weekly-step]');
+  if (wkStep){
+    const mid = wkStep.dataset.mid;
+    const delta = Number(wkStep.dataset.weeklyStep) || 0;
+    const cur = plan[mid].weekly || 0;
+    plan[mid].weekly = Math.max(0, Math.round((cur + delta) * 10) / 10);
+    savePlan();
+    renderPreservingFocus();
+    return;
+  }
+
+  /* ---- Active day toggles ---- */
+  const dayPill = e.target.closest('[data-toggle-day]');
+  if (dayPill){
+    const mid = dayPill.dataset.mid;
+    const day = Number(dayPill.dataset.toggleDay);
+    const p = plan[mid];
+    const idx = p.days.indexOf(day);
+    if (idx >= 0) p.days.splice(idx, 1);
+    else { p.days.push(day); p.days.sort((a, b) => a - b); }
+    savePlan();
+    renderPreservingFocus();
+    return;
+  }
+
+  /* ---- Toggle a task (only outside the amount editor) ---- */
+  const taskEl = e.target.closest('[data-toggle-task]');
+  if (taskEl && !e.target.closest('[data-no-toggle]')){
+    toggleDone(taskEl.dataset.date, taskEl.dataset.toggleTask);
+    renderPreservingFocus();
+    return;
+  }
+
+  /* ---- Pick a day ---- */
+  const pickDay = e.target.closest('[data-pick-day]');
+  if (pickDay){
+    selectedDate = pickDay.dataset.pickDay;
+    selectedWeekStart = startOfWeekISO(selectedDate);
+    currentView = 'daily';
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
+  /* ---- Navigation ---- */
+  const shiftDay = e.target.closest('[data-shift-day]');
+  if (shiftDay){
+    selectedDate = addDays(selectedDate, Number(shiftDay.dataset.shiftDay));
+    selectedWeekStart = startOfWeekISO(selectedDate);
+    render();
+    return;
+  }
+  const shiftWeek = e.target.closest('[data-shift-week]');
+  if (shiftWeek){
+    selectedWeekStart = addDays(selectedWeekStart, Number(shiftWeek.dataset.shiftWeek) * 7);
+    render();
+    return;
+  }
+  if (e.target.closest('[data-goto-today]')){
+    selectedDate = todayISO();
+    selectedWeekStart = startOfWeekISO(selectedDate);
+    render();
+    return;
+  }
+  if (e.target.closest('[data-goto-this-week]')){
+    selectedWeekStart = startOfWeekISO(todayISO());
+    render();
+    return;
+  }
+  if (e.target.closest('[data-goto-weekly]')){
+    currentView = 'weekly';
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+  if (e.target.closest('[data-goto-daily]')){
+    currentView = 'daily';
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
+  /* ---- Complete / clear a whole day ---- */
+  const completeDay = e.target.closest('[data-complete-day]');
+  if (completeDay){
+    const iso = completeDay.dataset.completeDay;
+    const tasks = dayTasks(iso);
+    const allDone = tasks.length > 0 && tasks.every(t => isDone(iso, t.mid));
+    tasks.forEach(t => {
+      const k = iso + '|' + t.mid;
+      if (allDone) delete doneState[k];
+      else doneState[k] = true;
+    });
+    saveDone();
+    render();
+    return;
+  }
+
+  /* ---- Reset plan to defaults ---- */
+  if (e.target.closest('[data-action="reset-plan"]')){
+    if (confirm('Reset the weekly plan to its default targets and days? Your completed ticks are kept.')){
+      plan = defaultPlan();
+      savePlan();
+      render();
+    }
+    return;
+  }
+
+  /* ---- Reset whole demo ---- */
+  if (e.target.closest('#resetBtn')){
+    if (confirm('Reset the demo? The plan returns to defaults and all ticks are cleared.')){
+      plan = defaultPlan();
+      savePlan();
+      doneState = {};
+      seedDemo();
+      selectedDate = todayISO();
+      selectedWeekStart = startOfWeekISO(selectedDate);
+      render();
+    }
+    return;
+  }
+});
+
+/* Number inputs commit on change (blur / Enter) so typing isn't interrupted */
+document.addEventListener('change', e => {
+  const t = e.target;
+
+  /* Weekly target */
+  if (t.matches && t.matches('[data-weekly-input]')){
+    const mid = t.dataset.weeklyInput;
+    const val = Math.max(0, Number(t.value) || 0);
+    plan[mid].weekly = Math.round(val * 10) / 10;
+    savePlan();
+    renderPreservingFocus();
+    return;
+  }
+
+  /* Per-day amount (creates / removes an override) */
+  if (t.matches && t.matches('[data-day-input]')){
+    const mid = t.dataset.dayInput;
+    const date = t.dataset.date;
+    const val = Math.max(0, Number(t.value) || 0);
+    setOverride(mid, date, Math.round(val * 10) / 10);
+    renderPreservingFocus();
+    return;
+  }
+});
+
+/* Keyboard: Enter / Space toggles tasks and day cards */
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const target = e.target;
+  if (!target || !target.closest) return;
+
+  const taskEl = target.closest('[data-toggle-task]');
+  if (taskEl && target === taskEl){
+    e.preventDefault();
+    toggleDone(taskEl.dataset.date, taskEl.dataset.toggleTask);
+    renderPreservingFocus();
+    return;
+  }
+  const dayEl = target.closest('[data-pick-day]');
+  if (dayEl && target === dayEl){
+    e.preventDefault();
+    selectedDate = dayEl.dataset.pickDay;
+    selectedWeekStart = startOfWeekISO(selectedDate);
+    currentView = 'daily';
+    render();
+  }
+});
+
+/* =========================================================
+   Boot
+   ========================================================= */
+applyTheme(currentTheme);
+loadPlan();
+if (!loadDone()) seedDemo();
+render();
+</script>
+</body>
+</html>
