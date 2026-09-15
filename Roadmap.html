@@ -642,19 +642,17 @@ function coverHTML(m, size){
 }
 
 /* =========================================================
-   Phase filter — the planner only surfaces materials that are
-   currently active ("In progress").
+   Phase gate — the planner ALWAYS shows only materials whose
+   phase is "In progress". There is no toggle, no setting, and
+   no way to bypass this.
 
-   Materials in the "Scheduled" phase (or finished / paused /
-   archived / dropped) are hidden. Unknown or unset phases are
-   kept visible so nothing silently disappears.
+   A material is considered "In progress" when its phase (or
+   phase_name / stage / status) matches one of the accepted
+   in-progress keywords. Materials with no phase information at
+   all are kept visible as a safety net so nothing silently
+   disappears from the planner.
    ========================================================= */
-const PHASE_KEY = 'esc-roadmap-all-phases';
-let showAllPhases = false;
-try { showAllPhases = localStorage.getItem(PHASE_KEY) === '1'; } catch(e){}
-
-/* Phases that should never appear in the planner. */
-const EXCLUDED_PHASE_RE = /(^|[^a-z0-9])(scheduled|backlog|planned|upcoming|to[ _-]?start|not[ _-]?started|queued|paused|on[ _-]?hold|archived|completed|finished|dropped|abandoned|done|inactive|closed)([^a-z0-9]|$)/;
+const IN_PROGRESS_RE = /(^|[^a-z0-9])(in[ _-]?progress|inprogress|wip|active|current|ongoing|started|doing|working)([^a-z0-9]|$)/;
 
 function phaseText(v){
   if (v == null) return '';
@@ -673,11 +671,12 @@ function materialPhase(m){
 }
 function isInProgress(m){
   const p = materialPhase(m);
-  if (!p) return true;                            // no phase info → never hide
-  return !EXCLUDED_PHASE_RE.test(p);
+  if (!p) return true;                            // no phase info → keep visible
+  return IN_PROGRESS_RE.test(p);
 }
-function countHiddenByPhase(){
-  if (showAllPhases) return 0;
+/* Count of materials that exist but are excluded by the phase gate.
+   Used only for informational copy — never to offer a way around it. */
+function countExcludedByPhase(){
   return (shared && shared.materials ? shared.materials : [])
     .filter(m => (m.status || 'active') !== 'archived')
     .filter(m => !isInProgress(m))
@@ -753,7 +752,7 @@ function materialById(id){ return (shared.materials || []).find(m => m.id === id
 function plannedMaterials(){
   return (shared.materials || [])
     .filter(m => (m.status || 'active') !== 'archived')
-    .filter(m => showAllPhases || isInProgress(m))
+    .filter(isInProgress)                         // ← hard gate: only In progress
     .slice()
     .sort((a, b) => {
       const ca = a.default_category === 'listening' ? 1 : 0;
@@ -1233,23 +1232,13 @@ function viewDaily(){
     appears so you can reset back to the plan.<br>
     Ticks are written into the shared activity log, so they count toward
     <b>Dashboard</b>, <b>History</b> and <b>Progress</b> in the main app.<br>
-    Materials in the <b>Scheduled</b> phase are hidden from the planner.
+    This planner always shows only materials whose phase is <b>In progress</b>.
   </p>`;
 }
 
 /* =========================================================
    WEEKLY VIEW — plan editor
    ========================================================= */
-function phaseToggleHTML(){
-  const hidden = countHiddenByPhase();
-  if (showAllPhases){
-    return `<button class="btn btn-ghost btn-sm" data-action="toggle-phase-filter"
-                    title="Only show active materials (Scheduled / finished are hidden)">Showing all phases</button>`;
-  }
-  return `<button class="btn btn-ghost btn-sm" data-action="toggle-phase-filter"
-                  title="Include materials from every phase">In progress only${hidden ? ` · ${hidden} hidden` : ''}</button>`;
-}
-
 function planRowHTML(m){
   const p = readPlan(m.id);
   const active = p.weekly > 0;
@@ -1315,27 +1304,25 @@ function planRowHTML(m){
 
 function planEditorHTML(){
   const mats = plannedMaterials();
-  const hiddenCount = countHiddenByPhase();
+  const excluded = countExcludedByPhase();
 
   if (!mats.length){
-    const phaseEmpty = hiddenCount > 0 && !showAllPhases;
+    const nothingInProgress = excluded > 0;
     return `
     <div class="card" style="margin-bottom:14px">
       <div class="card-head">
         <h2>Weekly plan</h2>
-        ${phaseToggleHTML()}
       </div>
       <div class="empty">
-        <span class="em-icon">${phaseEmpty ? '⏳' : '📚'}</span>
-        <div class="em-title">${phaseEmpty ? 'Nothing in progress' : 'No materials yet'}</div>
+        <span class="em-icon">${nothingInProgress ? '⏳' : '📚'}</span>
+        <div class="em-title">${nothingInProgress ? 'No materials in progress' : 'No materials yet'}</div>
         <div class="em-sub">
-          ${phaseEmpty
-            ? `${hiddenCount} material${hiddenCount === 1 ? '' : 's'} ${hiddenCount === 1 ? 'is' : 'are'} outside the <b>In progress</b> phase (for example <b>Scheduled</b>), so ${hiddenCount === 1 ? 'it is' : 'they are'} hidden from the planner.`
+          ${nothingInProgress
+            ? `${excluded} material${excluded === 1 ? '' : 's'} exist but ${excluded === 1 ? 'is' : 'are'} not in the <b>In progress</b> phase, so ${excluded === 1 ? 'it is' : 'they are'} not shown here. Move them into <b>In progress</b> in the main app to plan them.`
             : 'Add materials in the main app, or create one right here to start planning.'}
         </div>
         <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
           <button class="btn btn-primary" data-action="quick-add-material">+ Add material</button>
-          ${phaseEmpty ? '<button class="btn btn-ghost" data-action="toggle-phase-filter">Show all phases</button>' : ''}
           <a href="index.html" class="btn btn-ghost">Open main app</a>
         </div>
       </div>
@@ -1346,9 +1333,8 @@ function planEditorHTML(){
   return `
   <div class="card" style="margin-bottom:14px">
     <div class="card-head">
-      <h2>Weekly plan</h2>
+      <h2>Weekly plan · In progress</h2>
       <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-        ${phaseToggleHTML()}
         <button class="btn btn-ghost btn-sm" data-action="quick-add-material">+ Add material</button>
         <button class="btn btn-ghost btn-sm" data-action="reset-plan">Reset plan</button>
         <button class="btn btn-ghost btn-sm" data-action="toggle-plan-editor"
@@ -1359,8 +1345,8 @@ function planEditorHTML(){
       Set a <b>weekly target</b> for each material and pick the <b>days</b> you want to study it.
       The per-day amount is calculated automatically as <b>weekly ÷ active days</b>.
       You can override any single day from the <b>Daily</b> tab.
-      Materials in the <b>Scheduled</b> (or finished / paused) phase are hidden —
-      use the filter button to include them.
+      Only materials whose phase is <b>In progress</b> appear here.
+      ${excluded ? `<br><span style="color:var(--muted)">${excluded} material${excluded === 1 ? '' : 's'} in other phases ${excluded === 1 ? 'is' : 'are'} hidden.</span>` : ''}
     </p>
     <div class="plan-table">
       <div class="plan-row plan-head">
@@ -1376,14 +1362,14 @@ function planEditorHTML(){
 
 function planHiddenBarHTML(){
   const active = plannedMaterials().filter(m => readPlan(m.id).weekly > 0).length;
-  const hiddenCount = countHiddenByPhase();
+  const excluded = countExcludedByPhase();
   return `
   <div class="card plan-collapsed" style="margin-bottom:14px">
     <div class="card-head">
       <h2>Weekly plan</h2>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <span class="pc-meta">
-          ${active} material${active === 1 ? '' : 's'} with a target${hiddenCount ? ` · ${hiddenCount} hidden (Scheduled / closed)` : ''}
+          ${active} material${active === 1 ? '' : 's'} with a target${excluded ? ` · ${excluded} in other phases` : ''}
         </span>
         <button class="btn btn-ghost btn-sm" data-action="toggle-plan-editor">Show</button>
       </div>
@@ -1608,8 +1594,7 @@ function viewWeekly(){
   <p class="footnote">
     Edit the <b>weekly target</b> or the <b>active days</b> above — the per-day amount and every
     progress bar update instantly.<br>
-    The planner only lists <b>In progress</b> materials; <b>Scheduled</b> (and finished / paused)
-    materials are hidden. Use the filter button to include every phase.<br>
+    This planner always shows only materials whose phase is <b>In progress</b>.<br>
     The plan lives inside the same shared state as the main app, so it travels with JSON backups.
   </p>`;
 }
@@ -1879,12 +1864,6 @@ document.addEventListener('click', e => {
     if (action === 'quick-add-material'){ openAddMaterialModal(); return; }
     if (action === 'toggle-plan-editor'){
       setPlanVisible(!showPlanEditor);
-      render();
-      return;
-    }
-    if (action === 'toggle-phase-filter'){
-      showAllPhases = !showAllPhases;
-      try { localStorage.setItem(PHASE_KEY, showAllPhases ? '1' : '0'); } catch(e2){}
       render();
       return;
     }
