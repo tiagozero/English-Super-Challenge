@@ -56,6 +56,8 @@ button{font-family:inherit;font-size:inherit}
 #app{display:flex;flex-direction:column;min-height:100vh}
 #topbar{position:sticky;top:0;z-index:50;width:100%;background:var(--topbar-bg);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--border);padding:18px 32px;display:flex;align-items:center;gap:22px}
 .brand{display:flex;align-items:center;gap:8px;font-weight:500;font-size:14px;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;padding-right:22px;color:var(--text)}
+.home-link{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border:1px solid var(--border);border-radius:var(--radius);color:var(--muted-2);text-decoration:none;font-size:14px;flex-shrink:0;transition:border-color .12s,color .12s}
+.home-link:hover{border-color:var(--text);color:var(--text)}
 .brand .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:none;flex-shrink:0}
 .nav{display:flex;gap:26px;flex:1;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
 .nav::-webkit-scrollbar{display:none}
@@ -279,6 +281,7 @@ tr:last-child td{border-bottom:1px solid var(--border)}
 <body>
 <div id="app">
   <header id="topbar">
+    <a href="../Dashboard.html" class="home-link" aria-label="Home"><span class="ic">⌂</span></a>
     <div class="brand"><span class="dot"></span><span class="txt">Grammar Study</span></div>
     <nav class="nav">
       <div class="nav-item" data-action="go" data-route="dashboard"><span class="ic">◈</span><span class="lbl">Dashboard</span></div>
