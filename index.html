@@ -1885,37 +1885,22 @@ function buildRoadmap(){
     const realEnd = Math.max(startIdx, endIdx);
     const pDays = days.slice(startIdx, realEnd + 1);
 
-    // Even-pace, date-range baseline (used whenever this phase has no
-    // materials of a given category assigned to it yet).
-    const dateExpectedRead = pDays.length * dailyRead;
-    const dateExpectedListen = pDays.length * dailyListen;
-    const dateActualRead = pDays.reduce((s, d) => s + d.actualRead, 0);
-    const dateActualListen = pDays.reduce((s, d) => s + d.actualListen, 0);
-
-    // Material-driven totals: each phase's own exclusive materials
-    // drive its Reading/Listening progress, so two phases never mirror
-    // the same numbers just because they share a material.
-    const phaseMaterials = (p.materials || []).map(id => materialById(id)).filter(Boolean);
-    const readingMats = phaseMaterials.filter(m => m.default_category === 'reading');
-    const listeningMats = phaseMaterials.filter(m => m.default_category === 'listening');
-    // Reading activities are logged as % of each book, so every queued
-    // reading material is worth a flat 100% (finishing it) regardless of
-    // any custom "Total units" value it carries — that field is ignored
-    // here on purpose so stale page-scale targets can't leak into the
-    // percent-based phase math. Per-book progress is capped at 100 so a
-    // single over-logged book can't inflate the phase total.
-    const matExpectedRead = readingMats.length * 100;
-    const matActualRead = readingMats.reduce((s, m) => s + Math.min(100, materialLoggedUnits(m)), 0);
-    const matExpectedListen = listeningMats.reduce((s, m) => s + (materialHasTarget(m) ? Number(m.total_units) : 0), 0);
-    const matActualListen = listeningMats.reduce((s, m) => s + materialLoggedUnits(m), 0);
-
-    // Use the phase's own materials once it has any in that category;
-    // if none of them carry a target yet, still show real logged
-    // progress against the even-pace baseline rather than dividing by 0.
-    const expectedRead = readingMats.length ? matExpectedRead : dateExpectedRead;
-    const actualRead = readingMats.length ? matActualRead : dateActualRead;
-    const expectedListen = listeningMats.length ? (matExpectedListen || dateExpectedListen) : dateExpectedListen;
-    const actualListen = listeningMats.length ? matActualListen : dateActualListen;
+    // Each phase's Reading/Listening target is always this phase's exact
+    // share of the overall challenge Reading/Listening Target — its slice
+    // of days out of the full challenge multiplied by the daily rate that
+    // the overall target implies. Because every day belongs to exactly one
+    // phase, summing this across all 4 phases always reproduces the full
+    // reading_target_percent / listening_target_minutes exactly, and the
+    // targets recalculate automatically any time those overall targets
+    // change (dailyRead/dailyListen are derived from them above).
+    const expectedRead = pDays.length * dailyRead;
+    const expectedListen = pDays.length * dailyListen;
+    // Actual progress is real logged activity that fell within this phase's
+    // date range — the same activity feed that drives the overall totals —
+    // so phase progress always stays tied to real progress toward the
+    // shared target rather than to whichever materials happen to be queued.
+    const actualRead = pDays.reduce((s, d) => s + d.actualRead, 0);
+    const actualListen = pDays.reduce((s, d) => s + d.actualListen, 0);
 
     const elapsedRead = pDays.filter(d => !d.isFuture).reduce((s, d) => s + d.actualRead, 0);
     const elapsedListen = pDays.filter(d => !d.isFuture).reduce((s, d) => s + d.actualListen, 0);
