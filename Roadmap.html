@@ -506,11 +506,13 @@
   .timer-sub{font-size:12.5px;color:var(--muted);margin-top:3px;display:block}
   .timer-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
   .session-dots{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:14px}
-  .sdot{width:11px;height:11px;border-radius:50%;background:var(--bar-bg);
+  .sdot{width:11px;height:11px;border-radius:50%;
+    background:color-mix(in srgb,var(--dot,var(--muted)) 18%,var(--bar-bg));
     border:1px solid var(--line);transition:background .2s,transform .2s,box-shadow .2s}
-  .sdot.done{background:var(--good-fg);border-color:var(--good-fg)}
-  .sdot.current{background:var(--reading);border-color:var(--reading);transform:scale(1.28);
-    box-shadow:0 0 0 3px color-mix(in srgb,var(--reading) 22%,transparent)}
+  .sdot.done{background:var(--dot,var(--good-fg));border-color:var(--dot,var(--good-fg))}
+  .sdot.current{background:var(--dot,var(--reading));border-color:var(--dot,var(--reading));
+    transform:scale(1.28);
+    box-shadow:0 0 0 3px color-mix(in srgb,var(--dot,var(--reading)) 22%,transparent)}
   .sdot.current.is-break{background:var(--listening);border-color:var(--listening);
     box-shadow:0 0 0 3px color-mix(in srgb,var(--listening) 22%,transparent)}
   .focus-stat-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
@@ -533,7 +535,8 @@
   .mchip .mchip-cat{font-size:10px;font-weight:750;letter-spacing:.06em;text-transform:uppercase;
     color:var(--muted);display:block}
 
-  .num-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+  .num-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:12px;margin-top:16px}
   @media(max-width:640px){ .num-row{grid-template-columns:1fr} }
   .num-field{display:flex;flex-direction:column;gap:6px;min-width:0}
   .num-field > label{font-size:11px;font-weight:750;letter-spacing:.06em;
@@ -546,8 +549,59 @@
     display:flex;align-items:center;justify-content:center;box-shadow:0 1px 2px rgba(0,0,0,.06);
     transition:background .12s,color .12s;flex:0 0 auto}
   .num-ctl .nbtn:hover{background:var(--reading);color:var(--on-accent)}
-  .builder-total{font-size:12.5px;color:var(--muted);margin-top:14px;line-height:1.6}
+  .builder-total{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.6}
   .builder-total b{color:var(--text)}
+  .builder-breakdown{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+  .bd-chip{font-size:11.5px;font-weight:650;padding:5px 11px;border-radius:999px;
+    background:color-mix(in srgb,var(--bd,var(--reading)) 12%,var(--surface));
+    border:1px solid color-mix(in srgb,var(--bd,var(--reading)) 30%,var(--line));
+    color:var(--text);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+
+  /* ---- per-material session allocation ---- */
+  .alloc-wrap{margin-top:16px}
+  .alloc-head{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    font-size:11px;font-weight:750;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:9px}
+  .alloc-total{font-size:11px;font-weight:750;color:var(--reading);
+    background:color-mix(in srgb,var(--reading) 12%,transparent);
+    padding:3px 10px;border-radius:999px;letter-spacing:0;text-transform:none}
+  .alloc-list{display:flex;flex-direction:column;gap:8px}
+  .alloc-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;
+    background:var(--surface-2);border:1px solid var(--line);
+    border-left:3px solid var(--alloc-color,var(--reading));flex-wrap:wrap}
+  .alloc-txt{flex:1 1 120px;min-width:0}
+  .alloc-title{font-size:13.5px;font-weight:620;display:block;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis}
+  .alloc-sub{font-size:11px;color:var(--muted);display:block;margin-top:1px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .alloc-order{display:flex;flex-direction:column;gap:2px;flex:0 0 auto}
+  .ord-btn{width:22px;height:16px;border-radius:5px;border:1px solid var(--line);
+    background:var(--surface);color:var(--muted);font-size:9px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;padding:0;line-height:1;
+    transition:background .12s,color .12s}
+  .ord-btn:hover{background:var(--surface-2);color:var(--text)}
+  .ord-btn:disabled{opacity:.3;cursor:not-allowed;pointer-events:none}
+  .alloc-step{display:flex;align-items:center;gap:3px;background:var(--surface);
+    border:1px solid var(--line);border-radius:10px;padding:3px;flex:0 0 auto}
+  .alloc-step .nbtn{width:26px;height:26px;border-radius:7px;border:0;background:transparent;
+    color:var(--muted);font-size:15px;font-weight:700;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;padding:0;line-height:1;
+    transition:background .12s,color .12s;flex:0 0 auto}
+  .alloc-step .nbtn:hover{background:var(--surface-2);color:var(--text)}
+  .alloc-input{width:38px;border:0;background:transparent;text-align:center;font-size:14px;
+    font-weight:750;font-variant-numeric:tabular-nums;color:var(--text);outline:none;padding:0;
+    -moz-appearance:textfield;font-family:inherit}
+  .alloc-input::-webkit-outer-spin-button,
+  .alloc-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .alloc-input:focus{color:var(--reading)}
+  .alloc-unit{font-size:11px;color:var(--muted);font-weight:650;white-space:nowrap;
+    padding-right:2px;flex:0 0 auto}
+  .alloc-remove{width:26px;height:26px;border-radius:8px;border:1px solid var(--line);
+    background:var(--surface);color:var(--muted);font-size:12px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;padding:0;flex:0 0 auto;
+    transition:background .12s,color .12s,border-color .12s}
+  .alloc-remove:hover{background:var(--bad-bg);color:var(--bad-fg);
+    border-color:color-mix(in srgb,var(--bad-fg) 30%,var(--line))}
 
   .check-row{display:flex;align-items:center;gap:9px;margin-top:14px;font-size:13px;
     color:var(--text);cursor:pointer;user-select:none}
@@ -578,6 +632,17 @@
     padding:4px 9px;border-radius:999px;background:var(--surface);
     border:1px solid var(--line);color:var(--muted);white-space:nowrap}
   .fg-progress{display:flex;flex-direction:column;gap:6px}
+
+  /* ---- session-segmented progress bar ---- */
+  .fg-segbar{display:flex;gap:3px;width:100%;height:9px;align-items:stretch}
+  .fg-seg{flex:1 1 0;min-width:2px;border-radius:99px;position:relative;overflow:hidden;
+    background:color-mix(in srgb,var(--seg,var(--muted)) 20%,var(--bar-bg));
+    transition:background .25s ease}
+  .fg-seg.done{background:var(--seg,var(--reading))}
+  .fg-seg.current{background:color-mix(in srgb,var(--seg,var(--reading)) 20%,var(--bar-bg))}
+  .fg-seg.current i{display:block;height:100%;border-radius:99px;
+    background:var(--seg,var(--reading));transition:width .25s linear}
+
   .fg-bar{height:6px;background:var(--bar-bg);border-radius:99px;overflow:hidden}
   .fg-bar i{display:block;height:100%;border-radius:99px;background:var(--fg-color,var(--reading));
     transition:width .35s ease}
@@ -706,7 +771,6 @@ function daysBetween(a, b){
   if (!a || !b) return null;
   return Math.round((parseISO(b) - parseISO(a)) / 86400000);
 }
-/* Coerce any value into a yyyy-mm-dd string, or '' */
 function normISO(v){
   if (!v) return '';
   if (typeof v === 'number'){
@@ -1295,7 +1359,9 @@ function updateHeader(){
    Focus sessions (Pomodoro)
    ---------------------------------------------------------
    A "session group" bundles one or more of today's materials
-   into a plan such as "3 × 50 min with a 10 min break".
+   into a plan such as "3 × 50 min with a 10 min break", where
+   each material can claim a specific number of sessions, e.g.
+   2 × Material A + 1 × Material B = 3 sessions.
    Groups live under their own localStorage key so the main app
    can never clobber them, and every finished work session is
    recorded in a small focus log that powers the stats below.
@@ -1303,15 +1369,15 @@ function updateHeader(){
 const FOCUS_KEY = 'esc-focus-plan';
 const RING_C = 2 * Math.PI * 54;
 const BASE_TITLE = document.title;
+const MAX_SESSIONS_PER_MATERIAL = 24;
 
 const NUM_FIELDS = {
-  sessions:     { min: 1, max: 24,  step: 1 },
   minutes:      { min: 5, max: 180, step: 5 },
   breakMinutes: { min: 0, max: 60,  step: 5 }
 };
 
 let focusState = { groups: [], timer: null, log: [] };
-let builder = { mids: [], sessions: 3, minutes: 50, breakMinutes: 10, autoTick: false, editId: null };
+let builder = { items: [], minutes: 50, breakMinutes: 10, autoTick: false, editId: null };
 let focusTick = null;
 let audioCtx = null;
 
@@ -1351,6 +1417,37 @@ function chime(long){
   } catch(e){}
 }
 
+/* --- group data model -------------------------------------
+   items : [{ mid, count }]   ordered list of materials with
+          the number of sessions each one owns.
+   mids  : derived list of material ids (kept for convenience)
+   sessions : derived total session count
+   ---------------------------------------------------------- */
+function normaliseItems(raw){
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter(it => it && typeof it.mid === 'string')
+    .map(it => ({
+      mid: it.mid,
+      count: clamp(Math.round(Number(it.count) || 1), 1, MAX_SESSIONS_PER_MATERIAL)
+    }));
+}
+function groupItems(g){
+  const items = normaliseItems(g && g.items);
+  if (items.length) return items;
+  return normaliseItems((g && g.mids || []).map(mid => ({ mid, count: 1 })));
+}
+function groupSessions(g){
+  return groupItems(g).reduce((s, it) => s + it.count, 0);
+}
+function groupQueue(g){
+  const q = [];
+  groupItems(g).forEach(it => {
+    for (let i = 0; i < it.count; i++) q.push(it.mid);
+  });
+  return q;
+}
+
 /* --- persistence --- */
 function loadFocusState(){
   let s = null;
@@ -1365,18 +1462,37 @@ function loadFocusState(){
 
   s.groups = s.groups
     .filter(g => g && typeof g === 'object')
-    .map(g => ({
-      id: g.id || uid('fg'),
-      mids: Array.isArray(g.mids) ? g.mids.filter(x => typeof x === 'string') : [],
-      sessions: clamp(Math.round(Number(g.sessions) || 1), 1, 24),
-      minutes: clamp(Math.round(Number(g.minutes) || 25), 1, 240),
-      breakMinutes: clamp(Math.round(Number(g.breakMinutes) || 0), 0, 120),
-      autoTick: !!g.autoTick,
-      done: Math.max(0, Math.round(Number(g.done) || 0)),
-      doneDate: normISO(g.doneDate) || todayISO(),
-      created_at: g.created_at || new Date().toISOString()
-    }))
-    .filter(g => g.mids.length);
+    .map(g => {
+      let items = normaliseItems(g.items);
+      if (!items.length){
+        // migrate a legacy group: mids[] + a flat session total
+        const mids = Array.isArray(g.mids) ? g.mids.filter(x => typeof x === 'string') : [];
+        const wanted = clamp(Math.round(Number(g.sessions) || mids.length || 1),
+                             1, MAX_SESSIONS_PER_MATERIAL);
+        items = mids.map(mid => ({ mid, count: 1 }));
+        let extra = wanted - items.length;
+        let i = 0;
+        while (extra > 0 && items.length){
+          items[i % items.length].count =
+            Math.min(MAX_SESSIONS_PER_MATERIAL, items[i % items.length].count + 1);
+          extra--; i++;
+        }
+      }
+      const sessions = Math.max(1, items.reduce((sum, it) => sum + it.count, 0));
+      return {
+        id: g.id || uid('fg'),
+        items,
+        mids: items.map(it => it.mid),
+        sessions,
+        minutes: clamp(Math.round(Number(g.minutes) || 25), 1, 240),
+        breakMinutes: clamp(Math.round(Number(g.breakMinutes) || 0), 0, 120),
+        autoTick: !!g.autoTick,
+        done: Math.max(0, Math.round(Number(g.done) || 0)),
+        doneDate: normISO(g.doneDate) || todayISO(),
+        created_at: g.created_at || new Date().toISOString()
+      };
+    })
+    .filter(g => g.items.length);
 
   // Daily progress resets when the day rolls over.
   const today = todayISO();
@@ -1410,8 +1526,11 @@ function saveFocusState(){
 function focusGroup(id){ return focusState.groups.find(g => g.id === id) || null; }
 function activeGroup(){ return focusState.timer ? focusGroup(focusState.timer.groupId) : null; }
 function sessionMaterial(g, index){
-  if (!g || !g.mids.length) return null;
-  return materialById(g.mids[index % g.mids.length]);
+  if (!g) return null;
+  const q = groupQueue(g);
+  if (!q.length) return null;
+  const i = ((index % q.length) + q.length) % q.length;
+  return materialById(q[i]);
 }
 function focusLogOn(date){ return focusState.log.filter(l => l.date === date); }
 function focusMinutesOn(date){
@@ -1467,6 +1586,12 @@ function paintTimer(){
       const frac = t.total > 0 ? clamp(rem / t.total, 0, 1) : 0;
       ring.setAttribute('stroke-dashoffset', (RING_C * (1 - frac)).toFixed(2));
     }
+  }
+  // keep any "current session" segment fill in sync while running
+  const seg = document.querySelector('[data-live-seg]');
+  if (seg && t.phase === 'work' && t.total > 0){
+    const filled = clamp(1 - rem / t.total, 0, 1);
+    seg.style.width = (filled * 100).toFixed(1) + '%';
   }
   updateDocTitle(fmtClock(rem) + (t.phase === 'break' ? ' · break' : ' · focus'));
 }
@@ -1585,33 +1710,53 @@ function finishPhase(opts){
   render();
 }
 
-/* --- group management --- */
+/* --- builder helpers --- */
 function resetBuilder(){
   builder.editId = null;
-  builder.mids = [];
+  builder.items = [];
   builder.autoTick = false;
 }
+function builderFind(mid){ return builder.items.find(it => it.mid === mid) || null; }
+function builderTotalSessions(){
+  return builder.items.reduce((s, it) => s + (it.count || 0), 0);
+}
+function builderQueue(){
+  const q = [];
+  builder.items.forEach(it => {
+    for (let i = 0; i < it.count; i++) q.push(it.mid);
+  });
+  return q;
+}
+
+/* --- group management --- */
 function createFocusGroup(autoStart){
-  if (!builder.mids.length) return;
+  const items = builder.items
+    .filter(it => materialById(it.mid) && it.count > 0)
+    .map(it => ({ mid: it.mid, count: clamp(Math.round(it.count), 1, MAX_SESSIONS_PER_MATERIAL) }));
+  if (!items.length) return;
+
+  const sessions = items.reduce((s, it) => s + it.count, 0);
   let gid = null;
 
   if (builder.editId){
     const g = focusGroup(builder.editId);
     if (g){
-      g.mids = builder.mids.slice();
-      g.sessions = builder.sessions;
+      g.items = items;
+      g.mids = items.map(it => it.mid);
+      g.sessions = sessions;
       g.minutes = builder.minutes;
       g.breakMinutes = builder.breakMinutes;
       g.autoTick = builder.autoTick;
-      if (g.done > g.sessions) g.done = 0;
+      if (g.done > sessions) g.done = 0;
       gid = g.id;
     }
   }
   if (!gid){
     const g = {
       id: uid('fg'),
-      mids: builder.mids.slice(),
-      sessions: builder.sessions,
+      items,
+      mids: items.map(it => it.mid),
+      sessions,
       minutes: builder.minutes,
       breakMinutes: builder.breakMinutes,
       autoTick: builder.autoTick,
@@ -1632,8 +1777,9 @@ function editFocusGroup(id){
   const g = focusGroup(id);
   if (!g) return;
   builder.editId = g.id;
-  builder.mids = g.mids.slice();
-  builder.sessions = g.sessions;
+  builder.items = groupItems(g)
+    .filter(it => materialById(it.mid))
+    .map(it => ({ mid: it.mid, count: it.count }));
   builder.minutes = g.minutes;
   builder.breakMinutes = g.breakMinutes;
   builder.autoTick = g.autoTick;
@@ -1673,6 +1819,37 @@ function ringHTML(rem, total, phase, idle){
   </div>`;
 }
 
+/* One segment per session, coloured by the material that owns it.
+   Completed segments are solid, pending ones are tinted, and the
+   in-progress session fills up live while the timer runs. */
+function segBarHTML(g){
+  const q = groupQueue(g);
+  if (!q.length) return '';
+  const done = clamp(g.done, 0, q.length);
+  const t = focusState.timer;
+  const isActive = !!t && t.groupId === g.id;
+  const isWorking = isActive && t.phase === 'work' && t.total > 0;
+  const curFrac = isWorking ? clamp(1 - timerRemaining() / t.total, 0, 1) : 0;
+
+  const segs = q.map((mid, i) => {
+    const m = materialById(mid);
+    const color = m ? materialTint(m) : 'var(--reading)';
+    let cls = 'fg-seg';
+    let inner = '';
+    if (i < done){
+      cls += ' done';
+    } else if (i === done && isWorking && curFrac > 0){
+      cls += ' current';
+      inner = `<i data-live-seg style="width:${(curFrac * 100).toFixed(1)}%"></i>`;
+    }
+    return `<span class="${cls}" style="--seg:${color}"></span>`.replace('></span>',
+      inner ? `>${inner}</span>` : '></span>');
+  }).join('');
+
+  return `<div class="fg-segbar" role="img"
+    aria-label="${done} of ${q.length} sessions complete">${segs}</div>`;
+}
+
 function timerCardHTML(){
   const today = todayISO();
   const todayMin = focusMinutesOn(today);
@@ -1692,19 +1869,30 @@ function timerCardHTML(){
           <span class="timer-title">Ready when you are</span>
           <span class="timer-sub">${focusState.groups.length
             ? 'Press <b>Start</b> on a session group below — the timer keeps running while you browse other tabs.'
-            : 'Build a session group below: pick today’s materials, then choose how many sessions and how long each one should be.'}</span>
+            : 'Build a session group below: pick today’s materials, give each one a number of sessions, then choose how long each session should be.'}</span>
         </div>
       </div>`;
   } else {
     const rem = timerRemaining();
     const isBreak = t.phase === 'break';
-    const idx = clamp(g.done, 0, g.sessions - 1);
-    const mat = sessionMaterial(g, isBreak ? Math.min(g.done, g.sessions - 1) : g.done);
+    const totalSessions = groupSessions(g);
+    const idx = clamp(g.done, 0, totalSessions - 1);
+    const mat = sessionMaterial(g, isBreak ? Math.min(g.done, totalSessions - 1) : g.done);
     const typeLabel = mat ? (TYPES[mat.default_input_type] || { label: 'Other' }).label : '';
     const subParts = [];
-    subParts.push(isBreak ? 'Break' : `Session ${idx + 1} of ${g.sessions}`);
+    subParts.push(isBreak ? 'Break' : `Session ${idx + 1} of ${totalSessions}`);
     if (typeLabel) subParts.push(typeLabel);
     if (mat && mat.creator) subParts.push(mat.creator);
+
+    const q = groupQueue(g);
+    const dotsHTML = q.map((mid, i) => {
+      const m = materialById(mid);
+      const color = m ? materialTint(m) : 'var(--reading)';
+      let cls = 'sdot';
+      if (i < g.done) cls += ' done';
+      else if (i === g.done) cls += ' current' + (isBreak ? ' is-break' : '');
+      return `<span class="${cls}" style="--dot:${color}"></span>`;
+    }).join('');
 
     body = `
       <div class="timer-top">
@@ -1713,13 +1901,7 @@ function timerCardHTML(){
           <span class="timer-title">${esc(mat ? mat.title : 'Session')}</span>
           <span class="timer-sub">${subParts.map(esc).join(' · ')}</span>
 
-          <div class="session-dots" aria-hidden="true">
-            ${Array.from({ length: g.sessions }, (_, i) => {
-              const cls = i < g.done ? 'done' : (i === g.done ? 'current' : '');
-              const brk = isBreak && i === g.done ? 'is-break' : '';
-              return `<span class="sdot ${cls} ${brk}"></span>`;
-            }).join('')}
-          </div>
+          <div class="session-dots" aria-hidden="true">${dotsHTML}</div>
 
           <div class="timer-controls">
             ${t.running
@@ -1761,29 +1943,32 @@ function timerCardHTML(){
 
 function groupListHTML(){
   const items = focusState.groups
-    .filter(g => g.mids.some(id => materialById(id)))
+    .filter(g => groupItems(g).some(it => materialById(it.mid)))
     .map(g => {
-      const mats = g.mids.map(materialById).filter(Boolean);
+      const gItems = groupItems(g);
+      const mats = gItems.map(it => materialById(it.mid)).filter(Boolean);
+      if (!mats.length) return '';
       const first = mats[0];
       const tint = materialTint(first);
+      const total = gItems.reduce((s, it) => s + it.count, 0);
       const isActive = !!focusState.timer && focusState.timer.groupId === g.id;
       const running = isActive && focusState.timer.running;
-      const complete = g.done >= g.sessions;
-      const pct = g.sessions ? Math.round(g.done / g.sessions * 100) : 0;
+      const complete = g.done >= total;
       const title = mats.length === 1
         ? first.title
-        : `${mats.length} materials rotating`;
+        : `${mats.length} materials · ${total} sessions`;
 
-      const matsHTML = mats.map((m, i) => {
-        const sessions = [];
-        for (let s = 0; s < g.sessions; s++){
-          if (s % mats.length === i) sessions.push(s + 1);
-        }
-        const sessCount = sessions.length === 1 ? '1 session' : `${sessions.length} sessions`;
+      const queue = groupQueue(g);
+
+      const matsHTML = gItems.map(it => {
+        const m = materialById(it.mid);
+        if (!m) return '';
+        const idxs = [];
+        queue.forEach((mid, i) => { if (mid === it.mid) idxs.push(i + 1); });
+        const sessLabel = it.count === 1 ? '1 session' : `${it.count} sessions`;
         const subParts = [(TYPES[m.default_input_type] || { label: 'Other' }).label];
         if (m.creator) subParts.push(m.creator);
-        if (mats.length > 1) subParts.push(`Sessions ${sessions.join(', ')}`);
-
+        if (gItems.length > 1) subParts.push(`Sessions ${idxs.join(', ')}`);
         return `
         <div class="fg-mat" style="--fg-mat-color:${materialTint(m)}">
           ${coverHTML(m, 30)}
@@ -1791,7 +1976,7 @@ function groupListHTML(){
             <span class="fg-mat-title">${esc(m.title)}</span>
             <span class="fg-mat-sub">${subParts.map(esc).join(' · ')}</span>
           </span>
-          <span class="fg-mat-badge" title="${esc(sessions.join(', '))}">${esc(sessCount)}</span>
+          <span class="fg-mat-badge">${esc(sessLabel)}</span>
         </div>`;
       }).join('');
 
@@ -1802,8 +1987,8 @@ function groupListHTML(){
           <div class="fg-head-txt">
             <span class="fg-title">${esc(title)}</span>
             <span class="fg-sub">
-              ${g.sessions} × ${g.minutes} min${g.breakMinutes ? ` · ${g.breakMinutes} min break` : ''} ·
-              ${esc(fmtMinutes(g.sessions * g.minutes))} total${g.autoTick ? ' · auto-ticks task' : ''}
+              ${total} × ${g.minutes} min${g.breakMinutes ? ` · ${g.breakMinutes} min break` : ''} ·
+              ${esc(fmtMinutes(total * g.minutes))} total${g.autoTick ? ' · auto-ticks task' : ''}
             </span>
           </div>
           <div class="fg-actions">
@@ -1820,9 +2005,9 @@ function groupListHTML(){
         <div class="fg-mats">${matsHTML}</div>
 
         <div class="fg-progress">
-          <div class="fg-bar"><i style="width:${pct}%"></i></div>
+          ${segBarHTML(g)}
           <span class="fg-sub">
-            ${g.done} of ${g.sessions} session${g.sessions === 1 ? '' : 's'} done today${complete ? ' · complete 🎉' : ''}
+            ${g.done} of ${total} session${total === 1 ? '' : 's'} done today${complete ? ' · complete 🎉' : ''}
           </span>
         </div>
       </div>`;
@@ -1860,6 +2045,50 @@ function numFieldHTML(label, key, value){
   </div>`;
 }
 
+function allocRowHTML(it, idx){
+  const m = materialById(it.mid);
+  if (!m) return '';
+  const tint = materialTint(m);
+  const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
+  const isFirst = idx === 0;
+  const isLast = idx === builder.items.length - 1;
+  return `
+  <div class="alloc-row" style="--alloc-color:${tint}">
+    ${coverHTML(m, 30)}
+    <span class="alloc-txt">
+      <span class="alloc-title">${esc(m.title)}</span>
+      <span class="alloc-sub">${esc(typeLabel)}${m.creator ? ' · ' + esc(m.creator) : ''}</span>
+    </span>
+
+    <span class="alloc-order">
+      <button type="button" class="ord-btn" data-alloc-move="${idx}" data-dir="-1"
+              data-focus-key="ao-up-${esc(m.id)}" ${isFirst ? 'disabled' : ''}
+              aria-label="Move ${esc(m.title)} up">▲</button>
+      <button type="button" class="ord-btn" data-alloc-move="${idx}" data-dir="1"
+              data-focus-key="ao-dn-${esc(m.id)}" ${isLast ? 'disabled' : ''}
+              aria-label="Move ${esc(m.title)} down">▼</button>
+    </span>
+
+    <span class="alloc-step">
+      <button type="button" class="nbtn" data-alloc-step="${idx}" data-delta="-1"
+              data-focus-key="as-dec-${esc(m.id)}"
+              aria-label="Fewer sessions for ${esc(m.title)}">−</button>
+      <input class="alloc-input" type="number" inputmode="numeric"
+             data-alloc-input="${idx}" data-focus-key="as-in-${esc(m.id)}"
+             value="${it.count}" min="1" max="${MAX_SESSIONS_PER_MATERIAL}"
+             aria-label="Sessions for ${esc(m.title)}">
+      <button type="button" class="nbtn" data-alloc-step="${idx}" data-delta="1"
+              data-focus-key="as-inc-${esc(m.id)}"
+              aria-label="More sessions for ${esc(m.title)}">+</button>
+    </span>
+    <span class="alloc-unit">${it.count === 1 ? 'session' : 'sessions'}</span>
+
+    <button type="button" class="alloc-remove" data-alloc-remove="${idx}"
+            data-focus-key="as-rm-${esc(m.id)}"
+            aria-label="Remove ${esc(m.title)} from this group">✕</button>
+  </div>`;
+}
+
 function builderCardHTML(){
   const today = todayISO();
   const tasks = dayTasks(today);
@@ -1889,9 +2118,18 @@ function builderCardHTML(){
   }
 
   const editing = !!builder.editId;
-  const total = builder.sessions * builder.minutes;
-  const breakTotal = builder.breakMinutes * Math.max(0, builder.sessions - 1);
-  const canCreate = builder.mids.length > 0;
+  const totalSessions = builderTotalSessions();
+  const total = totalSessions * builder.minutes;
+  const breakTotal = builder.breakMinutes * Math.max(0, totalSessions - 1);
+  const canCreate = builder.items.length > 0 && totalSessions > 0;
+
+  const allocRows = builder.items.map((it, idx) => allocRowHTML(it, idx)).join('');
+
+  const bd = builder.items.map(it => {
+    const m = materialById(it.mid);
+    if (!m) return '';
+    return `<span class="bd-chip" style="--bd:${materialTint(m)}">${it.count} × ${esc(m.title)}</span>`;
+  }).join('');
 
   return `
   <div class="card" data-builder-anchor style="margin-bottom:14px">
@@ -1902,7 +2140,7 @@ function builderCardHTML(){
 
     <div class="builder-chips">
       ${mats.map(m => {
-        const on = builder.mids.includes(m.id);
+        const on = !!builderFind(m.id);
         const tint = materialTint(m);
         const style = on
           ? `border-color:${tint};background:color-mix(in srgb,${tint} 10%,var(--surface))`
@@ -1922,8 +2160,19 @@ function builderCardHTML(){
       }).join('')}
     </div>
 
+    ${builder.items.length ? `
+    <div class="alloc-wrap">
+      <div class="alloc-head">
+        <span>Sessions per material</span>
+        <span class="alloc-total">${totalSessions} total</span>
+      </div>
+      <div class="alloc-list">${allocRows}</div>
+    </div>` : `
+    <p class="hint" style="margin:14px 0 0">
+      Pick at least one material above, then choose how many sessions each one gets.
+    </p>`}
+
     <div class="num-row">
-      ${numFieldHTML('Sessions', 'sessions', builder.sessions)}
       ${numFieldHTML('Minutes per session', 'minutes', builder.minutes)}
       ${numFieldHTML('Break (minutes)', 'breakMinutes', builder.breakMinutes)}
     </div>
@@ -1934,11 +2183,12 @@ function builderCardHTML(){
       Tick off the day's task when a session finishes
     </label>
 
+    ${builder.items.length ? `
+    <div class="builder-breakdown">${bd}</div>
     <p class="builder-total">
-      ${canCreate
-        ? `${builder.mids.length} material${builder.mids.length === 1 ? '' : 's'} · <b>${builder.sessions} × ${builder.minutes} min</b> = <b>${esc(fmtMinutes(total))}</b> of focus${breakTotal ? ` + ${esc(fmtMinutes(breakTotal))} of breaks` : ''}`
-        : 'Pick at least one material above to build a group.'}
-    </p>
+      <b>${totalSessions} session${totalSessions === 1 ? '' : 's'} × ${builder.minutes} min = ${esc(fmtMinutes(total))}</b>
+      of focus${breakTotal ? ` + ${esc(fmtMinutes(breakTotal))} of breaks` : ''}
+    </p>` : ''}
 
     <div class="modal-actions" style="justify-content:flex-start;margin-top:16px">
       <button class="btn btn-primary" data-focus-create ${canCreate ? '' : 'disabled'}>
@@ -1958,12 +2208,13 @@ function viewFocus(){
   ${groupListHTML()}
   ${builderCardHTML()}
   <p class="footnote">
-    Build a group from <b>today's plan</b> — e.g. <b>3 sessions × 50 minutes</b> for one material,
-    or rotate across several. The timer keeps running while you switch tabs.<br>
+    Build a group from <b>today's plan</b> — pick materials, then give each one its own
+    number of sessions (e.g. <b>2 × Material A + 1 × Material B = 3 × 50 min</b>).<br>
+    The segmented bar under each group has <b>one segment per session</b>, coloured by the
+    material that owns it. The timer keeps running while you switch tabs.<br>
     Finished sessions are logged with their minutes and, if you asked for it, they tick off
-    the matching task in the shared activity log.<br>
-    Session groups are stored separately from the main challenge data, so nothing here
-    can overwrite your materials or plan.
+    the matching task in the shared activity log. Groups are stored separately from the main
+    challenge data, so nothing here can overwrite your materials or plan.
   </p>`;
 }
 
@@ -2692,16 +2943,53 @@ document.addEventListener('click', e => {
   const fEdit = e.target.closest('[data-focus-edit]');
   if (fEdit){ editFocusGroup(fEdit.dataset.focusEdit); return; }
 
+  /* ---------- builder: material chips ---------- */
   const chip = e.target.closest('[data-chip-mid]');
   if (chip){
     const mid = chip.dataset.chipMid;
-    const i = builder.mids.indexOf(mid);
-    if (i >= 0) builder.mids.splice(i, 1);
-    else builder.mids.push(mid);
+    const i = builder.items.findIndex(it => it.mid === mid);
+    if (i >= 0) builder.items.splice(i, 1);
+    else builder.items.push({ mid, count: 1 });
     renderPreservingFocus();
     return;
   }
 
+  /* ---------- builder: per-material session count ---------- */
+  const allocStep = e.target.closest('[data-alloc-step]');
+  if (allocStep){
+    const idx = Number(allocStep.dataset.allocStep);
+    const delta = Number(allocStep.dataset.delta) || 0;
+    const it = builder.items[idx];
+    if (it){
+      it.count = clamp(Math.round(it.count + delta), 1, MAX_SESSIONS_PER_MATERIAL);
+      renderPreservingFocus();
+    }
+    return;
+  }
+  const allocRemove = e.target.closest('[data-alloc-remove]');
+  if (allocRemove){
+    const idx = Number(allocRemove.dataset.allocRemove);
+    if (idx >= 0 && idx < builder.items.length){
+      builder.items.splice(idx, 1);
+      renderPreservingFocus();
+    }
+    return;
+  }
+  const allocMove = e.target.closest('[data-alloc-move]');
+  if (allocMove){
+    const idx = Number(allocMove.dataset.allocMove);
+    const dir = Number(allocMove.dataset.dir);
+    const j = idx + dir;
+    if (idx >= 0 && j >= 0 && idx < builder.items.length && j < builder.items.length){
+      const tmp = builder.items[idx];
+      builder.items[idx] = builder.items[j];
+      builder.items[j] = tmp;
+      renderPreservingFocus();
+    }
+    return;
+  }
+
+  /* ---------- builder: minutes / break ---------- */
   const numStep = e.target.closest('[data-num-step]');
   if (numStep){
     const key = numStep.dataset.numStep;
@@ -2873,6 +3161,17 @@ document.addEventListener('change', e => {
 
   if (t.matches('[data-builder-autotick]')){
     builder.autoTick = !!t.checked;
+    renderPreservingFocus();
+    return;
+  }
+  if (t.matches('[data-alloc-input]')){
+    const idx = Number(t.dataset.allocInput);
+    const it = builder.items[idx];
+    if (it){
+      let v = Math.round(Number(t.value));
+      if (!isFinite(v)) v = 1;
+      it.count = clamp(v, 1, MAX_SESSIONS_PER_MATERIAL);
+    }
     renderPreservingFocus();
     return;
   }
