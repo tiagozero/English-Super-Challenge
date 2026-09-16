@@ -304,6 +304,8 @@
   .swatch{width:30px;height:30px;border-radius:9px;border:2px solid transparent;cursor:pointer;transition:transform .08s ease;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
   .swatch:hover{transform:scale(1.08)}
   .swatch.active{border-color:var(--text);box-shadow:0 0 0 2px var(--bg)}
+  .priority-swatch{width:auto;min-width:44px;padding:0 6px;display:flex;align-items:center;justify-content:center}
+  .priority-swatch span{font-size:11px;font-weight:800;letter-spacing:.02em}
 
   input[type=range]{
     width:100%;height:6px;-webkit-appearance:none;appearance:none;
@@ -494,6 +496,7 @@
   .mat-card-icon.has-cover{background-size:cover;background-position:center}
   .mat-card-titles{min-width:0;flex:1}
   .mat-card-title{font-size:14.5px;font-weight:650;letter-spacing:-.005em;line-height:1.25;word-break:break-word}
+  .priority-pill{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.03em;padding:1px 6px;border-radius:999px;margin-left:7px;vertical-align:middle;line-height:1.6}
   .mat-card-sub{font-size:12px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .mat-card-stats{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
   .mat-card-figure{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
@@ -706,10 +709,8 @@
   .rm-queue-item{display:flex;align-items:stretch;gap:11px;background:color-mix(in srgb, var(--task-color, var(--line)) 9%, var(--surface-2));border:1px solid color-mix(in srgb, var(--task-color, var(--line)) 30%, var(--line));border-radius:12px;padding:11px 12px;transition:border-color .15s,background .15s;min-width:0}
   .rm-queue-item:hover{border-color:color-mix(in srgb, var(--task-color, var(--hover-line)) 55%, var(--hover-line))}
   .rm-queue-item.done{background:color-mix(in srgb, var(--good-bg) 55%, var(--surface-2));border-color:color-mix(in srgb, var(--good-fg) 25%, var(--line))}
-  .rm-queue-item.next{border-color:color-mix(in srgb, var(--task-color, var(--reading)) 70%, var(--line));box-shadow:0 0 0 3px color-mix(in srgb, var(--task-color, var(--reading)) 16%, transparent)}
   .rq-pos{width:22px;height:22px;flex:0 0 auto;align-self:flex-start;border-radius:50%;background:var(--surface);border:1px solid var(--line);color:var(--muted);font-size:11px;font-weight:750;display:flex;align-items:center;justify-content:center}
   .rm-queue-item.done .rq-pos{background:var(--good-fg);color:var(--on-accent);border-color:var(--good-fg)}
-  .rm-queue-item.next .rq-pos{background:var(--task-color, var(--reading));color:var(--on-accent);border-color:var(--task-color, var(--reading))}
   .rq-icon{width:34px;height:34px;flex:0 0 auto;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:750;color:var(--on-accent);align-self:flex-start;background:var(--task-color, var(--muted))}
   .rq-icon.has-cover{background-size:cover;background-position:center;color:transparent}
   .rq-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
@@ -731,7 +732,7 @@
   .rm-queue-add{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
   .rm-queue-add select{flex:1;min-width:180px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 11px;font-size:13px;color:var(--text);outline:none}
   .rm-queue-add select:focus{border-color:var(--reading);box-shadow:0 0 0 3px color-mix(in srgb, var(--reading) 14%, transparent)}
-  .badge.next{background:var(--task-color, var(--reading));color:var(--on-accent)}
+
 
   .rm-week{
     border-top:1px solid var(--line);
@@ -1010,7 +1011,6 @@
     <button data-nav="roadmap">Roadmap</button>
     <button data-nav="history">History</button>
     <button data-nav="progress">Progress</button>
-    <a href="Roadmap.html">Study Plan <span class="ext">↗</span></a>
     <a href="Source/Dashboard.html">Output <span class="ext">↗</span></a>
   </nav>
 </header>
@@ -1288,25 +1288,19 @@ const AVATAR_COLORS = [
   '#4A6FA5','#A8567A','#8A6420','#5D7A3F','#3E7C8A',
   '#26211C','#9C4230','#6B5B95','#B08B3E','#3E5B78'
 ];
-/* Named palette for material cards — same hexes as AVATAR_COLORS, given
-   friendly names for the material color picker. */
-const MATERIAL_COLORS = [
-  { name: 'Clay',   hex: '#C2703D' },
-  { name: 'Pine',   hex: '#3F7A6E' },
-  { name: 'Plum',   hex: '#7A5EA8' },
-  { name: 'Rust',   hex: '#B0563F' },
-  { name: 'Moss',   hex: '#2F6B54' },
-  { name: 'Slate',  hex: '#4A6FA5' },
-  { name: 'Berry',  hex: '#A8567A' },
-  { name: 'Amber',  hex: '#8A6420' },
-  { name: 'Olive',  hex: '#5D7A3F' },
-  { name: 'Teal',   hex: '#3E7C8A' },
-  { name: 'Ink',    hex: '#26211C' },
-  { name: 'Brick',  hex: '#9C4230' },
-  { name: 'Violet', hex: '#6B5B95' },
-  { name: 'Gold',   hex: '#B08B3E' },
-  { name: 'Ocean',  hex: '#3E5B78' }
+/* Priority levels for materials — P1 (highest) through P4 (default/lowest).
+   Each card's color now comes entirely from its priority, rather than a
+   free color picker. `fg` is the readable text/icon color for that swatch,
+   and `border` marks priorities (namely white P4) that need an outline to
+   stay visible against light surfaces. */
+const PRIORITIES = [
+  { id: 'p1', label: 'P1', name: 'Red',    hex: '#D5473F', fg: '#FFFFFF', border: false },
+  { id: 'p2', label: 'P2', name: 'Yellow', hex: '#E8B93A', fg: '#3B2F0A', border: false },
+  { id: 'p3', label: 'P3', name: 'Blue',   hex: '#3E7CC4', fg: '#FFFFFF', border: false },
+  { id: 'p4', label: 'P4', name: 'White',  hex: '#FFFFFF', fg: '#26211C', border: true  }
 ];
+const DEFAULT_PRIORITY = 'p4';
+function priorityMeta(id){ return PRIORITIES.find(p => p.id === id) || PRIORITIES[PRIORITIES.length - 1]; }
 const MATERIAL_EMOJI_SUGGESTIONS = ['📖','📗','📙','📘','🎧','🎙️','📻','🎬','📰','📝','🗞️','🔖'];
 const UNIT_SUGGESTIONS = { reading: ['Percent', 'Pages', 'Chapters', 'Words'], listening: ['Minutes', 'Hours', 'Episodes'] };
 function defaultUnitFor(category){ return category === 'listening' ? 'Minutes' : 'Percent'; }
@@ -3086,14 +3080,9 @@ function phaseUnitsTotals(phase){
 function roadmapQueueHTML(phase){
   const rawIds = state.roadmap.phases[phase.index]?.materials || [];
   const items = rawIds.map(id => materialById(id)).filter(Boolean);
-  const firstActiveIdx = items.findIndex(m => !materialIsComplete(m));
 
   const rows = items.length
-    ? items.map((m, i) => roadmapQueueItemHTML(phase.index, m, i, {
-        isFirst: i === 0,
-        isLast: i === items.length - 1,
-        isNext: i === firstActiveIdx
-      })).join('')
+    ? items.map((m, i) => roadmapQueueItemHTML(phase.index, m, i)).join('')
     : `<div class="rm-queue-empty">No materials queued for this phase yet — add one below.</div>`;
 
   const allDone = items.length > 0 && items.every(materialIsComplete);
@@ -3121,32 +3110,29 @@ function roadmapQueueHTML(phase){
     </div>
   </div>`;
 }
-function roadmapQueueItemHTML(phaseIndex, m, index, opts){
+function roadmapQueueItemHTML(phaseIndex, m, index){
   const hasTarget = materialHasTarget(m);
   const pct = materialUnitPct(m);
   const isDone = materialIsComplete(m);
   const sp = materialSubtasksSummary(m);
-  const itemCls = ['rm-queue-item', isDone ? 'done' : '', opts.isNext ? 'next' : ''].filter(Boolean).join(' ');
-  const badge = opts.isNext ? '<span class="badge next">Now</span>'
-              : isDone ? '<span class="badge done">✓ Done</span>'
-              : '';
+  const itemCls = ['rm-queue-item', isDone ? 'done' : ''].filter(Boolean).join(' ');
+  const badge = isDone ? '<span class="badge done">✓ Done</span>' : '';
   const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
   const initials = (m.title || '?').trim().slice(0, 2).toUpperCase();
-  // Every color cue on this card — background tint, border, icon, progress
-  // bar, "Now" highlight — derives from this one --task-color variable, set
-  // straight from the material's own color (blended with the theme via
-  // color-mix in CSS) so it updates automatically whenever the material's
-  // color or cover changes in the Materials section. No separate setting.
-  const matColor = m.color || MATERIAL_COLORS[0].hex;
+  // Every color cue on this card — background tint, border, icon and
+  // progress bar — derives from this one --task-color variable, set from
+  // the material's priority (blended with the theme via color-mix in CSS)
+  // so it updates automatically whenever the priority changes.
+  const pr = priorityMeta(m.priority);
   const icon = m.cover_url
     ? `<div class="rq-icon has-cover" style="background-image:url('${escapeHtml(m.cover_url)}')"></div>`
-    : `<div class="rq-icon">${escapeHtml(initials)}</div>`;
+    : `<div class="rq-icon" style="color:${pr.fg}${pr.border ? ';box-shadow:inset 0 0 0 1px var(--line)' : ''}">${escapeHtml(initials)}</div>`;
   const subLabel = hasTarget
     ? `${fmt(materialLoggedUnits(m))} / ${fmt(Number(m.total_units))} ${materialUnitLabel(m).toLowerCase()}`
     : (sp ? `${sp.done}/${sp.total} subtasks` : materialTotalsText(materialTotals(m.id)));
 
   return `
-  <div class="${itemCls}" style="--task-color:${escapeHtml(matColor)}">
+  <div class="${itemCls}" style="--task-color:${escapeHtml(pr.hex)}">
     <span class="rq-pos">${index + 1}</span>
     ${icon}
     <div class="rq-main">
@@ -3163,8 +3149,6 @@ function roadmapQueueItemHTML(phaseIndex, m, index, opts){
       ${materialDeadlineLineHTML(m)}
     </div>
     <div class="rq-actions">
-      <button class="rq-action" data-action="rm-queue-up" data-phase="${phaseIndex}" data-idx="${index}" ${opts.isFirst ? 'disabled' : ''} title="Move up" aria-label="Move up">↑</button>
-      <button class="rq-action" data-action="rm-queue-down" data-phase="${phaseIndex}" data-idx="${index}" ${opts.isLast ? 'disabled' : ''} title="Move down" aria-label="Move down">↓</button>
       <button class="rq-action danger" data-action="rm-queue-remove" data-phase="${phaseIndex}" data-idx="${index}" title="Remove" aria-label="Remove">✕</button>
     </div>
   </div>`;
@@ -3720,10 +3704,10 @@ function materialCardHTML(m){
   const barCls = isDone ? 'complete' : (m.default_category || 'reading');
   const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
   const initials = (m.title || '?').trim().slice(0, 2).toUpperCase();
-  const color = m.color || MATERIAL_COLORS[0].hex;
+  const pr = priorityMeta(m.priority);
   const icon = m.cover_url
     ? `<div class="mat-card-icon has-cover" style="background-image:url('${escapeHtml(m.cover_url)}')"></div>`
-    : `<div class="mat-card-icon" style="background:${escapeHtml(color)}">${m.emoji ? escapeHtml(m.emoji) : escapeHtml(initials)}</div>`;
+    : `<div class="mat-card-icon" style="background:${pr.hex};color:${pr.fg}${pr.border ? ';box-shadow:inset 0 0 0 1px var(--line)' : ''}">${m.emoji ? escapeHtml(m.emoji) : escapeHtml(initials)}</div>`;
   const episodesTotal = Number(m.episodes_total) || 0;
   const episodesRow = episodesTotal > 0
     ? `<span class="mat-card-episodes">${fmt(materialEpisodesLogged(m))} / ${fmt(episodesTotal)} episodes</span>` : '';
@@ -3740,7 +3724,7 @@ function materialCardHTML(m){
     <div class="mat-card-top">
       ${icon}
       <div class="mat-card-titles">
-        <div class="mat-card-title">${escapeHtml(m.title)}</div>
+        <div class="mat-card-title">${escapeHtml(m.title)}<span class="priority-pill" style="background:${pr.hex};color:${pr.fg}${pr.border ? ';box-shadow:inset 0 0 0 1px var(--line)' : ''}">${pr.label}</span></div>
         <div class="mat-card-sub">${escapeHtml(m.creator || '—')} · ${escapeHtml(typeLabel)}</div>
       </div>
     </div>
@@ -4636,7 +4620,7 @@ function openLogModal(activity){
 function openMaterialModal(material){
   const ch = state.challenge;
   const editing = !!material;
-  const m = material || { title: '', creator: '', default_input_type: 'kindle', default_category: 'reading', status: 'active', cover_url: '', deadline: '', subtasks: [] };
+  const m = material || { title: '', creator: '', default_input_type: 'kindle', default_category: 'reading', status: 'active', cover_url: '', deadline: '', subtasks: [], priority: DEFAULT_PRIORITY };
   let coverUrl = m.cover_url || '';
   const coverIsLink = coverUrl && !coverUrl.startsWith('data:');
 
@@ -4699,10 +4683,10 @@ function openMaterialModal(material){
           </div>
         </div>
         <div class="field">
-          <label>Color</label>
-          <div class="swatch-row" id="matSwatchRow">
-            ${MATERIAL_COLORS.map(c => `
-              <button type="button" class="swatch ${(m.color || MATERIAL_COLORS[0].hex) === c.hex ? 'active' : ''}" data-mat-color="${c.hex}" style="background:${c.hex}" title="${escapeHtml(c.name)}" aria-label="Color ${escapeHtml(c.name)}"></button>
+          <label>Priority</label>
+          <div class="swatch-row" id="matPriorityRow">
+            ${PRIORITIES.map(p => `
+              <button type="button" class="swatch priority-swatch ${(m.priority || DEFAULT_PRIORITY) === p.id ? 'active' : ''}" data-mat-priority="${p.id}" style="background:${p.hex}${p.border ? ';box-shadow:inset 0 0 0 1px var(--line)' : ''}" title="${p.label} — ${escapeHtml(p.name)}" aria-label="Priority ${p.label}, ${escapeHtml(p.name)}"><span style="color:${p.fg}">${p.label}</span></button>
             `).join('')}
           </div>
         </div>
@@ -4742,16 +4726,16 @@ function openMaterialModal(material){
   `);
 
   let matEmoji = m.emoji || '';
-  let matColor = m.color || MATERIAL_COLORS[0].hex;
+  let matPriority = m.priority || DEFAULT_PRIORITY;
   $('#matEmojiGrid').addEventListener('click', e => {
     const b = e.target.closest('[data-mat-emoji]'); if (!b) return;
     matEmoji = b.dataset.matEmoji;
     $$('#matEmojiGrid button').forEach(x => x.classList.toggle('active', x === b));
   });
-  $('#matSwatchRow').addEventListener('click', e => {
-    const b = e.target.closest('[data-mat-color]'); if (!b) return;
-    matColor = b.dataset.matColor;
-    $$('#matSwatchRow .swatch').forEach(x => x.classList.toggle('active', x === b));
+  $('#matPriorityRow').addEventListener('click', e => {
+    const b = e.target.closest('[data-mat-priority]'); if (!b) return;
+    matPriority = b.dataset.matPriority;
+    $$('#matPriorityRow .swatch').forEach(x => x.classList.toggle('active', x === b));
   });
 
   const coverThumb = $('#matCoverThumb');
@@ -4866,7 +4850,7 @@ function openMaterialModal(material){
       episodes_total: episodesRaw ? Math.max(0, Number(episodesRaw) || 0) : null,
       manual_units: manualUnitsRaw ? Math.max(0, Number(manualUnitsRaw) || 0) : null,
       emoji: matEmoji,
-      color: matColor
+      priority: matPriority
     };
     if (editing){
       const target = state.materials.find(x => x.id === material.id);
@@ -5437,22 +5421,6 @@ document.addEventListener('click', e => {
         state.roadmap.weeklyMaterials[idx] = state.roadmap.weeklyMaterials[idx].filter(id => id !== mid);
         saveState(); render();
       }
-      break;
-    }
-    case 'rm-queue-up': {
-      const phase = state.roadmap.phases[Number(actionEl.dataset.phase)];
-      const i = Number(actionEl.dataset.idx);
-      if (!phase || !Array.isArray(phase.materials) || i <= 0) break;
-      [phase.materials[i - 1], phase.materials[i]] = [phase.materials[i], phase.materials[i - 1]];
-      saveState(); render();
-      break;
-    }
-    case 'rm-queue-down': {
-      const phase = state.roadmap.phases[Number(actionEl.dataset.phase)];
-      const i = Number(actionEl.dataset.idx);
-      if (!phase || !Array.isArray(phase.materials) || i >= phase.materials.length - 1) break;
-      [phase.materials[i + 1], phase.materials[i]] = [phase.materials[i], phase.materials[i + 1]];
-      saveState(); render();
       break;
     }
     case 'rm-queue-remove': {
