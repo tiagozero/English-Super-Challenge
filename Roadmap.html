@@ -141,7 +141,6 @@
   .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
   .card-head h2{font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
 
-  /* ---------- Phase banner ---------- */
   .phase-banner{
     display:flex;align-items:center;gap:14px;margin-bottom:14px;
     border:1px solid var(--line);border-radius:14px;padding:12px 16px;
@@ -483,7 +482,6 @@
   .mq-bar i{display:block;height:100%;border-radius:99px;
     background:var(--task-color,var(--reading));transition:width .4s ease}
 
-  /* ---------- Focus / Pomodoro ---------- */
   .timer-card{display:flex;flex-direction:column;gap:16px;margin-bottom:14px}
   .timer-top{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
   .ring{position:relative;width:168px;height:168px;flex:0 0 auto}
@@ -557,7 +555,6 @@
     border:1px solid color-mix(in srgb,var(--bd,var(--reading)) 30%,var(--line));
     color:var(--text);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 
-  /* ---- per-material session allocation ---- */
   .alloc-wrap{margin-top:16px}
   .alloc-head{display:flex;align-items:center;justify-content:space-between;gap:10px;
     font-size:11px;font-weight:750;letter-spacing:.06em;text-transform:uppercase;
@@ -610,7 +607,6 @@
     box-shadow:0 0 0 3px color-mix(in srgb,var(--good-fg) 18%,transparent)}
   .info-row b{color:var(--text);font-weight:650}
 
-  /* ---- session-log modal extras ---- */
   .sess-hero{display:flex;align-items:center;gap:13px;padding:14px;margin-bottom:16px;
     background:linear-gradient(135deg,
       color-mix(in srgb,var(--reading) 12%,var(--surface)),
@@ -1172,10 +1168,26 @@ function clearOverride(mid, date){
 
 /* =========================================================
    Activity logging
+   ---------------------------------------------------------
+   totalLogged() sums the material's activity entries for a
+   given day. Only entries whose unit matches the material's
+   plan unit are counted, so a minutes-based focus entry does
+   not pollute a percent-based reading target.
    ========================================================= */
 function totalLogged(mid, date){
+  const m = materialById(mid);
+  const isListening = m && m.default_category === 'listening';
   return (shared.activities || [])
     .filter(a => a.material_id === mid && a.logged_on === date)
+    .filter(a => {
+      // Focus-session entries are recorded in minutes.
+      // They only count toward the planned target for listening
+      // materials (whose plan is also in minutes). Reading targets
+      // are measured in percent, so a minute-based focus entry must
+      // not inflate them.
+      if (a.origin === 'focus' && a.unit === 'minutes' && !isListening) return false;
+      return true;
+    })
     .reduce((s, a) => s + (Number(a.amount) || 0), 0);
 }
 function manualLogged(mid, date){
@@ -1249,18 +1261,16 @@ function syncRoadmapActivity(mid, date){
 /* =========================================================
    Focus → shared activity bridge
    ---------------------------------------------------------
-   Called when the user confirms logging a completed focus
-   session. Either ticks off the day's scheduled task, or adds
-   a standalone focus entry that the main app can read.
+   IMPORTANT: this logs the ACTUAL focus session minutes.
+   It never uses the scheduled amount, so the planned target
+   is preserved and the recorded activity reflects what was
+   really studied.
    ========================================================= */
 function recordFocusInShared(m, minutes, date){
   if (!shared || !m) return;
+  const mins = Math.round((Number(minutes) || 0) * 10) / 10;
+  if (mins <= 0) return;
   date = date || todayISO();
-  const sch = scheduledFor(m.id, date);
-  if (sch > 0){
-    tickTask(m.id, date);
-    return;
-  }
   const now = new Date().toISOString();
   shared.activities.push({
     id: uid('a'),
@@ -1269,7 +1279,7 @@ function recordFocusInShared(m, minutes, date){
     category: m.default_category || 'reading',
     input_type: m.default_input_type || 'other',
     material_id: m.id,
-    amount: Math.round((Number(minutes) || 0) * 10) / 10,
+    amount: mins,
     unit: 'minutes',
     note: 'Focus session',
     origin: 'focus',
@@ -1550,7 +1560,6 @@ function loadFocusState(){
     }
   }
 
-  // Re-hydrate a pending session log (e.g. user closed the tab mid-modal)
   if (s.pendingLog && typeof s.pendingLog === 'object'){
     const p = s.pendingLog;
     const g = s.groups.find(x => x.id === p.groupId);
@@ -1648,7 +1657,6 @@ function paintTimer(){
 }
 
 function startFocusTimer(gid){
-  // If a session-log modal is pending, don't let them start something new.
   if (focusState.pendingLog){ openFocusLogModal(); return; }
   const g = focusGroup(gid);
   if (!g) return;
@@ -1707,7 +1715,6 @@ function stopFocusTimer(){
   render();
 }
 
-/* Advance to the next phase. `chime` toggles the end-of-phase sound. */
 function advancePhase(opts){
   opts = opts || {};
   const t = focusState.timer;
@@ -1747,9 +1754,6 @@ function advancePhase(opts){
   render();
 }
 
-/* Timer hit zero. For a normal work session we PAUSE and ask the user
-   to confirm the log via a modal. For breaks or silent skips we just
-   advance the phase. */
 function finishPhase(opts){
   opts = opts || {};
   const t = focusState.timer;
@@ -1760,7 +1764,6 @@ function finishPhase(opts){
   if (wasWork && g && !opts.silent){
     const mat = sessionMaterial(g, g.done);
     if (mat){
-      // Pause the timer and stash a pending log entry
       t.running = false;
       t.remaining = 0;
       t.endsAt = null;
@@ -1787,7 +1790,6 @@ function openFocusLogModal(){
   if (!p) return;
   const mat = materialById(p.mid);
   if (!mat){
-    // Material is gone — just advance silently
     focusState.pendingLog = null;
     saveFocusState();
     advancePhase({ chime: false });
@@ -1837,11 +1839,13 @@ function openFocusLogModal(){
           <div class="info-row" style="margin:0">
             <span class="info-dot" style="background:${tint};
               box-shadow:0 0 0 3px color-mix(in srgb,${tint} 22%,transparent)"></span>
-            <span>${isScheduled
-              ? `Today's task will be <b>ticked off</b> in the shared activity log
-                 (scheduled: <b>${fmtAmount(sch)}${unitLabel}</b>).`
-              : `This material isn't scheduled for today. A <b>${sessionMin} min focus</b>
-                 entry will be added to the shared activity log.`}</span>
+            <span>
+              <b>${sessionMin} min</b> of focus will be added to the shared activity log.
+              ${isScheduled
+                ? `Today's planned target (${fmtAmount(sch)}${unitLabel}) stays unchanged —
+                   it's used for progress, not for recording completed time.`
+                : `This material isn't scheduled for today.`}
+            </span>
           </div>
         </div>
 
@@ -1850,7 +1854,7 @@ function openFocusLogModal(){
             Skip
           </button>
           <button type="button" class="btn btn-primary" data-action="focus-log-save">
-            Log session
+            Log ${sessionMin} min
           </button>
         </div>
       </div>
@@ -1879,7 +1883,7 @@ function confirmFocusLog(){
     });
     if (focusState.log.length > 500) focusState.log = focusState.log.slice(-500);
 
-    // Write into the shared activity log so the main app sees it
+    // Write the ACTUAL minutes into the shared activity log.
     recordFocusInShared(mat, p.minutes, p.date);
   }
 
@@ -2355,8 +2359,8 @@ function builderCardHTML(){
     <div class="info-row">
       <span class="info-dot"></span>
       <span>When a session ends, a popup appears asking you to <b>log it</b>.
-        Confirming writes into the shared activity log so <b>Dashboard</b>,
-        <b>History</b> and <b>Progress</b> update.</span>
+        The <b>actual session time</b> is written into the shared activity log —
+        the planned target is never used as the completed amount.</span>
     </div>
 
     ${builder.items.length ? `
@@ -2386,8 +2390,8 @@ function viewFocus(){
   <p class="footnote">
     Build a group from <b>today's plan</b> — pick materials, then give each one its own
     number of sessions (e.g. <b>2 × Material A + 1 × Material B = 3 × 50 min</b>).<br>
-    When a session ends, a <b>“Log activity” popup</b> appears so you can confirm the log
-    before it's written into the shared activity log.<br>
+    When a session ends, a <b>“Log activity” popup</b> appears and records the
+    <b>actual session time</b> — the planned target stays untouched and is only used for progress.<br>
     Groups are stored separately from the main challenge data, so nothing here can
     overwrite your materials or plan.
   </p>`;
@@ -3380,7 +3384,6 @@ document.addEventListener('change', e => {
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && $('#modalRoot').innerHTML){
-    // The focus-log modal treats Escape as "skip logging"
     if (focusState.pendingLog) skipFocusLog();
     else closeModal();
     return;
@@ -3430,8 +3433,6 @@ shared = loadShared();
 focusState = loadFocusState();
 render();
 
-// If a session finished while the tab was closed, or a previous log
-// confirmation is still pending, prompt the user now.
 if (focusState.pendingLog){
   openFocusLogModal();
 } else if (focusState.timer && !focusState.timer.running && timerRemaining() <= 0){
