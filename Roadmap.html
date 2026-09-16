@@ -553,21 +553,35 @@
     color:var(--text);cursor:pointer;user-select:none}
   .check-row input{width:17px;height:17px;accent-color:var(--reading);cursor:pointer;flex:0 0 auto}
 
-  .fg-list{display:flex;flex-direction:column;gap:10px}
-  .fg-item{display:flex;align-items:center;gap:13px;padding:13px;border:1px solid var(--line);
+  .fg-list{display:flex;flex-direction:column;gap:12px}
+  .fg-item{display:flex;flex-direction:column;gap:13px;padding:14px;border:1px solid var(--line);
     border-radius:14px;background:var(--surface);
-    border-left:3px solid var(--fg-color,var(--reading));flex-wrap:wrap}
+    border-left:3px solid var(--fg-color,var(--reading))}
   .fg-item.active{border-color:var(--reading);
     background:color-mix(in srgb,var(--reading) 6%,var(--surface))}
   .fg-item.complete{border-left-color:var(--good-fg)}
-  .fg-main{flex:1 1 200px;min-width:0}
+  .fg-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .fg-head-txt{flex:1 1 180px;min-width:0}
   .fg-title{font-size:14.5px;font-weight:640;letter-spacing:-.01em;display:block;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .fg-sub{font-size:12px;color:var(--muted);margin-top:2px;display:block}
-  .fg-bar{height:6px;background:var(--bar-bg);border-radius:99px;overflow:hidden;margin-top:8px}
+  .fg-mats{display:flex;flex-direction:column;gap:7px}
+  .fg-mat{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:11px;
+    background:var(--surface-2);border:1px solid var(--line);
+    border-left:3px solid var(--fg-mat-color,var(--reading));min-width:0}
+  .fg-mat-txt{flex:1;min-width:0}
+  .fg-mat-title{font-size:13px;font-weight:620;display:block;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis}
+  .fg-mat-sub{font-size:11px;color:var(--muted);display:block;margin-top:1px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fg-mat-badge{flex:0 0 auto;font-size:10.5px;font-weight:750;letter-spacing:.03em;
+    padding:4px 9px;border-radius:999px;background:var(--surface);
+    border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+  .fg-progress{display:flex;flex-direction:column;gap:6px}
+  .fg-bar{height:6px;background:var(--bar-bg);border-radius:99px;overflow:hidden}
   .fg-bar i{display:block;height:100%;border-radius:99px;background:var(--fg-color,var(--reading));
     transition:width .35s ease}
-  .fg-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .fg-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;flex:0 0 auto}
   @media(max-width:640px){
     .ring{width:142px;height:142px}
     .ring-digits{font-size:28px}
@@ -1756,31 +1770,60 @@ function groupListHTML(){
       const running = isActive && focusState.timer.running;
       const complete = g.done >= g.sessions;
       const pct = g.sessions ? Math.round(g.done / g.sessions * 100) : 0;
-      const title = mats.length === 1 ? first.title : `${first.title} +${mats.length - 1} more`;
+      const title = mats.length === 1
+        ? first.title
+        : `${mats.length} materials rotating`;
+
+      const matsHTML = mats.map((m, i) => {
+        const sessions = [];
+        for (let s = 0; s < g.sessions; s++){
+          if (s % mats.length === i) sessions.push(s + 1);
+        }
+        const sessCount = sessions.length === 1 ? '1 session' : `${sessions.length} sessions`;
+        const subParts = [(TYPES[m.default_input_type] || { label: 'Other' }).label];
+        if (m.creator) subParts.push(m.creator);
+        if (mats.length > 1) subParts.push(`Sessions ${sessions.join(', ')}`);
+
+        return `
+        <div class="fg-mat" style="--fg-mat-color:${materialTint(m)}">
+          ${coverHTML(m, 30)}
+          <span class="fg-mat-txt">
+            <span class="fg-mat-title">${esc(m.title)}</span>
+            <span class="fg-mat-sub">${subParts.map(esc).join(' · ')}</span>
+          </span>
+          <span class="fg-mat-badge" title="${esc(sessions.join(', '))}">${esc(sessCount)}</span>
+        </div>`;
+      }).join('');
 
       return `
       <div class="fg-item ${isActive ? 'active' : ''} ${complete ? 'complete' : ''}"
            style="--fg-color:${tint}">
-        ${coverHTML(first, 40)}
-        <div class="fg-main">
-          <span class="fg-title">${esc(title)}</span>
-          <span class="fg-sub">
-            ${g.sessions} × ${g.minutes} min${g.breakMinutes ? ` · ${g.breakMinutes} min break` : ''} ·
-            ${esc(fmtMinutes(g.sessions * g.minutes))} total${g.autoTick ? ' · auto-ticks task' : ''}
-          </span>
+        <div class="fg-head">
+          <div class="fg-head-txt">
+            <span class="fg-title">${esc(title)}</span>
+            <span class="fg-sub">
+              ${g.sessions} × ${g.minutes} min${g.breakMinutes ? ` · ${g.breakMinutes} min break` : ''} ·
+              ${esc(fmtMinutes(g.sessions * g.minutes))} total${g.autoTick ? ' · auto-ticks task' : ''}
+            </span>
+          </div>
+          <div class="fg-actions">
+            ${running
+              ? `<button class="btn btn-ghost btn-sm" data-focus-pause>Pause</button>`
+              : `<button class="btn btn-primary btn-sm" data-focus-start="${esc(g.id)}">
+                   ${isActive ? 'Resume' : (complete ? 'Restart' : 'Start')}
+                 </button>`}
+            <button class="btn btn-ghost btn-sm" data-focus-edit="${esc(g.id)}">Edit</button>
+            <button class="btn btn-ghost btn-sm" data-focus-remove="${esc(g.id)}">Remove</button>
+          </div>
+        </div>
+
+        <div class="fg-mats">${matsHTML}</div>
+
+        <div class="fg-progress">
           <div class="fg-bar"><i style="width:${pct}%"></i></div>
-          <span class="fg-sub" style="margin-top:6px">
+          <span class="fg-sub">
             ${g.done} of ${g.sessions} session${g.sessions === 1 ? '' : 's'} done today${complete ? ' · complete 🎉' : ''}
           </span>
-        </div>
-        <div class="fg-actions">
-          ${running
-            ? `<button class="btn btn-ghost btn-sm" data-focus-pause>Pause</button>`
-            : `<button class="btn btn-primary btn-sm" data-focus-start="${esc(g.id)}">
-                 ${isActive ? 'Resume' : (complete ? 'Restart' : 'Start')}
-               </button>`}
-          <button class="btn btn-ghost btn-sm" data-focus-edit="${esc(g.id)}">Edit</button>
-          <button class="btn btn-ghost btn-sm" data-focus-remove="${esc(g.id)}">Remove</button>
         </div>
       </div>`;
     })
