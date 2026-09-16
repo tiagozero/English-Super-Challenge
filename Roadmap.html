@@ -603,9 +603,12 @@
   .alloc-remove:hover{background:var(--bad-bg);color:var(--bad-fg);
     border-color:color-mix(in srgb,var(--bad-fg) 30%,var(--line))}
 
-  .check-row{display:flex;align-items:center;gap:9px;margin-top:14px;font-size:13px;
-    color:var(--text);cursor:pointer;user-select:none}
-  .check-row input{width:17px;height:17px;accent-color:var(--reading);cursor:pointer;flex:0 0 auto}
+  .info-row{display:flex;align-items:flex-start;gap:9px;margin-top:14px;
+    font-size:12.5px;color:var(--muted);line-height:1.5}
+  .info-row .info-dot{width:7px;height:7px;border-radius:50%;
+    background:var(--good-fg);flex:0 0 auto;margin-top:6px;
+    box-shadow:0 0 0 3px color-mix(in srgb,var(--good-fg) 18%,transparent)}
+  .info-row b{color:var(--text);font-weight:650}
 
   .fg-list{display:flex;flex-direction:column;gap:12px}
   .fg-item{display:flex;flex-direction:column;gap:13px;padding:14px;border:1px solid var(--line);
@@ -1231,6 +1234,46 @@ function syncRoadmapActivity(mid, date){
 }
 
 /* =========================================================
+   Focus → shared activity bridge
+   ---------------------------------------------------------
+   Every finished focus work session writes into the SAME
+   activity log the main app reads. The main app will see it
+   in Dashboard / History / Progress.
+     • If the material has a scheduled task for today, we tick
+       it (logging the scheduled amount with origin 'roadmap').
+     • Otherwise, we add a standalone focus entry with origin
+       'focus' so the material still shows up in History even
+       though it wasn't on today's plan.
+   ========================================================= */
+function recordFocusInShared(m, minutes, date){
+  if (!shared || !m) return;
+  date = date || todayISO();
+  const sch = scheduledFor(m.id, date);
+  if (sch > 0){
+    // Material is on today's plan → tick off the task.
+    tickTask(m.id, date);
+    return;
+  }
+  // Not scheduled today → log a standalone focus entry.
+  const now = new Date().toISOString();
+  shared.activities.push({
+    id: uid('a'),
+    challenge_id: shared.challenge.id,
+    logged_on: date,
+    category: m.default_category || 'reading',
+    input_type: m.default_input_type || 'other',
+    material_id: m.id,
+    amount: Math.round((Number(minutes) || 0) * 10) / 10,
+    unit: 'minutes',
+    note: 'Focus session',
+    origin: 'focus',
+    created_at: now,
+    updated_at: now
+  });
+  saveShared();
+}
+
+/* =========================================================
    Day / week helpers
    ========================================================= */
 function dayTasks(iso){
@@ -1357,14 +1400,6 @@ function updateHeader(){
 
 /* =========================================================
    Focus sessions (Pomodoro)
-   ---------------------------------------------------------
-   A "session group" bundles one or more of today's materials
-   into a plan such as "3 × 50 min with a 10 min break", where
-   each material can claim a specific number of sessions, e.g.
-   2 × Material A + 1 × Material B = 3 sessions.
-   Groups live under their own localStorage key so the main app
-   can never clobber them, and every finished work session is
-   recorded in a small focus log that powers the stats below.
    ========================================================= */
 const FOCUS_KEY = 'esc-focus-plan';
 const RING_C = 2 * Math.PI * 54;
@@ -1377,11 +1412,11 @@ const NUM_FIELDS = {
 };
 
 let focusState = { groups: [], timer: null, log: [] };
-let builder = { items: [], minutes: 50, breakMinutes: 10, autoTick: false, editId: null };
+let builder = { items: [], minutes: 50, breakMinutes: 10, editId: null };
 let focusTick = null;
 let audioCtx = null;
 
-/* --- audio (unlocked on the first user gesture) --- */
+/* --- audio --- */
 function ensureAudio(){
   if (audioCtx) return audioCtx;
   try {
@@ -1417,12 +1452,7 @@ function chime(long){
   } catch(e){}
 }
 
-/* --- group data model -------------------------------------
-   items : [{ mid, count }]   ordered list of materials with
-          the number of sessions each one owns.
-   mids  : derived list of material ids (kept for convenience)
-   sessions : derived total session count
-   ---------------------------------------------------------- */
+/* --- group data model --- */
 function normaliseItems(raw){
   if (!Array.isArray(raw)) return [];
   return raw
@@ -1465,7 +1495,6 @@ function loadFocusState(){
     .map(g => {
       let items = normaliseItems(g.items);
       if (!items.length){
-        // migrate a legacy group: mids[] + a flat session total
         const mids = Array.isArray(g.mids) ? g.mids.filter(x => typeof x === 'string') : [];
         const wanted = clamp(Math.round(Number(g.sessions) || mids.length || 1),
                              1, MAX_SESSIONS_PER_MATERIAL);
@@ -1486,7 +1515,6 @@ function loadFocusState(){
         sessions,
         minutes: clamp(Math.round(Number(g.minutes) || 25), 1, 240),
         breakMinutes: clamp(Math.round(Number(g.breakMinutes) || 0), 0, 120),
-        autoTick: !!g.autoTick,
         done: Math.max(0, Math.round(Number(g.done) || 0)),
         doneDate: normISO(g.doneDate) || todayISO(),
         created_at: g.created_at || new Date().toISOString()
@@ -1494,7 +1522,6 @@ function loadFocusState(){
     })
     .filter(g => g.items.length);
 
-  // Daily progress resets when the day rolls over.
   const today = todayISO();
   s.groups.forEach(g => {
     if (g.doneDate !== today){ g.done = 0; g.doneDate = today; }
@@ -1587,7 +1614,6 @@ function paintTimer(){
       ring.setAttribute('stroke-dashoffset', (RING_C * (1 - frac)).toFixed(2));
     }
   }
-  // keep any "current session" segment fill in sync while running
   const seg = document.querySelector('[data-live-seg]');
   if (seg && t.phase === 'work' && t.total > 0){
     const filled = clamp(1 - rem / t.total, 0, 1);
@@ -1654,8 +1680,7 @@ function stopFocusTimer(){
   render();
 }
 
-/* Advances the current phase. `silent` = user pressed Skip, so the
-   work minutes are NOT written to the focus log. */
+/* Advance the current phase. Silent = user skipped, so no log entry. */
 function finishPhase(opts){
   opts = opts || {};
   const t = focusState.timer;
@@ -1664,21 +1689,26 @@ function finishPhase(opts){
   const wasWork = t.phase === 'work';
 
   if (wasWork && g){
+    // Identify the material for the session that just completed.
+    const mat = sessionMaterial(g, g.done);
+
     if (!opts.silent){
+      // Internal focus log
       focusState.log.push({
         id: uid('fl'),
         groupId: g.id,
+        mid: mat ? mat.id : null,
         mids: g.mids.slice(),
         minutes: g.minutes,
         date: todayISO(),
         ended_at: new Date().toISOString()
       });
       if (focusState.log.length > 500) focusState.log = focusState.log.slice(-500);
-      if (g.autoTick){
-        const m = sessionMaterial(g, g.done);
-        if (m) tickTask(m.id, todayISO());
-      }
+
+      // Push into the shared activity log so the main app sees it.
+      if (mat) recordFocusInShared(mat, g.minutes, todayISO());
     }
+
     g.done = Math.min(g.sessions, g.done + 1);
     g.doneDate = todayISO();
   }
@@ -1714,18 +1744,10 @@ function finishPhase(opts){
 function resetBuilder(){
   builder.editId = null;
   builder.items = [];
-  builder.autoTick = false;
 }
 function builderFind(mid){ return builder.items.find(it => it.mid === mid) || null; }
 function builderTotalSessions(){
   return builder.items.reduce((s, it) => s + (it.count || 0), 0);
-}
-function builderQueue(){
-  const q = [];
-  builder.items.forEach(it => {
-    for (let i = 0; i < it.count; i++) q.push(it.mid);
-  });
-  return q;
 }
 
 /* --- group management --- */
@@ -1746,7 +1768,6 @@ function createFocusGroup(autoStart){
       g.sessions = sessions;
       g.minutes = builder.minutes;
       g.breakMinutes = builder.breakMinutes;
-      g.autoTick = builder.autoTick;
       if (g.done > sessions) g.done = 0;
       gid = g.id;
     }
@@ -1759,7 +1780,6 @@ function createFocusGroup(autoStart){
       sessions,
       minutes: builder.minutes,
       breakMinutes: builder.breakMinutes,
-      autoTick: builder.autoTick,
       done: 0,
       doneDate: todayISO(),
       created_at: new Date().toISOString()
@@ -1782,7 +1802,6 @@ function editFocusGroup(id){
     .map(it => ({ mid: it.mid, count: it.count }));
   builder.minutes = g.minutes;
   builder.breakMinutes = g.breakMinutes;
-  builder.autoTick = g.autoTick;
   render();
   const el = document.querySelector('[data-builder-anchor]');
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1819,9 +1838,6 @@ function ringHTML(rem, total, phase, idle){
   </div>`;
 }
 
-/* One segment per session, coloured by the material that owns it.
-   Completed segments are solid, pending ones are tinted, and the
-   in-progress session fills up live while the timer runs. */
 function segBarHTML(g){
   const q = groupQueue(g);
   if (!q.length) return '';
@@ -1842,8 +1858,7 @@ function segBarHTML(g){
       cls += ' current';
       inner = `<i data-live-seg style="width:${(curFrac * 100).toFixed(1)}%"></i>`;
     }
-    return `<span class="${cls}" style="--seg:${color}"></span>`.replace('></span>',
-      inner ? `>${inner}</span>` : '></span>');
+    return `<span class="${cls}" style="--seg:${color}">${inner}</span>`;
   }).join('');
 
   return `<div class="fg-segbar" role="img"
@@ -1988,7 +2003,7 @@ function groupListHTML(){
             <span class="fg-title">${esc(title)}</span>
             <span class="fg-sub">
               ${total} × ${g.minutes} min${g.breakMinutes ? ` · ${g.breakMinutes} min break` : ''} ·
-              ${esc(fmtMinutes(total * g.minutes))} total${g.autoTick ? ' · auto-ticks task' : ''}
+              ${esc(fmtMinutes(total * g.minutes))} total
             </span>
           </div>
           <div class="fg-actions">
@@ -2177,11 +2192,12 @@ function builderCardHTML(){
       ${numFieldHTML('Break (minutes)', 'breakMinutes', builder.breakMinutes)}
     </div>
 
-    <label class="check-row">
-      <input type="checkbox" data-builder-autotick data-focus-key="nf-autotick"
-             ${builder.autoTick ? 'checked' : ''}>
-      Tick off the day's task when a session finishes
-    </label>
+    <div class="info-row">
+      <span class="info-dot"></span>
+      <span>Every finished session is written to the <b>shared activity log</b>,
+        so it updates <b>Dashboard</b>, <b>History</b> and <b>Progress</b> in the main app.
+        If the material is on today's plan, its task gets ticked off automatically.</span>
+    </div>
 
     ${builder.items.length ? `
     <div class="builder-breakdown">${bd}</div>
@@ -2211,10 +2227,10 @@ function viewFocus(){
     Build a group from <b>today's plan</b> — pick materials, then give each one its own
     number of sessions (e.g. <b>2 × Material A + 1 × Material B = 3 × 50 min</b>).<br>
     The segmented bar under each group has <b>one segment per session</b>, coloured by the
-    material that owns it. The timer keeps running while you switch tabs.<br>
-    Finished sessions are logged with their minutes and, if you asked for it, they tick off
-    the matching task in the shared activity log. Groups are stored separately from the main
-    challenge data, so nothing here can overwrite your materials or plan.
+    material that owns it.<br>
+    Every finished session is written into the <b>shared activity log</b>, so the main app's
+    Dashboard, History and Progress see it immediately. Groups are stored separately from
+    the main challenge data, so nothing here can overwrite your materials or plan.
   </p>`;
 }
 
@@ -3159,11 +3175,6 @@ document.addEventListener('change', e => {
   const t = e.target;
   if (!t || !t.matches) return;
 
-  if (t.matches('[data-builder-autotick]')){
-    builder.autoTick = !!t.checked;
-    renderPreservingFocus();
-    return;
-  }
   if (t.matches('[data-alloc-input]')){
     const idx = Number(t.dataset.allocInput);
     const it = builder.items[idx];
