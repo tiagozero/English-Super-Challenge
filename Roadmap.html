@@ -203,6 +203,7 @@
     transition:transform .08s ease,filter .15s ease,background .15s ease;
   }
   .btn:active{transform:scale(.975)}
+  .btn[disabled]{opacity:.45;cursor:not-allowed;pointer-events:none}
   .btn-primary{background:var(--reading);color:var(--on-accent);
     box-shadow:0 6px 16px -8px color-mix(in srgb,var(--reading) 75%,transparent)}
   .btn-primary:hover{filter:brightness(1.06)}
@@ -482,6 +483,97 @@
   .mq-bar i{display:block;height:100%;border-radius:99px;
     background:var(--task-color,var(--reading));transition:width .4s ease}
 
+  /* ---------- Focus / Pomodoro ---------- */
+  .timer-card{display:flex;flex-direction:column;gap:16px;margin-bottom:14px}
+  .timer-top{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+  .ring{position:relative;width:168px;height:168px;flex:0 0 auto}
+  .ring svg{width:100%;height:100%;display:block;transform:rotate(-90deg)}
+  .ring circle{fill:none;stroke-width:11;stroke-linecap:round}
+  .ring .ring-bg{stroke:var(--surface-2)}
+  .ring .ring-fg{stroke:var(--reading);
+    transition:stroke-dashoffset .25s linear,stroke .25s ease}
+  .ring.is-break .ring-fg{stroke:var(--listening)}
+  .ring.is-idle .ring-fg{stroke:var(--muted);opacity:.35}
+  .ring-in{position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:3px;pointer-events:none}
+  .ring-digits{font-size:33px;font-weight:700;letter-spacing:-.03em;
+    font-variant-numeric:tabular-nums;line-height:1}
+  .ring-phase{font-size:10.5px;font-weight:750;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted)}
+  .timer-meta{flex:1 1 240px;min-width:0}
+  .timer-title{font-size:18px;font-weight:660;letter-spacing:-.015em;display:block;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .timer-sub{font-size:12.5px;color:var(--muted);margin-top:3px;display:block}
+  .timer-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+  .session-dots{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:14px}
+  .sdot{width:11px;height:11px;border-radius:50%;background:var(--bar-bg);
+    border:1px solid var(--line);transition:background .2s,transform .2s,box-shadow .2s}
+  .sdot.done{background:var(--good-fg);border-color:var(--good-fg)}
+  .sdot.current{background:var(--reading);border-color:var(--reading);transform:scale(1.28);
+    box-shadow:0 0 0 3px color-mix(in srgb,var(--reading) 22%,transparent)}
+  .sdot.current.is-break{background:var(--listening);border-color:var(--listening);
+    box-shadow:0 0 0 3px color-mix(in srgb,var(--listening) 22%,transparent)}
+  .focus-stat-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+  .focus-stat{flex:1 1 130px;background:var(--surface-2);border:1px solid var(--line);
+    border-radius:12px;padding:10px 12px}
+  .focus-stat .fs-k{font-size:10.5px;font-weight:750;letter-spacing:.07em;
+    text-transform:uppercase;color:var(--muted)}
+  .focus-stat .fs-v{font-size:19px;font-weight:700;letter-spacing:-.02em;
+    font-variant-numeric:tabular-nums;margin-top:2px}
+  .focus-stat .fs-v small{font-size:12px;font-weight:550;color:var(--muted)}
+
+  .builder-chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:4px}
+  .mchip{display:flex;align-items:center;gap:8px;padding:7px 12px 7px 8px;border-radius:12px;
+    border:1px solid var(--line);background:var(--surface);cursor:pointer;
+    transition:border-color .15s,background .15s;font-family:inherit;font-size:13px;
+    font-weight:600;color:var(--text);text-align:left;max-width:100%}
+  .mchip:hover{border-color:var(--hover-line)}
+  .mchip.on{border-color:var(--reading);background:color-mix(in srgb,var(--reading) 9%,var(--surface))}
+  .mchip .mchip-txt{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mchip .mchip-cat{font-size:10px;font-weight:750;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--muted);display:block}
+
+  .num-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+  @media(max-width:640px){ .num-row{grid-template-columns:1fr} }
+  .num-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .num-field > label{font-size:11px;font-weight:750;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--muted)}
+  .num-ctl{display:flex;align-items:center;gap:4px;background:var(--surface-2);
+    border:1px solid var(--line);border-radius:12px;padding:4px}
+  .num-ctl .step-input{flex:1;width:auto;min-width:0}
+  .num-ctl .nbtn{width:30px;height:30px;border-radius:8px;border:0;background:var(--surface);
+    color:var(--text);font-size:16px;font-weight:700;cursor:pointer;line-height:1;padding:0;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 1px 2px rgba(0,0,0,.06);
+    transition:background .12s,color .12s;flex:0 0 auto}
+  .num-ctl .nbtn:hover{background:var(--reading);color:var(--on-accent)}
+  .builder-total{font-size:12.5px;color:var(--muted);margin-top:14px;line-height:1.6}
+  .builder-total b{color:var(--text)}
+
+  .check-row{display:flex;align-items:center;gap:9px;margin-top:14px;font-size:13px;
+    color:var(--text);cursor:pointer;user-select:none}
+  .check-row input{width:17px;height:17px;accent-color:var(--reading);cursor:pointer;flex:0 0 auto}
+
+  .fg-list{display:flex;flex-direction:column;gap:10px}
+  .fg-item{display:flex;align-items:center;gap:13px;padding:13px;border:1px solid var(--line);
+    border-radius:14px;background:var(--surface);
+    border-left:3px solid var(--fg-color,var(--reading));flex-wrap:wrap}
+  .fg-item.active{border-color:var(--reading);
+    background:color-mix(in srgb,var(--reading) 6%,var(--surface))}
+  .fg-item.complete{border-left-color:var(--good-fg)}
+  .fg-main{flex:1 1 200px;min-width:0}
+  .fg-title{font-size:14.5px;font-weight:640;letter-spacing:-.01em;display:block;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fg-sub{font-size:12px;color:var(--muted);margin-top:2px;display:block}
+  .fg-bar{height:6px;background:var(--bar-bg);border-radius:99px;overflow:hidden;margin-top:8px}
+  .fg-bar i{display:block;height:100%;border-radius:99px;background:var(--fg-color,var(--reading));
+    transition:width .35s ease}
+  .fg-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  @media(max-width:640px){
+    .ring{width:142px;height:142px}
+    .ring-digits{font-size:28px}
+    .timer-top{gap:16px}
+  }
+
   .modal-backdrop{position:fixed;inset:0;background:var(--backdrop);z-index:100;animation:fade .16s ease}
   @keyframes fade{from{opacity:0}to{opacity:1}}
   .modal{
@@ -562,6 +654,7 @@
   <nav class="tabs" id="tabs">
     <button data-view="daily" class="active">Daily</button>
     <button data-view="weekly">Weekly</button>
+    <button data-view="focus">Focus</button>
   </nav>
 </header>
 
@@ -603,20 +696,17 @@ function daysBetween(a, b){
 function normISO(v){
   if (!v) return '';
   if (typeof v === 'number'){
-    // Assume it's a plain yyyyMMdd number
     const s = String(v);
     if (s.length === 8) return s.slice(0,4) + '-' + s.slice(4,6) + '-' + s.slice(6,8);
     return '';
   }
   if (typeof v === 'object'){
-    // A Date instance
     if (typeof v.getFullYear === 'function') return toISO(v);
     return '';
   }
   const s = String(v).trim();
   const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (m) return m[0];
-  // Try Date parsing as last resort (handles "Sep 14, 2025" etc.)
   const d = new Date(s);
   if (!isNaN(d.getTime())) return toISO(d);
   return '';
@@ -689,15 +779,7 @@ function coverHTML(m, size){
 }
 
 /* =========================================================
-   Phases — the main app splits the challenge into exactly four
-   quarters (state.roadmap.phases: [{id,name,focus,materials}]).
-   Phases have NO date fields of their own; their date ranges are
-   *computed* by dividing the challenge's total days into four
-   equal slices (see buildRoadmap() in the main app). A material
-   belongs to a phase only if its id is listed in that phase's
-   `materials` array — materials do not carry a `phase` field.
-   This planner mirrors that exact model so "current phase" means
-   the same thing here as it does in the main app's Roadmap tab.
+   Phases
    ========================================================= */
 function computedPhases(){
   if (!shared) return [];
@@ -731,8 +813,6 @@ function computedPhases(){
   });
 }
 
-/* Decide which of the 4 phases is "current": the one whose
-   computed date range contains today, else the nearest one. */
 function currentPhaseInfo(){
   const phases = computedPhases();
   if (!phases.length) return null;
@@ -755,10 +835,6 @@ function currentPhaseInfo(){
   };
 }
 
-/* Whether the person has actually used the phase-queue feature
-   (assigned any material to any of the 4 phases). If they never
-   have, we don't want the planner to look empty — we show every
-   material instead, same as if phases weren't in play at all. */
 function anyPhaseHasAssignments(){
   return computedPhases().some(p => p.materials.length > 0);
 }
@@ -899,9 +975,6 @@ function loadShared(){
       };
     }
     if (!s.studyPlan || typeof s.studyPlan !== 'object') s.studyPlan = {};
-    // Mirror the main app's roadmap.phases shape (4 named phases with
-    // a materials[] queue each) so both apps agree on what "current
-    // phase" and "which materials are in it" mean.
     if (!s.roadmap || typeof s.roadmap !== 'object') s.roadmap = {};
     if (!Array.isArray(s.roadmap.phases) || s.roadmap.phases.length !== 4){
       s.roadmap.phases = defaultRoadmapPhases();
@@ -1205,6 +1278,653 @@ function updateHeader(){
 }
 
 /* =========================================================
+   Focus sessions (Pomodoro)
+   ---------------------------------------------------------
+   A "session group" bundles one or more of today's materials
+   into a plan such as "3 × 50 min with a 10 min break".
+   Groups live under their own localStorage key so the main app
+   can never clobber them, and every finished work session is
+   recorded in a small focus log that powers the stats below.
+   ========================================================= */
+const FOCUS_KEY = 'esc-focus-plan';
+const RING_C = 2 * Math.PI * 54;
+const BASE_TITLE = document.title;
+
+const NUM_FIELDS = {
+  sessions:     { min: 1, max: 24,  step: 1 },
+  minutes:      { min: 5, max: 180, step: 5 },
+  breakMinutes: { min: 0, max: 60,  step: 5 }
+};
+
+let focusState = { groups: [], timer: null, log: [] };
+let builder = { mids: [], sessions: 3, minutes: 50, breakMinutes: 10, autoTick: false, editId: null };
+let focusTick = null;
+let audioCtx = null;
+
+/* --- audio (unlocked on the first user gesture) --- */
+function ensureAudio(){
+  if (audioCtx) return audioCtx;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    audioCtx = new AC();
+  } catch(e){ audioCtx = null; }
+  return audioCtx;
+}
+document.addEventListener('pointerdown', () => {
+  const ctx = ensureAudio();
+  if (ctx && ctx.state === 'suspended'){ try { ctx.resume(); } catch(e){} }
+});
+function chime(long){
+  const ctx = ensureAudio();
+  if (!ctx) return;
+  try {
+    if (ctx.state === 'suspended') ctx.resume();
+    const t0 = ctx.currentTime + 0.02;
+    const notes = long ? [523.25, 659.25, 783.99, 1046.50] : [880, 1174.66];
+    notes.forEach((f, i) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = 'sine';
+      o.frequency.value = f;
+      const at = t0 + i * 0.16;
+      g.gain.setValueAtTime(0.0001, at);
+      g.gain.exponentialRampToValueAtTime(0.18, at + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, at + 0.42);
+      o.connect(g); g.connect(ctx.destination);
+      o.start(at); o.stop(at + 0.46);
+    });
+  } catch(e){}
+}
+
+/* --- persistence --- */
+function loadFocusState(){
+  let s = null;
+  try {
+    const raw = localStorage.getItem(FOCUS_KEY);
+    if (raw) s = JSON.parse(raw);
+  } catch(e){ s = null; }
+  if (!s || typeof s !== 'object') s = {};
+  if (!Array.isArray(s.groups)) s.groups = [];
+  if (!Array.isArray(s.log)) s.log = [];
+  if (!s.timer || typeof s.timer !== 'object') s.timer = null;
+
+  s.groups = s.groups
+    .filter(g => g && typeof g === 'object')
+    .map(g => ({
+      id: g.id || uid('fg'),
+      mids: Array.isArray(g.mids) ? g.mids.filter(x => typeof x === 'string') : [],
+      sessions: clamp(Math.round(Number(g.sessions) || 1), 1, 24),
+      minutes: clamp(Math.round(Number(g.minutes) || 25), 1, 240),
+      breakMinutes: clamp(Math.round(Number(g.breakMinutes) || 0), 0, 120),
+      autoTick: !!g.autoTick,
+      done: Math.max(0, Math.round(Number(g.done) || 0)),
+      doneDate: normISO(g.doneDate) || todayISO(),
+      created_at: g.created_at || new Date().toISOString()
+    }))
+    .filter(g => g.mids.length);
+
+  // Daily progress resets when the day rolls over.
+  const today = todayISO();
+  s.groups.forEach(g => {
+    if (g.doneDate !== today){ g.done = 0; g.doneDate = today; }
+    if (g.done > g.sessions) g.done = g.sessions;
+  });
+
+  if (s.timer){
+    const g = s.groups.find(x => x.id === s.timer.groupId);
+    if (!g){
+      s.timer = null;
+    } else {
+      s.timer.phase = s.timer.phase === 'break' ? 'break' : 'work';
+      s.timer.running = !!s.timer.running;
+      s.timer.total = Math.max(1, Number(s.timer.total) || 1);
+      s.timer.remaining = Math.max(0, Number(s.timer.remaining) || 0);
+      s.timer.endsAt = s.timer.running
+        ? (Number(s.timer.endsAt) || (Date.now() + s.timer.remaining))
+        : null;
+      if (s.timer.running && Date.now() >= s.timer.endsAt) s.timer.remaining = 0;
+    }
+  }
+  return s;
+}
+function saveFocusState(){
+  try { localStorage.setItem(FOCUS_KEY, JSON.stringify(focusState)); } catch(e){}
+}
+
+/* --- lookups --- */
+function focusGroup(id){ return focusState.groups.find(g => g.id === id) || null; }
+function activeGroup(){ return focusState.timer ? focusGroup(focusState.timer.groupId) : null; }
+function sessionMaterial(g, index){
+  if (!g || !g.mids.length) return null;
+  return materialById(g.mids[index % g.mids.length]);
+}
+function focusLogOn(date){ return focusState.log.filter(l => l.date === date); }
+function focusMinutesOn(date){
+  return focusLogOn(date).reduce((s, l) => s + (Number(l.minutes) || 0), 0);
+}
+
+/* --- formatting --- */
+function fmtClock(ms){
+  const total = Math.max(0, Math.ceil(ms / 1000));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return h > 0 ? `${h}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+}
+function fmtMinutes(mins){
+  const m = Math.round(mins || 0);
+  if (m < 60) return m + ' min';
+  const h = Math.floor(m / 60), r = m % 60;
+  return r ? `${h}h ${r}m` : `${h}h`;
+}
+
+/* --- timer core --- */
+function timerRemaining(){
+  const t = focusState.timer;
+  if (!t) return 0;
+  if (t.running && t.endsAt) return Math.max(0, t.endsAt - Date.now());
+  return Math.max(0, t.remaining || 0);
+}
+function startFocusTick(){
+  if (focusTick) return;
+  focusTick = setInterval(() => {
+    const t = focusState.timer;
+    if (!t || !t.running){ stopFocusTick(); return; }
+    if (timerRemaining() <= 0){ finishPhase(); return; }
+    paintTimer();
+  }, 250);
+}
+function stopFocusTick(){
+  if (focusTick){ clearInterval(focusTick); focusTick = null; }
+}
+function updateDocTitle(suffix){
+  document.title = suffix ? `${suffix} · ${BASE_TITLE}` : BASE_TITLE;
+}
+function paintTimer(){
+  const t = focusState.timer;
+  if (!t){ updateDocTitle(''); return; }
+  const rem = timerRemaining();
+  const digits = document.querySelector('[data-timer-digits]');
+  if (digits){
+    digits.textContent = fmtClock(rem);
+    const ring = document.querySelector('[data-timer-ring]');
+    if (ring){
+      const frac = t.total > 0 ? clamp(rem / t.total, 0, 1) : 0;
+      ring.setAttribute('stroke-dashoffset', (RING_C * (1 - frac)).toFixed(2));
+    }
+  }
+  updateDocTitle(fmtClock(rem) + (t.phase === 'break' ? ' · break' : ' · focus'));
+}
+
+function startFocusTimer(gid){
+  const g = focusGroup(gid);
+  if (!g) return;
+  const t = focusState.timer;
+
+  if (t && t.groupId === gid && !t.running && t.remaining > 0){
+    t.running = true;
+    t.endsAt = Date.now() + t.remaining;
+  } else {
+    if (g.done >= g.sessions){ g.done = 0; g.doneDate = todayISO(); }
+    const ms = g.minutes * 60000;
+    focusState.timer = {
+      groupId: gid,
+      phase: 'work',
+      running: true,
+      total: ms,
+      remaining: ms,
+      endsAt: Date.now() + ms
+    };
+  }
+  saveFocusState();
+  startFocusTick();
+  render();
+}
+function pauseFocusTimer(){
+  const t = focusState.timer;
+  if (!t || !t.running) return;
+  t.remaining = timerRemaining();
+  t.running = false;
+  t.endsAt = null;
+  saveFocusState();
+  stopFocusTick();
+  render();
+}
+function resetFocusPhase(){
+  const t = focusState.timer;
+  if (!t) return;
+  const g = focusGroup(t.groupId);
+  const mins = t.phase === 'break'
+    ? (g ? g.breakMinutes : 5)
+    : (g ? g.minutes : 25);
+  const ms = Math.max(1, mins) * 60000;
+  t.total = ms;
+  t.remaining = ms;
+  t.running = false;
+  t.endsAt = null;
+  saveFocusState();
+  stopFocusTick();
+  render();
+}
+function stopFocusTimer(){
+  if (!focusState.timer) return;
+  focusState.timer = null;
+  stopFocusTick();
+  saveFocusState();
+  render();
+}
+
+/* Advances the current phase. `silent` = user pressed Skip, so the
+   work minutes are NOT written to the focus log. */
+function finishPhase(opts){
+  opts = opts || {};
+  const t = focusState.timer;
+  if (!t) return;
+  const g = focusGroup(t.groupId);
+  const wasWork = t.phase === 'work';
+
+  if (wasWork && g){
+    if (!opts.silent){
+      focusState.log.push({
+        id: uid('fl'),
+        groupId: g.id,
+        mids: g.mids.slice(),
+        minutes: g.minutes,
+        date: todayISO(),
+        ended_at: new Date().toISOString()
+      });
+      if (focusState.log.length > 500) focusState.log = focusState.log.slice(-500);
+      if (g.autoTick){
+        const m = sessionMaterial(g, g.done);
+        if (m) tickTask(m.id, todayISO());
+      }
+    }
+    g.done = Math.min(g.sessions, g.done + 1);
+    g.doneDate = todayISO();
+  }
+
+  const groupFinished = wasWork && g && g.done >= g.sessions;
+
+  if (groupFinished){
+    focusState.timer = null;
+    saveFocusState();
+    stopFocusTick();
+    if (!opts.silent) chime(true);
+    render();
+    return;
+  }
+
+  if (wasWork && g && g.breakMinutes > 0){
+    t.phase = 'break';
+    t.total = g.breakMinutes * 60000;
+  } else {
+    t.phase = 'work';
+    t.total = (g ? g.minutes : 25) * 60000;
+  }
+  t.remaining = t.total;
+  t.endsAt = null;
+  t.running = false;
+  saveFocusState();
+  stopFocusTick();
+  if (!opts.silent) chime(false);
+  render();
+}
+
+/* --- group management --- */
+function resetBuilder(){
+  builder.editId = null;
+  builder.mids = [];
+  builder.autoTick = false;
+}
+function createFocusGroup(autoStart){
+  if (!builder.mids.length) return;
+  let gid = null;
+
+  if (builder.editId){
+    const g = focusGroup(builder.editId);
+    if (g){
+      g.mids = builder.mids.slice();
+      g.sessions = builder.sessions;
+      g.minutes = builder.minutes;
+      g.breakMinutes = builder.breakMinutes;
+      g.autoTick = builder.autoTick;
+      if (g.done > g.sessions) g.done = 0;
+      gid = g.id;
+    }
+  }
+  if (!gid){
+    const g = {
+      id: uid('fg'),
+      mids: builder.mids.slice(),
+      sessions: builder.sessions,
+      minutes: builder.minutes,
+      breakMinutes: builder.breakMinutes,
+      autoTick: builder.autoTick,
+      done: 0,
+      doneDate: todayISO(),
+      created_at: new Date().toISOString()
+    };
+    focusState.groups.push(g);
+    gid = g.id;
+  }
+
+  resetBuilder();
+  saveFocusState();
+  render();
+  if (autoStart) startFocusTimer(gid);
+}
+function editFocusGroup(id){
+  const g = focusGroup(id);
+  if (!g) return;
+  builder.editId = g.id;
+  builder.mids = g.mids.slice();
+  builder.sessions = g.sessions;
+  builder.minutes = g.minutes;
+  builder.breakMinutes = g.breakMinutes;
+  builder.autoTick = g.autoTick;
+  render();
+  const el = document.querySelector('[data-builder-anchor]');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+function removeFocusGroup(id){
+  if (!confirm('Remove this session group?')) return;
+  focusState.groups = focusState.groups.filter(g => g.id !== id);
+  if (focusState.timer && focusState.timer.groupId === id){
+    focusState.timer = null;
+    stopFocusTick();
+  }
+  if (builder.editId === id) resetBuilder();
+  saveFocusState();
+  render();
+}
+
+/* --- focus view markup --- */
+function ringHTML(rem, total, phase, idle){
+  const frac = total > 0 ? clamp(rem / total, 0, 1) : 0;
+  const off = RING_C * (1 - frac);
+  const cls = idle ? 'is-idle' : (phase === 'break' ? 'is-break' : '');
+  return `
+  <div class="ring ${cls}">
+    <svg viewBox="0 0 120 120" aria-hidden="true">
+      <circle class="ring-bg" cx="60" cy="60" r="54"></circle>
+      <circle class="ring-fg" data-timer-ring cx="60" cy="60" r="54"
+              stroke-dasharray="${RING_C.toFixed(2)}"
+              stroke-dashoffset="${off.toFixed(2)}"></circle>
+    </svg>
+    <div class="ring-in">
+      <span class="ring-digits" data-timer-digits>${fmtClock(rem)}</span>
+      <span class="ring-phase">${idle ? 'Ready' : (phase === 'break' ? 'Break' : 'Focus')}</span>
+    </div>
+  </div>`;
+}
+
+function timerCardHTML(){
+  const today = todayISO();
+  const todayMin = focusMinutesOn(today);
+  const todayCount = focusLogOn(today).length;
+  const weekStart = startOfWeekISO(today);
+  const weekMin = weekDays(weekStart).reduce((s, d) => s + focusMinutesOn(d), 0);
+
+  const t = focusState.timer;
+  const g = activeGroup();
+  let body;
+
+  if (!t || !g){
+    body = `
+      <div class="timer-top">
+        ${ringHTML(0, 1, 'work', true)}
+        <div class="timer-meta">
+          <span class="timer-title">Ready when you are</span>
+          <span class="timer-sub">${focusState.groups.length
+            ? 'Press <b>Start</b> on a session group below — the timer keeps running while you browse other tabs.'
+            : 'Build a session group below: pick today’s materials, then choose how many sessions and how long each one should be.'}</span>
+        </div>
+      </div>`;
+  } else {
+    const rem = timerRemaining();
+    const isBreak = t.phase === 'break';
+    const idx = clamp(g.done, 0, g.sessions - 1);
+    const mat = sessionMaterial(g, isBreak ? Math.min(g.done, g.sessions - 1) : g.done);
+    const typeLabel = mat ? (TYPES[mat.default_input_type] || { label: 'Other' }).label : '';
+    const subParts = [];
+    subParts.push(isBreak ? 'Break' : `Session ${idx + 1} of ${g.sessions}`);
+    if (typeLabel) subParts.push(typeLabel);
+    if (mat && mat.creator) subParts.push(mat.creator);
+
+    body = `
+      <div class="timer-top">
+        ${ringHTML(rem, t.total, t.phase, false)}
+        <div class="timer-meta">
+          <span class="timer-title">${esc(mat ? mat.title : 'Session')}</span>
+          <span class="timer-sub">${subParts.map(esc).join(' · ')}</span>
+
+          <div class="session-dots" aria-hidden="true">
+            ${Array.from({ length: g.sessions }, (_, i) => {
+              const cls = i < g.done ? 'done' : (i === g.done ? 'current' : '');
+              const brk = isBreak && i === g.done ? 'is-break' : '';
+              return `<span class="sdot ${cls} ${brk}"></span>`;
+            }).join('')}
+          </div>
+
+          <div class="timer-controls">
+            ${t.running
+              ? `<button class="btn btn-primary" data-focus-pause>Pause</button>`
+              : `<button class="btn btn-primary" data-focus-start="${esc(g.id)}">
+                   ${rem > 0 && rem < t.total ? 'Resume' : 'Start'}
+                 </button>`}
+            <button class="btn btn-ghost" data-focus-reset-phase>Reset</button>
+            <button class="btn btn-ghost" data-focus-skip>${isBreak ? 'Skip break' : 'Skip session'}</button>
+            <button class="btn btn-ghost" data-focus-stop>End</button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  return `
+  <div class="card timer-card">
+    <div class="card-head">
+      <h2>Focus timer</h2>
+      <span style="font-size:11.5px;color:var(--muted)">Pomodoro</span>
+    </div>
+    ${body}
+    <div class="focus-stat-row">
+      <div class="focus-stat">
+        <div class="fs-k">Focus today</div>
+        <div class="fs-v">${fmtMinutes(todayMin)}</div>
+      </div>
+      <div class="focus-stat">
+        <div class="fs-k">Sessions today</div>
+        <div class="fs-v">${todayCount}<small> logged</small></div>
+      </div>
+      <div class="focus-stat">
+        <div class="fs-k">This week</div>
+        <div class="fs-v">${fmtMinutes(weekMin)}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function groupListHTML(){
+  const items = focusState.groups
+    .filter(g => g.mids.some(id => materialById(id)))
+    .map(g => {
+      const mats = g.mids.map(materialById).filter(Boolean);
+      const first = mats[0];
+      const tint = materialTint(first);
+      const isActive = !!focusState.timer && focusState.timer.groupId === g.id;
+      const running = isActive && focusState.timer.running;
+      const complete = g.done >= g.sessions;
+      const pct = g.sessions ? Math.round(g.done / g.sessions * 100) : 0;
+      const title = mats.length === 1 ? first.title : `${first.title} +${mats.length - 1} more`;
+
+      return `
+      <div class="fg-item ${isActive ? 'active' : ''} ${complete ? 'complete' : ''}"
+           style="--fg-color:${tint}">
+        ${coverHTML(first, 40)}
+        <div class="fg-main">
+          <span class="fg-title">${esc(title)}</span>
+          <span class="fg-sub">
+            ${g.sessions} × ${g.minutes} min${g.breakMinutes ? ` · ${g.breakMinutes} min break` : ''} ·
+            ${esc(fmtMinutes(g.sessions * g.minutes))} total${g.autoTick ? ' · auto-ticks task' : ''}
+          </span>
+          <div class="fg-bar"><i style="width:${pct}%"></i></div>
+          <span class="fg-sub" style="margin-top:6px">
+            ${g.done} of ${g.sessions} session${g.sessions === 1 ? '' : 's'} done today${complete ? ' · complete 🎉' : ''}
+          </span>
+        </div>
+        <div class="fg-actions">
+          ${running
+            ? `<button class="btn btn-ghost btn-sm" data-focus-pause>Pause</button>`
+            : `<button class="btn btn-primary btn-sm" data-focus-start="${esc(g.id)}">
+                 ${isActive ? 'Resume' : (complete ? 'Restart' : 'Start')}
+               </button>`}
+          <button class="btn btn-ghost btn-sm" data-focus-edit="${esc(g.id)}">Edit</button>
+          <button class="btn btn-ghost btn-sm" data-focus-remove="${esc(g.id)}">Remove</button>
+        </div>
+      </div>`;
+    })
+    .filter(Boolean)
+    .join('');
+
+  if (!items) return '';
+
+  return `
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-head">
+      <h2>Session groups</h2>
+      <span style="font-size:11.5px;color:var(--muted)">${focusState.groups.length} saved</span>
+    </div>
+    <div class="fg-list">${items}</div>
+  </div>`;
+}
+
+function numFieldHTML(label, key, value){
+  const cfg = NUM_FIELDS[key];
+  return `
+  <div class="num-field">
+    <label>${esc(label)}</label>
+    <div class="num-ctl">
+      <button class="nbtn" type="button" data-num-step="${key}" data-delta="${-cfg.step}"
+              data-focus-key="nf-${key}-d" aria-label="Decrease ${esc(label)}">−</button>
+      <input class="step-input" type="number" inputmode="numeric"
+             data-num-input="${key}" data-focus-key="nf-${key}-in"
+             value="${value}" min="${cfg.min}" max="${cfg.max}"
+             aria-label="${esc(label)}">
+      <button class="nbtn" type="button" data-num-step="${key}" data-delta="${cfg.step}"
+              data-focus-key="nf-${key}-i" aria-label="Increase ${esc(label)}">+</button>
+    </div>
+  </div>`;
+}
+
+function builderCardHTML(){
+  const today = todayISO();
+  const tasks = dayTasks(today);
+  const seen = new Set();
+  const mats = [];
+  tasks.forEach(t => {
+    if (!seen.has(t.mid)){ seen.add(t.mid); mats.push(t.material); }
+  });
+
+  if (!mats.length){
+    return `
+    <div class="card" data-builder-anchor>
+      <div class="card-head"><h2>New session group</h2></div>
+      <div class="empty">
+        <span class="em-icon">🌤️</span>
+        <div class="em-title">Nothing planned for today</div>
+        <div class="em-sub">
+          Focus sessions are built from <b>today's plan</b>. Schedule a material in the
+          Daily or Weekly view first, then come back here.
+        </div>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-ghost" data-goto-weekly>Open weekly plan</button>
+          <button class="btn btn-ghost" data-goto-daily>Open daily view</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  const editing = !!builder.editId;
+  const total = builder.sessions * builder.minutes;
+  const breakTotal = builder.breakMinutes * Math.max(0, builder.sessions - 1);
+  const canCreate = builder.mids.length > 0;
+
+  return `
+  <div class="card" data-builder-anchor style="margin-bottom:14px">
+    <div class="card-head">
+      <h2>${editing ? 'Edit session group' : 'New session group'}</h2>
+      <span style="font-size:11.5px;color:var(--muted)">From today's plan</span>
+    </div>
+
+    <div class="builder-chips">
+      ${mats.map(m => {
+        const on = builder.mids.includes(m.id);
+        const tint = materialTint(m);
+        const style = on
+          ? `border-color:${tint};background:color-mix(in srgb,${tint} 10%,var(--surface))`
+          : '';
+        return `
+        <button type="button" class="mchip ${on ? 'on' : ''}"
+                data-chip-mid="${esc(m.id)}"
+                data-focus-key="chip-${esc(m.id)}"
+                style="${style}"
+                aria-pressed="${on}">
+          ${coverHTML(m, 26)}
+          <span class="mchip-txt">
+            ${esc(m.title)}
+            <span class="mchip-cat">${m.default_category === 'listening' ? 'Listening' : 'Reading'}</span>
+          </span>
+        </button>`;
+      }).join('')}
+    </div>
+
+    <div class="num-row">
+      ${numFieldHTML('Sessions', 'sessions', builder.sessions)}
+      ${numFieldHTML('Minutes per session', 'minutes', builder.minutes)}
+      ${numFieldHTML('Break (minutes)', 'breakMinutes', builder.breakMinutes)}
+    </div>
+
+    <label class="check-row">
+      <input type="checkbox" data-builder-autotick data-focus-key="nf-autotick"
+             ${builder.autoTick ? 'checked' : ''}>
+      Tick off the day's task when a session finishes
+    </label>
+
+    <p class="builder-total">
+      ${canCreate
+        ? `${builder.mids.length} material${builder.mids.length === 1 ? '' : 's'} · <b>${builder.sessions} × ${builder.minutes} min</b> = <b>${esc(fmtMinutes(total))}</b> of focus${breakTotal ? ` + ${esc(fmtMinutes(breakTotal))} of breaks` : ''}`
+        : 'Pick at least one material above to build a group.'}
+    </p>
+
+    <div class="modal-actions" style="justify-content:flex-start;margin-top:16px">
+      <button class="btn btn-primary" data-focus-create ${canCreate ? '' : 'disabled'}>
+        ${editing ? 'Save changes' : 'Create group'}
+      </button>
+      ${editing
+        ? `<button class="btn btn-ghost" data-focus-cancel-edit>Cancel</button>`
+        : `<button class="btn btn-ghost" data-focus-create-start ${canCreate ? '' : 'disabled'}>Create &amp; start</button>`}
+    </div>
+  </div>`;
+}
+
+function viewFocus(){
+  return `
+  ${phaseBannerHTML()}
+  ${timerCardHTML()}
+  ${groupListHTML()}
+  ${builderCardHTML()}
+  <p class="footnote">
+    Build a group from <b>today's plan</b> — e.g. <b>3 sessions × 50 minutes</b> for one material,
+    or rotate across several. The timer keeps running while you switch tabs.<br>
+    Finished sessions are logged with their minutes and, if you asked for it, they tick off
+    the matching task in the shared activity log.<br>
+    Session groups are stored separately from the main challenge data, so nothing here
+    can overwrite your materials or plan.
+  </p>`;
+}
+
+/* =========================================================
    DAILY VIEW
    ========================================================= */
 function weekStripHTML(){
@@ -1364,6 +2084,7 @@ function viewDaily(){
       <button class="btn btn-primary btn-sm" data-complete-day="${iso}">
         ${t.doneCount === t.total ? 'Clear day' : 'Complete all'}
       </button>` : ''}
+      ${isToday && t.total ? `<button class="btn btn-ghost btn-sm" data-goto-focus>Focus timer →</button>` : ''}
     </div>
   </div>
 
@@ -1796,10 +2517,14 @@ function render(){
     updateHeader();
     return;
   }
-  app.innerHTML = currentView === 'daily' ? viewDaily() : viewWeekly();
+  app.innerHTML = currentView === 'daily'  ? viewDaily()
+                : currentView === 'weekly' ? viewWeekly()
+                : viewFocus();
   $$('#tabs button').forEach(b => b.classList.toggle('active', b.dataset.view === currentView));
   renderThemeDots();
   updateHeader();
+  paintTimer();
+  if (focusState.timer && focusState.timer.running) startFocusTick();
 }
 function renderPreservingFocus(){
   const active = document.activeElement;
@@ -1887,8 +2612,6 @@ function openAddMaterialModal(){
     };
     shared.materials.push(mat);
 
-    // Queue the new material in the phase that covers today, matching
-    // how the main app's Edit phases modal assigns materials.
     const info = currentPhaseInfo();
     if (info && shared.roadmap && Array.isArray(shared.roadmap.phases) && shared.roadmap.phases[info.index]){
       const phase = shared.roadmap.phases[info.index];
@@ -1913,6 +2636,55 @@ document.addEventListener('click', e => {
   const tab = e.target.closest('#tabs button[data-view]');
   if (tab){ currentView = tab.dataset.view; render(); return; }
 
+  /* ---------- focus session controls ---------- */
+  const fStart = e.target.closest('[data-focus-start]');
+  if (fStart){ startFocusTimer(fStart.dataset.focusStart); return; }
+  if (e.target.closest('[data-focus-pause]')){ pauseFocusTimer(); return; }
+  if (e.target.closest('[data-focus-reset-phase]')){ resetFocusPhase(); return; }
+  if (e.target.closest('[data-focus-skip]')){ finishPhase({ silent: true }); return; }
+  if (e.target.closest('[data-focus-stop]')){ stopFocusTimer(); return; }
+
+  const fRemove = e.target.closest('[data-focus-remove]');
+  if (fRemove){ removeFocusGroup(fRemove.dataset.focusRemove); return; }
+  const fEdit = e.target.closest('[data-focus-edit]');
+  if (fEdit){ editFocusGroup(fEdit.dataset.focusEdit); return; }
+
+  const chip = e.target.closest('[data-chip-mid]');
+  if (chip){
+    const mid = chip.dataset.chipMid;
+    const i = builder.mids.indexOf(mid);
+    if (i >= 0) builder.mids.splice(i, 1);
+    else builder.mids.push(mid);
+    renderPreservingFocus();
+    return;
+  }
+
+  const numStep = e.target.closest('[data-num-step]');
+  if (numStep){
+    const key = numStep.dataset.numStep;
+    const delta = Number(numStep.dataset.delta) || 0;
+    const cfg = NUM_FIELDS[key];
+    if (!cfg) return;
+    builder[key] = clamp(Math.round(builder[key] + delta), cfg.min, cfg.max);
+    renderPreservingFocus();
+    return;
+  }
+
+  if (e.target.closest('[data-focus-create]')){ createFocusGroup(false); return; }
+  if (e.target.closest('[data-focus-create-start]')){ createFocusGroup(true); return; }
+  if (e.target.closest('[data-focus-cancel-edit]')){
+    resetBuilder();
+    render();
+    return;
+  }
+  if (e.target.closest('[data-goto-focus]')){
+    currentView = 'focus';
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
+  /* ---------- planner controls ---------- */
   const dayStep = e.target.closest('[data-day-step]');
   if (dayStep){
     e.stopPropagation();
@@ -2056,6 +2828,21 @@ document.addEventListener('change', e => {
   const t = e.target;
   if (!t || !t.matches) return;
 
+  if (t.matches('[data-builder-autotick]')){
+    builder.autoTick = !!t.checked;
+    renderPreservingFocus();
+    return;
+  }
+  if (t.matches('[data-num-input]')){
+    const key = t.dataset.numInput;
+    const cfg = NUM_FIELDS[key];
+    if (!cfg) return;
+    let v = Number(t.value);
+    if (!isFinite(v)) v = cfg.min;
+    builder[key] = clamp(Math.round(v), cfg.min, cfg.max);
+    renderPreservingFocus();
+    return;
+  }
   if (t.matches('[data-weekly-input]')){
     const mid = t.dataset.weeklyInput;
     const val = Math.max(0, Number(t.value) || 0);
@@ -2109,6 +2896,9 @@ window.addEventListener('storage', e => {
   } else if (e.key === THEME_KEY){
     applyTheme(e.newValue || 'sand');
     render();
+  } else if (e.key === FOCUS_KEY){
+    focusState = loadFocusState();
+    render();
   }
 });
 
@@ -2117,6 +2907,7 @@ window.addEventListener('storage', e => {
    ========================================================= */
 applyTheme(currentTheme);
 shared = loadShared();
+focusState = loadFocusState();
 render();
 </script>
 </body>
