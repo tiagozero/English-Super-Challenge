@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lingua Roadmap</title>
+<style>
+:root{
+  --bg:#f4f5f9;
+  --text:#141728;
+  --muted:#71757f;
+  --line:#e7e9f0;
+  --grammar:#6366f1;
+  --vocab:#10b981;
+  --writing:#f59e0b;
+  --radius:16px;
+  --shadow:0 1px 2px rgba(20,23,40,.04), 0 6px 20px -10px rgba(20,23,40,.14);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:20;background:rgba(244,245,249,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-top:12px;padding-bottom:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#10b981);color:#fff;display:grid;place-items:center;font-size:15px;font-weight:700}
+.brand h1{font-size:15px;margin:0;letter-spacing:-.01em}
+.brand p{margin:0;font-size:12px;color:var(--muted)}
+.tabs{display:flex;gap:4px;background:#e9ebf3;padding:4px;border-radius:12px;overflow-x:auto;max-width:100%}
+.tab{border:0;background:transparent;padding:7px 14px;border-radius:9px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap}
+.tab:hover{color:var(--text)}
+.tab.active{background:#fff;color:var(--text);box-shadow:0 1px 3px rgba(20,23,40,.1)}
+
+/* ---------- quick links row ---------- */
+.quicklinks{display:flex;gap:8px;flex-wrap:wrap;width:100%;padding-bottom:2px}
+.qlink{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:7px 14px;border-radius:10px;background:#fff;border:1px solid var(--line);
+  color:var(--text);text-decoration:none;font-size:13px;font-weight:550;transition:.15s;
+}
+.qlink:hover{border-color:#a5b4fc;background:#f8f9ff;transform:translateY(-1px)}
+.qlink i{width:8px;height:8px;border-radius:50%;display:block;flex:0 0 auto}
+
+main{padding-top:24px;padding-bottom:70px}
+
+/* ---------- generic ---------- */
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 12px;font-size:13.5px;font-weight:650;letter-spacing:-.01em}
+.card h3 .muted{font-weight:400}
+.view-head{margin-bottom:18px}
+.view-head h2{margin:0 0 3px;font-size:21px;letter-spacing:-.025em}
+.view-head p{margin:0;color:var(--muted);font-size:13.5px}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.grid{display:grid;gap:16px;margin-bottom:16px}
+.cols-2{grid-template-columns:1.05fr .95fr}
+.cols-3{grid-template-columns:repeat(3,1fr)}
+.cols-4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:860px){.cols-2,.cols-3,.cols-4{grid-template-columns:1fr}}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row.between{justify-content:space-between}
+.row.end{justify-content:flex-end}
+.mt{margin-top:14px}
+
+/* ---------- buttons ---------- */
+.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:550;cursor:pointer;font-family:inherit;color:var(--text);transition:.15s}
+.btn:hover{border-color:#cfd4e0;background:#fafbfe}
+.btn.primary{background:var(--text);border-color:var(--text);color:#fff}
+.btn.primary:hover{background:#2b3050;border-color:#2b3050}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+.btn.ghost:hover{background:#f1f3f9;color:var(--text)}
+.btn.sm{padding:5px 10px;font-size:12px;border-radius:8px}
+.btn.danger:hover{background:#fef2f2;border-color:#fecaca;color:#b91c1c}
+
+/* ---------- forms ---------- */
+.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.form-grid .span2{grid-column:span 2}
+.form-grid .span3{grid-column:1/-1}
+@media(max-width:780px){.form-grid{grid-template-columns:1fr}.form-grid .span2{grid-column:auto}}
+label{display:flex;flex-direction:column;gap:5px;font-size:11.5px;color:var(--muted);font-weight:600;letter-spacing:.01em}
+input,select,textarea{font-family:inherit;font-size:13.5px;color:var(--text);background:#fbfbfd;border:1px solid var(--line);border-radius:10px;padding:8px 10px;width:100%;outline:none;transition:.15s;font-weight:400}
+input:focus,select:focus{border-color:#a5b4fc;background:#fff;box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+input[type=color]{padding:3px;height:37px;cursor:pointer}
+input:disabled{background:#f2f4f9;color:var(--muted)}
+
+/* ---------- progress ---------- */
+.bar{height:8px;border-radius:99px;background:#eef0f6;overflow:hidden}
+.bar > i{display:block;height:100%;border-radius:99px;transition:width .45s cubic-bezier(.22,1,.36,1)}
+.prow{margin-bottom:15px}
+.prow:last-child{margin-bottom:0}
+.prow-top{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;margin-bottom:6px}
+.prow-top b{font-weight:600}
+.prow-bot{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--muted);margin-top:6px}
+
+/* ---------- dashboard hero ---------- */
+.hero-card{display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+.ring-wrap{position:relative;width:146px;flex:0 0 auto}
+.ring{width:146px;height:146px;display:block}
+.ring-label{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring-label strong{font-size:27px;display:block;line-height:1.05;letter-spacing:-.035em}
+.hero-info{flex:1;min-width:190px}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.kv:last-child{border-bottom:0}
+.kv span{color:var(--muted)}
+.kv b{font-weight:600}
+
+/* ---------- chips / badges ---------- */
+.badge{display:inline-block;padding:2px 9px;border-radius:99px;font-size:10.5px;font-weight:700;letter-spacing:.02em}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:99px;font-size:11.5px;font-weight:550;background:#f3f5fa;color:#9aa0ae;border:1px solid var(--line)}
+.chip.on{background:#ecfdf5;color:#047857;border-color:#a7f3d0}
+.chip.on.amber{background:#fffbeb;color:#b45309;border-color:#fde68a}
+
+/* ---------- phase ---------- */
+.phase-head{display:flex;gap:10px;align-items:center;margin-bottom:14px}
+.phase-name{font-size:14.5px;font-weight:650;border:1px solid transparent;background:transparent;padding:4px 8px}
+.phase-name:hover{border-color:var(--line)}
+.phase-progress{margin-top:16px;padding-top:16px;border-top:1px dashed var(--line)}
+.phase-tag{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- log ---------- */
+.log-row{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid #f2f4f9}
+.log-row:last-child{border-bottom:0}
+.dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+.log-main{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.35}
+.log-main b{font-size:13px;font-weight:600}
+.log-amt{font-size:12.5px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.day-sep{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#9aa0ae;margin:16px 0 2px}
+.day-sep:first-child{margin-top:0}
+
+/* ---------- stats ---------- */
+.stat-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+.stat-card .lbl{font-size:11.5px;font-weight:650;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+.stat-card .val{font-size:25px;font-weight:700;letter-spacing:-.03em;line-height:1.2;margin-top:4px}
+.stat-card .sub{font-size:11.5px;color:var(--muted)}
+.chart{width:100%;height:auto;display:block}
+.seg{display:inline-flex;gap:3px;background:#eef0f6;padding:3px;border-radius:10px}
+.seg button{border:0;background:transparent;padding:6px 12px;border-radius:8px;font-size:12.5px;font-weight:550;color:var(--muted);cursor:pointer;font-family:inherit;transition:.15s}
+.seg button.active{background:#fff;color:var(--text);box-shadow:0 1px 3px rgba(20,23,40,.1)}
+.heat{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,13px);gap:3px;overflow-x:auto;padding-bottom:4px}
+.heat i{width:13px;height:13px;border-radius:3.5px;background:#eceef5;display:block}
+.heat i[data-l="1"]{background:#c7d2fe}
+.heat i[data-l="2"]{background:#818cf8}
+.heat i[data-l="3"]{background:#4f46e5}
+.heat i[data-l="4"]{background:#312e81}
+.heat i.future{opacity:.3}
+.legend{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);margin-top:10px}
+.legend i{width:11px;height:11px;border-radius:3px;display:block}
+
+/* ---------- toast ---------- */
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(16px);background:#141728;color:#fff;padding:10px 18px;border-radius:12px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:.25s;z-index:60;box-shadow:0 8px 30px rgba(20,23,40,.3)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo">◈</div>
+      <div>
+        <h1>Lingua Roadmap</h1>
+        <p id="brandSub">—</p>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button class="tab active" data-tab="dashboard">Dashboard</button>
+      <button class="tab" data-tab="roadmap">Roadmap</button>
+      <button class="tab" data-tab="log">Log</button>
+      <button class="tab" data-tab="stats">Stats</button>
+    </nav>
+
+    <!-- Placeholder quick links — each leads to a separate HTML page -->
+    <div class="quicklinks">
+      <a class="qlink" href="grammar.html"       title="Placeholder page"><i style="background:#6366f1"></i>Grammar</a>
+      <a class="qlink" href="writing.html"       title="Placeholder page"><i style="background:#f59e0b"></i>Writing</a>
+      <a class="qlink" href="vocabulary.html"    title="Placeholder page"><i style="background:#10b981"></i>Vocabulary</a>
+      <a class="qlink" href="pronunciation.html" title="Placeholder page"><i style="background:#ec4899"></i>Pronunciation</a>
+      <a class="qlink" href="pace.html"          title="Placeholder page"><i style="background:#0ea5e9"></i>Pace</a>
+      <a class="qlink" href="room.html"          title="Placeholder page"><i style="background:#8b5cf6"></i>Room</a>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="wrap"></main>
+<div id="toast"></div>
+
+<script>
+/* =========================================================
+   Utilities
+   ========================================================= */
+const MS_DAY = 86400000;
+const uid = () => Math.random().toString(36).slice(2, 9);
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtNum = n => (Math.round(Number(n) || 0)).toLocaleString();
+
+const parseISO = iso => { const [y, m, d] = String(iso).split('-').map(Number); return new Date(y, m - 1, d); };
+const toISO = dt => `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+const todayISO = () => toISO(new Date());
+const shiftISO = (iso, n) => { const dt = parseISO(iso); dt.setDate(dt.getDate() + n); return toISO(dt); };
+const daysBetween = (a, b) => Math.round((parseISO(b) - parseISO(a)) / MS_DAY);
+const fmtShort = iso => parseISO(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+const fmtLong  = iso => parseISO(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+
+const CAT_META = {
+  grammar: { label: 'Grammar',    color: '#6366f1', unit: 'lessons' },
+  vocab:   { label: 'Vocabulary', color: '#10b981', unit: 'items'   },
+  writing: { label: 'Writing',    color: '#f59e0b', unit: 'texts'   }
+};
+
+/* =========================================================
+   State
+   ========================================================= */
+const LS_KEY = 'linguaRoadmap.v3';
+let state = loadState();
+let ui = {
+  tab: 'dashboard',
+  statMetric: 'vocab',
+  log: { date: todayISO(), category: 'vocab', activity: '', amount: '', note: '' }
+};
+
+/* ---------- empty starting state ---------- */
+function emptyState() {
+  const today = todayISO();
+  return {
+    roadmap: {
+      language: '',
+      goal: '',
+      start: today,
+      end: shiftISO(today, 180),
+      phases: []
+    },
+    logs: []
+  };
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (s && s.roadmap && Array.isArray(s.roadmap.phases)) return s;
+    }
+  } catch (e) { /* ignore */ }
+  return emptyState();
+}
+function saveState() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+/* =========================================================
+   Metrics
+   ========================================================= */
+function metricsOf(logs) {
+  const m = { grammar: 0, vocab: 0, texts: 0 };
+  for (const l of logs) {
+    const a = Number(l.amount) || 0;
+    if (l.category === 'grammar') m.grammar += a;
+    else if (l.category === 'vocab') m.vocab += a;
+    else if (l.category === 'writing') m.texts += a;
+  }
+  return m;
+}
+
+function sumTargets(phases) {
+  const t = { grammar: 0, vocab: 0, texts: 0 };
+  for (const p of phases || []) {
+    t.grammar += Number(p.targets.grammar) || 0;
+    t.vocab   += Number(p.targets.vocab)   || 0;
+    t.texts   += Number(p.targets.texts)   || 0;
+  }
+  return t;
+}
+
+const pctOf = (done, target) => target > 0 ? clamp(done / target, 0, 1) : 0;
+
+function catPct(cat, done, target) {
+  if (cat === 'grammar') return pctOf(done.grammar, target.grammar);
+  if (cat === 'vocab')   return pctOf(done.vocab, target.vocab);
+  return pctOf(done.texts, target.texts);
+}
+
+function hasTarget(cat, t) {
+  if (cat === 'grammar') return t.grammar > 0;
+  if (cat === 'vocab')   return t.vocab > 0;
+  return t.texts > 0;
+}
+
+function overallPct(done, target) {
+  const parts = ['grammar', 'vocab', 'writing'].filter(c => hasTarget(c, target)).map(c => catPct(c, done, target));
+  return parts.length ? parts.reduce((a, b) => a + b, 0) / parts.length : 0;
+}
+
+function currentPhase() {
+  const phases = state.roadmap.phases || [];
+  if (!phases.length) return null;
+  const sorted = [...phases].sort((a, b) => a.start < b.start ? -1 : 1);
+  const today = todayISO();
+  return sorted.find(p => today >= p.start && today <= p.end)
+      || (today < sorted[0].start ? sorted[0] : sorted[sorted.length - 1]);
+}
+
+function currentStreak() {
+  const dates = new Set(state.logs.map(l => l.date));
+  let cur = todayISO();
+  if (!dates.has(cur)) cur = shiftISO(cur, -1);
+  let n = 0;
+  while (dates.has(cur)) { n++; cur = shiftISO(cur, -1); }
+  return n;
+}
+
+/* =========================================================
+   Small HTML builders
+   ========================================================= */
+function progressRow(label, doneV, targetV, color, unit, daysLeft) {
+  const pct = targetV > 0 ? clamp(doneV / targetV, 0, 1) : 0;
+  const remaining = Math.max(0, targetV - doneV);
+  let pace = '—';
+  if (targetV > 0 && remaining <= 0) pace = 'complete ✓';
+  else if (targetV > 0 && daysLeft > 0) {
+    const daily = remaining / daysLeft;
+    pace = `${fmtNum(daily)}/day · ${fmtNum(daily * 7)}/wk`;
+  } else if (targetV > 0) pace = 'past deadline';
+
+  return `
+    <div class="prow">
+      <div class="prow-top"><b>${esc(label)}</b><span class="muted">${fmtNum(doneV)} / ${fmtNum(targetV)} ${esc(unit)}</span></div>
+      <div class="bar"><i style="width:${(pct * 100).toFixed(1)}%;background:${color}"></i></div>
+      <div class="prow-bot">
+        <span>${Math.round(pct * 100)}%</span>
+        <span>${fmtNum(remaining)} left</span>
+        <span>${pace}</span>
+      </div>
+    </div>`;
+}
+
+function catCard(cat, done, target, daysLeft) {
+  const meta = CAT_META[cat];
+  const pct = catPct(cat, done, target);
+  let rows = '';
+
+  if (cat === 'grammar') {
+    rows = progressRow('Lessons & grammar points', done.grammar, target.grammar, meta.color, 'lessons', daysLeft);
+  } else if (cat === 'vocab') {
+    rows = progressRow('Words, chunks & collocations', done.vocab, target.vocab, meta.color, 'items', daysLeft);
+  } else {
+    rows = progressRow('Texts written', done.texts, target.texts, meta.color, 'texts', daysLeft);
+  }
+
+  return `
+    <section class="card">
+      <h3><span style="color:${meta.color}">●</span> ${meta.label}
+        <span class="muted" style="float:right;font-weight:500">${Math.round(pct * 100)}%</span></h3>
+      ${rows}
+    </section>`;
+}
+
+function milestoneChips(cat, done, target) {
+  const meta = CAT_META[cat];
+  const pct = catPct(cat, done, target);
+  return [25, 50, 75, 100].map(t => {
+    const on = pct >= t / 100 - 1e-9;
+    const amber = cat === 'writing' ? ' amber' : '';
+    return `<span class="chip ${on ? 'on' + amber : ''}">${on ? '✓' : '○'} ${meta.label} ${t}%</span>`;
+  }).join('');
+}
+
+/* =========================================================
+   Views — Dashboard
+   ========================================================= */
+function viewDashboard() {
+  const rm = state.roadmap;
+  const today = todayISO();
+
+  const inRange = state.logs.filter(l => l.date >= rm.start && l.date <= rm.end);
+  const done = metricsOf(inRange);
+  const target = sumTargets(rm.phases);
+  const overall = overallPct(done, target);
+
+  const daysLeft = Math.max(0, daysBetween(today, rm.end));
+  const daysTotal = Math.max(1, daysBetween(rm.start, rm.end));
+  const dayNo = clamp(daysBetween(rm.start, today) + 1, 1, daysTotal + 1);
+
+  const R = 54, C = 2 * Math.PI * R;
+
+  const phase = currentPhase();
+  const phaseLogs = phase ? state.logs.filter(l => l.date >= phase.start && l.date <= phase.end) : [];
+  const pDone = metricsOf(phaseLogs);
+  const pTarget = phase ? phase.targets : { grammar: 0, vocab: 0, texts: 0 };
+  const pPct = overallPct(pDone, pTarget);
+  const pDaysLeft = phase ? Math.max(0, daysBetween(today, phase.end)) : 0;
+
+  const weekStart = shiftISO(today, -6);
+  const weekLogs = state.logs.filter(l => l.date >= weekStart && l.date <= today);
+  const wDone = metricsOf(weekLogs);
+
+  const weeklyTarget = (tgt, dn) => {
+    if (tgt <= 0) return 0;
+    const remaining = Math.max(0, tgt - dn);
+    const dl = Math.max(1, daysLeft);
+    return remaining / dl * 7;
+  };
+
+  const recent = [...state.logs]
+    .sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : 0)
+    .slice(0, 7);
+
+  const welcome = rm.phases.length === 0 ? `
+    <section class="card" style="margin-bottom:16px;border-left:3px solid #6366f1">
+      <h3>👋 Welcome</h3>
+      <p class="muted small" style="margin:0">
+        Start by setting your <b>language</b>, <b>dates</b> and <b>goal</b> in the Roadmap tab, then add phases with
+        Grammar, Vocabulary and Writing targets. Log activities as you go — progress updates automatically.
+      </p>
+    </section>` : '';
+
+  return `
+  ${welcome}
+  <div class="view-head">
+    <h2>${esc(rm.language) || 'Your language'}</h2>
+    <p>${esc(rm.goal) || 'No overall goal set yet.'}</p>
+  </div>
+
+  <div class="grid cols-2">
+    <section class="card hero-card">
+      <div class="ring-wrap">
+        <svg viewBox="0 0 128 128" class="ring">
+          <defs>
+            <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#6366f1"/>
+              <stop offset="100%" stop-color="#10b981"/>
+            </linearGradient>
+          </defs>
+          <circle cx="64" cy="64" r="${R}" fill="none" stroke="#eef0f6" stroke-width="12"/>
+          <circle cx="64" cy="64" r="${R}" fill="none" stroke="url(#ringGrad)" stroke-width="12"
+                  stroke-linecap="round" stroke-dasharray="${(C * overall).toFixed(1)} ${C.toFixed(1)}"
+                  transform="rotate(-90 64 64)" style="transition:stroke-dasharray .5s ease"/>
+        </svg>
+        <div class="ring-label">
+          <strong>${Math.round(overall * 100)}%</strong>
+          <span class="muted small">complete</span>
+        </div>
+      </div>
+      <div class="hero-info">
+        <div class="kv"><span>Day</span><b>${dayNo} of ${daysTotal + 1}</b></div>
+        <div class="kv"><span>Days left</span><b>${daysLeft}</b></div>
+        <div class="kv"><span>Period</span><b>${fmtShort(rm.start)} – ${fmtShort(rm.end)}</b></div>
+        <div class="kv"><span>Phases</span><b>${rm.phases.length}</b></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>Current phase</h3>
+      ${phase ? `
+        <div style="font-size:15px;font-weight:650;letter-spacing:-.02em;margin-bottom:3px">${esc(phase.name)}</div>
+        <div class="muted small" style="margin-bottom:14px">${fmtShort(phase.start)} – ${fmtShort(phase.end)} · ${pDaysLeft} days left</div>
+        <div class="bar" style="margin-bottom:12px"><i style="width:${(pPct * 100).toFixed(1)}%;background:linear-gradient(90deg,#6366f1,#10b981)"></i></div>
+        <div class="prow-bot" style="margin-bottom:14px"><span>${Math.round(pPct * 100)}% of phase targets</span><span>${pDaysLeft > 0 ? 'ends in ' + pDaysLeft + 'd' : 'ended'}</span></div>
+        ${progressRow('Grammar', pDone.grammar, pTarget.grammar, CAT_META.grammar.color, 'lessons', pDaysLeft)}
+        ${progressRow('Vocabulary', pDone.vocab, pTarget.vocab, CAT_META.vocab.color, 'items', pDaysLeft)}
+        ${progressRow('Writing (texts)', pDone.texts, pTarget.texts, CAT_META.writing.color, 'texts', pDaysLeft)}
+      ` : '<p class="muted small">No phases yet — add one in the Roadmap tab.</p>'}
+    </section>
+  </div>
+
+  <div class="grid cols-3">
+    ${catCard('grammar', done, target, daysLeft)}
+    ${catCard('vocab', done, target, daysLeft)}
+    ${catCard('writing', done, target, daysLeft)}
+  </div>
+
+  <div class="grid cols-2">
+    <section class="card">
+      <h3>This week <span class="muted">· last 7 days</span></h3>
+      <div class="chips" style="margin-bottom:14px">
+        <span class="chip on">🔥 ${currentStreak()} day streak</span>
+        <span class="chip on">${weekLogs.length} sessions</span>
+      </div>
+      ${progressRow('Grammar', wDone.grammar, Math.round(weeklyTarget(target.grammar, done.grammar)), CAT_META.grammar.color, 'lessons', 7)}
+      ${progressRow('Vocabulary', wDone.vocab, Math.round(weeklyTarget(target.vocab, done.vocab)), CAT_META.vocab.color, 'items', 7)}
+      ${progressRow('Writing texts', wDone.texts, Math.round(weeklyTarget(target.texts, done.texts)), CAT_META.writing.color, 'texts', 7)}
+      <p class="muted small" style="margin:12px 0 0">Pace targets are what you need per week to hit the roadmap goal on time.</p>
+    </section>
+
+    <section class="card">
+      <h3>Milestones</h3>
+      <div class="chips" style="margin-bottom:12px">${milestoneChips('grammar', done, target)}</div>
+      <div class="chips" style="margin-bottom:12px">${milestoneChips('vocab', done, target)}</div>
+      <div class="chips">${milestoneChips('writing', done, target)}</div>
+    </section>
+  </div>
+
+  <section class="card">
+    <h3>Recent activity</h3>
+    ${recent.length ? recent.map(logRow).join('') : '<p class="muted small">Nothing logged yet. Head to the Log tab to record your first session.</p>'}
+  </section>`;
+}
+
+/* =========================================================
+   Views — Roadmap
+   ========================================================= */
+function viewRoadmap() {
+  const rm = state.roadmap;
+  const today = todayISO();
+  const phases = [...rm.phases].sort((a, b) => a.start < b.start ? -1 : 1);
+  const total = sumTargets(phases);
+  const overallDone = metricsOf(state.logs.filter(l => l.date >= rm.start && l.date <= rm.end));
+
+  const phaseCards = phases.map((p, i) => {
+    const logs = state.logs.filter(l => l.date >= p.start && l.date <= p.end);
+    const d = metricsOf(logs);
+    const t = p.targets;
+    const dLeft = Math.max(0, daysBetween(today, p.end));
+    const status = today < p.start ? 'Upcoming' : (today > p.end ? 'Finished' : 'In progress');
+    const pct = overallPct(d, t);
+
+    return `
+    <section class="card" style="margin-bottom:16px">
+      <div class="phase-head">
+        <span class="phase-tag">Phase ${i + 1}</span>
+        <input class="phase-name" data-phase="${p.id}" data-field="name" value="${esc(p.name)}" style="flex:1">
+        <span class="badge" style="background:#eef0f6;color:#6b7280">${status}</span>
+        <button class="btn ghost sm danger" data-action="delete-phase" data-id="${p.id}">Delete</button>
+      </div>
+
+      <div class="form-grid">
+        <label>Start date<input type="date" data-phase="${p.id}" data-field="start" value="${p.start}"></label>
+        <label>End date<input type="date" data-phase="${p.id}" data-field="end" value="${p.end}"></label>
+        <label>Phase progress<input value="${Math.round(pct * 100)}%" disabled></label>
+        <label>Grammar target (lessons)<input type="number" min="0" data-phase="${p.id}" data-field="grammar" value="${t.grammar}"></label>
+        <label>Vocabulary target (items)<input type="number" min="0" data-phase="${p.id}" data-field="vocab" value="${t.vocab}"></label>
+        <label>Writing target (texts)<input type="number" min="0" data-phase="${p.id}" data-field="texts" value="${t.texts}"></label>
+      </div>
+
+      <div class="phase-progress">
+        ${progressRow('Grammar', d.grammar, t.grammar, CAT_META.grammar.color, 'lessons', dLeft)}
+        ${progressRow('Vocabulary', d.vocab, t.vocab, CAT_META.vocab.color, 'items', dLeft)}
+        ${progressRow('Texts written', d.texts, t.texts, CAT_META.writing.color, 'texts', dLeft)}
+      </div>
+    </section>`;
+  }).join('');
+
+  return `
+  <div class="view-head">
+    <h2>Roadmap</h2>
+    <p>The big picture first, then break it into phases you can actually finish.</p>
+  </div>
+
+  <section class="card" style="margin-bottom:16px">
+    <h3>Overview</h3>
+    <div class="form-grid">
+      <label>Language<input data-rm="language" value="${esc(rm.language)}" placeholder="e.g. Spanish"></label>
+      <label>Start date<input type="date" data-rm="start" value="${rm.start}"></label>
+      <label>End date<input type="date" data-rm="end" value="${rm.end}"></label>
+      <label class="span3">Overall goal<input data-rm="goal" value="${esc(rm.goal)}" placeholder="e.g. Reach comfortable B1 conversation"></label>
+    </div>
+    <div class="mt" style="padding-top:14px;border-top:1px dashed var(--line)">
+      <div class="prow-top"><b>Total roadmap targets</b><span class="muted">${Math.round(overallPct(overallDone, total) * 100)}% complete</span></div>
+      <div class="bar"><i style="width:${(overallPct(overallDone, total) * 100).toFixed(1)}%;background:linear-gradient(90deg,#6366f1,#10b981)"></i></div>
+      <div class="prow-bot">
+        <span>${fmtNum(overallDone.grammar)} / ${fmtNum(total.grammar)} lessons</span>
+        <span>${fmtNum(overallDone.vocab)} / ${fmtNum(total.vocab)} items</span>
+        <span>${fmtNum(overallDone.texts)} / ${fmtNum(total.texts)} texts</span>
+      </div>
+    </div>
+  </section>
+
+  ${phaseCards || '<section class="card"><p class="muted small">No phases yet. Add your first phase below to start building the roadmap.</p></section>'}
+
+  <div class="row">
+    <button class="btn" data-action="add-phase">+ Add phase</button>
+    <span style="flex:1"></span>
+    <button class="btn ghost sm danger" data-action="clear-data">Clear all data</button>
+  </div>`;
+}
+
+/* =========================================================
+   Views — Log
+   ========================================================= */
+function logRow(l) {
+  const meta = CAT_META[l.category] || CAT_META.vocab;
+  const amountText = `${fmtNum(l.amount)} ${meta.unit}`;
+
+  return `
+  <div class="log-row">
+    <span class="dot" style="background:${meta.color}"></span>
+    <div class="log-main">
+      <b>${esc(l.activity || meta.label)}</b>
+      <span class="muted small">${meta.label}${l.note ? ' · ' + esc(l.note) : ''}</span>
+    </div>
+    <span class="log-amt">${amountText}</span>
+    <button class="btn ghost sm" data-action="delete-log" data-id="${l.id}" title="Delete">✕</button>
+  </div>`;
+}
+
+function viewLog() {
+  const f = ui.log;
+  const recent = [...state.logs].sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : 0).slice(0, 60);
+
+  /* group by date */
+  let listHTML = '';
+  let lastDate = null;
+  for (const l of recent) {
+    if (l.date !== lastDate) {
+      lastDate = l.date;
+      listHTML += `<div class="day-sep">${fmtLong(l.date)}${l.date === todayISO() ? ' · today' : ''}</div>`;
+    }
+    listHTML += logRow(l);
+  }
+
+  const amountLabel = f.category === 'grammar' ? 'Lessons / grammar points'
+                    : f.category === 'vocab'   ? 'Items learned'
+                    : 'Texts completed';
+  const amountPlaceholder = f.category === 'grammar' ? '1' : f.category === 'vocab' ? '20' : '1';
+  const activityPlaceholder = f.category === 'writing' ? 'Journal entry'
+                            : f.category === 'grammar' ? 'Lesson' : 'Anki reviews';
+
+  return `
+  <div class="view-head">
+    <h2>Activity log</h2>
+    <p>Record what you actually did. Everything else updates automatically.</p>
+  </div>
+
+  <form class="card" id="logForm" style="margin-bottom:16px">
+    <h3>Log a session</h3>
+    <div class="form-grid">
+      <label>Date<input type="date" data-logfield="date" value="${f.date}"></label>
+      <label>Category
+        <select data-logfield="category">
+          <option value="grammar" ${f.category === 'grammar' ? 'selected' : ''}>Grammar</option>
+          <option value="vocab"   ${f.category === 'vocab' ? 'selected' : ''}>Vocabulary</option>
+          <option value="writing" ${f.category === 'writing' ? 'selected' : ''}>Writing</option>
+        </select>
+      </label>
+      <label>Activity<input data-logfield="activity" value="${esc(f.activity)}" placeholder="${esc(activityPlaceholder)}"></label>
+      <label>${amountLabel}
+        <input type="number" min="0" data-logfield="amount" value="${esc(f.amount)}" placeholder="${amountPlaceholder}">
+      </label>
+      <label>Note<input data-logfield="note" value="${esc(f.note)}" placeholder="optional"></label>
+    </div>
+    <div class="row mt">
+      <button class="btn primary" type="submit">Log it</button>
+      <span class="muted small">Tip: writing progress is measured in completed texts.</span>
+    </div>
+  </form>
+
+  <section class="card">
+    <h3>History <span class="muted">· ${state.logs.length} entries</span></h3>
+    ${listHTML || '<p class="muted small">No activity logged yet.</p>'}
+  </section>`;
+}
+
+/* =========================================================
+   Views — Stats
+   ========================================================= */
+function viewStats() {
+  const all = state.logs;
+  const m = metricsOf(all);
+  const total = sumTargets(state.roadmap.phases);
+
+  const last30 = [];
+  const t = todayISO();
+  for (let i = 29; i >= 0; i--) last30.push(shiftISO(t, -i));
+
+  /* daily values per metric */
+  const dayMaps = { grammar: {}, vocab: {}, texts: {} };
+  for (const l of all) {
+    const a = Number(l.amount) || 0;
+    if (l.category === 'grammar') dayMaps.grammar[l.date] = (dayMaps.grammar[l.date] || 0) + a;
+    else if (l.category === 'vocab') dayMaps.vocab[l.date] = (dayMaps.vocab[l.date] || 0) + a;
+    else if (l.category === 'writing') dayMaps.texts[l.date] = (dayMaps.texts[l.date] || 0) + a;
+  }
+
+  const metric = ui.statMetric;
+  const metricMeta = {
+    grammar: { label: 'Grammar lessons', color: '#6366f1' },
+    vocab:   { label: 'Vocabulary items', color: '#10b981' },
+    texts:   { label: 'Texts written', color: '#f59e0b' }
+  }[metric];
+
+  const series = last30.map(d => ({ date: d, value: dayMaps[metric][d] || 0 }));
+
+  /* heatmap data */
+  const counts = {};
+  for (const l of all) counts[l.date] = (counts[l.date] || 0) + 1;
+
+  const now = new Date();
+  const monday = new Date(now);
+  monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+  const gridStart = new Date(monday);
+  gridStart.setDate(gridStart.getDate() - 11 * 7);
+
+  let heat = '';
+  for (let i = 0; i < 84; i++) {
+    const d = new Date(gridStart);
+    d.setDate(d.getDate() + i);
+    const iso = toISO(d);
+    const future = iso > t;
+    const c = counts[iso] || 0;
+    const lvl = c === 0 ? 0 : c === 1 ? 1 : c === 2 ? 2 : c === 3 ? 3 : 4;
+    heat += `<i data-l="${lvl}" class="${future ? 'future' : ''}" title="${fmtLong(iso)} · ${c} entr${c === 1 ? 'y' : 'ies'}"></i>`;
+  }
+
+  return `
+  <div class="view-head">
+    <h2>Statistics</h2>
+    <p>Cumulative progress is the only thing that matters. Small, every day.</p>
+  </div>
+
+  <div class="grid cols-3">
+    <div class="stat-card">
+      <div class="lbl">Grammar</div>
+      <div class="val" style="color:#6366f1">${fmtNum(m.grammar)}</div>
+      <div class="sub">lessons & grammar points</div>
+    </div>
+    <div class="stat-card">
+      <div class="lbl">Vocabulary</div>
+      <div class="val" style="color:#10b981">${fmtNum(m.vocab)}</div>
+      <div class="sub">words, chunks & collocations</div>
+    </div>
+    <div class="stat-card">
+      <div class="lbl">Writing</div>
+      <div class="val" style="color:#f59e0b">${fmtNum(m.texts)}</div>
+      <div class="sub">texts written</div>
+    </div>
+  </div>
+
+  <section class="card" style="margin-bottom:16px">
+    <div class="row between" style="margin-bottom:14px">
+      <h3 style="margin:0">Daily activity <span class="muted">· last 30 days</span></h3>
+      <div class="seg">
+        <button data-action="stat-metric" data-metric="grammar" class="${metric === 'grammar' ? 'active' : ''}">Grammar</button>
+        <button data-action="stat-metric" data-metric="vocab"   class="${metric === 'vocab' ? 'active' : ''}">Vocabulary</button>
+        <button data-action="stat-metric" data-metric="texts"   class="${metric === 'texts' ? 'active' : ''}">Texts</button>
+      </div>
+    </div>
+    ${barChart(series, metricMeta.color)}
+    <p class="muted small" style="margin:10px 0 0">
+      ${metricMeta.label}: ${fmtNum(series.reduce((s, d) => s + d.value, 0))} in the last 30 days ·
+      avg ${(series.reduce((s, d) => s + d.value, 0) / 30).toFixed(1)}/day
+    </p>
+  </section>
+
+  <div class="grid cols-2">
+    <section class="card">
+      <h3>Cumulative progress <span class="muted">· % of roadmap target</span></h3>
+      ${cumulativeChart()}
+      <div class="legend">
+        <i style="background:#6366f1"></i> Grammar
+        <i style="background:#10b981;margin-left:12px"></i> Vocabulary
+        <i style="background:#f59e0b;margin-left:12px"></i> Writing
+        <i style="background:#cbd5e1;margin-left:12px"></i> Required pace
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>Consistency <span class="muted">· last 12 weeks</span></h3>
+      <div class="heat">${heat}</div>
+      <div class="legend">
+        Less
+        <i style="background:#eceef5"></i>
+        <i style="background:#c7d2fe"></i>
+        <i style="background:#818cf8"></i>
+        <i style="background:#4f46e5"></i>
+        <i style="background:#312e81"></i>
+        More
+        <span style="flex:1"></span>
+        🔥 ${currentStreak()} day streak
+      </div>
+      <p class="muted small" style="margin:12px 0 0">Intensity = number of activities logged that day.</p>
+    </section>
+  </div>
+
+  <section class="card">
+    <h3>Targets vs. actual</h3>
+    <div class="form-grid" style="grid-template-columns:repeat(3,1fr)">
+      <div><div class="lbl muted small">Grammar</div><div style="font-size:15px;font-weight:650">${fmtNum(m.grammar)} / ${fmtNum(total.grammar)}</div></div>
+      <div><div class="lbl muted small">Vocabulary</div><div style="font-size:15px;font-weight:650">${fmtNum(m.vocab)} / ${fmtNum(total.vocab)}</div></div>
+      <div><div class="lbl muted small">Texts</div><div style="font-size:15px;font-weight:650">${fmtNum(m.texts)} / ${fmtNum(total.texts)}</div></div>
+    </div>
+  </section>`;
+}
+
+/* ---------- charts ---------- */
+function barChart(series, color) {
+  const W = 600, H = 170, padT = 10, padB = 24;
+  const plotH = H - padT - padB;
+  const max = Math.max(1, ...series.map(s => s.value));
+  const bw = W / series.length;
+
+  let out = '';
+  for (let g = 0; g <= 2; g++) {
+    const y = padT + plotH * (g / 2);
+    out += `<line x1="0" y1="${y.toFixed(1)}" x2="${W}" y2="${y.toFixed(1)}" stroke="#eef0f6" stroke-width="1"/>`;
+  }
+  out += `<text x="2" y="${padT + 9}" font-size="9" fill="#b6bcc9">${fmtNum(max)}</text>`;
+
+  series.forEach((s, i) => {
+    const h = (s.value / max) * plotH;
+    const x = i * bw + bw * 0.2;
+    const w = bw * 0.6;
+    if (s.value > 0) {
+      out += `<rect x="${x.toFixed(1)}" y="${(padT + plotH - h).toFixed(1)}" width="${w.toFixed(1)}" height="${Math.max(h, 2).toFixed(1)}" rx="2" fill="${color}"/>`;
+    } else {
+      out += `<rect x="${x.toFixed(1)}" y="${(padT + plotH - 2).toFixed(1)}" width="${w.toFixed(1)}" height="2" rx="1" fill="#e9ecf3"/>`;
+    }
+  });
+
+  series.forEach((s, i) => {
+    if (i % 7 === 0 || i === series.length - 1) {
+      const x = i * bw + bw / 2;
+      out += `<text x="${x.toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="9.5" fill="#9aa0ae">${fmtShort(s.date)}</text>`;
+    }
+  });
+
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}">${out}</svg>`;
+}
+
+function cumulativeChart() {
+  const rm = state.roadmap;
+  const W = 600, H = 190, padT = 12, padB = 16;
+  const plotH = H - padT - padB;
+  const yOf = p => padT + (1 - p) * plotH;
+
+  const totalDays = Math.max(1, daysBetween(rm.start, rm.end));
+  const today = todayISO();
+  const last = today < rm.start ? rm.start : (today > rm.end ? rm.end : today);
+  const n = Math.max(1, daysBetween(rm.start, last));
+  const target = sumTargets(rm.phases);
+
+  /* daily aggregates */
+  const byDay = new Map();
+  for (const l of state.logs) {
+    if (l.date < rm.start || l.date > rm.end) continue;
+    let o = byDay.get(l.date);
+    if (!o) { o = { grammar: 0, vocab: 0, texts: 0 }; byDay.set(l.date, o); }
+    const a = Number(l.amount) || 0;
+    if (l.category === 'grammar') o.grammar += a;
+    else if (l.category === 'vocab') o.vocab += a;
+    else if (l.category === 'writing') o.texts += a;
+  }
+
+  const cum = { grammar: 0, vocab: 0, texts: 0 };
+  const pts = { grammar: [], vocab: [], writing: [] };
+
+  for (let i = 0; i <= n; i++) {
+    const date = shiftISO(rm.start, i);
+    const o = byDay.get(date);
+    if (o) {
+      cum.grammar += o.grammar; cum.vocab += o.vocab; cum.texts += o.texts;
+    }
+    const x = (i / n) * W;
+    pts.grammar.push([x, yOf(pctOf(cum.grammar, target.grammar))]);
+    pts.vocab.push([x, yOf(pctOf(cum.vocab, target.vocab))]);
+    pts.writing.push([x, yOf(pctOf(cum.texts, target.texts))]);
+  }
+
+  const path = arr => arr.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+
+  let out = '';
+  for (let g = 0; g <= 4; g++) {
+    const p = g / 4;
+    const y = yOf(p);
+    out += `<line x1="0" y1="${y.toFixed(1)}" x2="${W}" y2="${y.toFixed(1)}" stroke="#f0f2f7" stroke-width="1"/>`;
+    out += `<text x="2" y="${(y - 3).toFixed(1)}" font-size="9" fill="#b6bcc9">${Math.round(p * 100)}%</text>`;
+  }
+
+  const idealEnd = yOf(n / totalDays);
+  out += `<line x1="0" y1="${yOf(0).toFixed(1)}" x2="${W}" y2="${idealEnd.toFixed(1)}" stroke="#cbd5e1" stroke-width="1.6" stroke-dasharray="5 4"/>`;
+
+  out += `<path d="${path(pts.grammar)}" fill="none" stroke="#6366f1" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  out += `<path d="${path(pts.vocab)}" fill="none" stroke="#10b981" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  out += `<path d="${path(pts.writing)}" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+
+  out += `<text x="2" y="${H - 3}" font-size="9.5" fill="#9aa0ae">${fmtShort(rm.start)}</text>`;
+  out += `<text x="${W - 2}" y="${H - 3}" text-anchor="end" font-size="9.5" fill="#9aa0ae">${fmtShort(last)}</text>`;
+
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}">${out}</svg>`;
+}
+
+/* =========================================================
+   Render
+   ========================================================= */
+const VIEWS = {
+  dashboard: viewDashboard,
+  roadmap: viewRoadmap,
+  log: viewLog,
+  stats: viewStats
+};
+
+function render() {
+  const rm = state.roadmap;
+  $('#brandSub').textContent = `${rm.language || 'Language'} · ${fmtShort(rm.start)} – ${fmtShort(rm.end)}`;
+  $$('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === ui.tab));
+  $('#main').innerHTML = VIEWS[ui.tab]();
+}
+
+function toast(msg) {
+  const el = $('#toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.classList.remove('show'), 1800);
+}
+
+/* =========================================================
+   Events
+   ========================================================= */
+document.addEventListener('click', e => {
+  const tabBtn = e.target.closest('[data-tab]');
+  if (tabBtn) {
+    ui.tab = tabBtn.dataset.tab;
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const action = el.dataset.action;
+
+  if (action === 'delete-log') {
+    state.logs = state.logs.filter(l => l.id !== el.dataset.id);
+    saveState(); render();
+    toast('Entry deleted');
+    return;
+  }
+
+  if (action === 'add-phase') {
+    const phases = [...state.roadmap.phases].sort((a, b) => a.start < b.start ? -1 : 1);
+    const last = phases[phases.length - 1];
+    const start = last ? shiftISO(last.end, 1) : state.roadmap.start;
+    state.roadmap.phases.push({
+      id: uid(), name: `Phase ${phases.length + 1}`, start, end: shiftISO(start, 60),
+      targets: { grammar: 20, vocab: 300, texts: 6 }
+    });
+    saveState(); render();
+    toast('Phase added');
+    return;
+  }
+
+  if (action === 'delete-phase') {
+    if (!confirm('Delete this phase?')) return;
+    state.roadmap.phases = state.roadmap.phases.filter(p => p.id !== el.dataset.id);
+    saveState(); render();
+    return;
+  }
+
+  if (action === 'stat-metric') {
+    ui.statMetric = el.dataset.metric;
+    render();
+    return;
+  }
+
+  if (action === 'clear-data') {
+    if (!confirm('Erase all roadmap data and logged activity?')) return;
+    state = emptyState();
+    saveState(); render();
+    toast('All data cleared');
+    return;
+  }
+});
+
+document.addEventListener('input', e => {
+  const el = e.target;
+  if (el.dataset.logfield) {
+    const k = el.dataset.logfield;
+    ui.log[k] = el.value;
+    if (k === 'category') render();
+    return;
+  }
+});
+
+document.addEventListener('change', e => {
+  const el = e.target;
+
+  if (el.dataset.rm) {
+    state.roadmap[el.dataset.rm] = el.value;
+    saveState(); render();
+    return;
+  }
+
+  if (el.dataset.phase) {
+    const p = state.roadmap.phases.find(x => x.id === el.dataset.phase);
+    if (!p) return;
+    const field = el.dataset.field;
+    if (p.targets && Object.prototype.hasOwnProperty.call(p.targets, field)) {
+      p.targets[field] = Math.max(0, Number(el.value) || 0);
+    } else {
+      p[field] = el.value;
+    }
+    saveState(); render();
+    return;
+  }
+});
+
+document.addEventListener('submit', e => {
+  if (e.target.id !== 'logForm') return;
+  e.preventDefault();
+
+  const f = ui.log;
+  const amount = Number(f.amount) || 0;
+
+  if (!f.date) { toast('Pick a date'); return; }
+  if (amount <= 0) { toast('Enter an amount'); return; }
+
+  state.logs.push({
+    id: uid(),
+    date: f.date,
+    category: f.category,
+    activity: (f.activity || '').trim() || CAT_META[f.category].label + ' practice',
+    amount,
+    note: (f.note || '').trim()
+  });
+
+  ui.log.amount = '';
+  ui.log.activity = '';
+  ui.log.note = '';
+
+  saveState();
+  render();
+  toast('Activity logged ✓');
+});
+
+/* =========================================================
+   Boot
+   ========================================================= */
+render();
+</script>
+</body>
+</html>
