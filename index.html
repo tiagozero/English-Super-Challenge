@@ -396,6 +396,7 @@
   .mat-sub{font-size:12.5px;color:var(--muted);margin-top:2px}
   .pill{font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase}
   .pill.active{background:var(--good-bg);color:var(--good-fg)}
+  .pill.not_scheduled{background:var(--neutral-bg);color:var(--neutral-fg)}
   .pill.scheduled{background:var(--warn-bg);color:var(--warn-fg)}
   .pill.completed{background:var(--info-bg);color:var(--info-fg)}
   .pill.archived{background:var(--neutral-bg);color:var(--neutral-fg)}
@@ -1248,8 +1249,8 @@ const TYPES = {
 const TYPE_ORDER = ['kindle', 'book', 'article', 'manga', 'other', 'youTube', 'anime', 'audiobook', 'podcast', 'tv', 'film'];
 const CATEGORY_ORDER = ['reading', 'listening'];
 const CATEGORY_LABEL = { reading: 'Reading', listening: 'Listening' };
-const STATUS_ORDER = ['active', 'scheduled', 'completed', 'archived'];
-const STATUS_LABEL = { active: 'Active', scheduled: 'Scheduled', completed: 'Completed', archived: 'Archived' };
+const STATUS_ORDER = ['active', 'scheduled', 'not_scheduled', 'completed', 'archived'];
+const STATUS_LABEL = { active: 'Active', not_scheduled: 'Not Scheduled', scheduled: 'Scheduled', completed: 'Completed', archived: 'Archived' };
 
 const STORAGE_KEY = 'english-super-challenge-v2-clean';
 const WELCOME_KEY = 'esc-welcome-shown';
@@ -3736,7 +3737,7 @@ function materialRowHTML(m){
   <div class="mat">
     ${icon}
     <div class="mat-main">
-      <div class="mat-title">${escapeHtml(m.title)}<span class="pill ${m.status}">${m.status}</span></div>
+      <div class="mat-title">${escapeHtml(m.title)}<span class="pill ${m.status}">${escapeHtml(STATUS_LABEL[m.status] || m.status)}</span></div>
       <div class="mat-sub">${escapeHtml(m.creator || '—')} · ${escapeHtml(typeLabel)}</div>
       ${materialProgressBarHTML(m)}
       ${materialDeadlineLineHTML(m)}
@@ -3766,8 +3767,9 @@ function materialCardHTML(m){
   const episodesRow = episodesTotal > 0
     ? `<span class="mat-card-episodes">${fmt(materialEpisodesLogged(m))} / ${fmt(episodesTotal)} episodes</span>` : '';
   const isScheduled = m.status === 'scheduled' && !isDone;
-  const statusKind = isDone ? 'good' : (isScheduled ? 'info' : (pct > 0 ? 'warn' : 'neutral'));
-  const statusText = isDone ? '✓ Complete' : (isScheduled ? '🗓 Scheduled' : (pct > 0 ? 'In progress' : 'Not started'));
+  const isNotScheduled = m.status === 'not_scheduled' && !isDone;
+  const statusKind = isDone ? 'good' : (isScheduled ? 'info' : (isNotScheduled ? 'neutral' : (pct > 0 ? 'warn' : 'neutral')));
+  const statusText = isDone ? '✓ Complete' : (isScheduled ? '🗓 Scheduled' : (isNotScheduled ? '— Not scheduled' : (pct > 0 ? 'In progress' : 'Not started')));
   const figure = hasTarget
     ? `${fmt(logged)} / ${fmt(total)} ${escapeHtml(unit)}`
     : materialTotalsText(materialTotals(m.id));
@@ -4752,6 +4754,7 @@ function openMaterialModal(material){
           <select id="matStatus">
             <option value="active" ${m.status === 'active' ? 'selected' : ''}>Active</option>
             <option value="scheduled" ${m.status === 'scheduled' ? 'selected' : ''}>Scheduled</option>
+            <option value="not_scheduled" ${m.status === 'not_scheduled' ? 'selected' : ''}>Not Scheduled</option>
             <option value="completed" ${m.status === 'completed' ? 'selected' : ''}>Completed</option>
             <option value="archived" ${m.status === 'archived' ? 'selected' : ''}>Archived</option>
           </select>
@@ -4962,6 +4965,7 @@ function normalizeMaterialStatus(raw){
   const s = String(raw || '').trim().toLowerCase();
   if (s === 'completed' || s === 'complete' || s === 'done' || s === 'finished') return 'completed';
   if (s === 'archived' || s === 'archive' || s === 'inactive') return 'archived';
+  if (s === 'not_scheduled' || s === 'not scheduled' || s === 'unscheduled' || s === 'no schedule' || s === 'noschedule') return 'not_scheduled';
   if (s === 'scheduled' || s === 'schedule' || s === 'upcoming' || s === 'planned') return 'scheduled';
   return 'active';
 }
