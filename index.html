@@ -883,6 +883,17 @@
   .modal-body{padding:18px 20px 22px}
   .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:6px;flex-wrap:wrap}
   .hint{font-size:12.5px;color:var(--muted);margin:-4px 0 12px}
+  .mh-table{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:6px}
+  .mh-row{
+    display:flex;align-items:center;gap:10px;
+    padding:8px 14px;font-size:13px;
+    border-bottom:1px solid var(--line);
+  }
+  .mh-row:last-child{border-bottom:none}
+  .mh-row:nth-child(even){background:var(--surface-2)}
+  .mh-min{flex:1;font-weight:600;color:var(--text)}
+  .mh-eq{color:var(--muted)}
+  .mh-hr{flex:1.3;text-align:right;color:var(--muted)}
   .welcome-lead{font-size:14px;line-height:1.6;color:var(--text);background:var(--surface-2);border-radius:12px;padding:14px 16px;margin-bottom:18px}
   .welcome-lead b{font-weight:650}
 
@@ -2112,6 +2123,32 @@ function infoRoadmap(){
     day-streaks of hitting target, your overall hit rate, and a week-by-week chart of your progress.</p>
   `);
 }
+function minutesToHoursLabel(min){
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  const hPart = `${h} hour${h === 1 ? '' : 's'}`;
+  if (m === 0) return hPart;
+  return `${hPart} and ${m} minute${m === 1 ? '' : 's'}`;
+}
+function infoMinutesHours(){
+  const steps = [];
+  for (let m = 60; m <= 600; m += 60) steps.push(m);
+  for (let m = 700; m <= 1000; m += 100) steps.push(m);
+  for (let m = 1200; m <= 2000; m += 200) steps.push(m);
+  for (let m = 2500; m <= 6000; m += 500) steps.push(m);
+
+  const rows = steps.map(m => `
+    <div class="mh-row">
+      <span class="mh-min">${fmt(m)} minutes</span>
+      <span class="mh-eq">=</span>
+      <span class="mh-hr">${minutesToHoursLabel(m)}</span>
+    </div>`).join('');
+
+  openInfoModal('Minutes → hours conversion', `
+    <p>Listening minutes shown around the roadmap converted into hours, as a quick reference.</p>
+    <div class="mh-table">${rows}</div>
+  `);
+}
 
 /* =========================================================
    Views — Dashboard
@@ -2616,6 +2653,7 @@ function viewRoadmap(){
       ${roadmapView === 'phases' ? deadlineModeToggleHTML() : ''}
       <button class="btn btn-ghost btn-sm" data-action="rm-edit-phases">✎ Edit phases</button>
       <button class="btn btn-ghost btn-sm" data-action="rm-add-milestone">＋ Milestone</button>
+      ${roadmapView === 'phases' ? `<button class="info-btn" data-action="info-minutes-hours" title="Minutes to hours conversion" aria-label="Minutes to hours conversion">⏱</button>` : ''}
       <button class="info-btn" data-action="info-roadmap" title="How the roadmap works" aria-label="How the roadmap works">i</button>
     </div>
   </div>`;
@@ -5391,6 +5429,7 @@ document.addEventListener('click', e => {
     /* Info */
     case 'info-materials': infoMaterials(); break;
     case 'info-roadmap': infoRoadmap(); break;
+    case 'info-minutes-hours': infoMinutesHours(); break;
 
     /* Theme */
     case 'open-theme': openThemeModal(); break;
