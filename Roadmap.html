@@ -620,6 +620,32 @@
   .sess-hero .sess-v{font-size:17px;font-weight:680;letter-spacing:-.015em;margin-top:2px}
   .sess-hero .sess-v small{font-size:12.5px;font-weight:550;color:var(--muted);letter-spacing:0}
 
+  /* ---- percentage input ---- */
+  .pct-wrap{position:relative;max-width:220px}
+  .pct-wrap input{
+    width:100%;border:1px solid var(--line);background:var(--surface);
+    border-radius:12px;padding:14px 44px 14px 16px;font-size:24px;font-weight:750;
+    text-align:center;font-family:inherit;color:var(--text);outline:none;
+    -moz-appearance:textfield;transition:border-color .15s, box-shadow .15s;
+  }
+  .pct-wrap input::-webkit-outer-spin-button,
+  .pct-wrap input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .pct-wrap input:focus{border-color:var(--focus-line);
+    box-shadow:0 0 0 3px color-mix(in srgb,var(--reading) 14%,transparent)}
+  .pct-wrap .pct-unit{position:absolute;right:15px;top:50%;transform:translateY(-50%);
+    font-size:17px;font-weight:750;color:var(--muted);pointer-events:none}
+  .pct-quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .pct-quick button{border:1px solid var(--line);background:var(--surface);
+    border-radius:999px;padding:5px 12px;font-size:12px;font-weight:650;
+    color:var(--muted);cursor:pointer;font-family:inherit;
+    transition:background .12s,color .12s,border-color .12s}
+  .pct-quick button:hover{background:var(--surface-2);color:var(--text);border-color:var(--hover-line)}
+
+  .dur-box{font-size:22px;font-weight:750;padding:14px 16px;background:var(--surface-2);
+    border:1px solid var(--line);border-radius:12px;text-align:center;
+    font-variant-numeric:tabular-nums}
+  .dur-box small{font-size:13px;font-weight:600;color:var(--muted);margin-left:4px}
+
   .fg-list{display:flex;flex-direction:column;gap:12px}
   .fg-item{display:flex;flex-direction:column;gap:13px;padding:14px;border:1px solid var(--line);
     border-radius:14px;background:var(--surface);
@@ -1169,10 +1195,11 @@ function clearOverride(mid, date){
 /* =========================================================
    Activity logging
    ---------------------------------------------------------
-   totalLogged() sums the material's activity entries for a
-   given day. Only entries whose unit matches the material's
-   plan unit are counted, so a minutes-based focus entry does
-   not pollute a percent-based reading target.
+   totalLogged() sums the material's entries for a day.
+   Reading logs come in percent (unit: 'percent'), listening
+   logs come in minutes (unit: 'minutes'). Legacy minute-based
+   focus entries for reading materials are ignored so they
+   cannot inflate a percentage target.
    ========================================================= */
 function totalLogged(mid, date){
   const m = materialById(mid);
@@ -1180,11 +1207,6 @@ function totalLogged(mid, date){
   return (shared.activities || [])
     .filter(a => a.material_id === mid && a.logged_on === date)
     .filter(a => {
-      // Focus-session entries are recorded in minutes.
-      // They only count toward the planned target for listening
-      // materials (whose plan is also in minutes). Reading targets
-      // are measured in percent, so a minute-based focus entry must
-      // not inflate them.
       if (a.origin === 'focus' && a.unit === 'minutes' && !isListening) return false;
       return true;
     })
@@ -1261,15 +1283,16 @@ function syncRoadmapActivity(mid, date){
 /* =========================================================
    Focus → shared activity bridge
    ---------------------------------------------------------
-   IMPORTANT: this logs the ACTUAL focus session minutes.
-   It never uses the scheduled amount, so the planned target
-   is preserved and the recorded activity reflects what was
-   really studied.
+   value & unit describe what actually happened during the
+   session:
+     • reading   → value = %,   unit = 'percent'
+     • listening → value = min, unit = 'minutes'
+   The planned target is never used here.
    ========================================================= */
-function recordFocusInShared(m, minutes, date){
+function recordFocusInShared(m, value, unit, date){
   if (!shared || !m) return;
-  const mins = Math.round((Number(minutes) || 0) * 10) / 10;
-  if (mins <= 0) return;
+  const amount = Math.round((Number(value) || 0) * 10) / 10;
+  if (amount <= 0) return;
   date = date || todayISO();
   const now = new Date().toISOString();
   shared.activities.push({
@@ -1279,18 +1302,23 @@ function recordFocusInShared(m, minutes, date){
     category: m.default_category || 'reading',
     input_type: m.default_input_type || 'other',
     material_id: m.id,
-    amount: mins,
-    unit: 'minutes',
+    amount: amount,
+    unit: unit || (m.default_category === 'listening' ? 'minutes' : 'percent'),
     note: 'Focus session',
     origin: 'focus',
     created_at: now,
     updated_at: now
   });
+  // Re-sync any roadmap entry so it doesn't double-count.
+  syncRoadmapActivity(m.id, date);
   saveShared();
 }
 
 /* =========================================================
    Day / week helpers
+   ---------------------------------------------------------
+   Partial progress: readDone/listenDone use the actual
+   logged amount (capped at the planned amount).
    ========================================================= */
 function dayTasks(iso){
   const out = [];
@@ -1305,13 +1333,13 @@ function dayTotals(iso){
   let readPlan = 0, listenPlan = 0, readDone = 0, listenDone = 0;
   tasks.forEach(t => {
     const m = t.material;
-    const done = isTaskDone(m.id, iso);
+    const logged = Math.min(totalLogged(m.id, iso), t.amount);
     if (m.default_category === 'listening'){
       listenPlan += t.amount;
-      if (done) listenDone += t.amount;
+      listenDone += logged;
     } else {
       readPlan += t.amount;
-      if (done) readDone += t.amount;
+      readDone += logged;
     }
   });
   const total = tasks.length;
@@ -1350,7 +1378,7 @@ function materialWeekProgress(weekStart){
       const amt = scheduledFor(m.id, d);
       if (amt <= 0) return;
       map[m.id].plan += amt;
-      if (isTaskDone(m.id, d)) map[m.id].done += amt;
+      map[m.id].done += Math.min(totalLogged(m.id, d), amt);
     });
   });
   return plannedMaterials()
@@ -1431,6 +1459,7 @@ let focusState = { groups: [], timer: null, log: [], pendingLog: null };
 let builder = { items: [], minutes: 50, breakMinutes: 10, editId: null };
 let focusTick = null;
 let audioCtx = null;
+let pendingLogInputValue = '';
 
 /* --- audio --- */
 function ensureAudio(){
@@ -1797,20 +1826,55 @@ function openFocusLogModal(){
   }
   const g = focusGroup(p.groupId);
   const sessionMin = g ? g.minutes : (p.minutes || 0);
+  const isReading = mat.default_category !== 'listening';
   const sch = scheduledFor(mat.id, p.date);
-  const isScheduled = sch > 0;
-  const unitLabel = materialUnit(mat);
   const typeLabel = (TYPES[mat.default_input_type] || { label: 'Other' }).label;
   const tint = materialTint(mat);
+
+  // Reset the stored input value whenever the modal opens
+  pendingLogInputValue = '';
+
+  // ----- body: percentage input for reading, duration box for listening -----
+  const bodyHTML = isReading
+    ? `
+      <div class="field">
+        <label for="logPct">How much did you read?</label>
+        <div class="pct-wrap">
+          <input type="number" id="logPct" inputmode="decimal"
+                 value="" min="0" max="100" step="1"
+                 placeholder="0"
+                 autocomplete="off"
+                 data-focus-key="log-pct">
+          <span class="pct-unit">%</span>
+        </div>
+        <div class="pct-quick" role="group" aria-label="Quick percentages">
+          <button type="button" data-pct-set="1">1%</button>
+          <button type="button" data-pct-set="2">2%</button>
+          <button type="button" data-pct-set="5">5%</button>
+          <button type="button" data-pct-set="10">10%</button>
+        </div>
+        <span class="hint" style="margin:8px 0 0">
+          Enter the percentage of <b>${esc(mat.title)}</b> you completed during this session.
+          ${sch > 0 ? `Today's scheduled target is <b>${fmtAmount(sch)}%</b>.` : ''}
+        </span>
+      </div>`
+    : `
+      <div class="field">
+        <label>Duration logged</label>
+        <div class="dur-box">${sessionMin}<small>min</small></div>
+        <span class="hint" style="margin:8px 0 0">
+          The full <b>${sessionMin} min</b> session time is added to the shared activity log.
+        </span>
+      </div>`;
 
   openModal(`
     <div class="modal-backdrop" data-action="focus-log-skip"></div>
     <div class="modal" role="dialog" aria-modal="true" style="max-width:440px">
       <div class="modal-head">
         <h2>Log activity</h2>
-        <button class="icon-btn" data-action="focus-log-skip" aria-label="Skip logging">✕</button>
+        <button class="icon-btn" data-action="focus-log-skip" aria-label="Skip logging" type="button">✕</button>
       </div>
-      <div class="modal-body">
+      <form class="modal-body" id="focusLogForm" autocomplete="off" novalidate>
 
         <div class="sess-hero">
           <span class="sess-emoji">🎉</span>
@@ -1834,59 +1898,117 @@ function openFocusLogModal(){
           </div>
         </div>
 
-        <div class="field">
-          <label>What will be logged</label>
-          <div class="info-row" style="margin:0">
-            <span class="info-dot" style="background:${tint};
-              box-shadow:0 0 0 3px color-mix(in srgb,${tint} 22%,transparent)"></span>
-            <span>
-              <b>${sessionMin} min</b> of focus will be added to the shared activity log.
-              ${isScheduled
-                ? `Today's planned target (${fmtAmount(sch)}${unitLabel}) stays unchanged —
-                   it's used for progress, not for recording completed time.`
-                : `This material isn't scheduled for today.`}
-            </span>
-          </div>
+        ${bodyHTML}
+
+        <div class="info-row" style="margin-top:14px">
+          <span class="info-dot" style="background:${tint};
+            box-shadow:0 0 0 3px color-mix(in srgb,${tint} 22%,transparent)"></span>
+          <span>${isReading
+            ? `The percentage you enter is added to the shared activity log.
+               Today's planned target${sch > 0 ? ` (<b>${fmtAmount(sch)}%</b>)` : ''} stays unchanged —
+               it's used for progress, not for recording completed work.`
+            : `The <b>${sessionMin} min</b> session time is added to the shared activity log.`}</span>
         </div>
 
         <div class="modal-actions" style="margin-top:18px">
           <button type="button" class="btn btn-ghost" data-action="focus-log-skip">
             Skip
           </button>
-          <button type="button" class="btn btn-primary" data-action="focus-log-save">
-            Log ${sessionMin} min
+          <button type="submit" class="btn btn-primary" id="focusLogSubmit">
+            ${isReading ? 'Log percentage' : `Log ${sessionMin} min`}
           </button>
         </div>
-      </div>
+      </form>
     </div>
   `);
+
+  // Wire up quick-pick buttons
+  $$('[data-pct-set]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const v = btn.getAttribute('data-pct-set');
+      const inp = document.getElementById('logPct');
+      if (inp){ inp.value = v; inp.focus(); inp.select(); }
+      pendingLogInputValue = v;
+    });
+  });
+
+  // Focus the input for reading
+  if (isReading){
+    setTimeout(() => {
+      const el = document.getElementById('logPct');
+      if (el){ el.focus(); el.select(); }
+    }, 60);
+  }
+
+  // Form submit
+  const form = document.getElementById('focusLogForm');
+  if (form){
+    form.addEventListener('submit', ev => {
+      ev.preventDefault();
+      confirmFocusLog();
+    });
+  }
+
+  // Live-update the submit button label as the user types
+  const pctInput = document.getElementById('logPct');
+  if (pctInput){
+    pctInput.addEventListener('input', () => {
+      pendingLogInputValue = pctInput.value;
+      const btn = document.getElementById('focusLogSubmit');
+      if (!btn) return;
+      const v = Math.round((Number(pctInput.value) || 0) * 10) / 10;
+      btn.textContent = v > 0 ? `Log ${fmtAmount(v)}%` : 'Log percentage';
+    });
+  }
 }
 
 function confirmFocusLog(){
   const p = focusState.pendingLog;
   if (!p) return;
   const mat = materialById(p.mid);
-  const g = focusGroup(p.groupId);
+  if (!mat){ skipFocusLog(); return; }
 
-  focusState.pendingLog = null;
+  const isReading = mat.default_category !== 'listening';
+  let value = 0;
+  let unit = 'minutes';
 
-  if (mat){
-    // Internal focus log (used by the Focus tab stats)
-    focusState.log.push({
-      id: uid('fl'),
-      groupId: p.groupId,
-      mid: p.mid,
-      mids: g ? g.mids.slice() : [],
-      minutes: p.minutes,
-      date: p.date,
-      ended_at: new Date().toISOString()
-    });
-    if (focusState.log.length > 500) focusState.log = focusState.log.slice(-500);
-
-    // Write the ACTUAL minutes into the shared activity log.
-    recordFocusInShared(mat, p.minutes, p.date);
+  if (isReading){
+    const input = document.getElementById('logPct');
+    value = input ? Math.max(0, Math.min(100, Number(input.value) || 0)) : 0;
+    unit = 'percent';
+    if (value <= 0){
+      if (input){
+        input.focus();
+        input.select();
+      }
+      return;
+    }
+  } else {
+    value = p.minutes || 0;
+    unit = 'minutes';
   }
 
+  const g = focusGroup(p.groupId);
+
+  // Internal focus log
+  focusState.log.push({
+    id: uid('fl'),
+    groupId: p.groupId,
+    mid: p.mid,
+    mids: g ? g.mids.slice() : [],
+    minutes: p.minutes,
+    value: value,
+    unit: unit,
+    date: p.date,
+    ended_at: new Date().toISOString()
+  });
+  if (focusState.log.length > 500) focusState.log = focusState.log.slice(-500);
+
+  // Shared activity log — actual completed value only
+  recordFocusInShared(mat, value, unit, p.date);
+
+  focusState.pendingLog = null;
+  pendingLogInputValue = '';
   saveFocusState();
   closeModal();
   advancePhase({ chime: false });
@@ -1895,6 +2017,7 @@ function confirmFocusLog(){
 function skipFocusLog(){
   if (!focusState.pendingLog){ closeModal(); return; }
   focusState.pendingLog = null;
+  pendingLogInputValue = '';
   saveFocusState();
   closeModal();
   advancePhase({ chime: false });
@@ -2358,9 +2481,10 @@ function builderCardHTML(){
 
     <div class="info-row">
       <span class="info-dot"></span>
-      <span>When a session ends, a popup appears asking you to <b>log it</b>.
-        The <b>actual session time</b> is written into the shared activity log —
-        the planned target is never used as the completed amount.</span>
+      <span>When a session ends, a popup appears asking you to log it:
+        <b>reading materials log a percentage</b> you enter,
+        <b>listening materials log the session time</b>.
+        The planned target is never used as the completed amount.</span>
     </div>
 
     ${builder.items.length ? `
@@ -2390,8 +2514,8 @@ function viewFocus(){
   <p class="footnote">
     Build a group from <b>today's plan</b> — pick materials, then give each one its own
     number of sessions (e.g. <b>2 × Material A + 1 × Material B = 3 × 50 min</b>).<br>
-    When a session ends, a <b>“Log activity” popup</b> appears and records the
-    <b>actual session time</b> — the planned target stays untouched and is only used for progress.<br>
+    When a session ends, the <b>“Log activity” popup</b> opens:
+    <b>reading</b> asks for the percentage you completed, <b>listening</b> logs the session minutes.<br>
     Groups are stored separately from the main challenge data, so nothing here can
     overwrite your materials or plan.
   </p>`;
@@ -3113,7 +3237,6 @@ document.addEventListener('click', e => {
   const actionEl = e.target.closest('[data-action]');
   if (actionEl){
     const action = actionEl.dataset.action;
-    if (action === 'focus-log-save'){ confirmFocusLog(); return; }
     if (action === 'focus-log-skip'){ skipFocusLog(); return; }
     if (action === 'close-modal'){ closeModal(); return; }
     if (action === 'quick-add-material'){ openAddMaterialModal(); return; }
@@ -3391,6 +3514,9 @@ document.addEventListener('keydown', e => {
   if (e.key !== 'Enter' && e.key !== ' ') return;
   const target = e.target;
   if (!target || !target.closest) return;
+
+  // Don't interfere with inputs inside a modal
+  if (target.tagName === 'INPUT' && target.closest('#modalRoot')) return;
 
   const taskEl = target.closest('[data-toggle-task]');
   if (taskEl && target === taskEl){
