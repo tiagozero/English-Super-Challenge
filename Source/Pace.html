@@ -29,6 +29,13 @@
     --cat-pink-tint: rgba(177,79,114,0.15);
     --cat-gray: #6B7268;
     --cat-gray-tint: rgba(107,114,104,0.15);
+    /* difficulty (red) scale — 1 easy, 2 medium, 3 hard */
+    --diff-1: #D98A80;
+    --diff-1-tint: rgba(217,138,128,0.22);
+    --diff-2: #C9524B;
+    --diff-2-tint: rgba(201,82,75,0.28);
+    --diff-3: #A62B22;
+    --diff-3-tint: rgba(166,43,34,0.36);
     --radius: 3px;
     --font-display: "Iowan Old Style","Palatino Linotype","Book Antiqua", Georgia, serif;
     --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
@@ -60,6 +67,12 @@
     --cat-pink-tint:rgba(227,149,176,0.2);
     --cat-gray:#9AA39A;
     --cat-gray-tint:rgba(154,163,154,0.2);
+    --diff-1:#E8A79C;
+    --diff-1-tint:rgba(232,167,156,0.24);
+    --diff-2:#EE7A6E;
+    --diff-2-tint:rgba(238,122,110,0.30);
+    --diff-3:#FF6247;
+    --diff-3-tint:rgba(255,98,71,0.38);
     --shadow: rgba(0,0,0,0.55);
   }
 
@@ -94,6 +107,7 @@
   button:focus-visible,
   textarea:focus-visible,
   input:focus-visible,
+  select:focus-visible,
   a:focus-visible,
   [tabindex]:focus-visible{
     outline:2px solid var(--accent);
@@ -314,17 +328,22 @@
   mark.word-pair-highlight{
     background:var(--cat-gray-tint);
     color:inherit;
-    border-bottom:2px solid var(--cat-gray);
     border-radius:2px;
-    padding:0 1px;
+    padding:1px 2px;
     cursor:pointer;
   }
-  mark.word-pair-highlight[data-category="verb"]{ background:var(--warm-tint); border-bottom-color:var(--warm); }
-  mark.word-pair-highlight[data-category="phrasal"]{ background:var(--cat-teal-tint); border-bottom-color:var(--cat-teal); }
-  mark.word-pair-highlight[data-category="preposition"]{ background:var(--cat-blue-tint); border-bottom-color:var(--cat-blue); }
-  mark.word-pair-highlight[data-category="idiom"]{ background:var(--cat-purple-tint); border-bottom-color:var(--cat-purple); }
-  mark.word-pair-highlight[data-category="collocation"]{ background:var(--cat-pink-tint); border-bottom-color:var(--cat-pink); }
-  mark.word-pair-highlight[data-category="other"]{ background:var(--cat-gray-tint); border-bottom-color:var(--cat-gray); }
+  mark.word-pair-highlight[data-category="verb"]{ background:var(--warm-tint); }
+  mark.word-pair-highlight[data-category="phrasal"]{ background:var(--cat-teal-tint); }
+  mark.word-pair-highlight[data-category="preposition"]{ background:var(--cat-blue-tint); }
+  mark.word-pair-highlight[data-category="idiom"]{ background:var(--cat-purple-tint); }
+  mark.word-pair-highlight[data-category="collocation"]{ background:var(--cat-pink-tint); }
+  mark.word-pair-highlight[data-category="other"]{ background:var(--cat-gray-tint); }
+
+  /* Difficulty rating wins over category colouring — always red */
+  mark.word-pair-highlight[data-difficulty="1"]{ background:var(--diff-1-tint); }
+  mark.word-pair-highlight[data-difficulty="2"]{ background:var(--diff-2-tint); }
+  mark.word-pair-highlight[data-difficulty="3"]{ background:var(--diff-3-tint); }
+
   mark.word-pair-highlight:hover{ filter:brightness(0.94); }
   body[data-theme="dark"] mark.word-pair-highlight:hover{ filter:brightness(1.25); }
 
@@ -338,7 +357,7 @@
     padding:6px;
     box-shadow:0 6px 20px var(--shadow);
     z-index:50;
-    white-space:nowrap;
+    max-width:min(94vw, 620px);
   }
   .highlight-float-panel::after{
     content:"";
@@ -347,6 +366,23 @@
     transform:translateX(-50%);
     border:5px solid transparent;
     border-top-color:var(--ink);
+  }
+  .hf-row{
+    display:flex;
+    align-items:center;
+    gap:2px;
+    flex-wrap:wrap;
+  }
+  .hf-row + .hf-row{margin-top:3px;}
+  .hf-label{
+    color:var(--paper);
+    opacity:0.62;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    font-weight:700;
+    padding:0 8px 0 5px;
+    white-space:nowrap;
   }
   .cat-btn{
     display:inline-flex;
@@ -360,6 +396,7 @@
     font-size:12px;
     font-weight:600;
     letter-spacing:0.01em;
+    white-space:nowrap;
   }
   .cat-btn:hover{ background:rgba(255,255,255,0.14); }
   .cat-dot{
@@ -374,6 +411,9 @@
   .cat-dot[data-category="idiom"]{ background:var(--cat-purple); }
   .cat-dot[data-category="collocation"]{ background:var(--cat-pink); }
   .cat-dot[data-category="other"]{ background:var(--cat-gray); }
+  .cat-dot[data-difficulty="1"]{ background:var(--diff-1); }
+  .cat-dot[data-difficulty="2"]{ background:var(--diff-2); }
+  .cat-dot[data-difficulty="3"]{ background:var(--diff-3); }
 
   /* ---------- Category filter toggles (settings) ---------- */
   .cat-filter-row{
@@ -403,7 +443,17 @@
   .cat-filter-chip.active[data-category="idiom"]{ background:var(--cat-purple-tint); }
   .cat-filter-chip.active[data-category="collocation"]{ background:var(--cat-pink-tint); }
   .cat-filter-chip.active[data-category="other"]{ background:var(--cat-gray-tint); }
+  .cat-filter-chip.active[data-difficulty="1"]{ background:var(--diff-1-tint); }
+  .cat-filter-chip.active[data-difficulty="2"]{ background:var(--diff-2-tint); }
+  .cat-filter-chip.active[data-difficulty="3"]{ background:var(--diff-3-tint); }
   .cat-filter-chip:not(.active){ opacity:0.55; }
+
+  .settings-hint{
+    font-size:11px;
+    line-height:1.45;
+    color:var(--ink-faint);
+    margin:0 0 9px 0;
+  }
 
   /* ---------- Highlighted phrases list (settings) ---------- */
   .phrase-list{
@@ -432,20 +482,13 @@
   .phrase-chip{
     display:flex;
     align-items:center;
-    gap:7px;
+    gap:6px;
     border-radius:var(--radius);
     padding:5px 6px 5px 8px;
     font-size:12.5px;
     color:var(--ink);
-    border-left:3px solid var(--cat-gray);
     background:var(--paper);
   }
-  .phrase-chip[data-category="verb"]{ border-left-color:var(--warm); }
-  .phrase-chip[data-category="phrasal"]{ border-left-color:var(--cat-teal); }
-  .phrase-chip[data-category="preposition"]{ border-left-color:var(--cat-blue); }
-  .phrase-chip[data-category="idiom"]{ border-left-color:var(--cat-purple); }
-  .phrase-chip[data-category="collocation"]{ border-left-color:var(--cat-pink); }
-  .phrase-chip[data-category="other"]{ border-left-color:var(--cat-gray); }
   .phrase-chip-text{
     flex:1 1 auto;
     min-width:0;
@@ -463,6 +506,9 @@
     border-radius:3px;
     padding:2px 3px;
     max-width:74px;
+  }
+  .phrase-chip-diff-select{
+    max-width:56px;
   }
   .phrase-chip-remove{
     background:none;
@@ -751,7 +797,9 @@
     position:absolute;
     top:56px;
     right:20px;
-    width:270px;
+    width:280px;
+    max-height:calc(100vh - 90px);
+    overflow-y:auto;
     background:var(--paper);
     border:1px solid var(--line);
     border-radius:var(--radius);
@@ -797,13 +845,14 @@
     display:flex;
     align-items:center;
     justify-content:space-between;
+    gap:8px;
     font-size:13px;
   }
-  .settings-row input[type="range"]{width:120px;}
+  .settings-row input[type="range"]{width:110px;}
   .settings-row .range-value{
     font-size:11px;
     color:var(--ink-faint);
-    min-width:34px;
+    min-width:38px;
     text-align:right;
     font-variant-numeric:tabular-nums;
   }
@@ -1172,6 +1221,15 @@
         </div>
       </div>
       <div class="settings-group">
+        <span>Paragraph split</span>
+        <div class="settings-row">
+          <span>Words per paragraph</span>
+          <input type="range" id="paragraphSplitRange" min="0" max="300" step="10" value="0" aria-label="Words per paragraph">
+          <span class="range-value" id="paragraphSplitValue">Off</span>
+        </div>
+        <p class="settings-hint">Slide right to group text into blocks of that many words. Splits only happen after a period, exclamation mark, or semicolon. Slide to 0 to keep the original paragraphing.</p>
+      </div>
+      <div class="settings-group">
         <span>Boundary style</span>
         <div class="seg" id="boundarySeg">
           <button data-value="visible">Visible</button>
@@ -1209,7 +1267,9 @@
       </div>
       <div class="settings-group">
         <span>Highlighted phrases</span>
+        <p class="settings-hint">Select words in the text to tag a grammar category. Select two or more words and rate them by difficulty — those show up red.</p>
         <div class="cat-filter-row" id="catFilterRow"></div>
+        <div class="cat-filter-row" id="diffFilterRow"></div>
         <div class="phrase-list" id="phraseList"></div>
       </div>
       <div class="settings-group">
@@ -1275,7 +1335,42 @@
     return /[,;:]$/.test(w) || /[—–]$/.test(w) || w === "-" || w === "--";
   }
 
-  function splitParagraphs(text){
+  /* ------------------------------------------------------------
+     Paragraph splitting
+     - wordsPerParagraph === 0  -> keep the author's paragraphs
+     - wordsPerParagraph  >  0  -> re-flow into blocks of N words,
+       but ONLY split after (.), (!), or (;)
+  ------------------------------------------------------------ */
+  function splitParagraphs(text, wordsPerParagraph){
+    if (wordsPerParagraph && wordsPerParagraph > 0){
+      // Split into segments ending with . ! ;
+      var segments = text.match(/[^.!;]+[.!;]?/g);
+      if (!segments) segments = [text];
+      segments = segments.map(function(s){ return s.trim(); }).filter(Boolean);
+      if (!segments.length) return [text.trim()];
+
+      var out = [];
+      var currentParaWords = [];
+      var currentWordCount = 0;
+
+      segments.forEach(function(seg){
+        var segWords = seg.split(/\s+/).filter(Boolean);
+        var segWordCount = segWords.length;
+
+        if (currentWordCount > 0 && (currentWordCount + segWordCount > wordsPerParagraph)) {
+          // finish current paragraph
+          out.push(currentParaWords.join(" "));
+          currentParaWords = segWords;
+          currentWordCount = segWordCount;
+        } else {
+          currentParaWords = currentParaWords.concat(segWords);
+          currentWordCount += segWordCount;
+        }
+      });
+      if (currentParaWords.length) out.push(currentParaWords.join(" "));
+      return out;
+    }
+
     var paras = text.split(/\n\s*\n/).map(function(p){return p.trim();}).filter(Boolean);
     if (paras.length <= 1){
       var alt = text.split(/\n+/).map(function(p){return p.trim();}).filter(Boolean);
@@ -1329,10 +1424,10 @@
   }
 
   // Returns array of paragraphs -> array of chunk strings
-  function buildModel(text, chunkSize){
+  function buildModel(text, chunkSize, wordsPerParagraph){
     var minWordsMap = {small:2, natural:4, sentence:Infinity};
     var minWords = minWordsMap[chunkSize] !== undefined ? minWordsMap[chunkSize] : 4;
-    var paragraphs = splitParagraphs(text);
+    var paragraphs = splitParagraphs(text, wordsPerParagraph);
     var model = [];
     paragraphs.forEach(function(para){
       var sentences = splitSentences(para);
@@ -1353,7 +1448,7 @@
   }
 
   function countWords(str){
-    var t = str.trim();
+    var t = String(str || "").trim();
     if (!t) return 0;
     return t.split(/\s+/).filter(Boolean).length;
   }
@@ -1373,6 +1468,7 @@
     lastResumeTs: null,
     settings: {
       chunkSize: "natural",
+      paragraphSplit: 0,     // 0 = keep original paragraphs, else words per paragraph
       boundary: "subtle",
       fontSize: 21,
       font: "original",
@@ -1386,8 +1482,9 @@
     libraryId: null,
     libraryTitle: "",
     librarySavedAt: 0,
-    highlightPhrases: [],   // array of {text, category}, persisted & applied globally
-    categoryFilter: {},     // categoryId -> boolean (visible). Populated from CATEGORIES at init.
+    highlightPhrases: [],   // array of {text, category, difficulty}, persisted & applied globally
+    categoryFilter: {},     // categoryId -> boolean (visible)
+    difficultyFilter: {},   // difficultyLevel -> boolean (visible)
     connectedSpeechPhrases: [] // array of {text, speech}, persisted & applied globally
   };
 
@@ -1429,6 +1526,23 @@
     return found ? found.label : "Other";
   }
 
+  /* Difficulty levels — always rendered red, deepest red = hardest. */
+  var DIFFICULTIES = [
+    { id: 1, label: "Easy",   short: "Easy" },
+    { id: 2, label: "Medium", short: "Med" },
+    { id: 3, label: "Hard",   short: "Hard" }
+  ];
+  var DIFFICULTY_IDS = DIFFICULTIES.map(function(d){ return d.id; });
+  var DIFFICULTY_MIN_WORDS = 2; // "after I select more than one word"
+
+  function difficultyLabel(id){
+    var found = DIFFICULTIES.filter(function(d){ return d.id === id; })[0];
+    return found ? found.label : "";
+  }
+  function isValidDifficulty(v){
+    return DIFFICULTY_IDS.indexOf(Number(v)) !== -1;
+  }
+
   var prefersReducedMotionMQ = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
 
   function reducedMotionActive(){
@@ -1446,6 +1560,10 @@
         Object.assign(state.settings, parsed);
       }
     } catch(e){ /* ignore */ }
+    var ps = parseInt(state.settings.paragraphSplit, 10);
+    if (!isFinite(ps) || ps < 0) ps = 0;
+    if (ps > 300) ps = 300;
+    state.settings.paragraphSplit = ps;
   }
   function saveSettings(){
     try { localStorage.setItem("pace-settings", JSON.stringify(state.settings)); } catch(e){}
@@ -1463,10 +1581,11 @@
         var parsed = JSON.parse(raw);
         if (Array.isArray(parsed)){
           state.highlightPhrases = parsed.map(function(p){
-            if (typeof p === "string") return { text: p, category: DEFAULT_CATEGORY };
+            if (typeof p === "string") return { text: p, category: DEFAULT_CATEGORY, difficulty: 0 };
             if (p && typeof p.text === "string"){
               var cat = CATEGORY_IDS.indexOf(p.category) !== -1 ? p.category : DEFAULT_CATEGORY;
-              return { text: p.text, category: cat };
+              var diff = isValidDifficulty(p.difficulty) ? Number(p.difficulty) : 0;
+              return { text: p.text, category: cat, difficulty: diff };
             }
             return null;
           }).filter(function(p){ return p && p.text.trim(); });
@@ -1510,6 +1629,21 @@
   }
   function saveCategoryFilter(){
     try { localStorage.setItem("pace-category-filter", JSON.stringify(state.categoryFilter)); } catch(e){}
+  }
+  function loadDifficultyFilter(){
+    DIFFICULTY_IDS.forEach(function(id){ state.difficultyFilter[id] = true; });
+    try {
+      var raw = localStorage.getItem("pace-difficulty-filter");
+      if (raw){
+        var parsed = JSON.parse(raw);
+        DIFFICULTY_IDS.forEach(function(id){
+          if (typeof parsed[id] === "boolean") state.difficultyFilter[id] = parsed[id];
+        });
+      }
+    } catch(e){ /* ignore */ }
+  }
+  function saveDifficultyFilter(){
+    try { localStorage.setItem("pace-difficulty-filter", JSON.stringify(state.difficultyFilter)); } catch(e){}
   }
 
   /* ============================================================
@@ -1634,9 +1768,12 @@
   var fontSelect = document.getElementById("fontSelect");
   var lineHeightRange = document.getElementById("lineHeightRange");
   var textWidthRange = document.getElementById("textWidthRange");
+  var paragraphSplitRange = document.getElementById("paragraphSplitRange");
+  var paragraphSplitValue = document.getElementById("paragraphSplitValue");
   var reducedMotionSwitch = document.getElementById("reducedMotionSwitch");
   var phraseListEl = document.getElementById("phraseList");
   var catFilterRowEl = document.getElementById("catFilterRow");
+  var diffFilterRowEl = document.getElementById("diffFilterRow");
   var highlightSelectionPanel = document.getElementById("highlightSelectionPanel");
   var csHoverSwitch = document.getElementById("csHoverSwitch");
   var csReplaceSwitch = document.getElementById("csReplaceSwitch");
@@ -1912,12 +2049,14 @@
 
   /* ============================================================
      Word-pair / phrase highlighting
-     Highlights are stored as {text, category} pairs and matched
-     (case-insensitively, whitespace-normalised) against whatever
-     text is currently rendered, so a saved phrase like "have arrived"
-     lights up wherever it occurs, in any text, in any session —
-     colour-coded by grammar category (verb tense, phrasal verb,
-     preposition, idiom, collocation, other).
+     Highlights are stored as {text, category, difficulty} and matched
+     (case-insensitively, whitespace-normalised) against whatever text
+     is currently rendered, so a saved phrase lights up wherever it
+     occurs, in any text, in any session.
+
+     - category  -> colour-coded by grammar category
+     - difficulty (1 easy / 2 medium / 3 hard) -> always red, deeper
+       red meaning harder. Difficulty wins over the category colour.
   ============================================================ */
   function normalizePhrase(str){
     return String(str || "").replace(/\s+/g, " ").trim();
@@ -1933,11 +2072,12 @@
     })[0] || null;
   }
 
-  // Builds one alternation regex over every phrase whose category is
-  // currently visible, longest phrases first so overlapping saved
-  // phrases don't shadow each other oddly.
+  // Builds one alternation regex over every phrase that should be shown:
+  // difficulty-rated phrases are governed by the difficulty filter,
+  // plain phrases by the category filter.
   function buildHighlightRegex(){
     var visible = state.highlightPhrases.filter(function(p){
+      if (p.difficulty) return state.difficultyFilter[p.difficulty] !== false;
       return state.categoryFilter[p.category] !== false;
     });
     if (!visible.length) return null;
@@ -1967,11 +2107,18 @@
     var normalizedLower = normalizePhrase(phraseText).toLowerCase();
     var entry = findPhraseEntry(normalizedLower);
     var category = entry ? entry.category : DEFAULT_CATEGORY;
+    var difficulty = entry && entry.difficulty ? entry.difficulty : 0;
+
     var mark = document.createElement("mark");
     mark.className = "word-pair-highlight";
-    mark.title = categoryLabel(category) + " — click to remove this highlight";
     mark.setAttribute("data-phrase", normalizedLower);
     mark.setAttribute("data-category", category);
+    if (difficulty) mark.setAttribute("data-difficulty", String(difficulty));
+
+    mark.title = difficulty
+      ? ("Difficulty: " + difficultyLabel(difficulty) + " — click to remove this highlight")
+      : (categoryLabel(category) + " — click to remove this highlight");
+
     afterNode.parentNode.insertBefore(mark, afterNode);
     mark.appendChild(afterNode);
   }
@@ -2027,37 +2174,60 @@
     paragraphs.forEach(function(p){ highlightMatchesInElement(p, regex); });
   }
 
-  function addHighlightPhrase(rawText, category){
-    var normalized = normalizePhrase(rawText);
-    if (!normalized || normalized.length > 200) return;
-    var cat = CATEGORY_IDS.indexOf(category) !== -1 ? category : DEFAULT_CATEGORY;
-    var existing = findPhraseEntry(normalized.toLowerCase());
-    if (existing){
-      existing.category = cat;
-    } else {
-      state.highlightPhrases.push({ text: normalized, category: cat });
-    }
+  function afterHighlightChange(){
     saveHighlightPhrases();
     renderPhraseList();
     applyPhraseHighlights();
+  }
+
+  // Finds an existing entry or creates a new one (category "Other", no difficulty yet).
+  function upsertHighlightPhrase(rawText){
+    var normalized = normalizePhrase(rawText);
+    if (!normalized || normalized.length > 200) return null;
+    var existing = findPhraseEntry(normalized.toLowerCase());
+    if (!existing){
+      existing = { text: normalized, category: DEFAULT_CATEGORY, difficulty: 0 };
+      state.highlightPhrases.push(existing);
+    }
+    return existing;
+  }
+
+  function addHighlightPhrase(rawText, category){
+    var entry = upsertHighlightPhrase(rawText);
+    if (!entry) return;
+    entry.category = CATEGORY_IDS.indexOf(category) !== -1 ? category : DEFAULT_CATEGORY;
+    afterHighlightChange();
+  }
+
+  function addDifficultyHighlight(rawText, level){
+    var lvl = Number(level);
+    if (!isValidDifficulty(lvl)) return;
+    var entry = upsertHighlightPhrase(rawText);
+    if (!entry) return;
+    entry.difficulty = lvl;
+    afterHighlightChange();
   }
 
   function removeHighlightPhrase(phraseLower){
     state.highlightPhrases = state.highlightPhrases.filter(function(p){
       return p.text.toLowerCase() !== phraseLower;
     });
-    saveHighlightPhrases();
-    renderPhraseList();
-    applyPhraseHighlights();
+    afterHighlightChange();
   }
 
   function setPhraseCategory(phraseLower, category){
     var entry = findPhraseEntry(phraseLower);
     if (!entry) return;
     entry.category = CATEGORY_IDS.indexOf(category) !== -1 ? category : DEFAULT_CATEGORY;
-    saveHighlightPhrases();
-    renderPhraseList();
-    applyPhraseHighlights();
+    afterHighlightChange();
+  }
+
+  function setPhraseDifficulty(phraseLower, level){
+    var entry = findPhraseEntry(phraseLower);
+    if (!entry) return;
+    var lvl = Number(level);
+    entry.difficulty = isValidDifficulty(lvl) ? lvl : 0;
+    afterHighlightChange();
   }
 
   /* ============================================================
@@ -2199,7 +2369,7 @@
     if (!state.connectedSpeechPhrases.length){
       var empty = document.createElement("div");
       empty.className = "cs-list-empty";
-      empty.textContent = "None yet — select a word or phrase in the text and choose \u201cConnected speech\u201d to write out how it sounds when spoken.";
+      empty.textContent = "None yet — select a word or phrase in the text and choose “Connected speech” to write out how it sounds when spoken.";
       csListEl.appendChild(empty);
       return;
     }
@@ -2262,12 +2432,40 @@
     });
   }
 
+  function renderDifficultyFilterRow(){
+    if (!diffFilterRowEl) return;
+    diffFilterRowEl.innerHTML = "";
+    DIFFICULTIES.forEach(function(diff){
+      var on = state.difficultyFilter[diff.id] !== false;
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "cat-filter-chip" + (on ? " active" : "");
+      btn.setAttribute("data-difficulty", String(diff.id));
+      btn.setAttribute("aria-pressed", String(on));
+      btn.title = "Show difficulty " + diff.id + " (" + diff.label + ") highlights";
+
+      var dot = document.createElement("span");
+      dot.className = "cat-dot";
+      dot.setAttribute("data-difficulty", String(diff.id));
+
+      btn.appendChild(dot);
+      btn.appendChild(document.createTextNode(diff.id + " · " + diff.label));
+      btn.addEventListener("click", function(){
+        state.difficultyFilter[diff.id] = !(state.difficultyFilter[diff.id] !== false);
+        saveDifficultyFilter();
+        renderDifficultyFilterRow();
+        applyPhraseHighlights();
+      });
+      diffFilterRowEl.appendChild(btn);
+    });
+  }
+
   function renderPhraseList(){
     phraseListEl.innerHTML = "";
     if (!state.highlightPhrases.length){
       var empty = document.createElement("div");
       empty.className = "phrase-list-empty";
-      empty.textContent = "None yet — select a few words in the text and choose a category to highlight them everywhere.";
+      empty.textContent = "None yet — select words in the text, then tag a category or rate the term by difficulty.";
       phraseListEl.appendChild(empty);
       return;
     }
@@ -2292,10 +2490,14 @@
         var chip = document.createElement("div");
         chip.className = "phrase-chip";
         chip.setAttribute("data-category", entry.category);
+        if (entry.difficulty) chip.setAttribute("data-difficulty", String(entry.difficulty));
 
         var text = document.createElement("span");
         text.className = "phrase-chip-text";
         text.textContent = entry.text;
+        text.title = entry.difficulty
+          ? (entry.text + " — difficulty: " + difficultyLabel(entry.difficulty))
+          : entry.text;
 
         var select = document.createElement("select");
         select.className = "phrase-chip-cat-select";
@@ -2311,6 +2513,25 @@
           setPhraseCategory(entry.text.toLowerCase(), select.value);
         });
 
+        var diffSelect = document.createElement("select");
+        diffSelect.className = "phrase-chip-cat-select phrase-chip-diff-select";
+        diffSelect.setAttribute("aria-label", "Difficulty for " + entry.text);
+        diffSelect.title = "Difficulty rating";
+        var noneOpt = document.createElement("option");
+        noneOpt.value = "0";
+        noneOpt.textContent = "—";
+        diffSelect.appendChild(noneOpt);
+        DIFFICULTIES.forEach(function(d){
+          var opt = document.createElement("option");
+          opt.value = String(d.id);
+          opt.textContent = d.short;
+          if (entry.difficulty === d.id) opt.selected = true;
+          diffSelect.appendChild(opt);
+        });
+        diffSelect.addEventListener("change", function(){
+          setPhraseDifficulty(entry.text.toLowerCase(), Number(diffSelect.value));
+        });
+
         var remove = document.createElement("button");
         remove.type = "button";
         remove.className = "phrase-chip-remove";
@@ -2322,6 +2543,7 @@
 
         chip.appendChild(text);
         chip.appendChild(select);
+        chip.appendChild(diffSelect);
         chip.appendChild(remove);
         group.appendChild(chip);
       });
@@ -2330,7 +2552,7 @@
     });
   }
 
-  /* ---- Selection -> category picker popup ---- */
+  /* ---- Selection -> category / difficulty picker popup ---- */
   var pendingSelectionText = "";
 
   function hideHighlightSelectionPanel(){
@@ -2339,8 +2561,17 @@
     pendingSelectionText = "";
   }
 
+  function clearNativeSelection(){
+    var sel = window.getSelection();
+    if (sel) sel.removeAllRanges();
+  }
+
   function buildHighlightSelectionPanelContents(){
     highlightSelectionPanel.innerHTML = "";
+
+    /* Row 1 — grammar categories */
+    var catRow = document.createElement("div");
+    catRow.className = "hf-row";
     CATEGORIES.forEach(function(cat){
       var btn = document.createElement("button");
       btn.type = "button";
@@ -2358,12 +2589,50 @@
         e.preventDefault();
         if (pendingSelectionText) addHighlightPhrase(pendingSelectionText, cat.id);
         hideHighlightSelectionPanel();
-        var sel = window.getSelection();
-        if (sel) sel.removeAllRanges();
+        clearNativeSelection();
       });
-      highlightSelectionPanel.appendChild(btn);
+      catRow.appendChild(btn);
     });
+    highlightSelectionPanel.appendChild(catRow);
 
+    /* Row 2 — difficulty rating, shown once the selection is more than one word */
+    var selWordCount = countWords(pendingSelectionText);
+    if (selWordCount > DIFFICULTY_MIN_WORDS - 1){
+      var diffRow = document.createElement("div");
+      diffRow.className = "hf-row";
+
+      var lbl = document.createElement("span");
+      lbl.className = "hf-label";
+      lbl.textContent = "Rate";
+      diffRow.appendChild(lbl);
+
+      DIFFICULTIES.forEach(function(diff){
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "cat-btn";
+        btn.setAttribute("data-difficulty", String(diff.id));
+        btn.title = "Rate as " + diff.label + " — highlights the term in red";
+
+        var dot = document.createElement("span");
+        dot.className = "cat-dot";
+        dot.setAttribute("data-difficulty", String(diff.id));
+
+        btn.appendChild(dot);
+        btn.appendChild(document.createTextNode(diff.id + " " + diff.label));
+        btn.addEventListener("mousedown", function(e){ e.preventDefault(); });
+        btn.addEventListener("click", function(e){
+          e.preventDefault();
+          if (pendingSelectionText) addDifficultyHighlight(pendingSelectionText, diff.id);
+          hideHighlightSelectionPanel();
+          clearNativeSelection();
+        });
+        diffRow.appendChild(btn);
+      });
+
+      highlightSelectionPanel.appendChild(diffRow);
+    }
+
+    /* Row 3 — connected speech */
     var divider = document.createElement("div");
     divider.className = "cs-panel-divider";
     highlightSelectionPanel.appendChild(divider);
@@ -2404,8 +2673,7 @@
       else if (e.key === "Escape"){
         e.preventDefault();
         hideHighlightSelectionPanel();
-        var sel = window.getSelection();
-        if (sel) sel.removeAllRanges();
+        clearNativeSelection();
       }
     });
 
@@ -2421,8 +2689,7 @@
       var val = input.value.trim();
       if (val && keepText) addConnectedSpeech(keepText, val);
       hideHighlightSelectionPanel();
-      var sel = window.getSelection();
-      if (sel) sel.removeAllRanges();
+      clearNativeSelection();
     }
 
     row.appendChild(input);
@@ -2496,7 +2763,7 @@
   }
 
   function rebuildAndRender(resetIndex, resumeIndex){
-    var model = buildModel(state.rawText, state.settings.chunkSize);
+    var model = buildModel(state.rawText, state.settings.chunkSize, state.settings.paragraphSplit);
     renderChunksBatched(model, function(flat){
       state.model = model;
       state.flat = flat;
@@ -2511,6 +2778,31 @@
       highlightChunk(state.currentIndex, true);
       updateProgress();
     });
+  }
+
+  // Rebuild the chunk model on the fly while trying to keep the reader's rough position
+  function rebuildAndRenderPreservePosition(prevIndex, wasPlaying){
+    var prevTotal = state.flat.length || 1;
+    var ratio = prevIndex / prevTotal;
+    var model = buildModel(state.rawText, state.settings.chunkSize, state.settings.paragraphSplit);
+    renderChunksBatched(model, function(flat){
+      state.model = model;
+      state.flat = flat;
+      state.currentIndex = Math.min(flat.length - 1, Math.max(0, Math.round(ratio * flat.length)));
+      buildPulseRow();
+      applyPhraseHighlights();
+      applyConnectedSpeechDisplay();
+      highlightChunk(state.currentIndex, true);
+      updateProgress();
+      if (wasPlaying) play();
+    });
+  }
+
+  function rebuildPreservingPosition(){
+    var keepIndex = state.currentIndex;
+    var wasPlaying = state.playing;
+    pause();
+    rebuildAndRenderPreservePosition(keepIndex, wasPlaying);
   }
 
   function buildPulseRow(){
@@ -2704,7 +2996,7 @@
 
   document.addEventListener("keydown", function(e){
     var active = document.activeElement;
-    var inTextInput = active && (active.tagName === "TEXTAREA" || active.tagName === "INPUT");
+    var inTextInput = active && (active.tagName === "TEXTAREA" || active.tagName === "INPUT" || active.tagName === "SELECT");
     if (inTextInput) return;
     if (!screens.reading.classList.contains("active")) return;
 
@@ -2726,6 +3018,12 @@
   /* ============================================================
      Settings panel
   ============================================================ */
+  function updateParagraphSplitLabel(){
+    if (!paragraphSplitValue) return;
+    var v = state.settings.paragraphSplit;
+    paragraphSplitValue.textContent = v > 0 ? (v + "w") : "Off";
+  }
+
   function applySettingsToUI(){
     Array.prototype.forEach.call(chunkSizeSeg.children, function(btn){
       btn.classList.toggle("active", btn.dataset.value === state.settings.chunkSize);
@@ -2742,6 +3040,10 @@
     document.documentElement.style.setProperty("--reading-line-height", state.settings.lineHeight);
     if (textWidthRange) textWidthRange.value = state.settings.textWidth;
     document.documentElement.style.setProperty("--reading-width", state.settings.textWidth + "px");
+    if (paragraphSplitRange){
+      paragraphSplitRange.value = state.settings.paragraphSplit;
+      updateParagraphSplitLabel();
+    }
     reducedMotionSwitch.classList.toggle("on", state.settings.reducedMotion);
     reducedMotionSwitch.setAttribute("aria-checked", String(state.settings.reducedMotion));
     if (csHoverSwitch){
@@ -2798,13 +3100,11 @@
   chunkSizeSeg.addEventListener("click", function(e){
     var btn = e.target.closest("button");
     if (!btn) return;
+    if (btn.dataset.value === state.settings.chunkSize) return;
     state.settings.chunkSize = btn.dataset.value;
     saveSettings();
     applySettingsToUI();
-    var keepIndex = state.currentIndex;
-    var wasPlaying = state.playing;
-    pause();
-    rebuildAndRenderPreservePosition(keepIndex, wasPlaying);
+    rebuildPreservingPosition();
   });
 
   boundarySeg.addEventListener("click", function(e){
@@ -2814,6 +3114,20 @@
     saveSettings();
     applySettingsToUI();
   });
+
+  if (paragraphSplitRange){
+    paragraphSplitRange.addEventListener("input", function(){
+      var v = parseInt(paragraphSplitRange.value, 10);
+      if (!isFinite(v) || v < 0) v = 0;
+      state.settings.paragraphSplit = v;
+      updateParagraphSplitLabel();
+      saveSettings();
+    });
+    // Rebuild once the reader settles on a value (avoids rebuilding on every drag step)
+    paragraphSplitRange.addEventListener("change", function(){
+      rebuildPreservingPosition();
+    });
+  }
 
   fontSizeRange.addEventListener("input", function(){
     state.settings.fontSize = parseInt(fontSizeRange.value, 10);
@@ -2869,24 +3183,6 @@
     });
   }
 
-  // Rebuild chunk model on the fly while trying to keep the reader's rough position
-  function rebuildAndRenderPreservePosition(prevIndex, wasPlaying){
-    var prevTotal = state.flat.length || 1;
-    var ratio = prevIndex / prevTotal;
-    var model = buildModel(state.rawText, state.settings.chunkSize);
-    renderChunksBatched(model, function(flat){
-      state.model = model;
-      state.flat = flat;
-      state.currentIndex = Math.min(flat.length - 1, Math.max(0, Math.round(ratio * flat.length)));
-      buildPulseRow();
-      applyPhraseHighlights();
-      applyConnectedSpeechDisplay();
-      highlightChunk(state.currentIndex, true);
-      updateProgress();
-      if (wasPlaying) play();
-    });
-  }
-
   /* ============================================================
      Init
   ============================================================ */
@@ -2897,9 +3193,11 @@
   loadSettings();
   applySettingsToUI();
   loadHighlightPhrases();
-  saveHighlightPhrases(); // normalize any legacy (pre-category) format on disk immediately
+  saveHighlightPhrases(); // normalize any legacy (pre-category / pre-difficulty) format on disk
   loadCategoryFilter();
+  loadDifficultyFilter();
   renderCategoryFilterRow();
+  renderDifficultyFilterRow();
   renderPhraseList();
   loadConnectedSpeech();
   renderConnectedSpeechList();
