@@ -11,7 +11,7 @@
   :root, html[data-theme="sand"]{
     --bg:#FAF7F3; --surface:#FFFFFF; --surface-2:#F4EFE9; --line:#EAE2D8;
     --text:#26211C; --muted:#8A7F73; --reading:#C2703D; --reading-2:#D89A6C;
-    --listening:#3F7A6E; --listening-2:#66A093; --xp:#A9855C;
+    --listening:#3F7A6E; --listening-2:#66A093; --grammar:#7A5EA8; --grammar-2:#A98FD0; --xp:#A9855C;
     --good-bg:#E2F0E9;  --good-fg:#2F6B54;
     --ok-bg:#EBF1E7;    --ok-fg:#4B6B36;
     --warn-bg:#FBF0DC;  --warn-fg:#8A6420;
@@ -29,7 +29,7 @@
   html[data-theme="mint"]{
     --bg:#F3F8F4; --surface:#FFFFFF; --surface-2:#E9F1EB; --line:#DAE7DE;
     --text:#1A2620; --muted:#6E8378; --reading:#2F7A57; --reading-2:#68A98A;
-    --listening:#2F6E8A; --listening-2:#6EA0B8; --xp:#7A8C4A;
+    --listening:#2F6E8A; --listening-2:#6EA0B8; --grammar:#8A5EA0; --grammar-2:#B08FC7; --xp:#7A8C4A;
     --good-bg:#DDF0E4;  --good-fg:#25674A;
     --ok-bg:#E5EFE3;    --ok-fg:#4A6B34;
     --warn-bg:#F7EFD9;  --warn-fg:#836018;
@@ -47,7 +47,7 @@
   html[data-theme="lavender"]{
     --bg:#F8F6FC; --surface:#FFFFFF; --surface-2:#F0EBF7; --line:#E3DCF0;
     --text:#211C2B; --muted:#7C7489; --reading:#7A5EA8; --reading-2:#A98FD0;
-    --listening:#3E7C8A; --listening-2:#74A7B3; --xp:#A9855C;
+    --listening:#3E7C8A; --listening-2:#74A7B3; --grammar:#A05E82; --grammar-2:#C98FAD; --xp:#A9855C;
     --good-bg:#E4F0E8;  --good-fg:#2E6B52;
     --ok-bg:#EBF1E7;    --ok-fg:#4B6B36;
     --warn-bg:#FBF0DC;  --warn-fg:#8A6420;
@@ -65,7 +65,7 @@
   html[data-theme="midnight"]{
     --bg:#11141A; --surface:#181D25; --surface-2:#212832; --line:#2C3542;
     --text:#E7ECF3; --muted:#8A95A6; --reading:#E29A62; --reading-2:#B9743F;
-    --listening:#63B3A2; --listening-2:#3F7A6E; --xp:#CBA97C;
+    --listening:#63B3A2; --listening-2:#3F7A6E; --grammar:#B189D9; --grammar-2:#8A5EB0; --xp:#CBA97C;
     --good-bg:#17352A;  --good-fg:#7FD3AD;
     --ok-bg:#26331C;    --ok-fg:#B3D48C;
     --warn-bg:#382C15;  --warn-fg:#E8C377;
@@ -83,7 +83,7 @@
   html[data-theme="espresso"]{
     --bg:#16120F; --surface:#1F1A15; --surface-2:#2A231C; --line:#392F26;
     --text:#F0E8DF; --muted:#9E9184; --reading:#E39A62; --reading-2:#B9743F;
-    --listening:#6FB6A6; --listening-2:#3F7A6E; --xp:#CFAC7C;
+    --listening:#6FB6A6; --listening-2:#3F7A6E; --grammar:#B98FD4; --grammar-2:#8A5EB0; --xp:#CFAC7C;
     --good-bg:#1B352A;  --good-fg:#84D2AE;
     --ok-bg:#2A331D;    --ok-fg:#B7D590;
     --warn-bg:#3A2D16;  --warn-fg:#EAC57B;
@@ -327,6 +327,7 @@
   .bar-fill{height:100%;border-radius:999px;transition:width .45s cubic-bezier(.4,0,.2,1)}
   .reading .bar-fill{background:linear-gradient(90deg,var(--reading-2),var(--reading))}
   .listening .bar-fill{background:linear-gradient(90deg,var(--listening-2),var(--listening))}
+  .grammar .bar-fill{background:linear-gradient(90deg,var(--grammar-2),var(--grammar))}
   .bar-ideal{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--text);opacity:.22;border-radius:2px}
   .bar-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;font-size:12.5px;color:var(--muted)}
   .pace-tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
@@ -638,6 +639,14 @@
   .rm-timeline-bar{height:5px;border-radius:99px;background:var(--bar-bg);overflow:hidden;margin-top:9px}
   .rm-timeline-bar i{display:block;height:100%;border-radius:99px;background:var(--accent)}
   .rm-timeline-meta{font-size:10.5px;color:var(--muted);margin-top:7px;display:flex;justify-content:space-between;gap:6px}
+  .rm-timeline-plan{margin-top:10px;padding-top:9px;border-top:1px dashed var(--dash-line);display:flex;flex-direction:column;gap:4px}
+  .rm-tl-line{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:10.5px}
+  .rm-tl-line .k{color:var(--muted);white-space:nowrap}
+  .rm-tl-line .v{font-weight:650;text-align:right;font-variant-numeric:tabular-nums}
+  .rm-tl-line .v b{font-weight:750}
+  .rm-tl-line .v b.good{color:var(--good-fg)}
+  .rm-tl-line .v b.bad{color:var(--bad-fg)}
+  .rm-tl-note{font-size:9.5px;color:var(--muted);font-style:italic;margin-top:1px}
   @media(max-width:640px){.rm-timeline-track{flex-direction:column}.rm-timeline-seg{border-right:none;border-bottom:1px dashed var(--dash-line)}.rm-timeline-seg:last-child{border-bottom:none}}
 
   .rm-phases-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:14px}
@@ -1113,6 +1122,7 @@
     <button data-nav="history">History</button>
     <button data-nav="progress">Progress</button>
     <a href="Roadmap.html">Study Plan <span class="ext">↗</span></a>
+    <a href="Grammar.html">Grammar <span class="ext">↗</span></a>
     <a href="Source/Dashboard.html">Output <span class="ext">↗</span></a>
   </nav>
 </header>
@@ -1529,6 +1539,7 @@ function freshData(){
       end_date: end,
       reading_target_percent: 1000,
       listening_target_minutes: 4500,
+      grammar_target_units: 145,
       created_at: new Date().toISOString()
     },
     profile: null,
@@ -1552,6 +1563,9 @@ function normalizeState(s){
   });
   if (!Array.isArray(s.activities))   s.activities = [];
   if (!Array.isArray(s.customChallenges)) s.customChallenges = [];
+  if (s.challenge && typeof s.challenge === 'object' && !(Number(s.challenge.grammar_target_units) > 0)){
+    s.challenge.grammar_target_units = 145;
+  }
   if (s.profile === undefined) s.profile = null;
   if (s.profile && typeof s.profile !== 'object') s.profile = null;
   if (s.profile){ if (!Array.isArray(s.profile.favorite_genres)) s.profile.favorite_genres = []; }
@@ -1769,6 +1783,28 @@ function sumCategory(list, category){
 }
 function materialById(id){ return state.materials.find(m => m.id === id) || null; }
 
+/* ---- Grammar (external app) -------------------------------------------
+   The Grammar tracker is a separate standalone page (Grammar.html) with its
+   own checklist UI and storage. It publishes a small summary object to this
+   shared localStorage key every time something changes there, so this app
+   can show progress without knowing anything about its internal format. */
+const GRAMMAR_SHARED_KEY = 'esc-grammar-data';
+function getGrammarData(){
+  try {
+    const raw = localStorage.getItem(GRAMMAR_SHARED_KEY);
+    if (!raw) return null;
+    const d = JSON.parse(raw);
+    if (!d || typeof d !== 'object' || !(Number(d.total) > 0)) return null;
+    return {
+      total: Number(d.total) || 0,
+      done: Math.max(0, Number(d.done) || 0),
+      pct: Number(d.pct) || 0,
+      groups: Array.isArray(d.groups) ? d.groups : [],
+      chapters: Array.isArray(d.chapters) ? d.chapters : [],
+      updated_at: d.updated_at || null
+    };
+  } catch (e) { return null; }
+}
 function getStats(){
   const ch = state.challenge;
   const today = todayISO();
@@ -2292,6 +2328,57 @@ function progressCard(s, kind){
     </div>
   </div>`;
 }
+function grammarProgressCardHTML(){
+  const ch = state.challenge;
+  const data = getGrammarData();
+  const target = Number(ch.grammar_target_units) || (data ? data.total : 145) || 145;
+
+  const totalDays = Math.max(1, diffDays(ch.start_date, ch.end_date) + 1);
+  const elapsed = clamp(diffDays(ch.start_date, todayISO()) + 1, 0, totalDays);
+  const ideal = elapsed / totalDays * 100;
+
+  if (!data){
+    return `
+    <div class="card progress-card grammar">
+      <div class="card-head">
+        <h2>Grammar</h2>
+        <span class="pct">—</span>
+      </div>
+      <div class="big-numbers"><strong>0</strong><span>/ ${fmt(target)} units</span></div>
+      <div class="bar"><div class="bar-fill" style="width:0%"></div></div>
+      <div class="bar-meta">
+        <span>Open the Grammar tracker to sync progress</span>
+        <a class="link-btn" href="Grammar.html">Open ↗</a>
+      </div>
+    </div>`;
+  }
+
+  const value = data.done;
+  const rawPct = target ? value / target * 100 : 0;
+  const st = paceStatePct(rawPct, ideal);
+  const barPct = clamp(rawPct, 0, 100);
+  const remaining = Math.max(0, target - value);
+
+  return `
+  <div class="card progress-card grammar">
+    <div class="card-head">
+      <h2>Grammar</h2>
+      <span class="pct">${rawPct.toFixed(1)}%</span>
+    </div>
+    <div class="big-numbers">
+      <strong>${fmt(value)}</strong>
+      <span>/ ${fmt(target)} units</span>
+    </div>
+    <div class="bar">
+      <div class="bar-fill" style="width:${barPct}%"></div>
+      <div class="bar-ideal" style="left:${clamp(ideal, 0, 99)}%" title="Where you should be today"></div>
+    </div>
+    <div class="bar-meta">
+      <span>${fmt(remaining)} units to go</span>
+      <span class="pace-tag ${st.cls}">${st.label}</span>
+    </div>
+  </div>`;
+}
 function paceCard(title, sub, readVal, readExp, listenVal, listenExp){
   const rs = paceStateRatio(readVal, readExp);
   const ls = paceStateRatio(listenVal, listenExp);
@@ -2415,8 +2502,9 @@ function viewDashboard(){
   return `
   ${dashboardProfilePrompt()}
   ${overdueMaterialsBannerHTML()}
-  <div class="grid cols-2">
+  <div class="grid cols-3">
     ${progressCard(s, 'reading')}
+    ${grammarProgressCardHTML()}
     ${progressCard(s, 'listening')}
   </div>
   <div class="grid cols-3">
@@ -2946,7 +3034,33 @@ function roadmapWeeklyChartHTML(rm){
   </div>`;
 }
 const PHASE_ACCENTS = ['#5D7A3F', 'var(--reading)', 'var(--listening)', '#7A3E5E'];
+/* Sum of queued materials' explicit targets for a phase, split by category —
+   used to compare what's actually queued ("planned") against the even pace
+   target ("target") for that phase. Materials without a numeric target
+   (m.total_units) can't be counted and are reported separately. */
+function phasePlannedTotals(phaseIndex){
+  const rawIds = (state.roadmap.phases[phaseIndex] && state.roadmap.phases[phaseIndex].materials) || [];
+  const items = rawIds.map(id => materialById(id)).filter(Boolean);
+  let plannedRead = 0, plannedListen = 0, untracked = 0;
+  items.forEach(m => {
+    if (!materialHasTarget(m)){ untracked++; return; }
+    if (m.default_category === 'reading') plannedRead += Number(m.total_units) || 0;
+    else if (m.default_category === 'listening') plannedListen += Number(m.total_units) || 0;
+  });
+  return { plannedRead, plannedListen, untracked };
+}
+const RMTIMELINE_HIDE_KEY = 'esc-rm-timeline-hidden';
+let rmTimelineHidden = false;
+try { rmTimelineHidden = localStorage.getItem(RMTIMELINE_HIDE_KEY) === '1'; } catch (e) {}
 function roadmapTimelineOverviewHTML(rm){
+  const toggleBtn = `<button type="button" class="btn btn-ghost btn-sm" data-action="rm-toggle-timeline">${rmTimelineHidden ? '▾ Show' : '▴ Hide'}</button>`;
+  if (rmTimelineHidden){
+    return `
+    <div class="card rm-timeline">
+      <div class="card-head"><h2>Timeline overview</h2>${toggleBtn}</div>
+    </div>`;
+  }
+
   const totalDays = rm.totalDays || 1;
   const segs = rm.phases.map((phase, i) => {
     const span = Math.max(1, phase.days.length);
@@ -2955,6 +3069,11 @@ function roadmapTimelineOverviewHTML(rm){
     const items = rawIds.map(id => materialById(id)).filter(Boolean);
     const doneCount = items.filter(materialIsComplete).length;
     const isToday = phase.status === 'current';
+
+    const planned = phasePlannedTotals(phase.index);
+    const diffRead = planned.plannedRead - phase.expectedRead;
+    const diffListen = planned.plannedListen - phase.expectedListen;
+
     return `
       <div class="rm-timeline-seg phase-${i + 1} ${isToday ? 'is-today' : ''}" style="flex-grow:${span};--accent:${accent}">
         <div class="rm-timeline-accent"></div>
@@ -2965,12 +3084,24 @@ function roadmapTimelineOverviewHTML(rm){
           <span>${phase.pct.toFixed(0)}% pace</span>
           <span>${items.length ? `${doneCount}/${items.length} done` : 'No materials'}</span>
         </div>
+        <div class="rm-timeline-plan">
+          <div class="rm-tl-line"><span class="k">Need to complete</span><span class="v">${fmt1(phase.expectedRead)}% · ${fmt1(phase.expectedListen)} min</span></div>
+          <div class="rm-tl-line"><span class="k">Planned in queue</span><span class="v">${fmt(planned.plannedRead)}% · ${fmt(planned.plannedListen)} min</span></div>
+          <div class="rm-tl-line">
+            <span class="k">Difference</span>
+            <span class="v">
+              <b class="${diffRead >= 0 ? 'good' : 'bad'}">${diffRead >= 0 ? '+' : ''}${fmt1(diffRead)}%</b>
+              · <b class="${diffListen >= 0 ? 'good' : 'bad'}">${diffListen >= 0 ? '+' : ''}${fmt1(diffListen)} min</b>
+            </span>
+          </div>
+          ${planned.untracked ? `<div class="rm-tl-note">+${planned.untracked} material${planned.untracked === 1 ? '' : 's'} with no set target (not counted)</div>` : ''}
+        </div>
       </div>`;
   }).join('');
 
   return `
   <div class="card rm-timeline">
-    <div class="card-head"><h2>Timeline overview</h2></div>
+    <div class="card-head"><h2>Timeline overview</h2>${toggleBtn}</div>
     <div class="rm-timeline-track">${segs}</div>
   </div>`;
 }
@@ -5898,6 +6029,7 @@ function openSettings(){
   const chCount = state.customChallenges.length;
   const msCount = (state.roadmap.milestones || []).length;
   const hasProfile = !!state.profile;
+  const grammarData = getGrammarData();
 
   openModal(`
     <div class="modal-backdrop" data-action="close-modal"></div>
@@ -5920,6 +6052,13 @@ function openSettings(){
         </div>
         <div class="field"><label for="setListen">Listening target (minutes)</label>
           <input type="number" id="setListen" min="1" step="1" value="${ch.listening_target_minutes}">
+        </div>
+        <div class="field"><label for="setGrammar">Grammar target (units)</label>
+          <input type="number" id="setGrammar" min="1" step="1" value="${Number(ch.grammar_target_units) || 145}">
+          <p class="hint" style="margin-top:6px">
+            How many Grammar in Use units you're aiming to finish over the challenge.
+            ${grammarData ? `The external Grammar tracker currently has ${grammarData.total} units total, ${grammarData.done} done.` : `Open the Grammar tracker at least once so this app can read its progress.`}
+          </p>
         </div>
 
         <div class="data-block">
@@ -5980,6 +6119,7 @@ function openSettings(){
     ch.end_date = addDays(ch.start_date, 89);
     ch.reading_target_percent = Math.max(1, Number($('#setRead').value) || 1000);
     ch.listening_target_minutes = Math.max(1, Number($('#setListen').value) || 4500);
+    ch.grammar_target_units = Math.max(1, Number($('#setGrammar').value) || 145);
     saveState(); closeModal(); render();
   });
 }
@@ -6032,6 +6172,14 @@ document.addEventListener('click', e => {
   if (rmPhaseLayoutBtn){
     roadmapPhasesLayout = rmPhaseLayoutBtn.dataset.phaselayout;
     try { localStorage.setItem(RMPHASELAYOUT_KEY, roadmapPhasesLayout); } catch (err) {}
+    render();
+    return;
+  }
+
+  const rmTimelineToggle = e.target.closest('[data-action="rm-toggle-timeline"]');
+  if (rmTimelineToggle){
+    rmTimelineHidden = !rmTimelineHidden;
+    try { localStorage.setItem(RMTIMELINE_HIDE_KEY, rmTimelineHidden ? '1' : '0'); } catch (err) {}
     render();
     return;
   }
