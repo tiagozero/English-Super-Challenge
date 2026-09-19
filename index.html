@@ -470,6 +470,13 @@
   .mat-subtask-inline{margin-top:6px;padding-top:6px;border-top:1px dashed var(--dash-line);display:flex;flex-direction:column;gap:5px}
   .mat-subtask-inline .subtask-row{font-size:12.5px}
   .mat-subtask-inline .subtask-title{font-size:12.5px}
+  .channel-list{display:flex;flex-direction:column;gap:7px;max-height:240px;overflow-y:auto;padding-right:2px}
+  .channel-row{display:flex;align-items:center;justify-content:space-between;gap:9px;padding:4px 0}
+  .channel-row-main{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .channel-name{font-size:13px;font-weight:600;word-break:break-word}
+  .channel-meta{font-size:11.5px;color:var(--muted)}
+  .channel-row .link-btn{padding:2px 6px;font-size:12px;flex:0 0 auto;white-space:nowrap}
+  .mat-subtask-inline .channel-row{font-size:12.5px}
   .mat-progress{margin-top:auto;padding-top:8px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
   .mat-progress-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:12px;font-variant-numeric:tabular-nums}
   .mat-progress-pct{font-weight:750;color:var(--reading)}
@@ -1386,6 +1393,7 @@ try { quickAddOpen = localStorage.getItem(QUICKADD_KEY) !== '0'; } catch (e) {}
 
 let materialsFilter = { q: '', type: 'all', category: 'all' };
 let expandedSubtasks = new Set();
+let expandedChannels = new Set();
 
 const MATVIEW_KEY = 'esc-materials-view-mode';
 let materialsViewMode = 'grid';
@@ -2223,12 +2231,13 @@ function activityRow(a, showActions){
   const title = m ? m.title : (TYPES[a.input_type] || { label: 'Activity' }).label;
   const typeLabel = (TYPES[a.input_type] || { label: 'Other' }).label;
   const unitShort = a.unit === 'percent' ? '%' : 'min';
+  const channel = (a.channel_id && m && Array.isArray(m.channels)) ? m.channels.find(c => c.id === a.channel_id) : null;
   return `
   <div class="act">
     <span class="dot ${a.category}"></span>
     <div class="act-main">
       <div class="act-title">${escapeHtml(title)}</div>
-      <div class="act-meta">${escapeHtml(typeLabel)} · ${escapeHtml(prettyDate(a.logged_on))}${a.note ? ' · ' + escapeHtml(a.note) : ''}</div>
+      <div class="act-meta">${escapeHtml(typeLabel)}${channel ? ' · ' + escapeHtml(channel.name) : ''} · ${escapeHtml(prettyDate(a.logged_on))}${a.note ? ' · ' + escapeHtml(a.note) : ''}</div>
     </div>
     <div class="act-amount">${fmt(a.amount)} <small>${unitShort}</small></div>
     ${showActions ? `
@@ -3726,6 +3735,63 @@ function materialSubtaskProgressHTML(m){
     </button>
     ${materialSubtaskInlineHTML(m)}`;
 }
+/* ---- YouTube channels (per-channel time estimate + logged minutes) ---- */
+function isYouTubeType(t){ return t === 'youTube'; }
+const SUBITEM_TYPES = ['youTube', 'podcast', 'audiobook', 'tv', 'film', 'anime'];
+const SUBITEM_LABELS = {
+  youTube:   { singular: 'Channel', plural: 'Channels' },
+  podcast:   { singular: 'Show',    plural: 'Shows'    },
+  audiobook: { singular: 'Title',   plural: 'Titles'   },
+  tv:        { singular: 'Series',  plural: 'Series'   },
+  film:      { singular: 'Title',   plural: 'Titles'   },
+  anime:     { singular: 'Series',  plural: 'Series'   }
+};
+function hasSubitems(t){ return SUBITEM_TYPES.includes(t); }
+function subitemLabels(t){ return SUBITEM_LABELS[t] || { singular: 'Item', plural: 'Items' }; }
+function channelMinutesLogged(m, channelId){
+  return state.activities
+    .filter(a => a.material_id === m.id && a.channel_id === channelId)
+    .reduce((s, a) => s + (Number(a.amount) || 0), 0);
+}
+function materialChannelsSummary(m){
+  const list = Array.isArray(m.channels) ? m.channels : [];
+  if (!list.length) return null;
+  const loggedTotal = list.reduce((s, c) => s + channelMinutesLogged(m, c.id), 0);
+  const estTotal = list.reduce((s, c) => s + (Number(c.estimated_minutes) || 0), 0);
+  return { count: list.length, loggedTotal, estTotal };
+}
+function materialChannelInlineHTML(m){
+  const list = Array.isArray(m.channels) ? m.channels : [];
+  if (!expandedChannels.has(m.id) || !list.length) return '';
+  return `
+    <div class="mat-subtask-inline">
+      ${list.map(c => {
+        const logged = channelMinutesLogged(m, c.id);
+        const est = Number(c.estimated_minutes) || 0;
+        return `
+        <div class="channel-row">
+          <div class="channel-row-main">
+            <span class="channel-name">${escapeHtml(c.name)}</span>
+            <span class="channel-meta">${fmt(logged)}${est ? ` / ${fmt(est)}` : ''} min</span>
+          </div>
+          <button type="button" class="link-btn" data-action="log-channel-time" data-id="${m.id}" data-channel="${c.id}">+ Log</button>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+function materialChannelProgressHTML(m){
+  const cs = materialChannelsSummary(m);
+  if (!cs) return '';
+  const lbl = subitemLabels(m.default_input_type);
+  const countLabel = cs.count === 1 ? lbl.singular : lbl.plural;
+  const pct = cs.estTotal ? clamp(Math.round(cs.loggedTotal / cs.estTotal * 100), 0, 100) : (cs.loggedTotal > 0 ? 100 : 0);
+  return `
+    <button type="button" class="mat-subtask-toggle" data-action="toggle-channels" data-id="${m.id}">
+      <span class="mat-subtask-bar"><i style="width:${pct}%"></i></span>
+      <span>${cs.count} ${escapeHtml(countLabel.toLowerCase())} · ${fmt(cs.loggedTotal)}${cs.estTotal ? ` / ${fmt(cs.estTotal)}` : ''} min ${expandedChannels.has(m.id) ? '▴' : '▾'}</span>
+    </button>
+    ${materialChannelInlineHTML(m)}`;
+}
 function materialRowHTML(m){
   const t = materialTotals(m.id);
   const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
@@ -3742,6 +3808,7 @@ function materialRowHTML(m){
       ${materialProgressBarHTML(m)}
       ${materialDeadlineLineHTML(m)}
       ${materialSubtaskProgressHTML(m)}
+      ${materialChannelProgressHTML(m)}
     </div>
     <div class="act-actions">
       <button class="link-btn" data-action="edit-material" data-id="${m.id}">Edit</button>
@@ -3799,6 +3866,7 @@ function materialCardHTML(m){
       <span class="qlabel">Queued in</span>
       ${phaseTags.map(t => `<span class="tag">${escapeHtml(t.name)}</span>`).join('')}
     </div>` : ''}
+    ${materialChannelProgressHTML(m)}
     <div class="mat-card-actions">
       <button class="link-btn" data-action="edit-material" data-id="${m.id}">Edit</button>
       <button class="link-btn danger" data-action="delete-material" data-id="${m.id}">Delete</button>
@@ -4501,9 +4569,10 @@ function openLogModal(activity){
   const draft = editing
     ? { id: activity.id, logged_on: activity.logged_on, input_type: activity.input_type,
         category: activity.category, material_id: activity.material_id,
-        amount: activity.amount, unit: activity.unit, note: activity.note || '' }
+        amount: activity.amount, unit: activity.unit, note: activity.note || '',
+        channel_id: activity.channel_id || null }
     : { id: null, logged_on: todayISO(), input_type: 'kindle', category: 'reading',
-        material_id: null, amount: '', unit: 'percent', note: '' };
+        material_id: null, amount: '', unit: 'percent', note: '', channel_id: null };
 
   const mat = draft.material_id ? materialById(draft.material_id) : null;
   const titleVal = mat ? mat.title : '';
@@ -4538,6 +4607,10 @@ function openLogModal(activity){
             <div class="ac-list" id="acList"></div>
           </div>
         </div>
+        <div class="field" id="logChannelField" style="display:none">
+          <label for="logChannel" id="logChannelLabel">Channel (optional)</label>
+          <select id="logChannel"><option value="">— No channel —</option></select>
+        </div>
         <div class="field">
           <label for="logAmount">Amount</label>
           <div class="amount-row">
@@ -4567,6 +4640,24 @@ function openLogModal(activity){
   const titleInput = $('#logTitle');
   const acList = $('#acList');
   const amountInput = $('#logAmount');
+  const logChannelField = $('#logChannelField');
+  const logChannelSelect = $('#logChannel');
+
+  function refreshChannelField(){
+    const mat = draft.material_id ? materialById(draft.material_id) : null;
+    const channels = (mat && Array.isArray(mat.channels)) ? mat.channels : [];
+    if (hasSubitems(draft.input_type) && channels.length){
+      const lbl = subitemLabels(draft.input_type);
+      $('#logChannelLabel').textContent = `${lbl.singular} (optional)`;
+      logChannelSelect.innerHTML = `<option value="">— No ${lbl.singular.toLowerCase()} —</option>` +
+        channels.map(c => `<option value="${c.id}" ${draft.channel_id === c.id ? 'selected' : ''}>${escapeHtml(c.name)}</option>`).join('');
+      logChannelField.style.display = '';
+    } else {
+      draft.channel_id = null;
+      logChannelField.style.display = 'none';
+    }
+  }
+  logChannelSelect.addEventListener('change', () => { draft.channel_id = logChannelSelect.value || null; });
 
   function applyAmountInputAttrs(){
     const at = amountAttrsFor(draft.unit);
@@ -4584,6 +4675,7 @@ function openLogModal(activity){
     $$('.chip', typeChips).forEach(c => c.classList.toggle('active', c.dataset.type === t));
     $$('button', unitSeg).forEach(b => b.classList.toggle('active', b.dataset.unit === draft.unit));
     applyAmountInputAttrs();
+    refreshChannelField();
   }
   function updateAC(){
     const q = titleInput.value.trim().toLowerCase();
@@ -4609,7 +4701,7 @@ function openLogModal(activity){
     $$('button', unitSeg).forEach(b => b.classList.toggle('active', b.dataset.unit === draft.unit));
     applyAmountInputAttrs();
   });
-  titleInput.addEventListener('input', () => { draft.material_id = null; updateAC(); });
+  titleInput.addEventListener('input', () => { draft.material_id = null; updateAC(); refreshChannelField(); });
   titleInput.addEventListener('focus', updateAC);
   titleInput.addEventListener('blur', () => setTimeout(() => acList.classList.remove('open'), 160));
   acList.addEventListener('mousedown', e => {
@@ -4619,6 +4711,7 @@ function openLogModal(activity){
     titleInput.value = m.title;
     draft.material_id = m.id;
     applyType(m.default_input_type);
+    refreshChannelField();
     acList.classList.remove('open');
     amountInput.focus();
   });
@@ -4654,7 +4747,9 @@ function openLogModal(activity){
         state.activities[idx] = {
           ...state.activities[idx],
           logged_on: loggedOn, category: draft.category, input_type: draft.input_type,
-          material_id: materialId, amount, unit: draft.unit, note, updated_at: nowIso
+          material_id: materialId, amount, unit: draft.unit, note,
+          channel_id: hasSubitems(draft.input_type) ? (draft.channel_id || null) : null,
+          updated_at: nowIso
         };
       }
     } else {
@@ -4662,12 +4757,63 @@ function openLogModal(activity){
         id: uid('a'), challenge_id: ch.id, logged_on: loggedOn,
         category: draft.category, input_type: draft.input_type,
         material_id: materialId, amount, unit: draft.unit, note,
+        channel_id: hasSubitems(draft.input_type) ? (draft.channel_id || null) : null,
         created_at: nowIso, updated_at: nowIso
       });
     }
     saveState(); closeModal(); render();
   });
+  refreshChannelField();
   setTimeout(() => amountInput.focus(), 60);
+}
+
+/* =========================================================
+   Channel log modal (quick time log for a YouTube channel)
+   ========================================================= */
+function openChannelLogModal(material, channel){
+  openModal(`
+    <div class="modal-backdrop" data-action="close-modal"></div>
+    <div class="modal" role="dialog" aria-modal="true" style="max-width:420px">
+      <div class="modal-head">
+        <h2>Log time · ${escapeHtml(channel.name)}</h2>
+        <button class="icon-btn" data-action="close-modal" aria-label="Close">✕</button>
+      </div>
+      <form id="chanLogForm" class="modal-body" autocomplete="off">
+        <div class="field"><label for="chanLogDate">Date</label>
+          <input type="date" id="chanLogDate" value="${todayISO()}" required>
+        </div>
+        <div class="field"><label for="chanLogMinutes">Minutes logged</label>
+          <input type="number" id="chanLogMinutes" min="1" step="1" inputmode="numeric" placeholder="Minutes" required>
+        </div>
+        <div class="field"><label for="chanLogNote">Note</label>
+          <textarea id="chanLogNote" rows="2" placeholder="Anything worth remembering…"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-action="close-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  `);
+  $('#chanLogForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const amount = Number($('#chanLogMinutes').value);
+    if (!amount || amount <= 0){ $('#chanLogMinutes').focus(); return; }
+    const loggedOn = $('#chanLogDate').value || todayISO();
+    const note = $('#chanLogNote').value.trim();
+    const nowIso = new Date().toISOString();
+    const inputType = material.default_input_type;
+    const category = (TYPES[inputType] || { category: 'listening' }).category;
+    state.activities.push({
+      id: uid('a'), challenge_id: state.challenge.id, logged_on: loggedOn,
+      category, input_type: inputType,
+      material_id: material.id, channel_id: channel.id,
+      amount, unit: 'minutes', note,
+      created_at: nowIso, updated_at: nowIso
+    });
+    saveState(); closeModal(); render();
+  });
+  setTimeout(() => $('#chanLogMinutes').focus(), 60);
 }
 
 /* =========================================================
@@ -4676,7 +4822,7 @@ function openLogModal(activity){
 function openMaterialModal(material){
   const ch = state.challenge;
   const editing = !!material;
-  const m = material || { title: '', creator: '', default_input_type: 'kindle', default_category: 'reading', status: 'active', cover_url: '', deadline: '', subtasks: [] };
+  const m = material || { title: '', creator: '', default_input_type: 'kindle', default_category: 'reading', status: 'active', cover_url: '', deadline: '', subtasks: [], channels: [] };
   let coverUrl = m.cover_url || '';
   const coverIsLink = coverUrl && !coverUrl.startsWith('data:');
 
@@ -4773,6 +4919,16 @@ function openMaterialModal(material){
             <input type="text" id="matSubtaskInput" placeholder="e.g. Finish chapter 3" maxlength="140" style="flex:1">
             <button type="button" class="btn btn-ghost btn-sm" id="matSubtaskAddBtn">+ Add</button>
           </div>
+        </div>
+        <div class="field" id="matChannelsField" style="display:${hasSubitems(m.default_input_type) ? '' : 'none'}">
+          <label id="matChannelsLabel">${escapeHtml(subitemLabels(m.default_input_type).plural)} (optional)</label>
+          <div id="matChannelsList" class="channel-list"></div>
+          <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+            <input type="text" id="matChannelInput" placeholder="${escapeHtml(subitemLabels(m.default_input_type).singular)} name" maxlength="140" style="flex:2;min-width:130px">
+            <input type="number" id="matChannelEstInput" min="0" step="1" inputmode="numeric" placeholder="Est. minutes" style="flex:1;min-width:100px">
+            <button type="button" class="btn btn-ghost btn-sm" id="matChannelAddBtn">+ Add</button>
+          </div>
+          <p class="hint" id="matChannelsHint" style="margin-top:6px">Add each ${escapeHtml(subitemLabels(m.default_input_type).singular.toLowerCase())} you're tracking, with an optional time estimate. Logged minutes tally automatically from time you log against each one.</p>
         </div>
         <div class="modal-actions">
           <button type="button" class="btn btn-ghost" data-action="close-modal">Cancel</button>
@@ -4876,6 +5032,63 @@ function openMaterialModal(material){
     if (e.key === 'Enter'){ e.preventDefault(); addSubtaskFromInput(); }
   });
 
+  let channels = Array.isArray(m.channels)
+    ? m.channels.map(c => ({ id: c.id || uid('ch'), name: c.name, estimated_minutes: (c.estimated_minutes ?? null) }))
+    : [];
+  const channelsList = $('#matChannelsList');
+  const channelsField = $('#matChannelsField');
+  function renderChannelsDraft(){
+    if (!channels.length){
+      channelsList.innerHTML = `<div style="font-size:12.5px;color:var(--muted);padding:2px 0">No channels yet.</div>`;
+      return;
+    }
+    channelsList.innerHTML = channels.map(c => {
+      const logged = editing ? channelMinutesLogged(material, c.id) : 0;
+      const est = Number(c.estimated_minutes) || 0;
+      return `
+      <div class="channel-row" data-id="${c.id}">
+        <div class="channel-row-main">
+          <span class="channel-name">${escapeHtml(c.name)}</span>
+          <span class="channel-meta">${fmt(logged)}${est ? ` / ${fmt(est)}` : ''} min logged</span>
+        </div>
+        <button type="button" class="link-btn danger channel-del" aria-label="Remove channel">✕</button>
+      </div>`;
+    }).join('');
+  }
+  renderChannelsDraft();
+  channelsList.addEventListener('click', e => {
+    if (!e.target.classList.contains('channel-del')) return;
+    const row = e.target.closest('.channel-row');
+    channels = channels.filter(c => c.id !== row.dataset.id);
+    renderChannelsDraft();
+  });
+  function addChannelFromInput(){
+    const nameInput = $('#matChannelInput');
+    const estInput = $('#matChannelEstInput');
+    const name = nameInput.value.trim();
+    if (!name) return;
+    const estRaw = estInput.value.trim();
+    channels.push({ id: uid('ch'), name, estimated_minutes: estRaw ? Math.max(0, Number(estRaw) || 0) : null });
+    nameInput.value = ''; estInput.value = '';
+    renderChannelsDraft();
+    nameInput.focus();
+  }
+  $('#matChannelAddBtn').addEventListener('click', addChannelFromInput);
+  $('#matChannelInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter'){ e.preventDefault(); addChannelFromInput(); }
+  });
+  $('#matChannelEstInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter'){ e.preventDefault(); addChannelFromInput(); }
+  });
+  $('#matType').addEventListener('change', () => {
+    const t = $('#matType').value;
+    const lbl = subitemLabels(t);
+    channelsField.style.display = hasSubitems(t) ? '' : 'none';
+    $('#matChannelsLabel').textContent = `${lbl.plural} (optional)`;
+    $('#matChannelInput').placeholder = `${lbl.singular} name`;
+    $('#matChannelsHint').textContent = `Add each ${lbl.singular.toLowerCase()} you're tracking, with an optional time estimate. Logged minutes tally automatically from time you log against each one.`;
+  });
+
   const deadlineClearBtn = $('#matDeadlineClearBtn');
   if (deadlineClearBtn){
     deadlineClearBtn.addEventListener('click', () => {
@@ -4902,6 +5115,7 @@ function openMaterialModal(material){
       cover_url: coverUrl,
       deadline: $('#matDeadline').value || null,
       subtasks,
+      channels,
       total_units: totalUnitsRaw ? Math.max(0, Number(totalUnitsRaw) || 0) : null,
       unit: $('#matUnit').value.trim() || defaultUnitFor(category),
       episodes_total: episodesRaw ? Math.max(0, Number(episodesRaw) || 0) : null,
@@ -5569,7 +5783,7 @@ document.addEventListener('click', e => {
         : `Delete "${m.title}"?`;
       if (confirm(msg)){
         state.materials = state.materials.filter(x => x.id !== id);
-        state.activities.forEach(a => { if (a.material_id === id) a.material_id = null; });
+        state.activities.forEach(a => { if (a.material_id === id){ a.material_id = null; a.channel_id = null; } });
         Object.keys(state.roadmap.weeklyMaterials).forEach(k => {
           state.roadmap.weeklyMaterials[k] = state.roadmap.weeklyMaterials[k].filter(mid => mid !== id);
         });
@@ -5582,6 +5796,20 @@ document.addEventListener('click', e => {
       const id = actionEl.dataset.id;
       if (expandedSubtasks.has(id)) expandedSubtasks.delete(id); else expandedSubtasks.add(id);
       render();
+      break;
+    }
+    case 'toggle-channels': {
+      const id = actionEl.dataset.id;
+      if (expandedChannels.has(id)) expandedChannels.delete(id); else expandedChannels.add(id);
+      render();
+      break;
+    }
+    case 'log-channel-time': {
+      const m = materialById(actionEl.dataset.id);
+      if (!m) break;
+      const c = (m.channels || []).find(x => x.id === actionEl.dataset.channel);
+      if (!c) break;
+      openChannelLogModal(m, c);
       break;
     }
     case 'toggle-material-subtask': {
