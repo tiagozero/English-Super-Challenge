@@ -460,6 +460,9 @@
   .subtask-title{flex:1;font-size:13px;word-break:break-word}
   .subtask-title.done{color:var(--muted);text-decoration:line-through}
   .subtask-row .link-btn{padding:2px 6px;font-size:12px}
+  .subtask-row input[type="date"]{flex:0 0 auto;width:124px;font-size:11.5px;padding:4px 6px;border-radius:7px;border:1px solid var(--line);background:var(--surface-2);color:var(--text)}
+  .subtask-due-badge{flex:0 0 auto;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+  .subtask-due-badge.overdue{background:var(--bad-bg);color:var(--bad-fg)}
   .mat-subtask-toggle{
     background:none;border:0;padding:0;font:inherit;color:var(--muted);cursor:pointer;
     display:flex;align-items:center;gap:8px;width:100%;text-align:left;margin-top:2px;
@@ -555,6 +558,7 @@
 
   /* Charts */
   .seg{display:inline-flex;background:var(--surface-2);border-radius:11px;padding:3px;gap:2px}
+  .seg.seg-sm button{padding:6px 10px;font-size:12px}
   .seg button{border:0;background:transparent;padding:7px 14px;border-radius:9px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:background .15s,color .15s}
   .seg button.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.12)}
   .chart{display:flex;gap:3px;height:170px;position:relative}
@@ -618,6 +622,50 @@
     border:1px solid var(--line);background:var(--surface);border-radius:16px;
     padding:0;margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow);
   }
+  .rm-timeline{margin-bottom:14px}
+  .rm-timeline-track{display:flex;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--surface)}
+  .rm-timeline-seg{position:relative;flex:1 1 0;min-width:0;padding:12px 13px 11px;border-right:1px dashed var(--dash-line)}
+  .rm-timeline-seg:last-child{border-right:none}
+  .rm-timeline-seg.is-today{background:color-mix(in srgb, var(--surface-2) 55%, transparent)}
+  .rm-timeline-accent{position:absolute;top:0;left:0;right:0;height:4px}
+  .rm-timeline-seg.phase-1 .rm-timeline-accent{background:linear-gradient(90deg,#8FB07B,#5D7A3F)}
+  .rm-timeline-seg.phase-2 .rm-timeline-accent{background:linear-gradient(90deg,var(--reading-2),var(--reading))}
+  .rm-timeline-seg.phase-3 .rm-timeline-accent{background:linear-gradient(90deg,#7AA8A0,var(--listening))}
+  .rm-timeline-seg.phase-4 .rm-timeline-accent{background:linear-gradient(90deg,#A8567A,#7A3E5E)}
+  .rm-timeline-name{font-size:12.5px;font-weight:750;display:flex;align-items:center;gap:6px;min-width:0}
+  .rm-timeline-name .today-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex:0 0 auto}
+  .rm-timeline-range{font-size:10.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rm-timeline-bar{height:5px;border-radius:99px;background:var(--bar-bg);overflow:hidden;margin-top:9px}
+  .rm-timeline-bar i{display:block;height:100%;border-radius:99px;background:var(--accent)}
+  .rm-timeline-meta{font-size:10.5px;color:var(--muted);margin-top:7px;display:flex;justify-content:space-between;gap:6px}
+  @media(max-width:640px){.rm-timeline-track{flex-direction:column}.rm-timeline-seg{border-right:none;border-bottom:1px dashed var(--dash-line)}.rm-timeline-seg:last-child{border-bottom:none}}
+
+  .rm-phases-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:14px}
+  @media(max-width:760px){.rm-phases-grid{grid-template-columns:1fr}}
+  .rm-phase-grid-card{
+    border:1px solid var(--line);background:var(--surface);border-radius:16px;
+    padding:15px 16px;box-shadow:var(--shadow);min-width:0;
+  }
+  .rm-phase-grid-card.open{grid-column:1 / -1}
+  .rm-phase-grid-head{display:flex;align-items:center;gap:11px;cursor:pointer}
+  .rm-phase-grid-num{
+    width:30px;height:30px;flex:0 0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:750;color:var(--on-accent);
+  }
+  .rm-phase-grid-card.phase-1 .rm-phase-grid-num{background:linear-gradient(140deg,#8FB07B,#5D7A3F)}
+  .rm-phase-grid-card.phase-2 .rm-phase-grid-num{background:linear-gradient(140deg,var(--reading-2),var(--reading))}
+  .rm-phase-grid-card.phase-3 .rm-phase-grid-num{background:linear-gradient(140deg,#7AA8A0,var(--listening))}
+  .rm-phase-grid-card.phase-4 .rm-phase-grid-num{background:linear-gradient(140deg,#A8567A,#7A3E5E)}
+  .rm-phase-grid-titles{flex:1;min-width:0}
+  .rm-phase-grid-name{font-size:14.5px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rm-phase-grid-range{font-size:11px;color:var(--muted);margin-top:1px}
+  .rm-phase-grid-chevron{flex:0 0 auto;color:var(--muted);font-size:13px}
+  .rm-phase-grid-focus{font-size:12px;color:var(--muted);margin-top:9px;line-height:1.4}
+  .rm-phase-grid-bar{height:6px;border-radius:99px;background:var(--bar-bg);overflow:hidden;margin-top:11px}
+  .rm-phase-grid-bar i{display:block;height:100%;border-radius:99px;background:var(--reading)}
+  .rm-phase-grid-meta{font-size:11px;color:var(--muted);margin-top:8px;display:flex;justify-content:space-between;gap:8px}
+  .rm-phase-grid-body{margin-top:14px;padding-top:14px;border-top:1px dashed var(--dash-line)}
+
   .rm-phase-head{
     display:flex;align-items:center;gap:14px;padding:16px 18px;
     border-bottom:1px solid var(--line);
@@ -749,10 +797,8 @@
   .rm-queue-item{display:flex;align-items:stretch;gap:11px;background:color-mix(in srgb, var(--task-color, var(--line)) 9%, var(--surface-2));border:1px solid color-mix(in srgb, var(--task-color, var(--line)) 30%, var(--line));border-radius:12px;padding:11px 12px;transition:border-color .15s,background .15s;min-width:0}
   .rm-queue-item:hover{border-color:color-mix(in srgb, var(--task-color, var(--hover-line)) 55%, var(--hover-line))}
   .rm-queue-item.done{background:color-mix(in srgb, var(--good-bg) 55%, var(--surface-2));border-color:color-mix(in srgb, var(--good-fg) 25%, var(--line))}
-  .rm-queue-item.next{border-color:color-mix(in srgb, var(--task-color, var(--reading)) 70%, var(--line));box-shadow:0 0 0 3px color-mix(in srgb, var(--task-color, var(--reading)) 16%, transparent)}
   .rq-pos{width:22px;height:22px;flex:0 0 auto;align-self:flex-start;border-radius:50%;background:var(--surface);border:1px solid var(--line);color:var(--muted);font-size:11px;font-weight:750;display:flex;align-items:center;justify-content:center}
   .rm-queue-item.done .rq-pos{background:var(--good-fg);color:var(--on-accent);border-color:var(--good-fg)}
-  .rm-queue-item.next .rq-pos{background:var(--task-color, var(--reading));color:var(--on-accent);border-color:var(--task-color, var(--reading))}
   .rq-icon{width:34px;height:34px;flex:0 0 auto;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:750;color:var(--on-accent);align-self:flex-start;background:var(--task-color, var(--muted))}
   .rq-icon.has-cover{background-size:cover;background-position:center;color:transparent}
   .rq-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
@@ -771,10 +817,12 @@
   .rq-action:disabled{opacity:.25;cursor:not-allowed}
   .rm-queue-empty{padding:14px;text-align:center;font-size:12.5px;color:var(--muted);font-style:italic;background:var(--surface-2);border:1px dashed var(--dash-line);border-radius:12px}
   .rm-queue-complete{margin-top:10px;padding:11px 14px;background:linear-gradient(90deg,color-mix(in srgb, var(--good-bg) 80%, transparent),transparent);border:1px solid color-mix(in srgb, var(--good-fg) 30%, var(--line));border-radius:11px;font-size:12.5px;color:var(--good-fg);font-weight:600;display:flex;align-items:center;gap:8px}
-  .rm-queue-add{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
-  .rm-queue-add select{flex:1;min-width:180px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 11px;font-size:13px;color:var(--text);outline:none}
+  .rm-carryover{margin-top:10px;padding:11px 14px;background:linear-gradient(90deg,color-mix(in srgb, var(--warn-bg) 80%, transparent),transparent);border:1px solid color-mix(in srgb, var(--warn-fg) 30%, var(--line));border-radius:11px;font-size:12.5px;color:var(--warn-fg);font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .rm-carryover .btn{flex:0 0 auto;color:var(--warn-fg);border-color:color-mix(in srgb, var(--warn-fg) 35%, var(--line))}
+  .rm-queue-add{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+  .rm-queue-add-cats{display:flex;gap:8px;flex-wrap:wrap}
+  .rm-queue-add select{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 11px;font-size:13px;color:var(--text);outline:none}
   .rm-queue-add select:focus{border-color:var(--reading);box-shadow:0 0 0 3px color-mix(in srgb, var(--reading) 14%, transparent)}
-  .badge.next{background:var(--task-color, var(--reading));color:var(--on-accent)}
 
   .rm-week{
     border-top:1px solid var(--line);
@@ -1454,7 +1502,13 @@ let roadmapView = 'phases';
 try { roadmapView = localStorage.getItem(RMVIEW_KEY) || 'phases'; } catch (e) {}
 if (!['phases','weeks','days','materials'].includes(roadmapView)) roadmapView = 'phases';
 
+const RMPHASELAYOUT_KEY = 'esc-roadmap-phase-layout';
+let roadmapPhasesLayout = 'list';
+try { roadmapPhasesLayout = localStorage.getItem(RMPHASELAYOUT_KEY) || 'list'; } catch (e) {}
+if (!['list', 'grid'].includes(roadmapPhasesLayout)) roadmapPhasesLayout = 'list';
+
 let roadmapOpenPhases = {}; // phaseIndex -> true (ui state)
+let rmQueueAddCategory = {}; // phaseIndex -> 'reading' | 'listening' (ui state, which category is picked in "Add material to queue")
 let roadmapOpenWeeks = {};  // weekIndex -> true (ui state)
 
 let heatColorBy = 'combined'; // 'combined' | 'reading' | 'listening'
@@ -2705,6 +2759,12 @@ function viewRoadmap(){
       <button data-rmview="materials" class="${roadmapView === 'materials' ? 'active' : ''}">Materials</button>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      ${roadmapView === 'phases' ? `
+        <div class="seg seg-sm">
+          <button data-phaselayout="list" class="${roadmapPhasesLayout === 'list' ? 'active' : ''}" title="List view">☰ List</button>
+          <button data-phaselayout="grid" class="${roadmapPhasesLayout === 'grid' ? 'active' : ''}" title="Grid view">▦ Grid</button>
+        </div>
+      ` : ''}
       ${roadmapView === 'phases' ? deadlineModeToggleHTML() : ''}
       <button class="btn btn-ghost btn-sm" data-action="rm-edit-phases">✎ Edit phases</button>
       <button class="btn btn-ghost btn-sm" data-action="rm-add-milestone">＋ Milestone</button>
@@ -2788,7 +2848,9 @@ function viewRoadmap(){
   const isMaterialsView = roadmapView === 'materials';
   let body = '';
   if (roadmapView === 'phases'){
-    body = rm.phases.map(phase => roadmapPhaseHTML(phase, rm)).join('');
+    body = roadmapTimelineOverviewHTML(rm) + (roadmapPhasesLayout === 'grid'
+      ? roadmapPhasesGridHTML(rm)
+      : rm.phases.map(phase => roadmapPhaseHTML(phase, rm)).join(''));
   } else if (roadmapView === 'weeks'){
     body = `
       <div class="card" style="padding:0;overflow:hidden">
@@ -2883,9 +2945,55 @@ function roadmapWeeklyChartHTML(rm){
     <span><i style="background:transparent;border-top:1.5px dashed var(--dash-line);width:14px;height:0;border-radius:0"></i>Full-week pace target</span>
   </div>`;
 }
+const PHASE_ACCENTS = ['#5D7A3F', 'var(--reading)', 'var(--listening)', '#7A3E5E'];
+function roadmapTimelineOverviewHTML(rm){
+  const totalDays = rm.totalDays || 1;
+  const segs = rm.phases.map((phase, i) => {
+    const span = Math.max(1, phase.days.length);
+    const accent = PHASE_ACCENTS[i % PHASE_ACCENTS.length];
+    const rawIds = (state.roadmap.phases[phase.index] && state.roadmap.phases[phase.index].materials) || [];
+    const items = rawIds.map(id => materialById(id)).filter(Boolean);
+    const doneCount = items.filter(materialIsComplete).length;
+    const isToday = phase.status === 'current';
+    return `
+      <div class="rm-timeline-seg phase-${i + 1} ${isToday ? 'is-today' : ''}" style="flex-grow:${span};--accent:${accent}">
+        <div class="rm-timeline-accent"></div>
+        <div class="rm-timeline-name">${isToday ? '<span class="today-dot"></span>' : ''}<span>${escapeHtml(phase.name || `Phase ${i + 1}`)}</span></div>
+        <div class="rm-timeline-range">${phase.startDate ? shortDate(phase.startDate) : '—'} – ${phase.endDate ? shortDate(phase.endDate) : '—'}</div>
+        <div class="rm-timeline-bar"><i style="width:${clamp(phase.pct, 0, 100).toFixed(0)}%"></i></div>
+        <div class="rm-timeline-meta">
+          <span>${phase.pct.toFixed(0)}% pace</span>
+          <span>${items.length ? `${doneCount}/${items.length} done` : 'No materials'}</span>
+        </div>
+      </div>`;
+  }).join('');
+
+  return `
+  <div class="card rm-timeline">
+    <div class="card-head"><h2>Timeline overview</h2></div>
+    <div class="rm-timeline-track">${segs}</div>
+  </div>`;
+}
 function roadmapPhaseHTML(phase, rm){
   const isOpen = !!roadmapOpenPhases[phase.index];
   const statusCls = phase.status;
+
+  const hasEnded = !!phase.endDate && phase.endDate < todayISO();
+  const nextPhase = rm.phases[phase.index + 1];
+  const carryCandidates = (hasEnded && nextPhase)
+    ? (state.roadmap.phases[phase.index]?.materials || []).filter(id => {
+        const m = materialById(id);
+        const nextIds = state.roadmap.phases[nextPhase.index]?.materials || [];
+        return m && !materialIsComplete(m) && !nextIds.includes(id);
+      })
+    : [];
+  const carryBanner = carryCandidates.length ? `
+    <div class="rm-carryover">
+      <span>⏭ ${carryCandidates.length} unfinished material${carryCandidates.length === 1 ? '' : 's'} left over from this phase.</span>
+      <button type="button" class="btn btn-ghost btn-sm" data-action="rm-carryover-phase" data-idx="${phase.index}">
+        Carry over to ${escapeHtml(nextPhase.name || `Phase ${nextPhase.index + 1}`)}
+      </button>
+    </div>` : '';
 
   return `
   <div class="rm-phase">
@@ -2929,6 +3037,7 @@ function roadmapPhaseHTML(phase, rm){
       </div>
     </div>
     ${roadmapQueueHTML(phase)}
+    ${carryBanner}
     ${isOpen ? roadmapPhaseHeatmapHTML(phase, rm) : ''}
   </div>`;
 }
@@ -3155,14 +3264,6 @@ function openRmDayDetailModal(date){
    toward hasUntargeted so the caller knows the bar is a partial picture. */
 /* A material can only belong to ONE phase's queue at a time. Returns the
    set of material ids already claimed by any phase other than excludeIndex. */
-function materialsClaimedByOtherPhases(excludeIndex){
-  const claimed = new Set();
-  (state.roadmap.phases || []).forEach((p, i) => {
-    if (i === excludeIndex) return;
-    (p.materials || []).forEach(id => claimed.add(id));
-  });
-  return claimed;
-}
 function phaseUnitsTotals(phase){
   const rawIds = state.roadmap.phases[phase.index]?.materials || [];
   const items = rawIds.map(id => materialById(id)).filter(Boolean);
@@ -3179,13 +3280,11 @@ function phaseUnitsTotals(phase){
 function roadmapQueueHTML(phase){
   const rawIds = state.roadmap.phases[phase.index]?.materials || [];
   const items = rawIds.map(id => materialById(id)).filter(Boolean);
-  const firstActiveIdx = items.findIndex(m => !materialIsComplete(m));
 
   const rows = items.length
     ? items.map((m, i) => roadmapQueueItemHTML(phase.index, m, i, {
         isFirst: i === 0,
-        isLast: i === items.length - 1,
-        isNext: i === firstActiveIdx
+        isLast: i === items.length - 1
       })).join('')
     : `<div class="rm-queue-empty">No materials queued for this phase yet — add one below.</div>`;
 
@@ -3193,10 +3292,30 @@ function roadmapQueueHTML(phase){
   const completeBanner = allDone
     ? `<div class="rm-queue-complete">✓ All materials in this phase are complete</div>` : '';
 
-  const claimedElsewhere = materialsClaimedByOtherPhases(phase.index);
   const options = state.materials
-    .filter(m => m.status !== 'archived' && !rawIds.includes(m.id) && !claimedElsewhere.has(m.id))
+    .filter(m => m.status !== 'archived' && !rawIds.includes(m.id))
     .sort((a, b) => a.title.localeCompare(b.title));
+  const optCounts = { reading: 0, listening: 0 };
+  options.forEach(m => { if (optCounts[m.default_category] !== undefined) optCounts[m.default_category]++; });
+  const pickedCat = rmQueueAddCategory[phase.index] || '';
+  const catOptions = pickedCat ? options.filter(m => m.default_category === pickedCat) : [];
+
+  const addWidget = `
+    <div class="rm-queue-add-cats">
+      ${CATEGORY_ORDER.map(cat => `
+        <button type="button" class="chip ${pickedCat === cat ? 'active' : ''}" data-action="rm-queue-add-cat" data-idx="${phase.index}" data-cat="${cat}">
+          ${escapeHtml(CATEGORY_LABEL[cat])}
+          <span style="opacity:.6;font-weight:600">${optCounts[cat] || 0}</span>
+        </button>
+      `).join('')}
+    </div>
+    ${pickedCat ? `
+      <select data-action="rm-add-phase-material" data-idx="${phase.index}">
+        <option value="">${catOptions.length ? `+ Add ${escapeHtml(CATEGORY_LABEL[pickedCat].toLowerCase())} material…` : `No available ${escapeHtml(CATEGORY_LABEL[pickedCat].toLowerCase())} materials`}</option>
+        ${catOptions.map(m => `<option value="${m.id}">${escapeHtml(m.title)}</option>`).join('')}
+      </select>
+    ` : `<p class="hint" style="margin:8px 0 0">Pick a category above to see materials you can add.</p>`}
+  `;
 
   return `
   <div class="rm-queue">
@@ -3206,12 +3325,7 @@ function roadmapQueueHTML(phase){
     </div>
     <div class="rm-queue-list">${rows}</div>
     ${completeBanner}
-    <div class="rm-queue-add">
-      <select data-action="rm-add-phase-material" data-idx="${phase.index}">
-        <option value="">+ Add material to queue…</option>
-        ${options.map(m => `<option value="${m.id}">${escapeHtml(m.title)}</option>`).join('')}
-      </select>
-    </div>
+    <div class="rm-queue-add">${addWidget}</div>
   </div>`;
 }
 function roadmapQueueItemHTML(phaseIndex, m, index, opts){
@@ -3219,17 +3333,15 @@ function roadmapQueueItemHTML(phaseIndex, m, index, opts){
   const pct = materialUnitPct(m);
   const isDone = materialIsComplete(m);
   const sp = materialSubtasksSummary(m);
-  const itemCls = ['rm-queue-item', isDone ? 'done' : '', opts.isNext ? 'next' : ''].filter(Boolean).join(' ');
-  const badge = opts.isNext ? '<span class="badge next">Now</span>'
-              : isDone ? '<span class="badge done">✓ Done</span>'
-              : '';
+  const itemCls = ['rm-queue-item', isDone ? 'done' : ''].filter(Boolean).join(' ');
+  const badge = isDone ? '<span class="badge done">✓ Done</span>' : '';
   const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
   const initials = (m.title || '?').trim().slice(0, 2).toUpperCase();
   // Every color cue on this card — background tint, border, icon, progress
-  // bar, "Now" highlight — derives from this one --task-color variable, set
-  // straight from the material's own color (blended with the theme via
-  // color-mix in CSS) so it updates automatically whenever the material's
-  // color or cover changes in the Materials section. No separate setting.
+  // bar — derives from this one --task-color variable, set straight from
+  // the material's own color (blended with the theme via color-mix in CSS)
+  // so it updates automatically whenever the material's color or cover
+  // changes in the Materials section. No separate setting.
   const matColor = m.color || MATERIAL_COLORS[0].hex;
   const icon = m.cover_url
     ? `<div class="rq-icon has-cover" style="background-image:url('${escapeHtml(m.cover_url)}')"></div>`
@@ -3260,6 +3372,38 @@ function roadmapQueueItemHTML(phaseIndex, m, index, opts){
       <button class="rq-action" data-action="rm-queue-down" data-phase="${phaseIndex}" data-idx="${index}" ${opts.isLast ? 'disabled' : ''} title="Move down" aria-label="Move down">↓</button>
       <button class="rq-action danger" data-action="rm-queue-remove" data-phase="${phaseIndex}" data-idx="${index}" title="Remove" aria-label="Remove">✕</button>
     </div>
+  </div>`;
+}
+
+/* Grid / mosaic layout: compact phase tiles, click to expand a tile's queue inline. */
+function roadmapPhasesGridHTML(rm){
+  return `<div class="rm-phases-grid">${rm.phases.map(phase => roadmapPhaseGridCardHTML(phase, rm)).join('')}</div>`;
+}
+function roadmapPhaseGridCardHTML(phase, rm){
+  const isOpen = !!roadmapOpenPhases[phase.index];
+  const rawIds = (state.roadmap.phases[phase.index] && state.roadmap.phases[phase.index].materials) || [];
+  const items = rawIds.map(id => materialById(id)).filter(Boolean);
+  const doneCount = items.filter(materialIsComplete).length;
+  const pct = clamp(phase.pct, 0, 100).toFixed(0);
+  const statusLabelMap = { current: 'In progress', future: 'Upcoming', met: 'On target', partial: 'Partial', missed: 'Behind' };
+
+  return `
+  <div class="rm-phase-grid-card phase-${phase.index + 1} ${isOpen ? 'open' : ''}">
+    <div class="rm-phase-grid-head" data-action="rm-toggle-phase" data-idx="${phase.index}" role="button" tabindex="0">
+      <div class="rm-phase-grid-num">${phase.index + 1}</div>
+      <div class="rm-phase-grid-titles">
+        <div class="rm-phase-grid-name">${escapeHtml(phase.name || `Phase ${phase.index + 1}`)}</div>
+        <div class="rm-phase-grid-range">${phase.startDate ? shortDate(phase.startDate) : '—'} – ${phase.endDate ? shortDate(phase.endDate) : '—'}</div>
+      </div>
+      <span class="rm-phase-grid-chevron">${isOpen ? '▾' : '▸'}</span>
+    </div>
+    ${phase.focus ? `<div class="rm-phase-grid-focus">${escapeHtml(phase.focus)}</div>` : ''}
+    <div class="rm-phase-grid-bar"><i style="width:${pct}%"></i></div>
+    <div class="rm-phase-grid-meta">
+      <span>${pct}% · ${escapeHtml(statusLabelMap[phase.status] || '')}</span>
+      <span>${items.length ? `${doneCount}/${items.length} done` : 'No materials'}</span>
+    </div>
+    ${isOpen ? `<div class="rm-phase-grid-body">${roadmapQueueHTML(phase)}</div>` : ''}
   </div>`;
 }
 
@@ -3719,6 +3863,11 @@ function materialPhaseTags(m){
     .map((p, i) => ((p.materials || []).includes(m.id) ? { index: i, name: p.name || `Phase ${i + 1}` } : null))
     .filter(Boolean);
 }
+function subtaskDueBadgeHTML(s){
+  if (!s.due) return '';
+  const overdue = !s.done && s.due < todayISO();
+  return `<span class="subtask-due-badge ${overdue ? 'overdue' : ''}">${overdue ? '⚠ ' : ''}${escapeHtml(shortDate(s.due))}</span>`;
+}
 
 function materialProgressPct(m){
   const sp = materialSubtasksSummary(m);
@@ -3765,6 +3914,7 @@ function materialSubtaskInlineHTML(m){
         <div class="subtask-row">
           <input type="checkbox" data-action="toggle-material-subtask" data-id="${m.id}" data-sub="${s.id}" ${s.done ? 'checked' : ''}>
           <span class="subtask-title ${s.done ? 'done' : ''}">${escapeHtml(s.title)}</span>
+          ${subtaskDueBadgeHTML(s)}
         </div>
       `).join('')}
     </div>`;
@@ -4409,8 +4559,8 @@ function openRmEditPhases(){
       <form id="rmPhasesForm" class="modal-body" autocomplete="off">
         <p class="hint" style="margin:0 0 16px">
           Your challenge is split into four equal phases. Give each a name, a short focus description,
-          and optionally the materials you plan to use during it. Each material belongs to only one
-          phase at a time — picking it here removes it from any other phase.
+          and optionally the materials you plan to use during it. A material can be picked for more than
+          one phase if you're spreading it across the challenge.
         </p>
         ${phases.map((p, i) => `
           <div class="form-section">
@@ -4453,16 +4603,7 @@ function openRmEditPhases(){
         draftPhaseMaterials[i].splice(idx, 1);
         b.classList.remove('active');
       } else {
-        // Exclusive: claiming it here means no other phase keeps it.
-        draftPhaseMaterials.forEach((list, j) => {
-          if (j === i) return;
-          const jIdx = list.indexOf(mid);
-          if (jIdx >= 0){
-            list.splice(jIdx, 1);
-            const otherChip = $(`#rmPhasesForm [data-phase-materials="${j}"] .chip[data-mid="${mid}"]`);
-            if (otherChip) otherChip.classList.remove('active');
-          }
-        });
+        // A material can now belong to more than one phase at once.
         draftPhaseMaterials[i].push(mid);
         b.classList.add('active');
       }
@@ -5031,8 +5172,9 @@ function openMaterialModal(material){
         <div class="field">
           <label>Subtasks (optional)</label>
           <div id="matSubtasksList" class="subtask-list"></div>
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <input type="text" id="matSubtaskInput" placeholder="e.g. Finish chapter 3" maxlength="140" style="flex:1">
+          <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+            <input type="text" id="matSubtaskInput" placeholder="e.g. Finish chapter 3" maxlength="140" style="flex:1;min-width:140px">
+            <input type="date" id="matSubtaskDueInput" title="Due date (optional)" style="flex:0 0 auto">
             <button type="button" class="btn btn-ghost btn-sm" id="matSubtaskAddBtn">+ Add</button>
           </div>
         </div>
@@ -5105,7 +5247,7 @@ function openMaterialModal(material){
   refreshCoverThumb();
 
   let subtasks = Array.isArray(m.subtasks)
-    ? m.subtasks.map(s => ({ id: s.id || uid('st'), title: s.title, done: !!s.done }))
+    ? m.subtasks.map(s => ({ id: s.id || uid('st'), title: s.title, done: !!s.done, due: s.due || '' }))
     : [];
   const subtasksList = $('#matSubtasksList');
   function renderSubtasksDraft(){
@@ -5117,16 +5259,19 @@ function openMaterialModal(material){
       <div class="subtask-row" data-id="${s.id}">
         <input type="checkbox" class="subtask-check" ${s.done ? 'checked' : ''}>
         <span class="subtask-title ${s.done ? 'done' : ''}">${escapeHtml(s.title)}</span>
+        <input type="date" class="subtask-due-edit" value="${s.due ? escapeHtml(s.due) : ''}" title="Due date">
         <button type="button" class="link-btn danger subtask-del" aria-label="Remove subtask">✕</button>
       </div>
     `).join('');
   }
   renderSubtasksDraft();
   subtasksList.addEventListener('change', e => {
-    if (!e.target.classList.contains('subtask-check')) return;
     const row = e.target.closest('.subtask-row');
+    if (!row) return;
     const st = subtasks.find(s => s.id === row.dataset.id);
-    if (st){ st.done = e.target.checked; renderSubtasksDraft(); }
+    if (!st) return;
+    if (e.target.classList.contains('subtask-check')){ st.done = e.target.checked; renderSubtasksDraft(); }
+    else if (e.target.classList.contains('subtask-due-edit')){ st.due = e.target.value || ''; }
   });
   subtasksList.addEventListener('click', e => {
     if (!e.target.classList.contains('subtask-del')) return;
@@ -5136,10 +5281,12 @@ function openMaterialModal(material){
   });
   function addSubtaskFromInput(){
     const input = $('#matSubtaskInput');
+    const dueInput = $('#matSubtaskDueInput');
     const title = input.value.trim();
     if (!title) return;
-    subtasks.push({ id: uid('st'), title, done: false });
+    subtasks.push({ id: uid('st'), title, done: false, due: dueInput.value || '' });
     input.value = '';
+    dueInput.value = '';
     renderSubtasksDraft();
     input.focus();
   }
@@ -5290,6 +5437,18 @@ function openMaterialDetailModal(m){
   const episodesTotal = Number(m.episodes_total) || 0;
 
   const phaseTags = materialPhaseTags(m);
+  const allPhases = (state.roadmap && state.roadmap.phases) || [];
+  const phaseChipsHTML = allPhases.length ? `
+    <div class="chips">
+      ${allPhases.map((p, i) => `
+        <button type="button" class="chip ${(p.materials || []).includes(m.id) ? 'active' : ''}"
+                data-action="toggle-material-phase" data-id="${m.id}" data-phase="${i}">
+          ${escapeHtml(p.name || `Phase ${i + 1}`)}
+        </button>
+      `).join('')}
+    </div>
+    <p class="hint" style="margin:8px 0 0">Tap a phase to queue or unqueue this material there — a material can sit in more than one.</p>
+  ` : `<div class="matd-empty-note">No phases set up yet.</div>`;
 
   const subtasks = Array.isArray(m.subtasks) ? m.subtasks : [];
   const sp = materialSubtasksSummary(m);
@@ -5299,6 +5458,7 @@ function openMaterialDetailModal(m){
         <div class="subtask-row">
           <input type="checkbox" data-action="toggle-material-subtask" data-id="${m.id}" data-sub="${s.id}" ${s.done ? 'checked' : ''}>
           <span class="subtask-title ${s.done ? 'done' : ''}">${escapeHtml(s.title)}</span>
+          ${subtaskDueBadgeHTML(s)}
         </div>
       `).join('')}
     </div>` : `<div class="matd-empty-note">No sub-tasks added.</div>`;
@@ -5372,6 +5532,11 @@ function openMaterialDetailModal(m){
             </div>` : ''}
           </div>
           <div class="mat-progress-bar ${isDone ? 'complete' : (m.default_category || 'reading')}" style="margin-top:12px"><i style="width:${pct}%"></i></div>
+        </div>
+
+        <div class="matd-section">
+          <div class="matd-label">Phases</div>
+          ${phaseChipsHTML}
         </div>
 
         <div class="matd-section">
@@ -5863,11 +6028,29 @@ document.addEventListener('click', e => {
     return;
   }
 
+  const rmPhaseLayoutBtn = e.target.closest('[data-phaselayout]');
+  if (rmPhaseLayoutBtn){
+    roadmapPhasesLayout = rmPhaseLayoutBtn.dataset.phaselayout;
+    try { localStorage.setItem(RMPHASELAYOUT_KEY, roadmapPhasesLayout); } catch (err) {}
+    render();
+    return;
+  }
+
   /* Roadmap phase toggle */
   const rmPhaseToggle = e.target.closest('[data-action="rm-toggle-phase"]');
   if (rmPhaseToggle){
     const idx = Number(rmPhaseToggle.dataset.idx);
     roadmapOpenPhases[idx] = !roadmapOpenPhases[idx];
+    render();
+    return;
+  }
+
+  /* Add-to-queue category picker */
+  const rmQueueCat = e.target.closest('[data-action="rm-queue-add-cat"]');
+  if (rmQueueCat){
+    const idx = Number(rmQueueCat.dataset.idx);
+    const cat = rmQueueCat.dataset.cat;
+    rmQueueAddCategory[idx] = rmQueueAddCategory[idx] === cat ? '' : cat;
     render();
     return;
   }
@@ -5914,6 +6097,19 @@ document.addEventListener('click', e => {
 
     /* Roadmap */
     case 'rm-edit-phases': openRmEditPhases(); break;
+    case 'rm-carryover-phase': {
+      const idx = Number(actionEl.dataset.idx);
+      const phase = state.roadmap.phases[idx];
+      const next = state.roadmap.phases[idx + 1];
+      if (!phase || !next) break;
+      next.materials = next.materials || [];
+      (phase.materials || []).forEach(id => {
+        const m = materialById(id);
+        if (m && !materialIsComplete(m) && !next.materials.includes(id)) next.materials.push(id);
+      });
+      saveState(); render();
+      break;
+    }
     case 'rm-add-milestone': openRmMilestoneModal(null); break;
     case 'rm-day-note': openRmDayNoteModal(actionEl.dataset.date); break;
     case 'rm-day-detail': openRmDayDetailModal(actionEl.dataset.date); break;
@@ -6096,6 +6292,18 @@ document.addEventListener('click', e => {
       if (st){ st.done = !st.done; saveState(); render(); }
       break;
     }
+    case 'toggle-material-phase': {
+      const m = materialById(actionEl.dataset.id);
+      const idx = Number(actionEl.dataset.phase);
+      const phase = state.roadmap && state.roadmap.phases && state.roadmap.phases[idx];
+      if (!m || !phase) break;
+      phase.materials = phase.materials || [];
+      const pos = phase.materials.indexOf(m.id);
+      if (pos >= 0) phase.materials.splice(pos, 1); else phase.materials.push(m.id);
+      saveState(); render();
+      openMaterialDetailModal(materialById(m.id));
+      break;
+    }
 
     /* Challenges */
     case 'new-challenge': openChallengeModal(null); break;
@@ -6174,12 +6382,6 @@ document.addEventListener('change', e => {
     const phase = state.roadmap.phases[targetIdx];
     const mid = t.value;
     if (phase && mid){
-      // Exclusive: a material can only live in one phase's queue, so drop
-      // it from every other phase before adding it here.
-      state.roadmap.phases.forEach((p, i) => {
-        if (i === targetIdx || !Array.isArray(p.materials)) return;
-        p.materials = p.materials.filter(id => id !== mid);
-      });
       if (!Array.isArray(phase.materials)) phase.materials = [];
       if (!phase.materials.includes(mid)) phase.materials.push(mid);
       saveState(); render();
@@ -6209,7 +6411,7 @@ document.addEventListener('input', e => {
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && $('#modalRoot').innerHTML) closeModal();
-  if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.matches && e.target.matches('[data-action="open-material"]')){
+  if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.matches && e.target.matches('.mat-card, .rm-phase-grid-head')){
     e.preventDefault();
     e.target.click();
   }
