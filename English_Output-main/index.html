@@ -1,0 +1,2712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Language Study Hub</title>
+<style>
+  :root{
+    --bg:#f5f6f8; --panel:#ffffff; --faint:#fafbfc; --line:#e4e7ec; --line-strong:#c9cede;
+    --text:#12141a; --muted:#6b7280; --soft:#9aa0ad;
+    --accent:#4f46e5; --accent-hover:#4338ca; --accent-soft:#eef0ff; --accent-line:#c7c9ff;
+    --green:#047857; --green-soft:#e8f7f1; --green-line:#b9e6d5;
+    --amber:#b45309; --amber-soft:#fdf2e3; --amber-line:#f3e0c2;
+    --red:#b91c1c; --red-soft:#fdeceb; --red-line:#f6d5d3;
+    --violet:#6d28d9; --violet-soft:#f0ebff; --violet-line:#ddd6fe;
+    --teal:#0d7a6f; --teal-soft:#e6f5f2; --teal-line:#b7e0d8;
+    --bar:#eceef2; --hm0:#eceef2; --hm1:#c7d2fe; --hm2:#818cf8; --hm3:#4f46e5; --hm4:#312e81;
+    --shadow:rgba(20,22,40,.05);
+    --radius:12px;
+  }
+  [data-theme="dark"]{
+    --bg:#0e1117; --panel:#161a22; --faint:#12161d; --line:#262b36; --line-strong:#39414f;
+    --text:#e8eaef; --muted:#8b93a3; --soft:#6b7280;
+    --accent:#818cf8; --accent-hover:#a5b4fc; --accent-soft:#1e2138; --accent-line:#3730a3;
+    --green:#34d399; --green-soft:#12291f; --green-line:#1f4a37;
+    --amber:#fbbf24; --amber-soft:#2a2113; --amber-line:#4a3a17;
+    --red:#f87171; --red-soft:#2b1a1a; --red-line:#4a2525;
+    --violet:#c4b5fd; --violet-soft:#2c1f52; --violet-line:#4338ca;
+    --teal:#5eead4; --teal-soft:#0e2a27; --teal-line:#1b4a45;
+    --bar:#2a2f3a; --hm0:#22262e; --hm1:#312e81; --hm2:#4338ca; --hm3:#6366f1; --hm4:#a5b4fc;
+    --shadow:rgba(0,0,0,.4);
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--text); font-size:14px; line-height:1.5;
+    display:flex; flex-direction:column; height:100vh; overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+    transition:background .15s, color .15s;
+  }
+  h1,h2,h3,h4{margin:0 0 6px;letter-spacing:-.01em;line-height:1.25}
+  h1{font-size:24px} h2{font-size:18px} h3{font-size:15px} h4{font-size:13.5px}
+  p{margin:0 0 8px}
+  button{font:inherit;cursor:pointer;color:inherit}
+  .muted{color:var(--muted)}
+  .small{font-size:12.5px}
+  .tiny{font-size:11.5px}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .row.between{justify-content:space-between}
+
+  /* ---------- header ---------- */
+  header{
+    flex:0 0 auto;
+    background:var(--panel); border-bottom:1px solid var(--line);
+    padding:8px 14px; display:flex; align-items:center; gap:12px; z-index:10;
+  }
+  .brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.02em;font-size:13.5px;white-space:nowrap}
+  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);flex-shrink:0}
+  nav{display:flex;gap:3px;flex:1;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;min-width:0}
+  nav::-webkit-scrollbar{display:none}
+  nav a{
+    padding:6px 12px;border-radius:8px;text-decoration:none;color:var(--muted);font-size:13px;
+    font-weight:500;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;
+    border:1px solid transparent;transition:background .12s,color .12s,border-color .12s;cursor:pointer;
+  }
+  nav a:hover{background:var(--accent-soft);color:var(--text)}
+  nav a.active{background:var(--accent-soft);color:var(--accent);font-weight:600;border-color:var(--accent-soft)}
+  nav a .icon{font-size:14px;line-height:1}
+  .iconbtn{
+    background:transparent;border:1px solid var(--line);border-radius:8px;padding:5px 10px;
+    font-size:14px;line-height:1;color:var(--muted);transition:all .12s;flex-shrink:0;
+  }
+  .iconbtn:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* ---------- main / pages ---------- */
+  main{flex:1;min-height:0;position:relative;background:var(--bg);overflow:hidden}
+  .page{position:absolute;inset:0}
+  #overview,#roadmap{overflow-y:auto;padding:20px 22px 60px}
+  #frame{width:100%;height:100%;border:0;background:var(--bg)}
+  [hidden]{display:none !important}
+
+  /* ---------- overview ---------- */
+  .wrap{max-width:1080px;margin:0 auto}
+  .hero{
+    background:linear-gradient(180deg,var(--panel),var(--faint));
+    border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin-bottom:16px;
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-end;
+  }
+  .hero h1{margin-bottom:2px}
+  .hero p{color:var(--muted);margin:0;max-width:560px}
+  .hero .streak{
+    display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;padding:10px 14px;flex-shrink:0;
+  }
+  .hero .streak .num{font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1}
+  .hero .streak .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+  .hero .streak .flame{font-size:22px}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:18px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:13px 15px}
+  .stat .v{font-size:22px;font-weight:800;letter-spacing:-.03em;line-height:1.1}
+  .stat .v small{font-size:13px;color:var(--soft);font-weight:700}
+  .stat .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-top:3px}
+
+  .section-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:22px 0 10px}
+  .section-head h2{margin:0;font-size:15px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+
+  /* ---------- module cards ---------- */
+  .modules{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media (max-width:820px){ .modules{grid-template-columns:1fr} }
+  .mod{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px 17px;display:flex;flex-direction:column;gap:12px;transition:.15s;
+  }
+  .mod:hover{border-color:var(--line-strong);box-shadow:0 4px 14px var(--shadow);transform:translateY(-1px)}
+  .mod .mhead{display:flex;align-items:center;gap:10px}
+  .mod .micon{
+    width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:18px;
+    background:var(--accent-soft);color:var(--accent);flex-shrink:0;
+  }
+  .mod.g .micon{background:var(--violet-soft);color:var(--violet)}
+  .mod.v .micon{background:var(--green-soft);color:var(--green)}
+  .mod.w .micon{background:var(--amber-soft);color:var(--amber)}
+  .mod.p .micon{background:var(--teal-soft);color:var(--teal)}
+  .mod .mtitle{font-weight:700;font-size:14.5px;line-height:1.2}
+  .mod .msub{font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.05em;font-weight:700;margin-top:2px}
+
+  .mmetrics{display:grid;gap:8px}
+  .mmetrics.cols-3{grid-template-columns:repeat(3,1fr)}
+  .mmetrics.cols-2{grid-template-columns:repeat(2,1fr)}
+  .mmetric{
+    background:var(--faint);border:1px solid var(--line);border-radius:10px;
+    padding:11px 12px;min-width:0;
+  }
+  .mmetric b{
+    display:block;font-size:24px;font-weight:800;letter-spacing:-.04em;line-height:1;
+    color:var(--text);font-variant-numeric:tabular-nums;
+  }
+  .mmetric span{
+    display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--soft);font-weight:700;margin-top:6px;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;
+  }
+  .mmetric.hi{background:var(--accent-soft);border-color:var(--accent-line)}
+  .mmetric.hi b{color:var(--accent)}
+  .mod.g .mmetric.hi{background:var(--violet-soft);border-color:var(--violet-line)}
+  .mod.g .mmetric.hi b{color:var(--violet)}
+  .mod.v .mmetric.hi{background:var(--green-soft);border-color:var(--green-line)}
+  .mod.v .mmetric.hi b{color:var(--green)}
+  .mod.w .mmetric.hi{background:var(--amber-soft);border-color:var(--amber-line)}
+  .mod.w .mmetric.hi b{color:var(--amber)}
+  .mod.p .mmetric.hi{background:var(--teal-soft);border-color:var(--teal-line)}
+  .mod.p .mmetric.hi b{color:var(--teal)}
+  .mmetric.warn b{color:var(--amber)}
+  .mmetric.zero b{color:var(--soft)}
+
+  .mod .mgo{
+    margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:8px;
+    padding-top:10px;border-top:1px dashed var(--line);
+  }
+  .mod .mgo .open{
+    background:var(--accent);color:#fff;border:0;padding:7px 13px;border-radius:8px;
+    font-weight:600;font-size:12.5px;
+  }
+  .mod.g .mgo .open{background:var(--violet)}
+  .mod.v .mgo .open{background:var(--green)}
+  .mod.w .mgo .open{background:var(--amber)}
+  .mod.p .mgo .open{background:var(--teal)}
+  .mod .mgo .open:hover{opacity:.9}
+  .mod .mgo .meta{font-size:11.5px;color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  /* heatmap */
+  .heatcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin-bottom:8px}
+  .heatcard .htop{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  .heatcard .htop h3{margin:0}
+  .heatcard .htop .legend{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)}
+  .hmcell{width:11px;height:11px;border-radius:2px;display:inline-block;background:var(--hm0)}
+  .hmcell.l1{background:var(--hm1)} .hmcell.l2{background:var(--hm2)}
+  .hmcell.l3{background:var(--hm3)} .hmcell.l4{background:var(--hm4)}
+  .hmwrap{display:flex;flex-direction:column;gap:5px;overflow-x:auto;padding-bottom:4px}
+  .hm-months{display:grid;grid-auto-flow:column;grid-auto-columns:12px;gap:3px;margin-left:30px;font-size:10.5px;color:var(--muted);white-space:nowrap}
+  .hm-months span{grid-row:1;line-height:1}
+  .hm-body{display:flex;gap:8px;align-items:flex-start}
+  .hm-daylabels{display:grid;grid-template-rows:repeat(7,11px);gap:3px;width:22px;flex-shrink:0;font-size:10px;color:var(--muted);line-height:11px}
+  .hm-daylabels span:nth-child(1){grid-row:2}
+  .hm-daylabels span:nth-child(2){grid-row:4}
+  .hm-daylabels span:nth-child(3){grid-row:6}
+  .hm-weeks{display:flex;gap:3px}
+  .hm-week{display:grid;grid-template-rows:repeat(7,11px);gap:3px}
+  .hm-week .hmcell{width:11px;height:11px}
+  .hm-week .hmcell.out{background:transparent;opacity:.25}
+  .hm-week .hmcell.today{box-shadow:0 0 0 1.5px var(--accent)}
+
+  /* feed */
+  .feed{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .feedit{display:flex;gap:11px;align-items:flex-start;padding:10px 14px;border-bottom:1px solid var(--bar)}
+  .feedit:last-child{border-bottom:0}
+  .feedit .ficon{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-size:13px;flex-shrink:0;background:var(--accent-soft);color:var(--accent)}
+  .feedit.g .ficon{background:var(--violet-soft);color:var(--violet)}
+  .feedit.v .ficon{background:var(--green-soft);color:var(--green)}
+  .feedit.w .ficon{background:var(--amber-soft);color:var(--amber)}
+  .feedit.p .ficon{background:var(--teal-soft);color:var(--teal)}
+  .feedit .fmain{min-width:0;flex:1}
+  .feedit .ftitle{font-weight:500;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .feedit .fsub{font-size:11.5px;color:var(--muted)}
+  .feedit .fmeta{font-size:11px;color:var(--soft);white-space:nowrap;flex-shrink:0}
+
+  /* shared Pace library list */
+  .liblist{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .librow{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--bar);padding:10px 14px;font:inherit;color:inherit}
+  .librow:last-child{border-bottom:0}
+  .librow:hover{background:var(--accent-soft)}
+  .libicon{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-size:13px;flex-shrink:0;background:var(--teal-soft);color:var(--teal)}
+  .libmain{min-width:0;flex:1;display:flex;flex-direction:column}
+  .libtitle{font-weight:500;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .libsub{font-size:11.5px;color:var(--muted)}
+  .libgo{font-size:11.5px;color:var(--muted);white-space:nowrap;flex-shrink:0}
+
+  .empty{background:var(--panel);border:1px dashed var(--line);border-radius:var(--radius);padding:30px 20px;text-align:center;color:var(--muted)}
+
+  .modbanner{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--panel);border-bottom:1px solid var(--line);padding:7px 14px;font-size:12.5px;color:var(--muted)}
+  .modbanner .back{background:transparent;border:1px solid var(--line);border-radius:8px;padding:5px 10px;font-size:12.5px;font-weight:600;color:var(--text)}
+  .modbanner .back:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* ============================================================
+     ROADMAP
+     ============================================================ */
+  .rm-progress{height:8px;border-radius:999px;background:var(--bar);overflow:hidden}
+  .rm-progress > i{display:block;height:100%;background:var(--accent);border-radius:999px;transition:width .25s}
+
+  .phases{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media (max-width:900px){ .phases{grid-template-columns:1fr} }
+
+  .phase{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:15px 16px;display:flex;flex-direction:column;gap:12px;transition:.15s;
+  }
+  .phase:hover{border-color:var(--line-strong)}
+  .phase.active{border-color:var(--accent-line);box-shadow:0 0 0 3px var(--accent-soft)}
+
+  .phead{display:flex;align-items:flex-start;gap:10px}
+  .pnum{font-size:10px;text-transform:uppercase;letter-spacing:.07em;font-weight:800;color:var(--soft);margin-bottom:3px}
+  .ptitle{
+    width:100%;background:transparent;border:1px solid transparent;border-radius:7px;
+    padding:3px 6px;margin-left:-6px;font:inherit;font-weight:700;font-size:15px;
+    color:var(--text);letter-spacing:-.01em;
+  }
+  .ptitle:hover{border-color:var(--line)}
+  .ptitle:focus{outline:none;border-color:var(--accent);background:var(--faint)}
+  .ppct{
+    font-size:11px;font-weight:800;color:var(--accent);background:var(--accent-soft);
+    border:1px solid var(--accent-line);border-radius:999px;padding:3px 9px;flex-shrink:0;
+    font-variant-numeric:tabular-nums;
+  }
+  .ppct.full{color:var(--green);background:var(--green-soft);border-color:var(--green-line)}
+
+  .daygrid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}
+  .day{
+    position:relative;aspect-ratio:1/1;min-width:0;border-radius:6px;border:1px solid var(--line);
+    background:var(--faint);color:var(--soft);font-size:10px;font-weight:700;
+    display:grid;place-items:center;padding:0;transition:.1s;font-variant-numeric:tabular-nums;
+  }
+  .day:hover{border-color:var(--accent);color:var(--accent)}
+  .day.has-tasks:not(.done){background:var(--accent-soft);border-color:var(--accent-line);color:var(--accent)}
+  .day.done{background:var(--accent);border-color:var(--accent);color:#fff}
+  .day.done:hover{background:var(--accent-hover)}
+  .ddot{
+    position:absolute;left:50%;bottom:3px;transform:translateX(-50%);
+    width:4px;height:4px;border-radius:50%;background:var(--accent);pointer-events:none;
+  }
+  .day.done .ddot{background:rgba(255,255,255,.9)}
+
+  .pdatelabel{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);font-weight:600}
+  .pdate{background:var(--faint);border:1px solid var(--line);border-radius:7px;padding:3px 6px;font:inherit;font-size:11px;color:var(--text)}
+  .pdate:focus{outline:none;border-color:var(--accent)}
+
+  .ressect{display:flex;flex-direction:column;gap:8px;border-top:1px dashed var(--line);padding-top:11px}
+  .rsect-title{font-size:10px;text-transform:uppercase;letter-spacing:.07em;font-weight:800;color:var(--soft)}
+  .btn-add{
+    background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-line);
+    border-radius:7px;padding:4px 10px;font-size:11.5px;font-weight:700;
+  }
+  .btn-add:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+  .reslist{display:flex;flex-direction:column;gap:6px}
+  .resrow{display:flex;align-items:center;gap:8px;background:var(--faint);border:1px solid var(--line);border-radius:9px;padding:7px 9px}
+  .resrow.done{opacity:.62}
+  .resrow.done .rtitle{text-decoration:line-through}
+  .ricon{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:11px;flex-shrink:0;background:var(--accent-soft);color:var(--accent)}
+  .ricon.g{background:var(--violet-soft);color:var(--violet)}
+  .ricon.v{background:var(--green-soft);color:var(--green)}
+  .ricon.w{background:var(--amber-soft);color:var(--amber)}
+  .ricon.p{background:var(--teal-soft);color:var(--teal)}
+  .rmain{min-width:0;flex:1;display:flex;flex-direction:column}
+  .rtitle{font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rsub{font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rbtn{
+    width:22px;height:22px;flex-shrink:0;display:grid;place-items:center;padding:0;
+    border-radius:6px;border:1px solid var(--line);background:var(--panel);
+    color:var(--muted);font-size:11px;line-height:1;
+  }
+  .rbtn:hover{border-color:var(--accent);color:var(--accent)}
+  .rbtn.on{background:var(--green-soft);border-color:var(--green-line);color:var(--green)}
+  .taskopen{
+    flex-shrink:0;white-space:nowrap;background:transparent;border:1px solid var(--line);
+    border-radius:7px;padding:3px 8px;font-size:10.5px;font-weight:700;color:var(--accent);
+  }
+  .taskopen:hover{border-color:var(--accent);background:var(--accent-soft)}
+
+  .rsseg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  @media (max-width:600px){ .rsseg{grid-template-columns:repeat(2,1fr)} }
+  .rsseg-item{position:relative;height:28px;border-radius:8px;background:var(--bar);overflow:hidden;display:flex;align-items:center;padding:0 9px}
+  .rsseg-item i{position:absolute;top:0;bottom:0;left:0;background:var(--accent);opacity:.3}
+  .rsseg-item span{position:relative;font-size:11px;font-weight:700;white-space:nowrap}
+
+  .btn{background:var(--accent);color:#fff;border:0;padding:7px 13px;border-radius:8px;font-weight:600;font-size:12.5px;transition:.12s}
+  .btn:hover{opacity:.9}
+  .btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+  .btn.ghost:hover{border-color:var(--red);color:var(--red);opacity:1}
+  .btn.soft{background:var(--faint);color:var(--text);border:1px solid var(--line);padding:7px 13px;border-radius:8px;font-weight:600;font-size:12.5px}
+  .btn.soft:hover{border-color:var(--accent);color:var(--accent)}
+  .btn.soft.on{background:var(--green-soft);border-color:var(--green-line);color:var(--green)}
+  .btn.soft.on:hover{border-color:var(--green)}
+
+  /* modal (shared by phase picker + day planner) */
+  .modal{position:fixed;inset:0;z-index:100;background:rgba(10,12,20,.5);display:flex;align-items:center;justify-content:center;padding:18px}
+  .modal .panel{
+    background:var(--panel);border:1px solid var(--line);border-radius:14px;width:100%;
+    max-width:560px;max-height:82vh;display:flex;flex-direction:column;overflow:hidden;
+    box-shadow:0 24px 60px rgba(0,0,0,.35);
+  }
+  .modal .phead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}
+  .modal .phead h3{margin:0 0 2px}
+  .tabs{display:flex;gap:4px;padding:10px 16px 0;flex-wrap:wrap}
+  .tab{
+    background:transparent;border:1px solid var(--line);border-radius:8px;padding:5px 10px;
+    font-size:12px;font-weight:600;color:var(--muted);display:inline-flex;align-items:center;gap:5px;
+  }
+  .tab:hover{border-color:var(--accent);color:var(--accent)}
+  .tab.active{background:var(--accent-soft);border-color:var(--accent-line);color:var(--accent)}
+  .tab .cnt{font-size:10px;background:var(--bar);border-radius:999px;padding:1px 6px;color:var(--muted);font-weight:700}
+  .tab.active .cnt{background:var(--panel)}
+  .searchwrap{padding:10px 16px 6px}
+  .searchwrap input{width:100%;background:var(--faint);border:1px solid var(--line);border-radius:9px;padding:7px 11px;font:inherit;font-size:13px;color:var(--text)}
+  .searchwrap input:focus{outline:none;border-color:var(--accent)}
+  .plist{flex:1;min-height:0;overflow-y:auto;padding:6px 12px 12px;display:flex;flex-direction:column;gap:5px}
+  .pitem{
+    display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--faint);
+    border:1px solid var(--line);border-radius:9px;padding:9px 11px;font:inherit;color:inherit;
+  }
+  .pitem:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}
+  .pitem:disabled{cursor:default;opacity:.55}
+  .pitem .pimain{min-width:0;flex:1;display:flex;flex-direction:column}
+  .pitem .pititle{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pitem .pisub{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pitem .piadd{font-size:11.5px;font-weight:700;color:var(--accent);white-space:nowrap;flex-shrink:0}
+  .pitem:disabled .piadd{color:var(--green)}
+  .pfoot{padding:12px 16px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}
+
+  /* ---------- day planner modal ---------- */
+  #dayModal .panel{max-height:88vh;max-width:900px}
+  #dayModal .pfoot{justify-content:space-between}
+  .daybody{flex:1;min-height:0;display:flex;flex-direction:column}
+  .dsect-head{
+    flex:0 0 auto;padding:12px 16px 0;
+    display:flex;justify-content:flex-start;align-items:baseline;gap:8px;
+  }
+  .dsect-head .tiny{flex:1}
+  .btn-toggle{
+    background:transparent;border:1px solid var(--line);border-radius:7px;padding:4px 10px;
+    font-size:11.5px;font-weight:700;color:var(--accent);flex-shrink:0;transition:all .12s;
+  }
+  .btn-toggle:hover{border-color:var(--accent);background:var(--accent-soft)}
+
+  /* the day list is scrollable, columns are wide enough,
+     and task names are allowed to wrap instead of being cut off. */
+  #daySection{
+    flex:0 0 auto;max-height:38vh;overflow-y:auto;
+    padding:12px 16px;background:var(--faint);border-bottom:1px solid var(--line);
+  }
+  .daysection-cols{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:14px;align-items:start;
+  }
+  .day-cat-col{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .day-cat-head{
+    display:flex;justify-content:space-between;align-items:center;gap:6px;
+    font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;color:var(--soft);
+    padding:0 2px;
+  }
+  .day-cat-head .cnt{
+    font-size:10px;background:var(--bar);border-radius:999px;padding:1px 6px;color:var(--muted);font-weight:700;
+    text-transform:none;letter-spacing:0;
+  }
+  .day-cat-head.g{color:var(--violet)} .day-cat-head.v{color:var(--green)}
+  .day-cat-head.w{color:var(--amber)}  .day-cat-head.p{color:var(--teal)}
+  .day-cat-rows{display:flex;flex-direction:column;gap:6px}
+
+  #daySection .taskrow{align-items:flex-start;padding:8px 9px}
+  #daySection .rmain{gap:2px;padding-top:1px}
+  #daySection .rtitle{
+    white-space:normal;overflow:visible;text-overflow:clip;
+    overflow-wrap:anywhere;line-height:1.3;font-weight:600;
+  }
+  #daySection .rsub{
+    white-space:normal;overflow:visible;text-overflow:clip;
+    overflow-wrap:anywhere;line-height:1.35;
+  }
+  #daySection .rbtn,
+  #daySection .taskopen,
+  #daySection .ricon{margin-top:1px}
+
+  .dt-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  #dayModuleHead{
+    flex:0 0 auto;padding:10px 16px;
+    display:flex;justify-content:space-between;align-items:baseline;gap:8px;
+  }
+  #dayPickerBody{flex:1;min-height:0;display:flex;flex-direction:column}
+  .taskrow{
+    display:flex;align-items:center;gap:8px;background:var(--panel);
+    border:1px solid var(--line);border-radius:9px;padding:6px 8px;
+  }
+  .taskrow.done{opacity:.62}
+  .taskrow.done .rtitle{text-decoration:line-through}
+
+  @media (max-width:560px){
+    header{padding:7px 10px;gap:8px}
+    .brand .label{display:none}
+    nav a{padding:6px 9px;font-size:12.5px;gap:4px}
+    nav a .label{display:none}
+    nav a .icon{font-size:15px}
+    #overview,#roadmap{padding:16px 14px 40px}
+    .hero{padding:18px}
+    .daysection-cols{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand" title="Language Study Hub">
+    <span class="dot"></span><span class="label">Language Study Hub</span>
+  </div>
+  <nav id="nav" aria-label="Modules">
+    <a href="#overview"   data-route="overview"   title="Overview"><span class="icon">🏠</span><span class="label">Overview</span></a>
+    <a href="#roadmap"    data-route="roadmap"    title="Study Roadmap"><span class="icon">🗺️</span><span class="label">Roadmap</span></a>
+    <a href="#grammar"    data-route="grammar"    title="Grammar Study"><span class="icon">📘</span><span class="label">Grammar</span></a>
+    <a href="#vocabulary" data-route="vocabulary" title="30 Words a Day"><span class="icon">📚</span><span class="label">Vocabulary</span></a>
+    <a href="#writepath"  data-route="writepath"  title="WritePath"><span class="icon">✍️</span><span class="label">WritePath</span></a>
+    <a href="#pace"       data-route="pace"       title="Pace — a metronome for reading"><span class="icon">📖</span><span class="label">Pace</span></a>
+  </nav>
+  <button class="iconbtn" id="themeBtn" type="button" title="Toggle theme" aria-label="Toggle theme">🌙</button>
+</header>
+
+<main>
+  <section id="overview" class="page">
+    <div class="wrap" id="overviewContent"></div>
+  </section>
+
+  <section id="roadmap" class="page" hidden>
+    <div class="wrap" id="roadmapContent"></div>
+  </section>
+
+  <section id="moduleView" class="page" hidden>
+    <div class="modbanner">
+      <button class="back" id="backBtn" type="button">← Back to overview</button>
+      <span id="modTitle">Module</span>
+      <span style="width:1px"></span>
+    </div>
+    <div style="position:absolute;top:38px;left:0;right:0;bottom:0;">
+      <iframe id="frame" title="Module content" allow="clipboard-read; clipboard-write"></iframe>
+    </div>
+  </section>
+</main>
+
+<!-- ============ phase resource picker ============ -->
+<div class="modal" id="picker" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
+    <div class="phead">
+      <div>
+        <h3 id="pickerTitle">Add resource</h3>
+        <div class="tiny muted" id="pickerSub"></div>
+      </div>
+      <button class="iconbtn" id="pickerClose" type="button" aria-label="Close">✕</button>
+    </div>
+    <div class="tabs" id="pickerTabs"></div>
+    <div class="searchwrap">
+      <input id="pickerSearch" type="search" placeholder="Search this module…" autocomplete="off">
+    </div>
+    <div class="plist" id="pickerList"></div>
+    <div class="pfoot">
+      <button class="btn" id="pickerDone" type="button">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ day planner (Resources + Tasks tabs) ============ -->
+<div class="modal" id="dayModal" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="dayTitle">
+    <div class="phead">
+      <div style="min-width:0">
+        <h3 id="dayTitle">Day 1</h3>
+        <div class="tiny muted" id="daySub"></div>
+      </div>
+      <button class="iconbtn" id="dayClose" type="button" aria-label="Close">✕</button>
+    </div>
+
+    <div class="tabs" id="dayModeTabs"></div>
+
+    <div class="daybody">
+      <div class="dsect-head">
+        <span class="rsect-title" id="dayAddLabel">Today's tasks</span>
+        <span class="tiny muted" id="dayAddHint"></span>
+      </div>
+      <div id="daySection"></div>
+      <div id="dayModuleHead">
+        <span class="rsect-title" id="dayPickLabel">Add from</span>
+        <button type="button" class="btn-toggle" id="dayPickerToggle" aria-expanded="false">Show</button>
+      </div>
+      <div id="dayPickerBody" hidden>
+        <div class="tabs" id="dayTabs"></div>
+        <div class="searchwrap">
+          <input id="daySearch" type="search" placeholder="Search…" autocomplete="off">
+        </div>
+        <div class="plist" id="dayList"></div>
+      </div>
+    </div>
+
+    <div class="pfoot">
+      <button class="btn soft" id="dayToggleComplete" type="button">Mark day complete</button>
+      <button class="btn" id="dayDone" type="button">Done</button>
+    </div>
+  </div>
+</div>
+
+<noscript><p style="padding:20px">Please enable JavaScript to use the Language Study Hub.</p></noscript>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ============================================================
+     CONSTANTS
+     ============================================================ */
+  const KEYS = {
+    grammar:  'grammar-study-app-v6',
+    vocab:    'words30.v2',
+    writepath:'writepath.v1',
+    roadmap:  'hub-roadmap.v1',
+    pacePhrases:  'pace-highlight-phrases',
+    paceSpeech:   'pace-connected-speech',
+    paceSettings: 'pace-settings',
+    paceLastText: 'last-text'
+  };
+  const THEME_KEY = 'hub-theme';
+
+  const MODULES = {
+    grammar:    { file:'GrammarStudy.html', name:'Grammar Study',  icon:'📘', cls:'g' },
+    vocabulary: { file:'Vocabulary.html',   name:'30 Words a Day', icon:'📚', cls:'v' },
+    writepath:  { file:'WritePath.html',    name:'WritePath',      icon:'✍️', cls:'w' },
+    pace:       { file:'Pace-Reading.html', name:'Pace',           icon:'📖', cls:'p' }
+  };
+
+  const PACE_DB    = 'pace-library-db';
+  const PACE_DB_V  = 1;
+  const PACE_STORE = 'texts';
+
+  const PHASE_COUNT = 4;
+  const PHASE_DAYS  = 20;
+  const PHASE_PRESETS = ['Foundations','Momentum','Expansion','Mastery'];
+
+  const RES_MODULES = {
+    grammar:    { name:'Grammar',    icon:'📘', cls:'g', kind:'Topics'   },
+    vocabulary: { name:'Vocabulary', icon:'📚', cls:'v', kind:'Review'   },
+    writepath:  { name:'WritePath',  icon:'✍️', cls:'w', kind:'Sessions' },
+    pace:       { name:'Pace',       icon:'📖', cls:'p', kind:'Library'  }
+  };
+  const RES_ORDER = ['grammar','vocabulary','writepath','pace'];
+
+  /* ============================================================
+     TINY HELPERS
+     ============================================================ */
+  const $  = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+  const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const safeParse = (raw, fb) => { try{ if(!raw) return fb; const v = JSON.parse(raw); return v||fb; }catch(e){ return fb; } };
+  const pct = (n, d) => d ? Math.round((n/d)*100) : 0;
+  const uid = (p) => p + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+
+  function dateKey(d){
+    const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+    return y+'-'+m+'-'+day;
+  }
+  const todayKey = () => dateKey(new Date());
+
+  function toDayKey(v){
+    if(!v) return null;
+    if(typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
+    const d = new Date(v);
+    if(isNaN(d)) return null;
+    return dateKey(d);
+  }
+  function toTsFromDay(v){
+    if(!v) return null;
+    if(typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v)){
+      const [y,m,d] = v.split('-').map(Number);
+      return new Date(y, m-1, d).getTime();
+    }
+    const d = new Date(v);
+    return isNaN(d) ? null : d.getTime();
+  }
+  function addDays(dayKeyStr, n){
+    const ts = toTsFromDay(dayKeyStr);
+    if(ts == null) return null;
+    const d = new Date(ts);
+    d.setDate(d.getDate() + n);
+    return dateKey(d);
+  }
+  function fmtRel(ts){
+    if(!ts) return '';
+    const diff = Date.now() - ts;
+    const m = Math.floor(diff/60000);
+    if(m < 1) return 'just now';
+    if(m < 60) return m+'m ago';
+    const h = Math.floor(m/60);
+    if(h < 24) return h+'h ago';
+    const d = Math.floor(h/24);
+    if(d < 7) return d+'d ago';
+    return new Date(ts).toLocaleDateString(undefined,{month:'short',day:'numeric'});
+  }
+  function fmtTime(sec){
+    sec = Math.round(sec||0);
+    const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60);
+    if(h) return h+'h '+m+'m';
+    if(m) return m+'m';
+    return sec+'s';
+  }
+  function fmtDay(dayKeyStr){
+    const ts = toTsFromDay(dayKeyStr);
+    if(ts == null) return dayKeyStr || '';
+    return new Date(ts).toLocaleDateString(undefined,{weekday:'short', month:'short', day:'numeric'});
+  }
+  function num(n){
+    const v = Number(n)||0;
+    return v.toLocaleString();
+  }
+
+  /* ============================================================
+     DATA LOADING
+     ============================================================ */
+  function readGrammar(){
+    const d = safeParse(localStorage.getItem(KEYS.grammar), null);
+    if(!d) return { topics:[], materials:[], exercises:[], review:[], attempts:[], studySeconds:0, roadmap:{phases:[]} };
+    return {
+      topics: d.topics || [],
+      materials: d.materials || [],
+      exercises: d.exercises || [],
+      review: d.review || d.reviewItems || [],
+      attempts: d.attempts || [],
+      studySeconds: d.studySeconds || 0,
+      roadmap: d.roadmap || { phases: [] }
+    };
+  }
+  function readVocab(){
+    const d = safeParse(localStorage.getItem(KEYS.vocab), null);
+    if(!d) return { settings:{target:30}, items:[], days:{}, resources:[], challenges:[] };
+    return {
+      settings: d.settings || { target:30 },
+      items: d.items || [],
+      days: d.days || {},
+      resources: d.resources || [],
+      challenges: d.challenges || []
+    };
+  }
+  function readWritePath(){
+    const d = safeParse(localStorage.getItem(KEYS.writepath), null);
+    if(!d) return { sessions:[], library:[] };
+    const s = d.state || {};
+    return {
+      sessions: s.sessions || [],
+      library:  s.library  || []
+    };
+  }
+
+  function readPaceLibrary(){
+    return new Promise(resolve => {
+      if(!window.indexedDB){ resolve([]); return; }
+      let req;
+      try{ req = indexedDB.open(PACE_DB, PACE_DB_V); }
+      catch(e){ resolve([]); return; }
+
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if(!db.objectStoreNames.contains(PACE_STORE)){
+          const store = db.createObjectStore(PACE_STORE, { keyPath:'id' });
+          store.createIndex('updatedAt','updatedAt',{ unique:false });
+        }
+      };
+      req.onsuccess = () => {
+        const db = req.result;
+        if(!db.objectStoreNames.contains(PACE_STORE)){ db.close(); resolve([]); return; }
+        try{
+          const tx = db.transaction(PACE_STORE, 'readonly');
+          const r  = tx.objectStore(PACE_STORE).getAll();
+          r.onsuccess = () => { const out = r.result || []; db.close(); resolve(out); };
+          r.onerror   = () => { db.close(); resolve([]); };
+        }catch(e){ try{ db.close(); }catch(_){} resolve([]); }
+      };
+      req.onerror   = () => resolve([]);
+      req.onblocked = () => resolve([]);
+    });
+  }
+
+  function readPaceLocal(){
+    const phrases = safeParse(localStorage.getItem(KEYS.pacePhrases), []);
+    const speech  = safeParse(localStorage.getItem(KEYS.paceSpeech), []);
+    const settings= safeParse(localStorage.getItem(KEYS.paceSettings), {});
+    let lastText = '';
+    try{ lastText = localStorage.getItem(KEYS.paceLastText) || ''; }catch(e){}
+    return {
+      phrases:  Array.isArray(phrases) ? phrases : [],
+      speech:   Array.isArray(speech)  ? speech  : [],
+      settings: (settings && typeof settings === 'object') ? settings : {},
+      lastText: lastText
+    };
+  }
+
+  function readPace(){
+    const local = readPaceLocal();
+    return readPaceLibrary().then(library => Object.assign(local, { library: library }));
+  }
+
+  let hubData = null;
+  function loadAll(){
+    return readPace().then(pace => {
+      hubData = {
+        grammar:   readGrammar(),
+        vocab:     readVocab(),
+        writepath: readWritePath(),
+        pace:      pace
+      };
+      return hubData;
+    });
+  }
+
+  /* ============================================================
+     ROADMAP — storage
+     ============================================================ */
+  function defaultRoadmap(){
+    return {
+      version: 1,
+      phases: Array.from({ length: PHASE_COUNT }, (_, i) => ({
+        id: 'phase-' + (i+1),
+        title: PHASE_PRESETS[i] || ('Phase ' + (i+1)),
+        days: PHASE_DAYS,
+        startDate: null,
+        completedDays: [],
+        completedOn: {},
+        resources: [],
+        dayTasks: {}
+      }))
+    };
+  }
+
+  function normalizeTask(t){
+    return {
+      id:      String(t.id || uid('task-')),
+      module:  String(t.module),
+      refId:   String(t.refId != null ? t.refId : ''),
+      label:   String(t.label || 'Untitled'),
+      sub:     String(t.sub || ''),
+      meta:    String(t.meta || ''),
+      done:    !!t.done,
+      doneAt:  (t.doneAt && /^\d{4}-\d{2}-\d{2}$/.test(String(t.doneAt))) ? String(t.doneAt) : null,
+      addedAt: Number(t.addedAt) || Date.now()
+    };
+  }
+
+  function normalizeRoadmap(raw){
+    const base = defaultRoadmap();
+    if(!raw || !Array.isArray(raw.phases)) return base;
+
+    const out = { version: 1, phases: [] };
+    for(let i = 0; i < PHASE_COUNT; i++){
+      const src  = raw.phases[i] || {};
+      const days = Number(src.days) > 0 ? Math.round(Number(src.days)) : PHASE_DAYS;
+
+      const done = Array.isArray(src.completedDays)
+        ? Array.from(new Set(src.completedDays.map(Number).filter(n => n >= 1 && n <= days))).sort((a,b)=>a-b)
+        : [];
+
+      const on = (src.completedOn && typeof src.completedOn === 'object') ? src.completedOn : {};
+
+      const resources = Array.isArray(src.resources)
+        ? src.resources.filter(r => r && r.module).map(r => ({
+            id:      String(r.id || uid('res-')),
+            module:  String(r.module),
+            refId:   String(r.refId != null ? r.refId : ''),
+            label:   String(r.label || 'Untitled'),
+            sub:     String(r.sub || ''),
+            meta:    String(r.meta || ''),
+            done:    !!r.done,
+            addedAt: Number(r.addedAt) || Date.now()
+          }))
+        : [];
+
+      const dayTasks = {};
+      if(src.dayTasks && typeof src.dayTasks === 'object'){
+        Object.keys(src.dayTasks).forEach(k => {
+          const dn = Number(k);
+          if(!(dn >= 1 && dn <= days)) return;
+          const arr = src.dayTasks[k];
+          if(!Array.isArray(arr)) return;
+          const list = arr.filter(t => t && t.module).map(normalizeTask);
+          if(list.length) dayTasks[String(dn)] = list;
+        });
+      }
+
+      out.phases.push({
+        id:            String(src.id || base.phases[i].id),
+        title:         (typeof src.title === 'string' && src.title.trim()) ? src.title.trim() : base.phases[i].title,
+        days:          days,
+        startDate:     (typeof src.startDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(src.startDate)) ? src.startDate : null,
+        completedDays: done,
+        completedOn:   on,
+        resources:     resources,
+        dayTasks:      dayTasks
+      });
+    }
+    return out;
+  }
+
+  function readRoadmap(){
+    return normalizeRoadmap(safeParse(localStorage.getItem(KEYS.roadmap), null));
+  }
+  function saveRoadmap(rm){
+    try{ localStorage.setItem(KEYS.roadmap, JSON.stringify(rm)); }catch(e){}
+  }
+
+  function getDayTasks(phase, n){
+    if(!phase.dayTasks) phase.dayTasks = {};
+    const k = String(n);
+    if(!Array.isArray(phase.dayTasks[k])) phase.dayTasks[k] = [];
+    return phase.dayTasks[k];
+  }
+  function isDayDone(phase, n){
+    if(phase.completedDays.indexOf(n) >= 0) return true;
+    const tasks = (phase.dayTasks && phase.dayTasks[String(n)]) || [];
+    return tasks.length > 0 && tasks.every(t => t.done);
+  }
+  function phaseDoneCount(phase){
+    let c = 0;
+    for(let n = 1; n <= phase.days; n++) if(isDayDone(phase, n)) c++;
+    return c;
+  }
+  function togglePhaseDay(phase, day){
+    const i = phase.completedDays.indexOf(day);
+    if(i >= 0){
+      phase.completedDays.splice(i, 1);
+      if(phase.completedOn) delete phase.completedOn[String(day)];
+    }else{
+      phase.completedDays.push(day);
+      phase.completedDays.sort((a,b)=>a-b);
+      if(!phase.completedOn) phase.completedOn = {};
+      phase.completedOn[String(day)] = todayKey();
+    }
+  }
+
+  /* ============================================================
+     ROADMAP — pickable resources
+     ============================================================ */
+  function collectSources(data){
+    data = data || {};
+    const g = data.grammar   || {};
+    const v = data.vocab     || {};
+    const w = data.writepath || {};
+    const p = data.pace      || {};
+
+    const out = { grammar: [], vocabulary: [], writepath: [], pace: [] };
+
+    (g.topics || []).forEach((t, i) => {
+      const metaBits = [t.level, t.category, t.description ? String(t.description).slice(0,40) : ''].filter(Boolean);
+      out.grammar.push({
+        refId: 'topic:' + String(t.id != null ? t.id : i),
+        label: t.title || t.name || ('Topic ' + (i+1)),
+        meta:  metaBits.join(' · '),
+        sub:   'Topic'
+      });
+    });
+
+    const reviewArr = Array.isArray(g.review) ? g.review
+      : (g.review && Array.isArray(g.review.items) ? g.review.items : []);
+    const reviewSrc = reviewArr.length ? reviewArr : (g.materials || []);
+    reviewSrc.forEach((r, i) => {
+      const metaBits = [];
+      if(r.type) metaBits.push(r.type);
+      if(r.level) metaBits.push(r.level);
+      out.grammar.push({
+        refId: 'review:' + String(r.id != null ? r.id : i),
+        label: r.title || r.name || r.label || r.term || r.question || r.url || ('Review ' + (i+1)),
+        meta:  metaBits.join(' · '),
+        sub:   'Review'
+      });
+    });
+
+    const vToday = todayKey();
+    (v.items || []).filter(it => !it.inbox && it.nextReview && it.nextReview <= vToday).forEach((it, i) => {
+      out.vocabulary.push({
+        refId: String(it.id != null ? it.id : (it.term || 'vitem-' + i)),
+        label: it.term || ('Word ' + (i+1)),
+        meta:  it.meaning ? String(it.meaning).slice(0, 60) : '',
+        sub:   'Review'
+      });
+    });
+
+    (w.sessions || []).forEach((s, i) => {
+      const n = (s.sentences || []).length;
+      out.writepath.push({
+        refId: String(s.id != null ? s.id : 'session-' + i),
+        label: s.title || s.topic || ('Session ' + (i+1)),
+        meta:  n ? (n + ' sentence' + (n === 1 ? '' : 's')) : '',
+        sub:   'Session'
+      });
+    });
+
+    (p.library || []).forEach((b, i) => {
+      const wc  = Number(b.wordCount) || 0;
+      const pos = Number(b.lastIndex) || 0;
+      out.pace.push({
+        refId: String(b.id != null ? b.id : 'text-' + i),
+        label: b.title || 'Untitled',
+        meta:  (wc ? num(wc) + ' words' : '') + (pos > 0 ? (wc ? ' · ' : '') + 'in progress' : ''),
+        sub:   'Library'
+      });
+    });
+
+    return out;
+  }
+
+  function findSource(module, refId){
+    const sources = collectSources(hubData);
+    return (sources[module] || []).find(s => s.refId === refId) || null;
+  }
+
+  /* ============================================================
+     METRICS
+     ============================================================ */
+  function grammarMetrics(g){
+    return { topics: g.topics.length, materials: g.materials.length, exercises: g.exercises.length };
+  }
+  function vocabMetrics(v){
+    const T = todayKey();
+    const due   = v.items.filter(i => !i.inbox && i.nextReview && i.nextReview <= T).length;
+    const inbox = v.items.filter(i => i.inbox).length;
+    return { review: due, inbox };
+  }
+  function writingMetrics(w){
+    return { sessions: w.sessions.length, library: w.library.length };
+  }
+  function paceMetrics(p){
+    const lib = p.library || [];
+    const words = lib.reduce((sum, it) => sum + (Number(it.wordCount) || 0), 0);
+    return {
+      library:    lib.length,
+      inProgress: lib.filter(it => (Number(it.lastIndex) || 0) > 0).length,
+      phrases:    (p.phrases || []).length,
+      speech:     (p.speech  || []).length,
+      words:      words
+    };
+  }
+  function roadmapMetrics(rm){
+    const totalDays = rm.phases.reduce((s,p)=>s+p.days, 0);
+    let doneDays = 0;
+    rm.phases.forEach(p => { doneDays += phaseDoneCount(p); });
+
+    const allRes  = rm.phases.reduce((s,p)=>s+p.resources.length, 0);
+    const doneRes = rm.phases.reduce((s,p)=>s+p.resources.filter(r=>r.done).length, 0);
+
+    let allTasks = 0, doneTasks = 0;
+    rm.phases.forEach(p => {
+      Object.keys(p.dayTasks || {}).forEach(k => {
+        (p.dayTasks[k] || []).forEach(t => { allTasks++; if(t.done) doneTasks++; });
+      });
+    });
+
+    const phasesDone = rm.phases.filter(p => phaseDoneCount(p) >= p.days).length;
+    let activeIdx = rm.phases.findIndex(p => phaseDoneCount(p) < p.days);
+    if(activeIdx < 0) activeIdx = rm.phases.length - 1;
+
+    return { totalDays, doneDays, allRes, doneRes, allTasks, doneTasks, phasesDone, activeIdx };
+  }
+
+  /* ============================================================
+     UNIFIED ACTIVITY MAP + STREAK
+     ============================================================ */
+  function buildActivityMap(data){
+    const map = {};
+    const add = (key) => { if(!key) return; map[key] = (map[key]||0) + 1; };
+
+    data.grammar.attempts.forEach(a => add(toDayKey(a.ts)));
+
+    (data.grammar.roadmap.phases||[]).forEach(p => {
+      if(!p.startDate) return;
+      (p.completedDays||[]).forEach(dn => add(toDayKey(p.startDate + (dn-1) * 86400000)));
+    });
+
+    data.vocab.items.forEach(it => {
+      [it.dateAdded, it.studiedAt, it.practicedAt, it.activeAt, it.masteredAt].forEach(d => add(toDayKey(d)));
+    });
+
+    data.writepath.sessions.forEach(s => {
+      (s.sentences||[]).forEach(x => add(toDayKey(x.at)));
+    });
+
+    (data.pace.library||[]).forEach(it => {
+      add(toDayKey(it.updatedAt || it.savedAt));
+    });
+
+    readRoadmap().phases.forEach(p => {
+      p.completedDays.forEach(dn => {
+        const stamped = p.completedOn && p.completedOn[String(dn)];
+        if(stamped) add(toDayKey(stamped));
+        else if(p.startDate) add(addDays(p.startDate, dn - 1));
+      });
+      Object.keys(p.dayTasks || {}).forEach(k => {
+        (p.dayTasks[k] || []).forEach(t => {
+          if(t.done && t.doneAt) add(toDayKey(t.doneAt));
+        });
+      });
+    });
+
+    return map;
+  }
+  function computeStreak(activity){
+    let n = 0;
+    const d = new Date(); d.setHours(0,0,0,0);
+    if(!activity[dateKey(d)]) d.setDate(d.getDate()-1);
+    let guard = 0;
+    while(activity[dateKey(d)] && guard++ < 500){
+      n++;
+      d.setDate(d.getDate()-1);
+    }
+    return n;
+  }
+  function activeDaysLast(activity, days){
+    let n = 0;
+    const d = new Date(); d.setHours(0,0,0,0);
+    for(let i=0;i<days;i++){
+      if(activity[dateKey(d)]) n++;
+      d.setDate(d.getDate()-1);
+    }
+    return n;
+  }
+
+  /* ============================================================
+     FEED
+     ============================================================ */
+  function buildFeed(data){
+    const items = [];
+
+    data.grammar.attempts.forEach(a => {
+      const ex = data.grammar.exercises.find(e => e.id === a.exerciseId);
+      if(!ex) return;
+      const t = data.grammar.topics.find(x => x.id === ex.topic_id);
+      items.push({
+        ts: a.ts, cls:'g', icon:'📘',
+        title: (ex.question||'').split('\n')[0].slice(0, 90),
+        sub: (t ? t.title + ' · ' : '') + (a.correct ? 'Correct' : 'Incorrect')
+      });
+    });
+
+    data.vocab.items.forEach(it => {
+      const events = [];
+      const push = (d, label) => { const ts = toTsFromDay(d); if(ts) events.push({ts, label}); };
+      push(it.dateAdded, 'Added');
+      push(it.studiedAt, 'Studied');
+      push(it.practicedAt, 'Practiced');
+      push(it.activeAt, 'Reached active');
+      push(it.masteredAt, 'Mastered');
+      if(!events.length) return;
+      const latest = events.reduce((a,b) => a.ts > b.ts ? a : b);
+      items.push({
+        ts: latest.ts, cls:'v', icon:'📚',
+        title: it.term,
+        sub: latest.label + (it.meaning ? ' · ' + it.meaning.slice(0, 50) : '')
+      });
+    });
+
+    data.writepath.sessions.forEach(s => {
+      (s.sentences||[]).forEach(x => {
+        items.push({
+          ts: x.at, cls:'w', icon:'✍️',
+          title: x.text.slice(0, 100),
+          sub: s.title || s.topic || 'Writing session'
+        });
+      });
+    });
+
+    (data.pace.library||[]).forEach(it => {
+      const ts = Number(it.updatedAt || it.savedAt) || null;
+      if(!ts) return;
+      const wc = Number(it.wordCount) || 0;
+      const pos = Number(it.lastIndex) || 0;
+      items.push({
+        ts: ts, cls:'p', icon:'📖',
+        title: it.title || 'Untitled',
+        sub: 'Pace library · ' + num(wc) + ' word' + (wc===1?'':'s')
+             + (pos > 0 ? ' · in progress' : ' · not started')
+      });
+    });
+
+    return items.filter(x => x.ts).sort((a,b) => b.ts - a.ts).slice(0, 20);
+  }
+
+  /* ============================================================
+     HEATMAP
+     ============================================================ */
+  function hmLevel(n){
+    if(!n) return 0;
+    if(n <= 2) return 1;
+    if(n <= 5) return 2;
+    if(n <= 9) return 3;
+    return 4;
+  }
+  function heatmapHTML(activity, weeks){
+    weeks = weeks || 15;
+    const today = new Date(); today.setHours(0,0,0,0);
+    const start = new Date(today);
+    start.setDate(start.getDate() - start.getDay() - (weeks - 1) * 7);
+
+    const monthLabels = [];
+    const monthsSeen = new Set();
+    {
+      const cur = new Date(start);
+      for(let w = 0; w < weeks; w++){
+        const m = cur.getMonth();
+        const k = cur.getFullYear() + '-' + m;
+        if(!monthsSeen.has(k)){
+          monthsSeen.add(k);
+          monthLabels.push({ w, label: cur.toLocaleString(undefined, { month:'short' }) });
+        }
+        cur.setDate(cur.getDate() + 7);
+      }
+    }
+
+    let cellsHTML = '';
+    const cursor = new Date(start);
+    for(let w = 0; w < weeks; w++){
+      let weekHTML = '';
+      for(let d = 0; d < 7; d++){
+        const k = dateKey(cursor);
+        const isFuture = cursor.getTime() > today.getTime();
+        const count = activity[k] || 0;
+        const lvl = isFuture ? 0 : hmLevel(count);
+        const isToday = k === dateKey(today);
+        const cls = 'hmcell' + (isFuture ? ' out' : ' l'+lvl) + (isToday ? ' today' : '');
+        const title = isFuture ? '' : cursor.toDateString() + ' — ' + count + ' activit' + (count === 1 ? 'y' : 'ies');
+        weekHTML += `<span class="${cls}" title="${esc(title)}"></span>`;
+        cursor.setDate(cursor.getDate() + 1);
+      }
+      cellsHTML += `<div class="hm-week">${weekHTML}</div>`;
+    }
+
+    const monthsHTML = monthLabels
+      .map(m => `<span style="grid-column:${m.w+1}">${esc(m.label)}</span>`)
+      .join('');
+
+    return `
+      <div class="hmwrap">
+        <div class="hm-months">${monthsHTML}</div>
+        <div class="hm-body">
+          <div class="hm-daylabels"><span>Mon</span><span>Wed</span><span>Fri</span></div>
+          <div class="hm-weeks">${cellsHTML}</div>
+        </div>
+      </div>`;
+  }
+
+  /* ============================================================
+     OVERVIEW
+     ============================================================ */
+  let overviewToken = 0;
+
+  function renderOverview(){
+    const token = ++overviewToken;
+    loadAll().then(function(data){
+      if(token !== overviewToken) return;
+      paintOverview(data);
+    });
+  }
+
+  function paintOverview(data){
+    const g = grammarMetrics(data.grammar);
+    const v = vocabMetrics(data.vocab);
+    const w = writingMetrics(data.writepath);
+    const p = paceMetrics(data.pace);
+
+    const rm  = readRoadmap();
+    const rmm = roadmapMetrics(rm);
+
+    const activity = buildActivityMap(data);
+    const streak = computeStreak(activity);
+    const active15 = activeDaysLast(activity, 15);
+    const allActiveDays = Object.keys(activity).length;
+
+    const hasAnyData = g.exercises || g.topics || g.materials
+                    || v.review || v.inbox
+                    || w.sessions || w.library
+                    || p.library || p.phrases || p.speech
+                    || rmm.doneDays || rmm.allRes || rmm.allTasks
+                    || allActiveDays;
+
+    const grammarCard = card({
+      cls:'g', icon:'📘', title:'Grammar Study', sub:'Topics & exercises',
+      metrics:[
+        { label:'Topics',    value: g.topics,    hi:true },
+        { label:'Materials', value: g.materials },
+        { label:'Exercises', value: g.exercises }
+      ],
+      cols: 3,
+      meta: g.exercises
+        ? g.exercises + ' exercise' + (g.exercises===1?'':'s') + ' · ' + g.materials + ' material' + (g.materials===1?'':'s')
+        : 'Not started',
+      route:'grammar'
+    });
+
+    const vocabCard = card({
+      cls:'v', icon:'📚', title:'30 Words a Day', sub:'Vocabulary & SRS',
+      metrics:[
+        { label:'Words to review', value: v.review, hi: v.review > 0, warn: v.review > 0 },
+        { label:'Inbox',           value: v.inbox,  hi: v.inbox  > 0 }
+      ],
+      cols: 2,
+      meta: (v.review + v.inbox) > 0
+        ? v.review + ' due · ' + v.inbox + ' to triage'
+        : 'Nothing waiting',
+      route:'vocabulary'
+    });
+
+    const writingCard = card({
+      cls:'w', icon:'✍️', title:'WritePath', sub:'Guided writing',
+      metrics:[
+        { label:'Sessions',      value: w.sessions, hi:true },
+        { label:'Library terms', value: w.library }
+      ],
+      cols: 2,
+      meta: w.sessions
+        ? w.sessions + ' session' + (w.sessions===1?'':'s') + ' · ' + w.library + ' library term' + (w.library===1?'':'s')
+        : 'Not started',
+      route:'writepath'
+    });
+
+    const paceCard = card({
+      cls:'p', icon:'📖', title:'Pace', sub:'Guided reading',
+      metrics:[
+        { label:'Library texts', value: p.library,    hi:true },
+        { label:'In progress',   value: p.inProgress },
+        { label:'Phrases',       value: p.phrases }
+      ],
+      cols: 3,
+      meta: p.library
+        ? num(p.words) + ' words saved · ' + p.speech + ' speech link' + (p.speech===1?'':'s')
+        : 'No saved texts yet',
+      route:'pace'
+    });
+
+    const roadmapStripHTML = `
+      <div class="section-head">
+        <h2>Roadmap</h2>
+        <span class="tiny muted">${rm.phases.length} phases · ${PHASE_DAYS} days each</span>
+      </div>
+      <div class="heatcard">
+        <div class="htop">
+          <h3>${rmm.doneDays} of ${rmm.totalDays} days complete</h3>
+          <span class="tiny muted">${rmm.doneTasks}/${rmm.allTasks} tasks done · ${rmm.phasesDone}/${rm.phases.length} phases finished</span>
+        </div>
+        <div class="rsseg">
+          ${rm.phases.map((ph, i) => {
+            const d  = phaseDoneCount(ph);
+            const pc = pct(d, ph.days);
+            return `<div class="rsseg-item" title="Phase ${i+1} · ${esc(ph.title)} — ${d}/${ph.days} days">
+              <i style="width:${pc}%"></i>
+              <span>Phase ${i+1}</span>
+            </div>`;
+          }).join('')}
+        </div>
+        <div class="row" style="margin-top:12px;justify-content:flex-end">
+          <button class="btn" type="button" data-route="roadmap">Open roadmap →</button>
+        </div>
+      </div>`;
+
+    const paceLibSorted = (data.pace.library || []).slice().sort(function(a,b){
+      return (Number(b.updatedAt)||Number(b.savedAt)||0) - (Number(a.updatedAt)||Number(a.savedAt)||0);
+    });
+
+    const paceLibHTML = paceLibSorted.length ? `
+      <div class="section-head">
+        <h2>Pace library</h2>
+        <span class="tiny muted">${paceLibSorted.length} saved text${paceLibSorted.length===1?'':'s'} — shared with the Pace module</span>
+      </div>
+      <div class="liblist">
+        ${paceLibSorted.map(it => {
+          const pos = Number(it.lastIndex) || 0;
+          const wc  = Number(it.wordCount) || 0;
+          const prog = pos > 0 ? ' · in progress' : '';
+          return `
+            <button class="librow" data-route="pace" type="button">
+              <span class="libicon">📖</span>
+              <span class="libmain">
+                <span class="libtitle">${esc(it.title || 'Untitled')}</span>
+                <span class="libsub">${esc(num(wc))} words · saved ${esc(fmtRel(Number(it.savedAt)||Number(it.updatedAt)))}${esc(prog)}</span>
+              </span>
+              <span class="libgo">Open →</span>
+            </button>`;
+        }).join('')}
+      </div>` : '';
+
+    const feedItems = buildFeed(data);
+    const feedHTML = feedItems.length
+      ? feedItems.map(f => `
+        <div class="feedit ${f.cls}">
+          <div class="ficon">${f.icon}</div>
+          <div class="fmain">
+            <div class="ftitle">${esc(f.title || '(empty)')}</div>
+            <div class="fsub">${esc(f.sub || '')}</div>
+          </div>
+          <div class="fmeta">${esc(fmtRel(f.ts))}</div>
+        </div>`).join('')
+      : `<div class="empty small">No activity yet — open a module to get started.</div>`;
+
+    const totalStudy = data.grammar.studySeconds;
+
+    const html = `
+      <div class="hero">
+        <div>
+          <h1>Your language study at a glance</h1>
+          <p>Live numbers pulled straight from each module. Open any card to study — the hub updates itself as you go.</p>
+        </div>
+        <div class="streak" title="Consecutive days with activity in any module">
+          <span class="flame">🔥</span>
+          <div>
+            <div class="num">${streak}</div>
+            <div class="lbl">day streak</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <h2>Modules</h2>
+        <span class="tiny muted">Click “Open” to jump into an app.</span>
+      </div>
+      <div class="modules">
+        ${grammarCard}
+        ${vocabCard}
+        ${writingCard}
+        ${paceCard}
+      </div>
+
+      ${roadmapStripHTML}
+
+      <div class="stats" style="margin-top:18px">
+        <div class="stat">
+          <div class="v">${g.topics + g.materials + g.exercises}</div>
+          <div class="k">Grammar entries</div>
+        </div>
+        <div class="stat">
+          <div class="v">${v.review + v.inbox}</div>
+          <div class="k">Vocab on deck</div>
+        </div>
+        <div class="stat">
+          <div class="v">${w.sessions + w.library}</div>
+          <div class="k">Writing items</div>
+        </div>
+        <div class="stat">
+          <div class="v">${p.library}</div>
+          <div class="k">Pace texts</div>
+        </div>
+        <div class="stat">
+          <div class="v">${rmm.doneDays}<small> / ${rmm.totalDays}</small></div>
+          <div class="k">Roadmap days</div>
+        </div>
+        <div class="stat">
+          <div class="v">${allActiveDays}</div>
+          <div class="k">Active days total</div>
+        </div>
+        <div class="stat">
+          <div class="v">${fmtTime(totalStudy)}</div>
+          <div class="k">Grammar study time</div>
+        </div>
+      </div>
+
+      ${paceLibHTML}
+
+      <div class="section-head">
+        <h2>Combined activity</h2>
+        <span class="tiny muted">${active15} of last 15 days active</span>
+      </div>
+      <div class="heatcard">
+        <div class="htop">
+          <h3>Last 15 weeks</h3>
+          <div class="legend">
+            <span class="tiny">Less</span>
+            <span class="hmcell l0"></span>
+            <span class="hmcell l1"></span>
+            <span class="hmcell l2"></span>
+            <span class="hmcell l3"></span>
+            <span class="hmcell l4"></span>
+            <span class="tiny">More</span>
+          </div>
+        </div>
+        ${heatmapHTML(activity, 15)}
+        <div class="tiny muted" style="margin-top:10px">
+          Each square is one day. Deeper colours mean more activity across all modules.
+        </div>
+      </div>
+
+      <div class="section-head">
+        <h2>Recent activity</h2>
+        <span class="tiny muted">Latest 20 events across all modules</span>
+      </div>
+      <div class="feed">${feedHTML}</div>
+
+      ${!hasAnyData ? `
+        <div class="empty" style="margin-top:18px">
+          <div style="font-size:30px;margin-bottom:6px">🚀</div>
+          <div style="font-weight:600;color:var(--text);margin-bottom:4px">No data yet</div>
+          <div class="tiny">Open a module above to start studying. Your progress will appear here automatically.</div>
+        </div>` : ''}
+    `;
+
+    $('#overviewContent').innerHTML = html;
+  }
+
+  function card({ cls, icon, title, sub, metrics, cols, meta, route }){
+    const metricsHTML = metrics.map(m => {
+      const zero = (m.value === 0 && !m.warn) ? ' zero' : '';
+      const hi   = m.hi ? ' hi' : '';
+      const warn = m.warn ? ' warn' : '';
+      return `
+        <div class="mmetric${hi}${warn}${zero}">
+          <b>${esc(String(m.value))}</b>
+          <span>${esc(m.label)}</span>
+        </div>`;
+    }).join('');
+
+    return `
+      <div class="mod ${cls}">
+        <div class="mhead">
+          <div class="micon">${icon}</div>
+          <div>
+            <div class="mtitle">${esc(title)}</div>
+            <div class="msub">${esc(sub)}</div>
+          </div>
+        </div>
+        <div class="mmetrics cols-${cols||3}">${metricsHTML}</div>
+        <div class="mgo">
+          <span class="meta" title="${esc(meta)}">${esc(meta)}</span>
+          <button class="open" data-route="${route}">Open →</button>
+        </div>
+      </div>`;
+  }
+
+  /* ============================================================
+     ROADMAP — page renderer
+     ============================================================ */
+  let roadmapToken = 0;
+
+  function renderRoadmap(){
+    const token = ++roadmapToken;
+    loadAll().then(function(){
+      if(token !== roadmapToken) return;
+      paintRoadmap(readRoadmap());
+    });
+  }
+
+  function paintRoadmap(rm){
+    rm = rm || readRoadmap();
+
+    const m = roadmapMetrics(rm);
+    const overall = pct(m.doneDays, m.totalDays);
+
+    let acc = 1;
+    const ranges = rm.phases.map(p => { const s = acc; acc += p.days; return [s, acc - 1]; });
+
+    const phaseHTML = rm.phases.map((phase, idx) => {
+      const done = phaseDoneCount(phase);
+      const pc   = pct(done, phase.days);
+
+      const daysHTML = Array.from({ length: phase.days }, (_, i) => {
+        const n = i + 1;
+        const tasks = (phase.dayTasks && phase.dayTasks[String(n)]) || [];
+        const isDone = isDayDone(phase, n);
+        const realDate = phase.startDate ? addDays(phase.startDate, i) : null;
+        const taskCount = tasks.length;
+        const doneCount = tasks.filter(t => t.done).length;
+
+        const label = 'Day ' + n
+          + (realDate ? ' · ' + fmtDay(realDate) : '')
+          + (taskCount ? ' — ' + doneCount + '/' + taskCount + ' tasks done' : ' — click to plan tasks');
+
+        return `<button type="button" class="day${isDone?' done':''}${taskCount?' has-tasks':''}"
+                  data-act="day" data-day="${n}" title="${esc(label)}">${n}${taskCount?'<i class="ddot"></i>':''}</button>`;
+      }).join('');
+
+      /* Phase resources — no “open in app” button anymore. */
+      const resHTML = phase.resources.length ? phase.resources.map(r => {
+        const mod = RES_MODULES[r.module] || { icon:'•', cls:'', name: r.module || 'Item' };
+        const subBits = [mod.name, r.sub, r.meta].filter(Boolean).join(' · ');
+        return `
+          <div class="resrow${r.done?' done':''}">
+            <span class="ricon ${esc(mod.cls)}" title="${esc(mod.name)}">${mod.icon}</span>
+            <span class="rmain">
+              <span class="rtitle" title="${esc(r.label)}">${esc(r.label)}</span>
+              <span class="rsub">${esc(subBits)}</span>
+            </span>
+            <button type="button" class="rbtn${r.done?' on':''}" data-act="toggle" data-res="${esc(r.id)}"
+                    title="${r.done ? 'Mark as not done' : 'Mark as done'}">${r.done ? '✓' : '○'}</button>
+            <button type="button" class="rbtn" data-act="remove" data-res="${esc(r.id)}"
+                    title="Remove from this phase">✕</button>
+          </div>`;
+      }).join('') : `<div class="tiny muted" style="padding:4px 2px">
+          No phase-wide resources yet — add topics, review, vocabulary review words, sessions or reading texts.
+        </div>`;
+
+      return `
+        <div class="phase${idx === m.activeIdx ? ' active' : ''}" data-phase="${esc(phase.id)}">
+          <div class="phead">
+            <div style="min-width:0;flex:1">
+              <div class="pnum">Phase ${idx+1} · Days ${ranges[idx][0]}–${ranges[idx][1]}</div>
+              <input class="ptitle" data-act="title" type="text" maxlength="60" spellcheck="false"
+                     value="${esc(phase.title)}" aria-label="Phase ${idx+1} title">
+            </div>
+            <span class="ppct${pc >= 100 ? ' full' : ''}">${pc}%</span>
+          </div>
+
+          <div class="rm-progress"><i style="width:${pc}%"></i></div>
+
+          <div class="daygrid">${daysHTML}</div>
+
+          <div class="row between">
+            <label class="pdatelabel">Start
+              <input type="date" class="pdate" data-act="start" value="${esc(phase.startDate || '')}"
+                     aria-label="Phase ${idx+1} start date">
+            </label>
+            <span class="tiny muted">
+              ${done}/${phase.days} days · ${phase.resources.length} resource${phase.resources.length === 1 ? '' : 's'}
+            </span>
+          </div>
+
+          <div class="ressect">
+            <div class="row between">
+              <span class="rsect-title">Phase resources</span>
+              <button type="button" class="btn-add" data-act="add">+ Add resource</button>
+            </div>
+            <div class="reslist">${resHTML}</div>
+          </div>
+        </div>`;
+    }).join('');
+
+    $('#roadmapContent').innerHTML = `
+      <div class="hero">
+        <div style="min-width:0">
+          <h1>Study roadmap</h1>
+          <p>Four phases of twenty days each. <strong>Click any day</strong> to open its planner and attach
+             grammar topics, review material, vocabulary words due for review, writing sessions or Pace reading texts
+             as that day's tasks.</p>
+          <div style="margin-top:12px;max-width:420px">
+            <div class="rm-progress"><i style="width:${overall}%"></i></div>
+            <div class="tiny muted" style="margin-top:6px">${m.doneDays} of ${m.totalDays} days complete · ${overall}%</div>
+          </div>
+        </div>
+        <div class="streak" title="Overall roadmap progress">
+          <span class="flame">🗺️</span>
+          <div>
+            <div class="num">${overall}%</div>
+            <div class="lbl">roadmap done</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="v">${m.doneDays}<small> / ${m.totalDays}</small></div>
+          <div class="k">Days complete</div>
+        </div>
+        <div class="stat">
+          <div class="v">${m.phasesDone}<small> / ${rm.phases.length}</small></div>
+          <div class="k">Phases complete</div>
+        </div>
+        <div class="stat">
+          <div class="v">${m.doneTasks}<small> / ${m.allTasks}</small></div>
+          <div class="k">Tasks done</div>
+        </div>
+        <div class="stat">
+          <div class="v">Phase ${m.activeIdx + 1}</div>
+          <div class="k">Current phase</div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <h2>Phases</h2>
+        <span class="tiny muted">Click a day to plan its tasks</span>
+      </div>
+      <div class="phases">${phaseHTML}</div>
+
+      <div class="row between" style="margin-top:22px">
+        <span class="tiny muted">Roadmap data is stored locally in this browser.</span>
+        <button type="button" class="btn ghost" data-act="reset">Reset roadmap</button>
+      </div>
+    `;
+  }
+
+  function resetRoadmap(){
+    if(!confirm('Reset the roadmap?\n\nAll phases, day tasks and attached resources will be cleared.')) return;
+    saveRoadmap(defaultRoadmap());
+    paintRoadmap(readRoadmap());
+  }
+
+  function onRoadmapClick(e){
+    const btn = e.target.closest('[data-act]');
+    if(!btn) return;
+    const act = btn.dataset.act;
+
+    if(act === 'reset'){ resetRoadmap(); return; }
+
+    const phaseEl = btn.closest('[data-phase]');
+    if(!phaseEl) return;
+
+    const rm = readRoadmap();
+    const phase = rm.phases.find(p => p.id === phaseEl.dataset.phase);
+    if(!phase) return;
+
+    if(act === 'day'){
+      openDayModal(phase.id, Number(btn.dataset.day));
+      return;
+    }
+    if(act === 'toggle'){
+      const r = phase.resources.find(x => x.id === btn.dataset.res);
+      if(!r) return;
+      r.done = !r.done;
+    }else if(act === 'remove'){
+      phase.resources = phase.resources.filter(x => x.id !== btn.dataset.res);
+    }else if(act === 'add'){
+      openPicker(phase.id);
+      return;
+    }else{
+      return;
+    }
+
+    saveRoadmap(rm);
+    paintRoadmap(rm);
+  }
+
+  function onRoadmapChange(e){
+    const el = e.target.closest('[data-act]');
+    if(!el) return;
+    const act = el.dataset.act;
+    if(act !== 'title' && act !== 'start') return;
+
+    const phaseEl = el.closest('[data-phase]');
+    if(!phaseEl) return;
+
+    const rm = readRoadmap();
+    const phase = rm.phases.find(p => p.id === phaseEl.dataset.phase);
+    if(!phase) return;
+
+    if(act === 'title'){
+      phase.title = (el.value || '').trim() || 'Untitled phase';
+    }else{
+      phase.startDate = el.value || null;
+    }
+    saveRoadmap(rm);
+  }
+
+  /* ============================================================
+     RESOURCE PICKER (phase-wide resources)
+     ============================================================ */
+  let pickerPhaseId = null;
+  let pickerModule  = 'grammar';
+
+  function openPicker(phaseId){
+    const rm = readRoadmap();
+    const phase = rm.phases.find(p => p.id === phaseId);
+    if(!phase) return;
+
+    pickerPhaseId = phaseId;
+
+    const sources = collectSources(hubData);
+    let pick = RES_ORDER.find(k =>
+      (sources[k] || []).some(it =>
+        !phase.resources.some(r => r.module === k && r.refId === it.refId)));
+    pickerModule = pick || 'grammar';
+
+    $('#pickerSearch').value = '';
+    renderPicker();
+    $('#picker').hidden = false;
+  }
+
+  function closePicker(){
+    $('#picker').hidden = true;
+    pickerPhaseId = null;
+  }
+
+  function renderPicker(){
+    const rm = readRoadmap();
+    const phase = rm.phases.find(p => p.id === pickerPhaseId);
+    if(!phase){ closePicker(); return; }
+
+    const idx = rm.phases.indexOf(phase);
+    const sources = collectSources(hubData);
+
+    $('#pickerSub').textContent = 'Phase ' + (idx + 1) + ' · ' + phase.title;
+
+    $('#pickerTabs').innerHTML = RES_ORDER.map(k => {
+      const mod = RES_MODULES[k];
+      const count = (sources[k] || []).length;
+      return `<button type="button" class="tab${k === pickerModule ? ' active' : ''}" data-mod="${k}">
+        ${mod.icon} ${esc(mod.name)} <span class="cnt">${count}</span>
+      </button>`;
+    }).join('');
+
+    const q = ($('#pickerSearch').value || '').trim().toLowerCase();
+    const all = sources[pickerModule] || [];
+    const filtered = q
+      ? all.filter(it => (it.label + ' ' + (it.sub || '') + ' ' + (it.meta || '')).toLowerCase().includes(q))
+      : all;
+
+    const addedRefs = new Set(
+      phase.resources.filter(r => r.module === pickerModule).map(r => r.refId)
+    );
+
+    $('#pickerList').innerHTML = filtered.length
+      ? filtered.map(it => {
+          const isAdded = addedRefs.has(it.refId);
+          return `<button type="button" class="pitem" data-ref="${esc(it.refId)}" ${isAdded ? 'disabled' : ''}>
+            <span class="pimain">
+              <span class="pititle">${esc(it.label)}</span>
+              <span class="pisub">${esc(it.sub || '')}${it.meta ? ' · ' + esc(it.meta) : ''}</span>
+            </span>
+            <span class="piadd">${isAdded ? 'Added ✓' : '+ Add'}</span>
+          </button>`;
+        }).join('')
+      : `<div class="empty small" style="border:0;padding:22px 10px">Nothing to add here yet.</div>`;
+  }
+
+  function addPickedResource(refId){
+    const rm = readRoadmap();
+    const phase = rm.phases.find(p => p.id === pickerPhaseId);
+    if(!phase) return;
+
+    if(phase.resources.some(r => r.module === pickerModule && r.refId === refId)) return;
+
+    const src = findSource(pickerModule, refId);
+    if(!src) return;
+
+    phase.resources.push({
+      id:      uid('res-'),
+      module:  pickerModule,
+      refId:   refId,
+      label:   src.label,
+      sub:     src.sub || '',
+      meta:    src.meta,
+      done:    false,
+      addedAt: Date.now()
+    });
+
+    saveRoadmap(rm);
+    renderPicker();
+    paintRoadmap(rm);
+  }
+
+  /* ============================================================
+     DAY PLANNER
+     ============================================================ */
+  let dayPhaseId = null;
+  let dayNum     = null;
+  let dayMode    = 'tasks';
+  let dayModule  = 'grammar';
+  let dayPickerOpen = false;
+
+  function openDayModal(phaseId, n){
+    const rm = readRoadmap();
+    const phase = rm.phases.find(p => p.id === phaseId);
+    if(!phase) return;
+    if(!(n >= 1 && n <= phase.days)) return;
+
+    dayPhaseId = phaseId;
+    dayNum     = n;
+    dayMode    = 'tasks';
+    dayPickerOpen = false;
+    $('#daySearch').value = '';
+
+    if(hubData) openDayModalRender();
+    else loadAll().then(openDayModalRender);
+  }
+
+  function openDayModalRender(){
+    const rm = readRoadmap();
+    const phase = rm.phases.find(p => p.id === dayPhaseId);
+    if(!phase) return;
+
+    const sources = collectSources(hubData);
+    const existing = dayMode === 'tasks'
+      ? getDayTasks(phase, dayNum)
+      : phase.resources;
+    let pick = RES_ORDER.find(k =>
+      (sources[k] || []).some(it =>
+        !existing.some(x => x.module === k && x.refId === it.refId)));
+    dayModule = pick || 'grammar';
+
+    renderDayModal();
+    $('#dayModal').hidden = false;
+  }
+
+  function closeDayModal(){
+    $('#dayModal').hidden = true;
+    dayPhaseId = null;
+    dayNum = null;
+  }
+
+  /* Row used for both day tasks and phase resources inside the modal.
+     The “open in app” button has been removed. */
+  function dayRowHTML(item, kind){
+    const mod = RES_MODULES[item.module] || { icon:'•', cls:'', name: item.module || 'Item', kind:'' };
+    const toggleAct = kind === 'task' ? 'toggle-task' : 'toggle-res';
+    const removeAct = kind === 'task' ? 'remove-task' : 'remove-res';
+    const subBits = [mod.name, item.sub, item.meta].filter(Boolean).join(' · ');
+
+    return `
+      <div class="taskrow${item.done ? ' done' : ''}">
+        <button type="button" class="rbtn${item.done ? ' on' : ''}" data-act="${toggleAct}"
+                data-id="${esc(item.id)}" title="${item.done ? 'Mark as not done' : 'Mark as done'}">
+          ${item.done ? '✓' : '○'}
+        </button>
+        <span class="ricon ${esc(mod.cls)}" title="${esc(mod.name)}">${mod.icon}</span>
+        <span class="rmain">
+          <span class="rtitle" title="${esc(item.label)}">${esc(item.label)}</span>
+          <span class="rsub">${esc(subBits)}${item.doneAt ? ' · done ' + esc(fmtDay(item.doneAt)) : ''}</span>
+        </span>
+        <button type="button" class="rbtn" data-act="${removeAct}" data-id="${esc(item.id)}"
+                title="Remove">✕</button>
+      </div>`;
+  }
+
+  function renderDayModal(){
+    const rm = readRoadmap();
+    const phase = rm.phases.find(p => p.id === dayPhaseId);
+    if(!phase){ closeDayModal(); return; }
+
+    const n   = dayNum;
+    const idx = rm.phases.indexOf(phase);
+    const tasks = getDayTasks(phase, n);
+    const resources = phase.resources;
+
+    const doneCount = tasks.filter(t => t.done).length;
+    const allDone   = tasks.length > 0 && doneCount === tasks.length;
+    const manualDone = phase.completedDays.indexOf(n) >= 0;
+    const isDone    = manualDone || allDone;
+
+    const realDate = phase.startDate ? addDays(phase.startDate, n - 1) : null;
+
+    $('#dayTitle').textContent = 'Day ' + n + ' · Phase ' + (idx + 1);
+    $('#daySub').textContent = phase.title
+      + (realDate ? ' · ' + fmtDay(realDate) : ' · set a phase start date to see the calendar day');
+
+    $('#dayModeTabs').innerHTML = `
+      <button type="button" class="tab${dayMode === 'tasks' ? ' active' : ''}" data-mode="tasks">
+        ✅ Tasks <span class="cnt">${tasks.length}</span>
+      </button>
+      <button type="button" class="tab${dayMode === 'resources' ? ' active' : ''}" data-mode="resources">
+        📚 Resources <span class="cnt">${resources.length}</span>
+      </button>`;
+
+    $('#dayAddLabel').textContent = dayMode === 'tasks'
+      ? "Today's tasks" : 'Phase resources';
+    $('#dayAddHint').textContent = dayMode === 'tasks'
+      ? (tasks.length
+          ? doneCount + ' of ' + tasks.length + ' done' + (allDone ? ' · day complete' : '')
+          : 'nothing planned yet')
+      : (resources.length
+          ? resources.filter(r => r.done).length + ' of ' + resources.length + ' done'
+          : 'none yet — these apply to the whole phase');
+
+    {
+      const list = dayMode === 'tasks' ? tasks : resources;
+      const kind = dayMode === 'tasks' ? 'task' : 'res';
+
+      if(!list.length){
+        $('#daySection').innerHTML = dayMode === 'tasks'
+          ? `<div class="tiny muted" style="padding:6px 2px">
+               No tasks for this day yet — pick something from the list below.
+             </div>`
+          : `<div class="tiny muted" style="padding:6px 2px">
+               No phase resources yet — add some below. They apply to the whole phase.
+             </div>`;
+      }else{
+        const byModule = {};
+        list.forEach(item => {
+          const k = item.module || 'grammar';
+          (byModule[k] = byModule[k] || []).push(item);
+        });
+        const cols = RES_ORDER.filter(k => byModule[k] && byModule[k].length).map(k => {
+          const mod = RES_MODULES[k];
+          return `
+            <div class="day-cat-col">
+              <div class="day-cat-head ${esc(mod.cls)}">
+                <span>${mod.icon} ${esc(mod.name)}</span>
+                <span class="cnt">${byModule[k].length}</span>
+              </div>
+              <div class="day-cat-rows">${byModule[k].map(item => dayRowHTML(item, kind)).join('')}</div>
+            </div>`;
+        }).join('');
+        $('#daySection').innerHTML = `<div class="daysection-cols">${cols}</div>`;
+      }
+    }
+
+    const pickerToggle = $('#dayPickerToggle');
+    pickerToggle.textContent = dayPickerOpen ? 'Hide' : 'Show';
+    pickerToggle.setAttribute('aria-expanded', String(dayPickerOpen));
+    $('#dayPickerBody').hidden = !dayPickerOpen;
+
+    const sources = collectSources(hubData);
+    $('#dayPickLabel').textContent = dayMode === 'tasks' ? 'Add task from' : 'Add resource from';
+    $('#dayTabs').innerHTML = RES_ORDER.map(k => {
+      const mod = RES_MODULES[k];
+      const count = (sources[k] || []).length;
+      return `<button type="button" class="tab${k === dayModule ? ' active' : ''}" data-mod="${k}">
+        ${mod.icon} ${esc(mod.name)} <span class="cnt">${count}</span>
+      </button>`;
+    }).join('');
+
+    const q = ($('#daySearch').value || '').trim().toLowerCase();
+    const all = sources[dayModule] || [];
+    const filtered = q
+      ? all.filter(it => (it.label + ' ' + (it.sub || '') + ' ' + (it.meta || '')).toLowerCase().includes(q))
+      : all;
+
+    const existingRefs = new Set(
+      (dayMode === 'tasks' ? tasks : resources)
+        .filter(x => x.module === dayModule)
+        .map(x => x.refId)
+    );
+
+    const addLabel = dayMode === 'tasks' ? '+ Add task' : '+ Add resource';
+
+    $('#dayList').innerHTML = filtered.length
+      ? filtered.map(it => {
+          const isAdded = existingRefs.has(it.refId);
+          return `<button type="button" class="pitem" data-ref="${esc(it.refId)}" ${isAdded ? 'disabled' : ''}>
+            <span class="pimain">
+              <span class="pititle">${esc(it.label)}</span>
+              <span class="pisub">${esc(it.sub || '')}${it.meta ? ' · ' + esc(it.meta) : ''}</span>
+            </span>
+            <span class="piadd">${isAdded ? 'Added ✓' : esc(addLabel)}</span>
+          </button>`;
+        }).join('')
+      : `<div class="empty small" style="border:0;padding:22px 10px">
+           Nothing available in ${esc(RES_MODULES[dayModule].name)} yet.
+         </div>`;
+
+    const btn = $('#dayToggleComplete');
+    btn.textContent = isDone ? 'Day complete ✓' : 'Mark day complete';
+    btn.classList.toggle('on', isDone);
+    btn.disabled = allDone && !manualDone;
+    btn.title = (allDone && !manualDone)
+      ? 'All tasks are done — the day is automatically complete'
+      : (isDone ? 'Un-tick this day' : 'Tick this day as complete');
+  }
+
+  function addDayTask(module, refId){
+    const rm = readRoadmap();
+    const phase = rm.phases.find(p => p.id === dayPhaseId);
+    if(!phase || dayNum == null) return;
+
+    const tasks = getDayTasks(phase, dayNum);
+    if(tasks.some(t => t.module === module && t.refId === refId)) return;
+
+    const src = findSource(module, refId);
+    if(!src) return;
+
+    tasks.push({
+      id:      uid('task-'),
+      module:  module,
+      refId:   refId,
+      label:   src.label,
+      sub:     src.sub || '',
+      meta:    src.meta,
+      done:    false,
+      doneAt:  null,
+      addedAt: Date.now()
+    });
+
+    saveRoadmap(rm);
+    renderDayModal();
+    paintRoadmap(rm);
+  }
+
+  function toggleDayTask(taskId){
+    const rm = readRoadmap();
+    const phase = rm.phases.find(p => p.id === dayPhaseId);
+    if(!phase || dayNum == null) return;
+
+    const t = getDayTasks(phase, dayNum).find(x => x.id === taskId);
+    if(!t) return;
+
+    t.done = !t.done;
+    t.doneAt = t.done ? todayKey() : null;
+
+    saveRoadmap(rm);
+    renderDayModal();
+    paintRoadmap(rm);
+  }
+
+  function removeDayTask(taskId){
+    const rm = readRoadmap();
+    const phase = rm.phases.find(p => p.id === dayPhaseId);
+    if(!phase || dayNum == null) return;
+
+    const k = String(dayNum);
+    if(!phase.dayTasks || !phase.dayTasks[k]) return;
+    phase.dayTasks[k] = phase.dayTasks[k].filter(t => t.id !== taskId);
+    if(!phase.dayTasks[k].length) delete phase.dayTasks[k];
+
+    saveRoadmap(rm);
+    renderDayModal();
+    paintRoadmap(rm);
+  }
+
+  function addDayResource(module, refId){
+    const rm = readRoadmap();
+    const phase = rm.phases.find(p => p.id === dayPhaseId);
+    if(!phase) return;
+    if(phase.resources.some(r => r.module === module && r.refId === refId)) return;
+
+    const src = findSource(module, refId);
+    if(!src) return;
+
+    phase.resources.push({
+      id:      uid('res-'),
+      module:  module,
+      refId:   refId,
+      label:   src.label,
+      sub:     src.sub || '',
+      meta:    src.meta,
+      done:    false,
+      addedAt: Date.now()
+    });
+
+    saveRoadmap(rm);
+    renderDayModal();
+    paintRoadmap(rm);
+  }
+
+  function toggleDayResource(resId){
+    const rm = readRoadmap();
+    const phase = rm.phases.find(p => p.id === dayPhaseId);
+    if(!phase) return;
+    const r = phase.resources.find(x => x.id === resId);
+    if(!r) return;
+    r.done = !r.done;
+    saveRoadmap(rm);
+    renderDayModal();
+    paintRoadmap(rm);
+  }
+
+  function removeDayResource(resId){
+    const rm = readRoadmap();
+    const phase = rm.phases.find(p => p.id === dayPhaseId);
+    if(!phase) return;
+    phase.resources = phase.resources.filter(x => x.id !== resId);
+    saveRoadmap(rm);
+    renderDayModal();
+    paintRoadmap(rm);
+  }
+
+  function toggleDayComplete(){
+    const rm = readRoadmap();
+    const phase = rm.phases.find(p => p.id === dayPhaseId);
+    if(!phase || dayNum == null) return;
+
+    togglePhaseDay(phase, dayNum);
+
+    saveRoadmap(rm);
+    renderDayModal();
+    paintRoadmap(rm);
+  }
+
+  /* ============================================================
+     FLOATING TODAY-TASKS BUTTON  (injected into each module iframe)
+     ============================================================ */
+  const FAB_CSS = `
+#hub-fab-root{
+  position:fixed;right:18px;bottom:18px;z-index:2147483000;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  font-size:14px;line-height:1.4;color:#12141a;
+}
+#hub-fab-root, #hub-fab-root *{box-sizing:border-box}
+#hub-fab-root button{
+  font:inherit;cursor:pointer;margin:0;border:0;background:transparent;color:inherit;
+  text-transform:none;letter-spacing:inherit;
+}
+#hub-fab-root .hub-fab-panel[hidden],
+#hub-fab-root .hub-fab-badge[hidden]{display:none !important}
+
+#hub-fab-root .hub-fab{
+  position:relative;width:52px;height:52px;border-radius:50%;
+  background:#4f46e5;color:#fff;
+  display:grid;place-items:center;font-size:20px;padding:0;
+  box-shadow:0 6px 20px rgba(79,70,229,.4), 0 2px 6px rgba(0,0,0,.15);
+  transition:transform .15s, box-shadow .15s, background .15s;
+}
+#hub-fab-root .hub-fab:hover{transform:translateY(-2px)}
+#hub-fab-root .hub-fab:active{transform:translateY(0)}
+#hub-fab-root .hub-fab.is-clear{
+  background:#047857;
+  box-shadow:0 6px 20px rgba(4,120,87,.35), 0 2px 6px rgba(0,0,0,.15);
+}
+#hub-fab-root .hub-fab-badge{
+  position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;
+  padding:0 5px;border-radius:999px;background:#b91c1c;color:#fff;
+  font-size:11px;font-weight:700;display:grid;place-items:center;
+  border:2px solid #fff;font-variant-numeric:tabular-nums;
+}
+
+#hub-fab-root .hub-fab-panel{
+  position:absolute;right:0;bottom:64px;
+  width:min(340px, calc(100vw - 36px));
+  max-height:min(460px, calc(100vh - 110px));
+  background:#fff;border:1px solid #e4e7ec;border-radius:16px;
+  box-shadow:0 20px 50px rgba(10,12,30,.22), 0 4px 12px rgba(10,12,30,.10);
+  display:flex;flex-direction:column;overflow:hidden;
+  animation:hubFabIn .16s ease-out;
+}
+@keyframes hubFabIn{
+  from{opacity:0;transform:translateY(6px) scale(.98)}
+  to{opacity:1;transform:none}
+}
+
+#hub-fab-root .hub-fab-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:8px;
+  padding:12px 14px 10px;border-bottom:1px solid #eef0f4;
+}
+#hub-fab-root .hub-fab-title{font-weight:700;font-size:14px;letter-spacing:-.01em}
+#hub-fab-root .hub-fab-sub{font-size:11.5px;color:#6b7280;margin-top:2px}
+#hub-fab-root .hub-fab-x{
+  color:#9aa0ad;font-size:14px;line-height:1;padding:4px 7px;border-radius:6px;
+}
+#hub-fab-root .hub-fab-x:hover{background:#f3f4f6;color:#12141a}
+
+#hub-fab-root .hub-fab-list{
+  flex:1;min-height:0;overflow-y:auto;padding:8px;
+  display:flex;flex-direction:column;gap:6px;
+}
+#hub-fab-root .hub-task{
+  display:flex;align-items:flex-start;gap:9px;
+  background:#fafbfc;border:1px solid #e4e7ec;border-radius:12px;
+  padding:8px 10px;
+}
+#hub-fab-root .hub-task.done{opacity:.55}
+#hub-fab-root .hub-task.done .hub-task-label{text-decoration:line-through}
+#hub-fab-root .hub-task-check{
+  flex:0 0 auto;width:20px;height:20px;border-radius:50%;
+  border:1.5px solid #c9cede;background:#fff;
+  display:grid;place-items:center;font-size:11px;color:transparent;
+  padding:0;margin-top:1px;
+}
+#hub-fab-root .hub-task.done .hub-task-check{
+  background:#047857;border-color:#047857;color:#fff;
+}
+#hub-fab-root .hub-task-ico{
+  flex:0 0 auto;width:22px;height:22px;border-radius:7px;
+  display:grid;place-items:center;font-size:12px;
+  background:#eef0ff;color:#4f46e5;margin-top:1px;
+}
+#hub-fab-root .hub-task-ico.g{background:#f0ebff;color:#6d28d9}
+#hub-fab-root .hub-task-ico.v{background:#e8f7f1;color:#047857}
+#hub-fab-root .hub-task-ico.w{background:#fdf2e3;color:#b45309}
+#hub-fab-root .hub-task-ico.p{background:#e6f5f2;color:#0d7a6f}
+#hub-fab-root .hub-task-main{min-width:0;flex:1}
+#hub-fab-root .hub-task-label{
+  font-size:13px;font-weight:600;line-height:1.35;overflow-wrap:anywhere;
+}
+#hub-fab-root .hub-task-meta{
+  font-size:11px;color:#6b7280;margin-top:2px;overflow-wrap:anywhere;
+}
+
+#hub-fab-root .hub-fab-empty{
+  padding:26px 16px;text-align:center;color:#6b7280;font-size:12.5px;
+}
+#hub-fab-root .hub-fab-empty .big{font-size:26px;margin-bottom:6px}
+
+#hub-fab-root .hub-fab-foot{
+  padding:8px 10px 10px;border-top:1px solid #eef0f4;
+  display:flex;justify-content:flex-end;
+}
+#hub-fab-root .hub-fab-openrm{
+  background:#eef0ff;color:#4f46e5;border:1px solid #c7c9ff;
+  border-radius:8px;padding:5px 10px;font-size:12px;font-weight:700;
+}
+#hub-fab-root .hub-fab-openrm:hover{
+  background:#4f46e5;color:#fff;border-color:#4f46e5;
+}
+
+#hub-fab-root.dark{color:#e8eaef}
+#hub-fab-root.dark .hub-fab{
+  background:#818cf8;color:#0e1117;
+  box-shadow:0 6px 20px rgba(129,140,248,.35), 0 2px 6px rgba(0,0,0,.4);
+}
+#hub-fab-root.dark .hub-fab.is-clear{
+  background:#34d399;color:#0e1117;
+  box-shadow:0 6px 20px rgba(52,211,153,.35), 0 2px 6px rgba(0,0,0,.4);
+}
+#hub-fab-root.dark .hub-fab-badge{
+  background:#f87171;color:#1a0a0a;border-color:#161a22;
+}
+#hub-fab-root.dark .hub-fab-panel{
+  background:#161a22;border-color:#262b36;
+  box-shadow:0 20px 50px rgba(0,0,0,.55), 0 4px 12px rgba(0,0,0,.3);
+}
+#hub-fab-root.dark .hub-fab-head{border-bottom-color:#262b36}
+#hub-fab-root.dark .hub-fab-sub{color:#8b93a3}
+#hub-fab-root.dark .hub-fab-x{color:#8b93a3}
+#hub-fab-root.dark .hub-fab-x:hover{background:#262b36;color:#e8eaef}
+#hub-fab-root.dark .hub-task{background:#12161d;border-color:#262b36}
+#hub-fab-root.dark .hub-task-check{border-color:#39414f;background:#161a22}
+#hub-fab-root.dark .hub-task.done .hub-task-check{
+  background:#34d399;border-color:#34d399;color:#0e1117;
+}
+#hub-fab-root.dark .hub-task-ico{background:#1e2138;color:#818cf8}
+#hub-fab-root.dark .hub-task-ico.g{background:#2c1f52;color:#c4b5fd}
+#hub-fab-root.dark .hub-task-ico.v{background:#12291f;color:#34d399}
+#hub-fab-root.dark .hub-task-ico.w{background:#2a2113;color:#fbbf24}
+#hub-fab-root.dark .hub-task-ico.p{background:#0e2a27;color:#5eead4}
+#hub-fab-root.dark .hub-task-meta{color:#8b93a3}
+#hub-fab-root.dark .hub-fab-foot{border-top-color:#262b36}
+#hub-fab-root.dark .hub-fab-openrm{
+  background:#1e2138;color:#818cf8;border-color:#3730a3;
+}
+#hub-fab-root.dark .hub-fab-openrm:hover{
+  background:#818cf8;color:#0e1117;border-color:#818cf8;
+}
+#hub-fab-root.dark .hub-fab-empty{color:#8b93a3}
+`;
+
+  function resolveTodayTasks(){
+    const rm = readRoadmap();
+    const today = todayKey();
+    const items = [];
+
+    rm.phases.forEach((phase, pi) => {
+      if(!phase.startDate) return;
+      for(let n = 1; n <= phase.days; n++){
+        if(addDays(phase.startDate, n - 1) !== today) continue;
+        (phase.dayTasks[String(n)] || []).forEach(t => {
+          items.push({ phase, phaseIdx: pi, dayNum: n, task: t });
+        });
+      }
+    });
+
+    if(items.length){
+      const done = items.filter(x => x.task.done).length;
+      return {
+        mode: 'today',
+        label: "Today's tasks",
+        sublabel: done + ' of ' + items.length + ' done',
+        items: items
+      };
+    }
+
+    const activeIdx = rm.phases.findIndex(p => phaseDoneCount(p) < p.days);
+    if(activeIdx >= 0){
+      const phase = rm.phases[activeIdx];
+
+      for(let n = 1; n <= phase.days; n++){
+        const tasks = phase.dayTasks[String(n)] || [];
+        if(tasks.length && !tasks.every(t => t.done)){
+          const d2 = tasks.filter(t => t.done).length;
+          return {
+            mode: 'next',
+            label: 'Next up · Day ' + n,
+            sublabel: phase.title + ' · ' + d2 + ' of ' + tasks.length + ' done',
+            items: tasks.map(t => ({ phase, phaseIdx: activeIdx, dayNum: n, task: t }))
+          };
+        }
+      }
+
+      return {
+        mode: 'empty',
+        label: "Today's tasks",
+        sublabel: phase.title,
+        items: [],
+        emptyText: 'No tasks scheduled for today. Open the roadmap to plan a day.'
+      };
+    }
+
+    return {
+      mode: 'empty',
+      label: 'Roadmap',
+      sublabel: '',
+      items: [],
+      emptyText: 'Every phase is complete. 🎉'
+    };
+  }
+
+  function renderFabPanel(doc){
+    const info = resolveTodayTasks();
+    const titleEl = doc.getElementById('hub-fab-title');
+    const subEl   = doc.getElementById('hub-fab-sub');
+    const listEl  = doc.getElementById('hub-fab-list');
+    if(!titleEl || !subEl || !listEl) return;
+
+    titleEl.textContent = info.label;
+    subEl.textContent   = info.sublabel || '';
+
+    if(!info.items.length){
+      listEl.innerHTML = `<div class="hub-fab-empty">
+        <div class="big">🎉</div>
+        <div>${esc(info.emptyText || 'No tasks scheduled for today.')}</div>
+      </div>`;
+      return;
+    }
+
+    listEl.innerHTML = info.items.map(x => {
+      const mod = RES_MODULES[x.task.module] || { icon:'•', cls:'', name: x.task.module };
+      const metaBits = [mod.name, x.task.sub, x.task.meta].filter(Boolean).join(' · ');
+      return `<div class="hub-task${x.task.done ? ' done' : ''}">
+        <button type="button" class="hub-task-check"
+                data-fab-task="${esc(x.task.id)}"
+                data-phase="${esc(x.phase.id)}"
+                data-day="${x.dayNum}"
+                title="${x.task.done ? 'Mark as not done' : 'Mark as done'}">✓</button>
+        <span class="hub-task-ico ${esc(mod.cls)}">${mod.icon}</span>
+        <span class="hub-task-main">
+          <span class="hub-task-label">${esc(x.task.label)}</span>
+          ${metaBits ? `<span class="hub-task-meta">${esc(metaBits)}</span>` : ''}
+        </span>
+      </div>`;
+    }).join('');
+  }
+
+  function updateFabBadge(doc){
+    const badge = doc.getElementById('hub-fab-badge');
+    const fab   = doc.getElementById('hub-fab');
+    if(!badge || !fab) return;
+
+    const info = resolveTodayTasks();
+    const pending = info.items.filter(x => !x.task.done).length;
+
+    if(pending > 0){
+      badge.hidden = false;
+      badge.textContent = pending > 99 ? '99+' : String(pending);
+    }else{
+      badge.hidden = true;
+    }
+    fab.classList.toggle('is-clear', pending === 0 && info.items.length > 0);
+  }
+
+  function fabToggleTask(phaseId, dayNum2, taskId){
+    const rm = readRoadmap();
+    const phase = rm.phases.find(p => p.id === phaseId);
+    if(!phase) return;
+
+    const tasks = getDayTasks(phase, dayNum2);
+    const t = tasks.find(x => x.id === taskId);
+    if(!t) return;
+
+    t.done = !t.done;
+    t.doneAt = t.done ? todayKey() : null;
+    saveRoadmap(rm);
+
+    refreshAllFabs();
+    if(currentRoute === 'roadmap') paintRoadmap(rm);
+  }
+
+  function ensureFab(frame){
+    let doc;
+    try{ doc = frame.contentDocument; }catch(e){ return; }
+    if(!doc || !doc.body) return;
+
+    let root = doc.getElementById('hub-fab-root');
+
+    if(!root){
+      if(!doc.getElementById('hub-fab-style')){
+        const st = doc.createElement('style');
+        st.id = 'hub-fab-style';
+        st.textContent = FAB_CSS;
+        (doc.head || doc.documentElement).appendChild(st);
+      }
+
+      root = doc.createElement('div');
+      root.id = 'hub-fab-root';
+      root.className = 'hub-fab-root';
+      root.innerHTML = `
+        <div class="hub-fab-panel" id="hub-fab-panel" hidden>
+          <div class="hub-fab-head">
+            <div>
+              <div class="hub-fab-title" id="hub-fab-title">Today's tasks</div>
+              <div class="hub-fab-sub" id="hub-fab-sub"></div>
+            </div>
+            <button class="hub-fab-x" id="hub-fab-x" type="button" aria-label="Close">✕</button>
+          </div>
+          <div class="hub-fab-list" id="hub-fab-list"></div>
+          <div class="hub-fab-foot">
+            <button class="hub-fab-openrm" id="hub-fab-openrm" type="button">Open roadmap →</button>
+          </div>
+        </div>
+        <button class="hub-fab" id="hub-fab" type="button" aria-label="Today's tasks">
+          <span>✅</span>
+          <span class="hub-fab-badge" id="hub-fab-badge" hidden>0</span>
+        </button>`;
+      doc.body.appendChild(root);
+
+      const fabBtn = doc.getElementById('hub-fab');
+      const panel  = doc.getElementById('hub-fab-panel');
+
+      fabBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if(panel.hidden){
+          renderFabPanel(doc);
+          panel.hidden = false;
+        }else{
+          panel.hidden = true;
+        }
+      });
+
+      doc.getElementById('hub-fab-x').addEventListener('click', (e) => {
+        e.stopPropagation();
+        panel.hidden = true;
+      });
+
+      doc.getElementById('hub-fab-openrm').addEventListener('click', (e) => {
+        e.stopPropagation();
+        panel.hidden = true;
+        go('roadmap');
+      });
+
+      doc.addEventListener('click', (e) => {
+        if(!panel || panel.hidden) return;
+        if(e.target.closest && e.target.closest('#hub-fab-root')) return;
+        panel.hidden = true;
+      });
+
+      doc.getElementById('hub-fab-list').addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-fab-task]');
+        if(!btn) return;
+        e.stopPropagation();
+        fabToggleTask(btn.dataset.phase, Number(btn.dataset.day), btn.dataset.fabTask);
+        renderFabPanel(doc);
+        updateFabBadge(doc);
+      });
+    }
+
+    root.classList.toggle('dark',
+      document.documentElement.getAttribute('data-theme') === 'dark');
+
+    updateFabBadge(doc);
+
+    const panelEl = doc.getElementById('hub-fab-panel');
+    if(panelEl && !panelEl.hidden) renderFabPanel(doc);
+  }
+
+  function refreshAllFabs(){
+    const frame = $('#frame');
+    if(!frame) return;
+    if($('#moduleView').hidden) return;
+    ensureFab(frame);
+  }
+
+  function refreshFabTheme(){
+    const frame = $('#frame');
+    let doc;
+    try{ doc = frame.contentDocument; }catch(e){ return; }
+    if(!doc) return;
+    const root = doc.getElementById('hub-fab-root');
+    if(root){
+      root.classList.toggle('dark',
+        document.documentElement.getAttribute('data-theme') === 'dark');
+    }
+  }
+
+  /* ============================================================
+     THEME
+     ============================================================ */
+  function applyTheme(t){
+    document.documentElement.setAttribute('data-theme', t);
+    const btn = $('#themeBtn');
+    if(btn){
+      btn.textContent = t === 'dark' ? '☀️' : '🌙';
+      btn.title = t === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+    }
+    try{ localStorage.setItem(THEME_KEY, t); }catch(e){}
+    refreshFabTheme();
+  }
+  function initialTheme(){
+    try{
+      const saved = localStorage.getItem(THEME_KEY);
+      if(saved === 'dark' || saved === 'light') return saved;
+    }catch(e){}
+    return (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  }
+
+  /* ============================================================
+     ROUTER + IFRAME
+     ============================================================ */
+  const ROUTES = ['overview','roadmap','grammar','vocabulary','writepath','pace'];
+
+  let currentRoute = 'overview';
+  let iframeLoadedFor = null;
+  let pendingTarget = null;
+  let pendingModuleMsg = null;
+
+  function go(route, target){
+    pendingTarget = (target === undefined) ? null : (target || null);
+    if(location.hash === '#' + route){ routeTo(route); return; }
+    location.hash = '#' + route;
+  }
+  function routeFromHash(){
+    const h = (location.hash || '').replace(/^#/, '');
+    return ROUTES.indexOf(h) >= 0 ? h : 'overview';
+  }
+  function routeTo(route){
+    const target = pendingTarget;
+    pendingTarget = null;
+
+    const prev = currentRoute;
+    currentRoute = route;
+
+    $$('#nav a').forEach(a => a.classList.toggle('active', a.dataset.route === route));
+
+    const isOverview = route === 'overview';
+    const isRoadmap  = route === 'roadmap';
+
+    $('#overview').hidden   = !isOverview;
+    $('#roadmap').hidden    = !isRoadmap;
+    $('#moduleView').hidden = isOverview || isRoadmap;
+
+    if(isOverview){
+      renderOverview();
+      if(prev !== 'overview') window.scrollTo(0, 0);
+      return;
+    }
+
+    if(isRoadmap){
+      renderRoadmap();
+      if(prev !== 'roadmap') $('#roadmap').scrollTop = 0;
+      return;
+    }
+
+    const mod = MODULES[route];
+    $('#modTitle').textContent = mod.icon + '  ' + mod.name;
+
+    const frame = $('#frame');
+    const src = mod.file + (target || '');
+    frame.dataset.route = route;
+
+    if(frame.getAttribute('src') !== src){
+      pendingModuleMsg = target
+        ? { type:'hub:open', module: route, target: target }
+        : null;
+      frame.setAttribute('src', src);
+      iframeLoadedFor = route;
+    }else{
+      decorateFrame();
+      if(target){
+        try{
+          frame.contentWindow.postMessage({ type:'hub:open', module: route, target: target }, '*');
+        }catch(e){}
+      }
+    }
+  }
+  function decorateFrame(){
+    const frame = $('#frame');
+    const route = frame.dataset.route;
+    let doc;
+    try{ doc = frame.contentDocument; }catch(e){ return; }
+    if(!doc) return;
+    doc.querySelectorAll('a[href]').forEach(a => {
+      const href = a.getAttribute('href') || '';
+      if(/^(?:\.\.\/)?(?:Dashboard|index)\.html$/i.test(href)){
+        a.setAttribute('href', 'index.html#' + (route || 'overview'));
+        a.setAttribute('target', '_top');
+      }
+    });
+    ensureFab(frame);
+  }
+
+  /* ============================================================
+     EVENTS
+     ============================================================ */
+  window.addEventListener('hashchange', () => routeTo(routeFromHash()));
+
+  document.addEventListener('click', e => {
+    if(e.target.closest('#nav a')) return;
+    if(e.target.closest('#backBtn')){ go('overview'); return; }
+  });
+
+  $('#overviewContent').addEventListener('click', e => {
+    const el = e.target.closest('[data-route]');
+    if(el) go(el.dataset.route);
+  });
+
+  $('#roadmapContent').addEventListener('click', onRoadmapClick);
+  $('#roadmapContent').addEventListener('change', onRoadmapChange);
+
+  /* ---------- phase resource picker ---------- */
+  $('#pickerTabs').addEventListener('click', e => {
+    const t = e.target.closest('.tab');
+    if(!t) return;
+    pickerModule = t.dataset.mod;
+    $('#pickerSearch').value = '';
+    renderPicker();
+  });
+  $('#pickerList').addEventListener('click', e => {
+    const item = e.target.closest('.pitem');
+    if(!item || item.disabled) return;
+    addPickedResource(item.dataset.ref);
+  });
+  $('#pickerSearch').addEventListener('input', renderPicker);
+  $('#pickerClose').addEventListener('click', closePicker);
+  $('#pickerDone').addEventListener('click', closePicker);
+  $('#picker').addEventListener('click', e => { if(e.target === $('#picker')) closePicker(); });
+
+  /* ---------- day planner ---------- */
+  $('#dayModeTabs').addEventListener('click', e => {
+    const t = e.target.closest('.tab');
+    if(!t) return;
+    dayMode = t.dataset.mode;
+    $('#daySearch').value = '';
+    renderDayModal();
+  });
+
+  $('#dayTabs').addEventListener('click', e => {
+    const t = e.target.closest('.tab');
+    if(!t) return;
+    dayModule = t.dataset.mod;
+    $('#daySearch').value = '';
+    renderDayModal();
+  });
+
+  $('#dayList').addEventListener('click', e => {
+    const item = e.target.closest('.pitem');
+    if(!item || item.disabled) return;
+    if(dayMode === 'tasks') addDayTask(dayModule, item.dataset.ref);
+    else addDayResource(dayModule, item.dataset.ref);
+  });
+
+  $('#daySection').addEventListener('click', e => {
+    const btn = e.target.closest('[data-act]');
+    if(!btn) return;
+    const act = btn.dataset.act;
+    if(act === 'toggle-task') toggleDayTask(btn.dataset.id);
+    else if(act === 'remove-task') removeDayTask(btn.dataset.id);
+    else if(act === 'toggle-res') toggleDayResource(btn.dataset.id);
+    else if(act === 'remove-res') removeDayResource(btn.dataset.id);
+  });
+
+  $('#dayPickerToggle').addEventListener('click', () => {
+    dayPickerOpen = !dayPickerOpen;
+    renderDayModal();
+  });
+
+  $('#daySearch').addEventListener('input', renderDayModal);
+  $('#dayToggleComplete').addEventListener('click', toggleDayComplete);
+  $('#dayClose').addEventListener('click', closeDayModal);
+  $('#dayDone').addEventListener('click', closeDayModal);
+  $('#dayModal').addEventListener('click', e => { if(e.target === $('#dayModal')) closeDayModal(); });
+
+  document.addEventListener('keydown', e => {
+    if(e.key !== 'Escape') return;
+    if(!$('#dayModal').hidden){ closeDayModal(); return; }
+    if(!$('#picker').hidden) closePicker();
+  });
+
+  $('#themeBtn').addEventListener('click', () => {
+    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+  });
+
+  $('#frame').addEventListener('load', () => {
+    decorateFrame();
+    if(pendingModuleMsg){
+      try{ $('#frame').contentWindow.postMessage(pendingModuleMsg, '*'); }catch(e){}
+      pendingModuleMsg = null;
+    }
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if(document.visibilityState !== 'visible') return;
+    if(currentRoute === 'overview') renderOverview();
+    else if(currentRoute === 'roadmap') renderRoadmap();
+    else refreshAllFabs();
+  });
+
+  window.addEventListener('focus', () => {
+    if(currentRoute === 'overview') renderOverview();
+    else if(currentRoute === 'roadmap') renderRoadmap();
+    else refreshAllFabs();
+  });
+
+  window.addEventListener('message', () => {
+    if(currentRoute === 'overview') renderOverview();
+    else if(currentRoute === 'roadmap') renderRoadmap();
+  });
+
+  /* ============================================================
+     BOOT
+     ============================================================ */
+  applyTheme(initialTheme());
+  routeTo(routeFromHash());
+})();
+</script>
+</body>
+</html>
