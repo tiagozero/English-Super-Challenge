@@ -477,6 +477,8 @@
   .channel-meta{font-size:11.5px;color:var(--muted)}
   .channel-row .link-btn{padding:2px 6px;font-size:12px;flex:0 0 auto;white-space:nowrap}
   .mat-subtask-inline .channel-row{font-size:12.5px}
+  .channel-cover{width:34px;height:34px;border-radius:9px;flex:0 0 auto;background:var(--surface-2) center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;border:1px solid var(--line);padding:0}
+  .channel-cover:hover{border-color:var(--accent, var(--line))}
   .mat-progress{margin-top:auto;padding-top:8px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
   .mat-progress-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:12px;font-variant-numeric:tabular-nums}
   .mat-progress-pct{font-weight:750;color:var(--reading)}
@@ -496,11 +498,18 @@
   .lib-stats{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:14px;padding:12px 16px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;font-size:12.5px;color:var(--muted)}
   .lib-stat b{color:var(--text);font-weight:750;font-variant-numeric:tabular-nums}
   .mat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
-  .mat-card{display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:16px}
+  .mat-card{display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:16px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+  .mat-card:hover{border-color:var(--hover-line);box-shadow:var(--shadow)}
   .mat-card-top{display:flex;gap:11px;align-items:flex-start}
   .mat-card-icon{width:38px;height:38px;flex:0 0 auto;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:750;color:var(--on-accent)}
   .mat-card-icon.has-cover{background-size:cover;background-position:center}
   .mat-card-titles{min-width:0;flex:1}
+  .mat-card-edit-btn{
+    flex:0 0 auto;width:28px;height:28px;border-radius:8px;border:1px solid transparent;
+    background:transparent;color:var(--muted);cursor:pointer;font-size:13px;
+    display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s,border-color .15s;
+  }
+  .mat-card-edit-btn:hover{background:var(--surface-2);color:var(--text);border-color:var(--line)}
   .mat-card-title{font-size:14.5px;font-weight:650;letter-spacing:-.005em;line-height:1.25;word-break:break-word}
   .mat-card-sub{font-size:12px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .mat-card-stats{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
@@ -517,6 +526,32 @@
   .mat-card-queued .qlabel{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
   .mat-card-queued .tag{font-size:11px;font-weight:650;padding:2px 9px;border-radius:999px;background:var(--tag-bg);color:var(--tag-fg)}
   .mat-card-actions{display:flex;justify-content:flex-end;gap:14px;margin-top:2px}
+
+  /* Material detail modal */
+  .matd-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:16px}
+  .matd-icon{width:56px;height:56px;flex:0 0 auto;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:750;color:var(--on-accent);background-size:cover;background-position:center}
+  .matd-titles{min-width:0;flex:1}
+  .matd-title{font-size:17px;font-weight:700;letter-spacing:-.01em;word-break:break-word}
+  .matd-sub{font-size:13px;color:var(--muted);margin-top:3px}
+  .matd-badges{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:9px}
+  .matd-badges .status-pill,
+  .matd-badges .tag{
+    display:inline-flex;align-items:center;line-height:1;
+    padding:5px 10px;font-size:10.5px;font-weight:750;border-radius:999px;
+    letter-spacing:.04em;
+  }
+  .matd-badges .tag{background:var(--tag-bg);color:var(--tag-fg);text-transform:none;letter-spacing:0;font-weight:650}
+  .matd-section{margin-bottom:18px;padding-top:16px;border-top:1px dashed var(--dash-line)}
+  .matd-section:first-of-type{padding-top:0;border-top:0}
+  .matd-section:last-child{margin-bottom:0}
+  .matd-label{font-size:10.5px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+  .matd-desc{font-size:13.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+  .matd-desc.empty{color:var(--muted);font-style:italic}
+  .matd-meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+  .matd-meta-item{background:var(--surface-2);border:1px solid var(--line);border-radius:11px;padding:10px 12px}
+  .matd-meta-k{font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  .matd-meta-v{font-size:14px;font-weight:650;margin-top:3px;font-variant-numeric:tabular-nums}
+  .matd-empty-note{font-size:12.5px;color:var(--muted);font-style:italic}
 
   /* Charts */
   .seg{display:inline-flex;background:var(--surface-2);border-radius:11px;padding:3px;gap:2px}
@@ -1058,6 +1093,16 @@ function todayISO(){ return toISO(new Date()); }
 function minISO(a, b){ return a < b ? a : b; }
 function maxISO(a, b){ return a > b ? a : b; }
 function uid(p){ return p + '_' + Math.random().toString(36).slice(2, 9); }
+function encodeImage(img, maxDim){
+  const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+  const w = Math.max(1, Math.round(img.width * scale));
+  const h = Math.max(1, Math.round(img.height * scale));
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, w, h);
+  return canvas.toDataURL('image/jpeg', 0.85);
+}
 function escapeHtml(s){
   return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
@@ -3768,8 +3813,12 @@ function materialChannelInlineHTML(m){
       ${list.map(c => {
         const logged = channelMinutesLogged(m, c.id);
         const est = Number(c.estimated_minutes) || 0;
+        const initials = (c.name || '?').trim().slice(0, 2).toUpperCase();
         return `
         <div class="channel-row">
+          <button type="button" class="channel-cover" data-action="edit-channel-cover" data-id="${m.id}" data-channel="${c.id}"
+                  title="Set cover" aria-label="Set cover for ${escapeHtml(c.name)}"
+                  style="${c.cover_url ? `background-image:url('${escapeHtml(c.cover_url)}')` : ''}">${c.cover_url ? '' : escapeHtml(initials)}</button>
           <div class="channel-row-main">
             <span class="channel-name">${escapeHtml(c.name)}</span>
             <span class="channel-meta">${fmt(logged)}${est ? ` / ${fmt(est)}` : ''} min</span>
@@ -3843,13 +3892,14 @@ function materialCardHTML(m){
   const phaseTags = materialPhaseTags(m);
 
   return `
-  <div class="mat-card">
+  <div class="mat-card" data-action="open-material" data-id="${m.id}" role="button" tabindex="0" aria-label="View details for ${escapeHtml(m.title)}">
     <div class="mat-card-top">
       ${icon}
       <div class="mat-card-titles">
         <div class="mat-card-title">${escapeHtml(m.title)}</div>
         <div class="mat-card-sub">${escapeHtml(m.creator || '—')} · ${escapeHtml(typeLabel)}</div>
       </div>
+      <button type="button" class="mat-card-edit-btn" data-action="edit-material" data-id="${m.id}" title="Edit material" aria-label="Edit ${escapeHtml(m.title)}">✎</button>
     </div>
     <div class="mat-card-stats">
       <span class="mat-card-figure">${figure}</span>
@@ -4731,9 +4781,9 @@ function openLogModal(activity){
         if (byTitle){ materialId = byTitle.id; }
         else {
           const nm = {
-            id: uid('m'), challenge_id: ch.id, title, creator: '',
+            id: uid('m'), challenge_id: ch.id, title, creator: '', description: '',
             default_input_type: draft.input_type, default_category: draft.category,
-            status: 'active', cover_url: ''
+            status: 'active', cover_url: '', created_at: new Date().toISOString()
           };
           state.materials.push(nm);
           materialId = nm.id;
@@ -4765,6 +4815,69 @@ function openLogModal(activity){
   });
   refreshChannelField();
   setTimeout(() => amountInput.focus(), 60);
+}
+
+/* =========================================================
+   Sub-item cover modal (set/replace a cover image for a
+   channel / show / title / series)
+   ========================================================= */
+function openSubitemCoverModal(name, currentUrl, onSave){
+  let url = currentUrl || '';
+  openModal(`
+    <div class="modal-backdrop" data-action="close-modal"></div>
+    <div class="modal" role="dialog" aria-modal="true" style="max-width:400px">
+      <div class="modal-head">
+        <h2>Cover · ${escapeHtml(name)}</h2>
+        <button class="icon-btn" data-action="close-modal" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap">
+            <div class="mat-cover-thumb" id="subCoverThumb" style="width:72px;height:72px"></div>
+            <div style="flex:1;min-width:160px;display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button type="button" class="btn btn-ghost btn-sm" id="subCoverUploadBtn">⬆ Upload</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="subCoverRemoveBtn" style="color:var(--bad-fg)">Remove</button>
+              </div>
+              <p class="hint" style="margin:0">Or paste an image URL</p>
+              <input type="text" id="subCoverUrl" placeholder="https://…" value="${url && !url.startsWith('data:') ? escapeHtml(url) : ''}">
+            </div>
+          </div>
+          <input type="file" id="subCoverFile" accept="image/*" style="display:none">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-action="close-modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="subCoverSaveBtn">Save</button>
+        </div>
+      </div>
+    </div>
+  `);
+  const thumb = $('#subCoverThumb');
+  const fileInput = $('#subCoverFile');
+  const urlInput = $('#subCoverUrl');
+  function refresh(){
+    if (url){ thumb.style.backgroundImage = `url('${url}')`; thumb.textContent = ''; }
+    else { thumb.style.backgroundImage = ''; thumb.textContent = 'No cover'; }
+  }
+  $('#subCoverUploadBtn').addEventListener('click', () => fileInput.click());
+  $('#subCoverRemoveBtn').addEventListener('click', () => { url = ''; urlInput.value = ''; refresh(); });
+  fileInput.addEventListener('change', e => {
+    const f = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => { url = encodeImage(img, 300); urlInput.value = ''; refresh(); };
+      img.onerror = () => alert('Could not read that image.');
+      img.src = ev.target.result;
+    };
+    reader.onerror = () => alert('Could not read that file.');
+    reader.readAsDataURL(f);
+  });
+  urlInput.addEventListener('input', () => { url = urlInput.value.trim(); refresh(); });
+  refresh();
+  $('#subCoverSaveBtn').addEventListener('click', () => { onSave(url || null); closeModal(); });
 }
 
 /* =========================================================
@@ -4822,7 +4935,7 @@ function openChannelLogModal(material, channel){
 function openMaterialModal(material){
   const ch = state.challenge;
   const editing = !!material;
-  const m = material || { title: '', creator: '', default_input_type: 'kindle', default_category: 'reading', status: 'active', cover_url: '', deadline: '', subtasks: [], channels: [] };
+  const m = material || { title: '', creator: '', description: '', default_input_type: 'kindle', default_category: 'reading', status: 'active', cover_url: '', deadline: '', subtasks: [], channels: [] };
   let coverUrl = m.cover_url || '';
   const coverIsLink = coverUrl && !coverUrl.startsWith('data:');
 
@@ -4839,6 +4952,9 @@ function openMaterialModal(material){
         </div>
         <div class="field"><label for="matCreator">Creator</label>
           <input type="text" id="matCreator" value="${escapeHtml(m.creator || '')}" placeholder="Author, host or studio">
+        </div>
+        <div class="field"><label for="matDescription">Description (optional)</label>
+          <textarea id="matDescription" rows="3" maxlength="600" placeholder="What's this material about?">${escapeHtml(m.description || '')}</textarea>
         </div>
         <div class="field">
           <label>Cover (optional)</label>
@@ -5033,7 +5149,7 @@ function openMaterialModal(material){
   });
 
   let channels = Array.isArray(m.channels)
-    ? m.channels.map(c => ({ id: c.id || uid('ch'), name: c.name, estimated_minutes: (c.estimated_minutes ?? null) }))
+    ? m.channels.map(c => ({ id: c.id || uid('ch'), name: c.name, estimated_minutes: (c.estimated_minutes ?? null), cover_url: c.cover_url || null }))
     : [];
   const channelsList = $('#matChannelsList');
   const channelsField = $('#matChannelsField');
@@ -5045,8 +5161,12 @@ function openMaterialModal(material){
     channelsList.innerHTML = channels.map(c => {
       const logged = editing ? channelMinutesLogged(material, c.id) : 0;
       const est = Number(c.estimated_minutes) || 0;
+      const initials = (c.name || '?').trim().slice(0, 2).toUpperCase();
       return `
       <div class="channel-row" data-id="${c.id}">
+        <button type="button" class="channel-cover channel-cover-draft" data-id="${c.id}" title="Set cover"
+                aria-label="Set cover for ${escapeHtml(c.name)}"
+                style="${c.cover_url ? `background-image:url('${escapeHtml(c.cover_url)}')` : ''}">${c.cover_url ? '' : escapeHtml(initials)}</button>
         <div class="channel-row-main">
           <span class="channel-name">${escapeHtml(c.name)}</span>
           <span class="channel-meta">${fmt(logged)}${est ? ` / ${fmt(est)}` : ''} min logged</span>
@@ -5057,6 +5177,16 @@ function openMaterialModal(material){
   }
   renderChannelsDraft();
   channelsList.addEventListener('click', e => {
+    const coverBtn = e.target.closest('.channel-cover-draft');
+    if (coverBtn){
+      const c = channels.find(x => x.id === coverBtn.dataset.id);
+      if (!c) return;
+      openSubitemCoverModal(c.name, c.cover_url || '', (url) => {
+        c.cover_url = url;
+        renderChannelsDraft();
+      });
+      return;
+    }
     if (!e.target.classList.contains('channel-del')) return;
     const row = e.target.closest('.channel-row');
     channels = channels.filter(c => c.id !== row.dataset.id);
@@ -5068,7 +5198,7 @@ function openMaterialModal(material){
     const name = nameInput.value.trim();
     if (!name) return;
     const estRaw = estInput.value.trim();
-    channels.push({ id: uid('ch'), name, estimated_minutes: estRaw ? Math.max(0, Number(estRaw) || 0) : null });
+    channels.push({ id: uid('ch'), name, estimated_minutes: estRaw ? Math.max(0, Number(estRaw) || 0) : null, cover_url: null });
     nameInput.value = ''; estInput.value = '';
     renderChannelsDraft();
     nameInput.focus();
@@ -5109,6 +5239,7 @@ function openMaterialModal(material){
     const payload = {
       title,
       creator: $('#matCreator').value.trim(),
+      description: $('#matDescription').value.trim(),
       default_input_type: type,
       default_category: category,
       status: $('#matStatus').value,
@@ -5127,11 +5258,139 @@ function openMaterialModal(material){
       const target = state.materials.find(x => x.id === material.id);
       if (target) Object.assign(target, payload);
     } else {
-      state.materials.push({ id: uid('m'), challenge_id: ch.id, ...payload });
+      state.materials.push({ id: uid('m'), challenge_id: ch.id, created_at: new Date().toISOString(), ...payload });
     }
     saveState(); closeModal(); render();
   });
   setTimeout(() => $('#matTitle').focus(), 60);
+}
+
+/* =========================================================
+   Material detail modal (view / stats popup)
+   ========================================================= */
+function openMaterialDetailModal(m){
+  const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
+  const initials = (m.title || '?').trim().slice(0, 2).toUpperCase();
+  const color = m.color || MATERIAL_COLORS[0].hex;
+  const icon = m.cover_url
+    ? `<div class="matd-icon" style="background-image:url('${escapeHtml(m.cover_url)}')"></div>`
+    : `<div class="matd-icon" style="background:${escapeHtml(color)}">${m.emoji ? escapeHtml(m.emoji) : escapeHtml(initials)}</div>`;
+
+  const isDone = materialIsComplete(m);
+  const isScheduled = m.status === 'scheduled' && !isDone;
+  const isNotScheduled = m.status === 'not_scheduled' && !isDone;
+  const pct = materialUnitPct(m);
+  const statusKind = isDone ? 'good' : (isScheduled ? 'info' : (isNotScheduled ? 'neutral' : (pct > 0 ? 'warn' : 'neutral')));
+  const statusText = isDone ? '✓ Complete' : (isScheduled ? '🗓 Scheduled' : (isNotScheduled ? '— Not scheduled' : (pct > 0 ? 'In progress' : 'Not started')));
+
+  const hasTarget = materialHasTarget(m);
+  const figure = hasTarget
+    ? `${fmt(materialLoggedUnits(m))} / ${fmt(Number(m.total_units))} ${escapeHtml(materialUnitLabel(m).toLowerCase())}`
+    : escapeHtml(materialTotalsText(materialTotals(m.id)));
+  const episodesTotal = Number(m.episodes_total) || 0;
+
+  const phaseTags = materialPhaseTags(m);
+
+  const subtasks = Array.isArray(m.subtasks) ? m.subtasks : [];
+  const sp = materialSubtasksSummary(m);
+  const subtasksHTML = subtasks.length ? `
+    <div class="subtask-list">
+      ${subtasks.map(s => `
+        <div class="subtask-row">
+          <input type="checkbox" data-action="toggle-material-subtask" data-id="${m.id}" data-sub="${s.id}" ${s.done ? 'checked' : ''}>
+          <span class="subtask-title ${s.done ? 'done' : ''}">${escapeHtml(s.title)}</span>
+        </div>
+      `).join('')}
+    </div>` : `<div class="matd-empty-note">No sub-tasks added.</div>`;
+
+  const channels = Array.isArray(m.channels) ? m.channels : [];
+  const lbl = subitemLabels(m.default_input_type);
+  const channelsHTML = channels.length ? `
+    <div class="channel-list">
+      ${channels.map(c => {
+        const logged = channelMinutesLogged(m, c.id);
+        const est = Number(c.estimated_minutes) || 0;
+        const cInitials = (c.name || '?').trim().slice(0, 2).toUpperCase();
+        return `
+        <div class="channel-row">
+          <button type="button" class="channel-cover" data-action="edit-channel-cover" data-id="${m.id}" data-channel="${c.id}"
+                  title="Set cover" aria-label="Set cover for ${escapeHtml(c.name)}"
+                  style="${c.cover_url ? `background-image:url('${escapeHtml(c.cover_url)}')` : ''}">${c.cover_url ? '' : escapeHtml(cInitials)}</button>
+          <div class="channel-row-main">
+            <span class="channel-name">${escapeHtml(c.name)}</span>
+            <span class="channel-meta">${fmt(logged)}${est ? ` / ${fmt(est)}` : ''} min</span>
+          </div>
+          <button type="button" class="link-btn" data-action="log-channel-time" data-id="${m.id}" data-channel="${c.id}">+ Log</button>
+        </div>`;
+      }).join('')}
+    </div>` : (hasSubitems(m.default_input_type) ? `<div class="matd-empty-note">No ${lbl.plural.toLowerCase()} added.</div>` : '');
+
+  openModal(`
+    <div class="modal-backdrop" data-action="close-modal"></div>
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h2>Material details</h2>
+        <button class="icon-btn" data-action="close-modal" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="matd-head">
+          ${icon}
+          <div class="matd-titles">
+            <div class="matd-title">${escapeHtml(m.title)}</div>
+            <div class="matd-sub">${escapeHtml(m.creator || '—')} · ${escapeHtml(typeLabel)}</div>
+            <div class="matd-badges">
+              <span class="status-pill ${statusKind}">${statusText}</span>
+              ${phaseTags.map(t => `<span class="tag">${escapeHtml(t.name)}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+
+        <div class="matd-section">
+          <div class="matd-label">Description</div>
+          <div class="matd-desc${m.description ? '' : ' empty'}">${m.description ? escapeHtml(m.description) : 'No description added.'}</div>
+        </div>
+
+        <div class="matd-section">
+          <div class="matd-label">Stats</div>
+          <div class="matd-meta-grid">
+            <div class="matd-meta-item">
+              <div class="matd-meta-k">Deadline</div>
+              <div class="matd-meta-v">${m.deadline ? escapeHtml(fmtDeadlineDate(m.deadline)) : '—'}</div>
+            </div>
+            <div class="matd-meta-item">
+              <div class="matd-meta-k">Progress</div>
+              <div class="matd-meta-v">${pct}%</div>
+            </div>
+            <div class="matd-meta-item">
+              <div class="matd-meta-k">${hasTarget ? materialUnitLabel(m) : 'Logged'}</div>
+              <div class="matd-meta-v">${figure}</div>
+            </div>
+            ${episodesTotal > 0 ? `
+            <div class="matd-meta-item">
+              <div class="matd-meta-k">Episodes</div>
+              <div class="matd-meta-v">${fmt(materialEpisodesLogged(m))} / ${fmt(episodesTotal)}</div>
+            </div>` : ''}
+          </div>
+          <div class="mat-progress-bar ${isDone ? 'complete' : (m.default_category || 'reading')}" style="margin-top:12px"><i style="width:${pct}%"></i></div>
+        </div>
+
+        <div class="matd-section">
+          <div class="matd-label">Sub-tasks${sp ? ` (${sp.done}/${sp.total})` : ''}</div>
+          ${subtasksHTML}
+        </div>
+
+        ${hasSubitems(m.default_input_type) || channels.length ? `
+        <div class="matd-section">
+          <div class="matd-label">${escapeHtml(lbl.plural)}</div>
+          ${channelsHTML}
+        </div>` : ''}
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-action="close-modal">Close</button>
+        <button type="button" class="btn btn-primary" data-action="edit-material" data-id="${m.id}">Edit material</button>
+      </div>
+    </div>
+  `);
 }
 
 /* =========================================================
@@ -5346,10 +5605,11 @@ function openMaterialsImportModal(){
       existing.add(key);
       state.materials.push({
         id: uid('m'), challenge_id: state.challenge.id,
-        title: r.title, creator: r.creator,
+        title: r.title, creator: r.creator, description: '',
         default_input_type: r.default_input_type,
         default_category: r.default_category,
-        status: r.status, cover_url: r.cover_url || ''
+        status: r.status, cover_url: r.cover_url || '',
+        created_at: new Date().toISOString()
       });
       added++;
     });
@@ -5773,6 +6033,11 @@ document.addEventListener('click', e => {
       if (m) openMaterialModal(m);
       break;
     }
+    case 'open-material': {
+      const m = materialById(actionEl.dataset.id);
+      if (m) openMaterialDetailModal(m);
+      break;
+    }
     case 'delete-material': {
       const id = actionEl.dataset.id;
       const m = materialById(id);
@@ -5810,6 +6075,18 @@ document.addEventListener('click', e => {
       const c = (m.channels || []).find(x => x.id === actionEl.dataset.channel);
       if (!c) break;
       openChannelLogModal(m, c);
+      break;
+    }
+    case 'edit-channel-cover': {
+      const m = materialById(actionEl.dataset.id);
+      if (!m) break;
+      const c = (m.channels || []).find(x => x.id === actionEl.dataset.channel);
+      if (!c) break;
+      openSubitemCoverModal(c.name, c.cover_url || '', (url) => {
+        c.cover_url = url;
+        saveState();
+        render();
+      });
       break;
     }
     case 'toggle-material-subtask': {
@@ -5932,6 +6209,10 @@ document.addEventListener('input', e => {
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && $('#modalRoot').innerHTML) closeModal();
+  if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.matches && e.target.matches('[data-action="open-material"]')){
+    e.preventDefault();
+    e.target.click();
+  }
 });
 
 /* =========================================================
