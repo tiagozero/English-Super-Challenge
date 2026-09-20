@@ -47,12 +47,15 @@
   header h1{font-size:18px;font-weight:600;letter-spacing:-.2px}
   header h1 span{color:var(--muted);font-weight:400}
 
+  .header-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+
   .icon-btn{
     width:36px;height:36px;border:1px solid var(--border);border-radius:var(--radius);
     background:var(--bg);color:var(--text);cursor:pointer;font-size:15px;
     display:grid;place-items:center;transition:.15s;
   }
   .icon-btn:hover{border-color:var(--accent);color:var(--accent)}
+  a.icon-btn{text-decoration:none;color:var(--text)}
 
   .tabs{
     display:flex;gap:4px;padding:4px;margin-bottom:12px;
@@ -270,7 +273,16 @@
 
   <header>
     <h1 id="pageTitle">Vocabulary in Use - Elementary <span id="pageCount">· 0 chapters</span></h1>
-    <button class="icon-btn" id="themeBtn" aria-label="Toggle dark mode">🌙</button>
+    <div class="header-actions">
+      <a class="icon-btn" href="index.html" aria-label="Back to dashboard" title="Back to dashboard">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"/>
+          <polyline points="12 19 5 12 12 5"/>
+        </svg>
+      </a>
+      <button class="icon-btn" id="themeBtn" aria-label="Toggle dark mode">🌙</button>
+    </div>
   </header>
 
   <nav class="tabs" id="tabs"></nav>
