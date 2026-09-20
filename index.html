@@ -214,10 +214,11 @@
   /* Layout */
   main{max-width:1080px;margin:0 auto;padding:20px 20px 120px}
   .grid{display:grid;gap:14px;margin-bottom:14px}
-  .cols-2,.cols-3{grid-template-columns:1fr}
+  .cols-2,.cols-3,.cols-4{grid-template-columns:1fr}
   @media(min-width:780px){
     .cols-2{grid-template-columns:1fr 1fr}
     .cols-3{grid-template-columns:repeat(3,1fr)}
+    .cols-4{grid-template-columns:repeat(4,1fr)}
   }
   .card{
     background:var(--surface);border:1px solid var(--line);
@@ -338,6 +339,7 @@
 
   .stat-label{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
   .stat-value{font-size:27px;font-weight:680;letter-spacing:-.025em;margin-top:7px;font-variant-numeric:tabular-nums}
+  .stat-value.grammar{color:var(--grammar)}
   .stat-value small{font-size:13px;font-weight:550;color:var(--muted);letter-spacing:0}
   .stat-sub{font-size:12.5px;color:var(--muted);margin-top:3px}
 
@@ -352,6 +354,7 @@
   .mini-bar i{display:block;height:100%;border-radius:999px;transition:width .4s ease}
   .reading .mini-bar i{background:var(--reading)}
   .listening .mini-bar i{background:var(--listening)}
+  .grammar .mini-bar i{background:var(--grammar)}
 
   .act{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
   .act:last-of-type{border-bottom:0}
@@ -492,6 +495,15 @@
   .mat-progress-bar > i{display:block;height:100%;border-radius:999px;transition:width .5s cubic-bezier(.4,0,.2,1)}
   .mat-progress-bar.reading > i{background:linear-gradient(90deg,var(--reading-2),var(--reading))}
   .mat-progress-bar.listening > i{background:linear-gradient(90deg,var(--listening-2),var(--listening))}
+  .mat-progress-bar.grammar > i{background:linear-gradient(90deg,var(--grammar-2),var(--grammar))}
+  .grammar-sec-list{display:flex;flex-direction:column;gap:5px;max-height:260px;overflow-y:auto;padding-right:2px}
+  .grammar-sec-row{display:flex;align-items:center;gap:9px;padding:6px 9px;border-radius:9px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:12.5px}
+  .grammar-sec-row:hover{background:var(--surface-2)}
+  .grammar-sec-row.all{border-color:color-mix(in srgb, var(--grammar) 40%, var(--line));background:color-mix(in srgb, var(--grammar) 10%, var(--surface))}
+  .grammar-sec-row.some{border-style:dashed}
+  .grammar-sec-row input{flex:0 0 auto}
+  .gsec-name{flex:1;font-weight:600}
+  .gsec-count{flex:0 0 auto;color:var(--muted);font-size:11px}
   .mat-progress-bar.complete > i{background:var(--good-fg)}
   .mat .mat-progress{border-top:none;margin-top:6px;padding-top:0}
 
@@ -698,20 +710,6 @@
   .rm-phase-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
   .rm-phase-pct{font-size:15px;font-weight:750;font-variant-numeric:tabular-nums;color:var(--reading)}
 
-  .rm-phase-bar{padding:0 18px 16px}
-  .rm-double-bar{display:flex;flex-direction:column;gap:8px;margin-top:6px}
-  .rm-dbar{position:relative;height:8px;background:var(--surface-2);border-radius:999px;overflow:hidden}
-  .rm-dbar i{display:block;height:100%;border-radius:999px;transition:width .45s ease}
-  .rm-dbar.reading i{background:linear-gradient(90deg,var(--reading-2),var(--reading))}
-  .rm-dbar.listening i{background:linear-gradient(90deg,var(--listening-2),var(--listening))}
-  .rm-dbar .rm-ideal{
-    position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--text);opacity:.28;border-radius:2px;
-  }
-  .rm-dbar-row{display:flex;align-items:center;gap:10px;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
-  .rm-dbar-row .lbl{width:70px;flex:0 0 auto;text-transform:uppercase;letter-spacing:.06em;font-weight:700;font-size:10.5px}
-  .rm-dbar-row .bar{flex:1}
-  .rm-dbar-row .v{min-width:92px;text-align:right;flex:0 0 auto}
-
   /* Phase activity calendar heatmap */
   .rm-heatmap{padding:16px 18px 18px;border-top:1px solid var(--line)}
   .rm-heat-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px}
@@ -803,7 +801,8 @@
   .rm-progress-top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--muted);font-weight:650;margin-bottom:7px}
   .rm-progress-top .v{color:var(--text);font-variant-numeric:tabular-nums}
   .rm-queue-list{display:flex;flex-direction:column;gap:8px}
-  .rm-queue-item{display:flex;align-items:stretch;gap:11px;background:color-mix(in srgb, var(--task-color, var(--line)) 9%, var(--surface-2));border:1px solid color-mix(in srgb, var(--task-color, var(--line)) 30%, var(--line));border-radius:12px;padding:11px 12px;transition:border-color .15s,background .15s;min-width:0}
+  .rm-queue-item{display:flex;align-items:stretch;gap:11px;background:color-mix(in srgb, var(--task-color, var(--line)) 9%, var(--surface-2));border:1px solid color-mix(in srgb, var(--task-color, var(--line)) 30%, var(--line));border-radius:12px;padding:11px 12px;transition:border-color .15s,background .15s;min-width:0;cursor:pointer}
+  .rm-queue-item:hover{border-color:color-mix(in srgb, var(--task-color, var(--line)) 55%, var(--line))}
   .rm-queue-item:hover{border-color:color-mix(in srgb, var(--task-color, var(--hover-line)) 55%, var(--hover-line))}
   .rm-queue-item.done{background:color-mix(in srgb, var(--good-bg) 55%, var(--surface-2));border-color:color-mix(in srgb, var(--good-fg) 25%, var(--line))}
   .rq-pos{width:22px;height:22px;flex:0 0 auto;align-self:flex-start;border-radius:50%;background:var(--surface);border:1px solid var(--line);color:var(--muted);font-size:11px;font-weight:750;display:flex;align-items:center;justify-content:center}
@@ -1354,11 +1353,190 @@ const TYPES = {
   anime:   { label: 'Anime',       category: 'listening', unit: 'minutes' },
   youTube:   { label: 'YouTube',       category: 'listening', unit: 'minutes' },
   tv:        { label: 'TV',            category: 'listening', unit: 'minutes' },
-  film:      { label: 'Film',          category: 'listening', unit: 'minutes' }
+  film:      { label: 'Film',          category: 'listening', unit: 'minutes' },
+  grammar:   { label: 'Grammar',       category: 'grammar',   unit: 'units' }
 };
-const TYPE_ORDER = ['kindle', 'book', 'article', 'manga', 'other', 'youTube', 'anime', 'audiobook', 'podcast', 'tv', 'film'];
-const CATEGORY_ORDER = ['reading', 'listening'];
-const CATEGORY_LABEL = { reading: 'Reading', listening: 'Listening' };
+const TYPE_ORDER = ['kindle', 'book', 'article', 'manga', 'other', 'youTube', 'anime', 'audiobook', 'podcast', 'tv', 'film', 'grammar'];
+const CATEGORY_ORDER = ['reading', 'listening', 'grammar'];
+const CATEGORY_LABEL = { reading: 'Reading', listening: 'Listening', grammar: 'Grammar' };
+
+/* English Grammar in Use — same 145 units / 25 sections as the standalone
+   Grammar.html tracker, kept here so "New material" can build a matching
+   set of subtasks without depending on that file being open. */
+const GRAMMAR_TITLES = [
+  "Present continuous (I am doing)",
+  "Present simple (I do)",
+  "Present continuous and present simple 1 (I am doing and I do)",
+  "Present continuous and present simple 2 (I am doing and I do)",
+  "Past simple (I did)",
+  "Past continuous (I was doing)",
+  "Present perfect 1 (I have done)",
+  "Present perfect 2 (I have done)",
+  "Present perfect continuous (I have been doing)",
+  "Present perfect continuous and simple (I have been doing and I have done)",
+  "How long have you (been)...?",
+  "For and since / when...? and how long...?",
+  "Present perfect and past 1 (I have done and I did)",
+  "Present perfect and past 2 (I have done and I did)",
+  "Past perfect (I had done)",
+  "Past perfect continuous (I had been doing)",
+  "Have and have got",
+  "Used to (do)",
+  "Present tenses for the future (I am doing / I do)",
+  "Going to (I'm going to do)",
+  "Will/shall 1",
+  "Will/shall 2",
+  "I will vs I'm going to",
+  "Will be doing / will have done",
+  "Can, could, be able to",
+  "May and might",
+  "Must, mustn't, don't need to",
+  "Should",
+  "Have to and must",
+  "Would you like...? / I'd like...",
+  "Imperatives (Do this! Don't do that!)",
+  "Used to",
+  "Passive 1 (is done / was done)",
+  "Passive 2 (is being done / has been done)",
+  "Be, have, do in present and past",
+  "Regular and irregular verbs",
+  "Questions 1 (is it...? do they...?)",
+  "Questions 2 (Who saw you? Who did you see?)",
+  "Questions 3 (Who is she talking to?)",
+  "Questions 4 (What...? Which...? How...?)",
+  "Reported speech (She said that...)",
+  "Verb + –ing / verb + to",
+  "I want you to... / I told you to...",
+  "Purpose clauses (I went to the shop to...)",
+  "Go (go to, go on, go for, go –ing)",
+  "Get",
+  "Do and make",
+  "Have",
+  "I/me, he/him, they/them",
+  "My/his/their",
+  "Whose...? It's mine/yours/hers...",
+  "I/me/my/mine",
+  "Myself/yourself/themselves",
+  "'s (Kate's camera / my brother's car)",
+  "A/an...",
+  "Singular and plural (train(s), bus(es))",
+  "Countable/uncountable 1 (a bottle / some water)",
+  "Countable/uncountable 2 (a cake / some cake / some cakes)",
+  "A/an and the",
+  "The...",
+  "Go to work / go home / go to the cinema",
+  "I like music / I hate exams",
+  "The... (names of places)",
+  "This/that/these/those",
+  "One/ones",
+  "Some and any",
+  "Not + any / no / none",
+  "Not + anybody/anyone/anything / nobody/no one",
+  "Somebody/anybody/nobody",
+  "Everybody/everything",
+  "All / all of, most / most of, no / none of",
+  "All, most, both, etc.",
+  "Each and every",
+  "Relative clauses 1 (the woman who...)",
+  "Relative clauses 2 (the people we met...)",
+  "Relative clauses 3 (whose / whom / where)",
+  "Relative clauses 4 (extra information clauses)",
+  "Relative clauses 5 (extra information clauses – with which)",
+  "Adjectives ending in –ing and –ed (boring / bored etc.)",
+  "Adjectives: a nice new house, you look tired",
+  "Adjectives and adverbs 1 (quick/quickly)",
+  "Adjectives and adverbs 2 (well, fast, late, hard/hardly)",
+  "Adjectives and adverbs 3 (comparative: older, more important, etc.)",
+  "Adjectives and adverbs 4 (comparative 2: much better / any better / better and better / the sooner the better)",
+  "Adjectives and adverbs 5 (superlative: the longest, the most enjoyable, etc.)",
+  "Word order 1 (He always goes to work. / I cleaned the house carefully.)",
+  "Word order 2 (usually/always/often, etc.)",
+  "Still, yet, already, anymore",
+  "Even",
+  "Although, though, even though, in spite of, despite",
+  "In case",
+  "Unless",
+  "As (reason and time)",
+  "Like and as",
+  "As if",
+  "During and while",
+  "By and until",
+  "By the time...",
+  "As soon as / until / till",
+  "If I do... and If I did...",
+  "If I knew... I wish I knew...",
+  "If I had known... I wish I had known...",
+  "Wish...",
+  "If I do and If I did (other uses)",
+  "If I had done (other uses)",
+  "At/on/in (time)",
+  "On time and in time / at the end and in the end",
+  "In/at/on (position) 1",
+  "In/at/on (position) 2",
+  "In/at/on (position) 3",
+  "To, at, in, into",
+  "On, onto",
+  "By",
+  "Noun + preposition (reason for, cause of, etc.)",
+  "Adjective + preposition (good at, interested in, etc.)",
+  "Verb + preposition 1 (apologise for, belong to, etc.)",
+  "Verb + preposition 2 (depend on, insist on, etc.)",
+  "Verb + preposition 3 (suffer from, protect against, etc.)",
+  "Phrasal verbs 1 (get up, get on, etc.)",
+  "Phrasal verbs 2 (put off, turn up, etc.)",
+  "Phrasal verbs 3 (break down, wake up, etc.)",
+  "Phrasal verbs 4 (carry on, give up, etc.)",
+  "Phrasal verbs 5 (go on, come on, etc.)",
+  "Phrasal verbs 6 (take off, put on, etc.)",
+  "Phrasal verbs 7 (look after, look for, etc.)",
+  "Phrasal verbs 8 (look forward to, look out, etc.)",
+  "Have something done",
+  "Get something done",
+  "There's / there are",
+  "It...",
+  "What...? Which...?",
+  "How...?",
+  "How long...?",
+  "How often...?",
+  "How far...?",
+  "How old...?",
+  "How much...? How many...?",
+  "What is... like?",
+  "What... for?",
+  "Who...?",
+  "Whose...?",
+  "Which...?",
+  "Where...?",
+  "When...?",
+  "Why...?"
+];
+const GRAMMAR_GROUPS = [
+  { name: "Present tenses",               from: 1,   to: 4   },
+  { name: "Past tenses",                  from: 5,   to: 6   },
+  { name: "Present perfect",              from: 7,   to: 14  },
+  { name: "Past perfect",                 from: 15,  to: 16  },
+  { name: "Have & used to",               from: 17,  to: 18  },
+  { name: "Future",                       from: 19,  to: 24  },
+  { name: "Modals",                       from: 25,  to: 30  },
+  { name: "Imperatives & habits",         from: 31,  to: 32  },
+  { name: "Passive & verbs",              from: 33,  to: 36  },
+  { name: "Questions & reported speech",  from: 37,  to: 41  },
+  { name: "Verb patterns",                from: 42,  to: 44  },
+  { name: "Common verbs",                 from: 45,  to: 48  },
+  { name: "Pronouns & possessives",       from: 49,  to: 54  },
+  { name: "Nouns & articles",             from: 55,  to: 63  },
+  { name: "Demonstratives & quantity",    from: 64,  to: 73  },
+  { name: "Relative clauses",             from: 74,  to: 78  },
+  { name: "Adjectives & adverbs",         from: 79,  to: 85  },
+  { name: "Word order & linking",         from: 86,  to: 95  },
+  { name: "Time clauses",                 from: 96,  to: 99  },
+  { name: "Conditionals & wish",          from: 100, to: 105 },
+  { name: "Prepositions of time & place", from: 106, to: 113 },
+  { name: "Preposition combinations",     from: 114, to: 118 },
+  { name: "Phrasal verbs",                from: 119, to: 126 },
+  { name: "Causatives, there & it",       from: 127, to: 130 },
+  { name: "Question words",               from: 131, to: 145 }
+];
 const STATUS_ORDER = ['active', 'scheduled', 'not_scheduled', 'completed', 'archived'];
 const STATUS_LABEL = { active: 'Active', not_scheduled: 'Not Scheduled', scheduled: 'Scheduled', completed: 'Completed', archived: 'Archived' };
 
@@ -1430,8 +1608,12 @@ const MATERIAL_COLORS = [
   { name: 'Ocean',  hex: '#3E5B78' }
 ];
 const MATERIAL_EMOJI_SUGGESTIONS = ['📖','📗','📙','📘','🎧','🎙️','📻','🎬','📰','📝','🗞️','🔖'];
-const UNIT_SUGGESTIONS = { reading: ['Percent', 'Pages', 'Chapters', 'Words'], listening: ['Minutes', 'Hours', 'Episodes'] };
-function defaultUnitFor(category){ return category === 'listening' ? 'Minutes' : 'Percent'; }
+const UNIT_SUGGESTIONS = { reading: ['Percent', 'Pages', 'Chapters', 'Words'], listening: ['Minutes', 'Hours', 'Episodes'], grammar: ['Units', 'Chapters'] };
+function defaultUnitFor(category){
+  if (category === 'listening') return 'Minutes';
+  if (category === 'grammar') return 'Units';
+  return 'Percent';
+}
 const LANGUAGES = [
   'English','Spanish','French','German','Italian','Portuguese','Dutch','Swedish',
   'Norwegian','Danish','Finnish','Polish','Czech','Greek','Turkish','Russian',
@@ -1828,6 +2010,20 @@ function getStats(){
   const readRequired   = Math.max(0, readTarget - readingTotal) / daysLeft;
   const listenRequired = Math.max(0, listenTarget - listeningTotal) / daysLeft;
 
+  // Grammar has no per-day activity log (progress comes from the external
+  // Grammar tracker's shared digest as a single cumulative "done" count),
+  // so its pace figures are the required rate from today, scaled to a week
+  // and a month — not an "actual vs expected so far" comparison like
+  // reading/listening get, since we can't tell which day a unit was done.
+  const grammarData = getGrammarData();
+  const grammarDone = grammarData ? grammarData.done : 0;
+  const grammarTarget = Number(ch.grammar_target_units) || 1;
+  const grammarPct = grammarDone / grammarTarget * 100;
+  const grammarDailyRate = grammarTarget / totalDays;
+  const grammarRequired = Math.max(0, grammarTarget - grammarDone) / daysLeft;
+  const grammarWeeklyRequired = grammarRequired * 7;
+  const grammarMonthlyRequired = grammarRequired * 30;
+
   const idealReadPct   = elapsed / totalDays * 100;
   const idealListenPct = elapsed / totalDays * 100;
 
@@ -1838,6 +2034,7 @@ function getStats(){
   const weekListen   = sumCategory(actsInRange(weekStart, weekEnd), 'listening');
   const weekReadExp  = readDailyRate * weekDays;
   const weekListenExp = listenDailyRate * weekDays;
+  const weekGrammarExp = grammarDailyRate * weekDays;
 
   const dayIdx   = clamp(diffDays(ch.start_date, today) + 1, 1, totalDays);
   const monthIdx = Math.min(2, Math.floor((dayIdx - 1) / 30));
@@ -1849,16 +2046,19 @@ function getStats(){
   const monthListen   = sumCategory(actsInRange(monthStart, monthCut), 'listening');
   const monthReadExp  = readDailyRate * monthDays;
   const monthListenExp = listenDailyRate * monthDays;
+  const monthGrammarExp = grammarDailyRate * monthDays;
 
   return {
     ch, today, totalDays, elapsed, daysLeft,
     readingTotal, listeningTotal, readTarget, listenTarget,
     readPct, listenPct, readRequired, listenRequired,
     readDailyRate, listenDailyRate, idealReadPct, idealListenPct,
+    grammarData, grammarDone, grammarTarget, grammarPct, grammarDailyRate,
+    grammarRequired, grammarWeeklyRequired, grammarMonthlyRequired,
     monthIdx, monthStart, monthEnd, monthDays,
     weekStart, weekEnd, weekDays,
-    weekRead, weekListen, weekReadExp, weekListenExp,
-    monthRead, monthListen, monthReadExp, monthListenExp
+    weekRead, weekListen, weekReadExp, weekListenExp, weekGrammarExp,
+    monthRead, monthListen, monthReadExp, monthListenExp, monthGrammarExp
   };
 }
 
@@ -2009,6 +2209,7 @@ function buildRoadmap(){
   const elapsed = clamp(diffDays(ch.start_date, today) + 1, 0, totalDays);
   const dailyRead = (Number(ch.reading_target_percent) || 0) / totalDays;
   const dailyListen = (Number(ch.listening_target_minutes) || 0) / totalDays;
+  const dailyGrammar = (Number(ch.grammar_target_units) || 0) / totalDays;
 
   // Days
   const days = [];
@@ -2082,6 +2283,10 @@ function buildRoadmap(){
     // change (dailyRead/dailyListen are derived from them above).
     const expectedRead = pDays.length * dailyRead;
     const expectedListen = pDays.length * dailyListen;
+    // Grammar has no daily activity log to sum "actual" from, so this is
+    // purely the estimated number of topics this phase's length implies —
+    // shown in the Timeline overview alongside what's actually queued.
+    const expectedGrammar = pDays.length * dailyGrammar;
     // Actual progress is real logged activity that fell within this phase's
     // date range — the same activity feed that drives the overall totals —
     // so phase progress always stays tied to real progress toward the
@@ -2118,14 +2323,14 @@ function buildRoadmap(){
       endDate: pDays.length ? pDays[pDays.length - 1].date : null,
       days: pDays,
       weekIndices: [...new Set(pDays.map(d => d.weekIndex))],
-      expectedRead, expectedListen, actualRead, actualListen,
+      expectedRead, expectedListen, expectedGrammar, actualRead, actualListen,
       pct, idealPct, status
     };
   });
 
     return {
     ch, totalDays, elapsed, daysLeft: Math.max(1, totalDays - elapsed + 1),
-    dailyRead, dailyListen, days, weeks, phases
+    dailyRead, dailyListen, dailyGrammar, days, weeks, phases
   };
 }
 function weekStatus(actualSum, expectedSum){
@@ -2379,9 +2584,10 @@ function grammarProgressCardHTML(){
     </div>
   </div>`;
 }
-function paceCard(title, sub, readVal, readExp, listenVal, listenExp){
+function paceCard(title, sub, readVal, readExp, listenVal, listenExp, grammarReq, grammarBaseline, grammarDone, grammarTarget){
   const rs = paceStateRatio(readVal, readExp);
   const ls = paceStateRatio(listenVal, listenExp);
+  const gs = paceStateRatio(grammarBaseline, grammarReq); // inverted: needing less than the normal baseline pace = ahead
   return `
   <div class="card">
     <div class="card-head">
@@ -2408,6 +2614,17 @@ function paceCard(title, sub, readVal, readExp, listenVal, listenExp){
       <div class="bar-meta" style="margin-top:7px">
         <span>${listenVal >= listenExp ? fmt(listenVal - listenExp) + ' ahead' : fmt(listenExp - listenVal) + ' behind'}</span>
         <span class="pace-tag ${ls.cls}">${ls.label}</span>
+      </div>
+    </div>
+    <div class="pace-row grammar">
+      <div class="pace-row-top">
+        <span class="lbl">Grammar</span>
+        <span class="val"><b>${fmt(grammarDone)}</b> / ${fmt(grammarTarget)} units</span>
+      </div>
+      <div class="mini-bar"><i style="width:${clamp(grammarTarget ? grammarDone / grammarTarget * 100 : 0, 0, 100)}%"></i></div>
+      <div class="bar-meta" style="margin-top:7px">
+        <span>${grammarReq <= grammarBaseline ? fmt(grammarBaseline - grammarReq) + ' units ahead of pace' : fmt(grammarReq - grammarBaseline) + ' units behind pace'}</span>
+        <span class="pace-tag ${gs.cls}">${gs.label}</span>
       </div>
     </div>
   </div>`;
@@ -2507,7 +2724,7 @@ function viewDashboard(){
     ${grammarProgressCardHTML()}
     ${progressCard(s, 'listening')}
   </div>
-  <div class="grid cols-3">
+  <div class="grid cols-4">
     <div class="card">
       <div class="stat-label">Days remaining</div>
       <div class="stat-value">${s.daysLeft} <small>days</small></div>
@@ -2523,10 +2740,15 @@ function viewDashboard(){
       <div class="stat-value">${fmt1(s.listenRequired)} <small>min/day</small></div>
       <div class="stat-sub">From today to finish on time</div>
     </div>
+    <div class="card">
+      <div class="stat-label">Grammar pace needed</div>
+      <div class="stat-value grammar">${fmt(s.grammarRequired)} <small>units/day</small></div>
+      <div class="stat-sub">From today to finish on time</div>
+    </div>
   </div>
   <div class="grid cols-2">
-    ${paceCard('This week', `${s.weekDays} day${s.weekDays === 1 ? '' : 's'} elapsed`, s.weekRead, s.weekReadExp, s.weekListen, s.weekListenExp)}
-    ${paceCard('This month', `Month ${s.monthIdx + 1} · ${s.monthDays} day${s.monthDays === 1 ? '' : 's'} elapsed`, s.monthRead, s.monthReadExp, s.monthListen, s.monthListenExp)}
+    ${paceCard('This week', `${s.weekDays} day${s.weekDays === 1 ? '' : 's'} elapsed`, s.weekRead, s.weekReadExp, s.weekListen, s.weekListenExp, s.grammarWeeklyRequired, s.weekGrammarExp, s.grammarDone, s.grammarTarget)}
+    ${paceCard('This month', `Month ${s.monthIdx + 1} · ${s.monthDays} day${s.monthDays === 1 ? '' : 's'} elapsed`, s.monthRead, s.monthReadExp, s.monthListen, s.monthListenExp, s.grammarMonthlyRequired, s.monthGrammarExp, s.grammarDone, s.grammarTarget)}
   </div>
   ${dashboardChallengesCard()}
   <div class="card">
@@ -3041,13 +3263,23 @@ const PHASE_ACCENTS = ['#5D7A3F', 'var(--reading)', 'var(--listening)', '#7A3E5E
 function phasePlannedTotals(phaseIndex){
   const rawIds = (state.roadmap.phases[phaseIndex] && state.roadmap.phases[phaseIndex].materials) || [];
   const items = rawIds.map(id => materialById(id)).filter(Boolean);
-  let plannedRead = 0, plannedListen = 0, untracked = 0;
+  let plannedRead = 0, plannedListen = 0, plannedGrammar = 0, untracked = 0;
   items.forEach(m => {
+    if (m.default_category === 'grammar'){
+      // Grammar materials built from the section picker track progress via
+      // subtasks tagged with grammarRef — that count IS the planned topics.
+      // A grammar material with an explicit numeric target uses that instead.
+      const topicCount = Array.isArray(m.subtasks) ? m.subtasks.filter(s => s.grammarRef).length : 0;
+      if (topicCount > 0) plannedGrammar += topicCount;
+      else if (materialHasTarget(m)) plannedGrammar += Number(m.total_units) || 0;
+      else untracked++;
+      return;
+    }
     if (!materialHasTarget(m)){ untracked++; return; }
     if (m.default_category === 'reading') plannedRead += Number(m.total_units) || 0;
     else if (m.default_category === 'listening') plannedListen += Number(m.total_units) || 0;
   });
-  return { plannedRead, plannedListen, untracked };
+  return { plannedRead, plannedListen, plannedGrammar, untracked };
 }
 const RMTIMELINE_HIDE_KEY = 'esc-rm-timeline-hidden';
 let rmTimelineHidden = false;
@@ -3073,6 +3305,7 @@ function roadmapTimelineOverviewHTML(rm){
     const planned = phasePlannedTotals(phase.index);
     const diffRead = planned.plannedRead - phase.expectedRead;
     const diffListen = planned.plannedListen - phase.expectedListen;
+    const diffGrammar = planned.plannedGrammar - phase.expectedGrammar;
 
     return `
       <div class="rm-timeline-seg phase-${i + 1} ${isToday ? 'is-today' : ''}" style="flex-grow:${span};--accent:${accent}">
@@ -3085,13 +3318,14 @@ function roadmapTimelineOverviewHTML(rm){
           <span>${items.length ? `${doneCount}/${items.length} done` : 'No materials'}</span>
         </div>
         <div class="rm-timeline-plan">
-          <div class="rm-tl-line"><span class="k">Need to complete</span><span class="v">${fmt1(phase.expectedRead)}% · ${fmt1(phase.expectedListen)} min</span></div>
-          <div class="rm-tl-line"><span class="k">Planned in queue</span><span class="v">${fmt(planned.plannedRead)}% · ${fmt(planned.plannedListen)} min</span></div>
+          <div class="rm-tl-line"><span class="k">Need to complete</span><span class="v">${fmt1(phase.expectedRead)}% · ${fmt1(phase.expectedListen)} min · ${fmt(phase.expectedGrammar)} topics</span></div>
+          <div class="rm-tl-line"><span class="k">Planned in queue</span><span class="v">${fmt(planned.plannedRead)}% · ${fmt(planned.plannedListen)} min · ${fmt(planned.plannedGrammar)} topics</span></div>
           <div class="rm-tl-line">
             <span class="k">Difference</span>
             <span class="v">
               <b class="${diffRead >= 0 ? 'good' : 'bad'}">${diffRead >= 0 ? '+' : ''}${fmt1(diffRead)}%</b>
               · <b class="${diffListen >= 0 ? 'good' : 'bad'}">${diffListen >= 0 ? '+' : ''}${fmt1(diffListen)} min</b>
+              · <b class="${diffGrammar >= 0 ? 'good' : 'bad'}">${diffGrammar >= 0 ? '+' : ''}${fmt(diffGrammar)} topics</b>
             </span>
           </div>
           ${planned.untracked ? `<div class="rm-tl-note">+${planned.untracked} material${planned.untracked === 1 ? '' : 's'} with no set target (not counted)</div>` : ''}
@@ -3145,26 +3379,6 @@ function roadmapPhaseHTML(phase, rm){
         <button class="btn btn-ghost btn-sm" data-action="rm-toggle-phase" data-idx="${phase.index}">
           ${isOpen ? 'Hide' : 'Show'} Heatmap
         </button>
-      </div>
-    </div>
-    <div class="rm-phase-bar">
-      <div class="rm-double-bar">
-        <div class="rm-dbar-row">
-          <span class="lbl">Reading</span>
-          <div class="rm-dbar reading">
-            <i style="width:${clamp(phase.expectedRead ? phase.actualRead / phase.expectedRead * 100 : 0, 0, 100)}%"></i>
-            <div class="rm-ideal" style="left:${clamp(phase.idealPct, 0, 99)}%"></div>
-          </div>
-          <span class="v">${fmt(phase.actualRead)}% / ${fmt(phase.expectedRead)}%</span>
-        </div>
-        <div class="rm-dbar-row">
-          <span class="lbl">Listening</span>
-          <div class="rm-dbar listening">
-            <i style="width:${clamp(phase.expectedListen ? phase.actualListen / phase.expectedListen * 100 : 0, 0, 100)}%"></i>
-            <div class="rm-ideal" style="left:${clamp(phase.idealPct, 0, 99)}%"></div>
-          </div>
-          <span class="v">${fmt(phase.actualListen)} / ${fmt(phase.expectedListen)} min</span>
-        </div>
       </div>
     </div>
     ${roadmapQueueHTML(phase)}
@@ -3482,7 +3696,7 @@ function roadmapQueueItemHTML(phaseIndex, m, index, opts){
     : (sp ? `${sp.done}/${sp.total} subtasks` : materialTotalsText(materialTotals(m.id)));
 
   return `
-  <div class="${itemCls}" style="--task-color:${escapeHtml(matColor)}">
+  <div class="${itemCls}" style="--task-color:${escapeHtml(matColor)}" data-action="open-material" data-id="${m.id}" role="button" tabindex="0" aria-label="View details for ${escapeHtml(m.title)}">
     <span class="rq-pos">${index + 1}</span>
     ${icon}
     <div class="rq-main">
@@ -4304,8 +4518,9 @@ function materialsLibraryHTML(){
       <div class="mat-toolbar-right">
         <div class="seg">
           <button class="${materialsFilter.category === 'all' ? 'active' : ''}" data-matcat="all">All</button>
-          <button class="${materialsFilter.category === 'reading' ? 'active' : ''}" data-matcat="reading">Reading</button>
-          <button class="${materialsFilter.category === 'listening' ? 'active' : ''}" data-matcat="listening">Listening</button>
+          ${CATEGORY_ORDER.map(cat => `
+            <button class="${materialsFilter.category === cat ? 'active' : ''}" data-matcat="${cat}">${escapeHtml(CATEGORY_LABEL[cat])}</button>
+          `).join('')}
         </div>
         <button class="btn btn-primary" data-action="add-material">+ Add material</button>
       </div>
@@ -5248,6 +5463,17 @@ function openMaterialModal(material){
             ${TYPE_ORDER.map(t => `<option value="${t}" ${m.default_input_type === t ? 'selected' : ''}>${TYPES[t].label} (${TYPES[t].category})</option>`).join('')}
           </select>
         </div>
+        <div class="field" id="matGrammarField" style="display:${m.default_input_type === 'grammar' ? '' : 'none'}">
+          <label>Grammar sections</label>
+          <p class="hint" style="margin:0 0 8px">
+            Pick the sections to track — each adds its topics as subtasks below. e.g. "Present tenses" adds its 4 topics.
+          </p>
+          <div style="display:flex;gap:8px;margin-bottom:8px">
+            <button type="button" class="btn btn-ghost btn-sm" id="matGrammarAllBtn">Select all 25</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="matGrammarNoneBtn">Clear</button>
+          </div>
+          <div class="grammar-sec-list" id="matGrammarSections"></div>
+        </div>
         <div class="two-col">
           <div class="field"><label for="matTotalUnits">Total units</label>
             <input type="number" id="matTotalUnits" min="0" step="1" inputmode="numeric" placeholder="e.g. 320" value="${m.total_units ? escapeHtml(String(m.total_units)) : ''}">
@@ -5255,7 +5481,7 @@ function openMaterialModal(material){
           <div class="field"><label for="matUnit">Unit</label>
             <input type="text" id="matUnit" list="matUnitOptions" placeholder="${escapeHtml(defaultUnitFor(m.default_category))}" value="${escapeHtml(m.unit || '')}">
             <datalist id="matUnitOptions">
-              ${[...UNIT_SUGGESTIONS.reading, ...UNIT_SUGGESTIONS.listening].map(u => `<option value="${u}"></option>`).join('')}
+              ${[...UNIT_SUGGESTIONS.reading, ...UNIT_SUGGESTIONS.listening, ...UNIT_SUGGESTIONS.grammar].map(u => `<option value="${u}"></option>`).join('')}
             </datalist>
           </div>
         </div>
@@ -5378,7 +5604,7 @@ function openMaterialModal(material){
   refreshCoverThumb();
 
   let subtasks = Array.isArray(m.subtasks)
-    ? m.subtasks.map(s => ({ id: s.id || uid('st'), title: s.title, done: !!s.done, due: s.due || '' }))
+    ? m.subtasks.map(s => ({ id: s.id || uid('st'), title: s.title, done: !!s.done, due: s.due || '', grammarRef: s.grammarRef || null }))
     : [];
   const subtasksList = $('#matSubtasksList');
   function renderSubtasksDraft(){
@@ -5424,6 +5650,59 @@ function openMaterialModal(material){
   $('#matSubtaskAddBtn').addEventListener('click', addSubtaskFromInput);
   $('#matSubtaskInput').addEventListener('keydown', e => {
     if (e.key === 'Enter'){ e.preventDefault(); addSubtaskFromInput(); }
+  });
+
+  /* Grammar sections — only relevant when the Grammar type is selected.
+     Checking a section adds its topics (from GRAMMAR_TITLES) as subtasks
+     tagged with grammarRef so we can tell which section they came from;
+     unchecking removes just those. */
+  const grammarField = $('#matGrammarField');
+  const grammarSectionsBox = $('#matGrammarSections');
+  function grammarSectionState(sec){
+    let count = 0;
+    for (let n = sec.from; n <= sec.to; n++){ if (subtasks.some(s => s.grammarRef === n)) count++; }
+    const size = sec.to - sec.from + 1;
+    return { count, size, all: count === size, some: count > 0 && count < size };
+  }
+  function renderGrammarSections(){
+    grammarSectionsBox.innerHTML = GRAMMAR_GROUPS.map((sec, i) => {
+      const st = grammarSectionState(sec);
+      return `
+        <label class="grammar-sec-row ${st.all ? 'all' : st.some ? 'some' : ''}">
+          <input type="checkbox" data-gsec="${i}" ${st.all ? 'checked' : ''}>
+          <span class="gsec-name">${escapeHtml(sec.name)}</span>
+          <span class="gsec-count">${st.size} topic${st.size === 1 ? '' : 's'}${st.some ? ` · ${st.count} selected` : ''}</span>
+        </label>`;
+    }).join('');
+  }
+  function setGrammarSection(sec, on){
+    if (on){
+      for (let n = sec.from; n <= sec.to; n++){
+        if (!subtasks.some(s => s.grammarRef === n)){
+          subtasks.push({ id: uid('st'), title: GRAMMAR_TITLES[n - 1], done: false, due: '', grammarRef: n });
+        }
+      }
+    } else {
+      subtasks = subtasks.filter(s => !(s.grammarRef >= sec.from && s.grammarRef <= sec.to));
+    }
+  }
+  renderGrammarSections();
+  grammarSectionsBox.addEventListener('change', e => {
+    const cb = e.target.closest('[data-gsec]');
+    if (!cb) return;
+    setGrammarSection(GRAMMAR_GROUPS[Number(cb.dataset.gsec)], cb.checked);
+    renderSubtasksDraft();
+    renderGrammarSections();
+  });
+  $('#matGrammarAllBtn').addEventListener('click', () => {
+    GRAMMAR_GROUPS.forEach(sec => setGrammarSection(sec, true));
+    renderSubtasksDraft();
+    renderGrammarSections();
+  });
+  $('#matGrammarNoneBtn').addEventListener('click', () => {
+    GRAMMAR_GROUPS.forEach(sec => setGrammarSection(sec, false));
+    renderSubtasksDraft();
+    renderGrammarSections();
   });
 
   let channels = Array.isArray(m.channels)
@@ -5495,6 +5774,8 @@ function openMaterialModal(material){
     $('#matChannelsLabel').textContent = `${lbl.plural} (optional)`;
     $('#matChannelInput').placeholder = `${lbl.singular} name`;
     $('#matChannelsHint').textContent = `Add each ${lbl.singular.toLowerCase()} you're tracking, with an optional time estimate. Logged minutes tally automatically from time you log against each one.`;
+    grammarField.style.display = t === 'grammar' ? '' : 'none';
+    if (t === 'grammar') renderGrammarSections();
   });
 
   const deadlineClearBtn = $('#matDeadlineClearBtn');
@@ -6559,7 +6840,7 @@ document.addEventListener('input', e => {
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && $('#modalRoot').innerHTML) closeModal();
-  if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.matches && e.target.matches('.mat-card, .rm-phase-grid-head')){
+  if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.matches && e.target.matches('.mat-card, .rm-phase-grid-head, .rm-queue-item')){
     e.preventDefault();
     e.target.click();
   }
