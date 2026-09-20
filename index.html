@@ -4707,6 +4707,7 @@ function openModal(html){
 function closeModal(){
   $('#modalRoot').innerHTML = '';
   document.body.style.overflow = '';
+  openMaterialModalId = null;
 }
 
 /* =========================================================
@@ -5911,7 +5912,9 @@ function openMaterialModal(material){
 /* =========================================================
    Material detail modal (view / stats popup)
    ========================================================= */
+let openMaterialModalId = null; // tracks which material's detail pop-up is open, if any — lets background sync (e.g. the external Grammar tracker) refresh it live
 function openMaterialDetailModal(m){
+  openMaterialModalId = m.id;
   const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
   const initials = (m.title || '?').trim().slice(0, 2).toUpperCase();
   const color = m.color || MATERIAL_COLORS[0].hex;
@@ -6806,6 +6809,11 @@ document.addEventListener('click', e => {
         st.done = !st.done;
         if (st.grammarRef) setGrammarChapterDone(st.grammarRef, st.done);
         saveState(); render();
+        // If this checkbox was inside the detail pop-up, refresh it too —
+        // render() only rebuilds the page behind it, so the pop-up's own
+        // stats (progress %, sub-task count) would otherwise stay stale
+        // even though the checkbox itself visually toggles right away.
+        if (actionEl.closest('#modalRoot')) openMaterialDetailModal(materialById(m.id));
       }
       break;
     }
@@ -6950,7 +6958,13 @@ setTimeout(maybeShowWelcome, 700);
    this listener here — only in other tabs/windows — so there's no loop.) */
 window.addEventListener('storage', e => {
   if (e.key === GRAMMAR_STORE_KEY || e.key === GRAMMAR_SHARED_KEY){
-    if (syncGrammarSubtasksFromExternal()){ saveState(); render(); }
+    if (syncGrammarSubtasksFromExternal()){
+      saveState(); render();
+      if (openMaterialModalId){
+        const m = materialById(openMaterialModalId);
+        if (m) openMaterialDetailModal(m);
+      }
+    }
   }
 });
 </script>
