@@ -1987,6 +1987,73 @@ function getGrammarData(){
     };
   } catch (e) { return null; }
 }
+
+/* ---- Grammar two-way sync ----------------------------------------------
+   Materials subtasks created from a Grammar section (tagged with a
+   grammarRef, see openMaterialModal's "Grammar sections" picker) track the
+   exact same 145 units as the external Grammar.html tracker. GRAMMAR_STORE_KEY
+   is that app's own storage — the set of completed chapter numbers — which we
+   treat as the single source of truth so both sides always agree. */
+const GRAMMAR_STORE_KEY = 'giu-simple-v1';
+function getGrammarDoneSet(){
+  try {
+    const raw = localStorage.getItem(GRAMMAR_STORE_KEY);
+    const arr = raw ? JSON.parse(raw) : [];
+    return new Set(Array.isArray(arr) ? arr.map(Number) : []);
+  } catch (e) { return new Set(); }
+}
+/* Writes the completed-chapters set back to the external app's own storage
+   key, then republishes the shared digest (same shape Grammar.html's own
+   publishShared() writes) so every reader — this app's Grammar card,
+   Timeline overview, and the external app itself if open in another tab —
+   sees the change immediately. */
+function publishGrammarShared(doneSet){
+  try {
+    const groups = GRAMMAR_GROUPS.map(g => {
+      let doneInGroup = 0;
+      for (let n = g.from; n <= g.to; n++) if (doneSet.has(n)) doneInGroup++;
+      return { name: g.name, from: g.from, to: g.to, size: g.to - g.from + 1, done: doneInGroup };
+    });
+    const chapters = GRAMMAR_TITLES.map((title, i) => ({ n: i + 1, title, done: doneSet.has(i + 1) }));
+    localStorage.setItem(GRAMMAR_SHARED_KEY, JSON.stringify({
+      total: GRAMMAR_TITLES.length,
+      done: doneSet.size,
+      pct: GRAMMAR_TITLES.length ? Math.round((doneSet.size / GRAMMAR_TITLES.length) * 100) : 0,
+      groups, chapters,
+      updated_at: new Date().toISOString()
+    }));
+  } catch (e) {}
+}
+/* Push direction: a grammar-linked subtask was checked/unchecked in this
+   app. Updates the external tracker's own storage (and every subtask, in
+   every material, that shares the same grammarRef) so both sides agree
+   right away — including if Grammar.html is open in another tab. */
+function setGrammarChapterDone(n, done){
+  const doneSet = getGrammarDoneSet();
+  if (done) doneSet.add(n); else doneSet.delete(n);
+  try { localStorage.setItem(GRAMMAR_STORE_KEY, JSON.stringify([...doneSet])); } catch (e) {}
+  publishGrammarShared(doneSet);
+  state.materials.forEach(m => {
+    (m.subtasks || []).forEach(s => { if (s.grammarRef === n) s.done = done; });
+  });
+}
+/* Pull direction: something changed in the external tracker (checked there,
+   or synced from another tab). Brings every grammar-linked subtask back in
+   line with it. Returns true if anything in state actually changed, so the
+   caller knows whether a save + re-render is worth doing. */
+function syncGrammarSubtasksFromExternal(){
+  const doneSet = getGrammarDoneSet();
+  if (!doneSet.size && !localStorage.getItem(GRAMMAR_STORE_KEY)) return false; // tracker never opened yet — nothing to sync
+  let changed = false;
+  state.materials.forEach(m => {
+    (m.subtasks || []).forEach(s => {
+      if (!s.grammarRef) return;
+      const shouldBeDone = doneSet.has(s.grammarRef);
+      if (!!s.done !== shouldBeDone){ s.done = shouldBeDone; changed = true; }
+    });
+  });
+  return changed;
+}
 function getStats(){
   const ch = state.challenge;
   const today = todayISO();
@@ -2035,6 +2102,13 @@ function getStats(){
   const weekReadExp  = readDailyRate * weekDays;
   const weekListenExp = listenDailyRate * weekDays;
   const weekGrammarExp = grammarDailyRate * weekDays;
+  // Full calendar week (not just elapsed-so-far) — the actual number of
+  // topics this week calls for, matching how Timeline overview divides the
+  // total target across a span of days.
+  const weekFullEnd  = minISO(addDays(weekStart, 6), ch.end_date);
+  const weekFullDays = Math.max(0, diffDays(weekStart, weekFullEnd) + 1);
+  const weekGrammarTarget = grammarDailyRate * weekFullDays;
+  const weekGrammarDone = Math.min(grammarDone, weekGrammarTarget);
 
   const dayIdx   = clamp(diffDays(ch.start_date, today) + 1, 1, totalDays);
   const monthIdx = Math.min(2, Math.floor((dayIdx - 1) / 30));
@@ -2047,6 +2121,10 @@ function getStats(){
   const monthReadExp  = readDailyRate * monthDays;
   const monthListenExp = listenDailyRate * monthDays;
   const monthGrammarExp = grammarDailyRate * monthDays;
+  // Full month span (not just elapsed-so-far) for the same reason as above.
+  const monthFullDays = Math.max(0, diffDays(monthStart, monthEnd) + 1);
+  const monthGrammarTarget = grammarDailyRate * monthFullDays;
+  const monthGrammarDone = Math.min(grammarDone, monthGrammarTarget);
 
   return {
     ch, today, totalDays, elapsed, daysLeft,
@@ -2058,7 +2136,8 @@ function getStats(){
     monthIdx, monthStart, monthEnd, monthDays,
     weekStart, weekEnd, weekDays,
     weekRead, weekListen, weekReadExp, weekListenExp, weekGrammarExp,
-    monthRead, monthListen, monthReadExp, monthListenExp, monthGrammarExp
+    monthRead, monthListen, monthReadExp, monthListenExp, monthGrammarExp,
+    weekGrammarTarget, weekGrammarDone, monthGrammarTarget, monthGrammarDone
   };
 }
 
@@ -2584,7 +2663,7 @@ function grammarProgressCardHTML(){
     </div>
   </div>`;
 }
-function paceCard(title, sub, readVal, readExp, listenVal, listenExp, grammarReq, grammarBaseline, grammarDone, grammarTarget){
+function paceCard(title, sub, readVal, readExp, listenVal, listenExp, grammarReq, grammarBaseline, grammarPeriodDone, grammarPeriodTarget){
   const rs = paceStateRatio(readVal, readExp);
   const ls = paceStateRatio(listenVal, listenExp);
   const gs = paceStateRatio(grammarBaseline, grammarReq); // inverted: needing less than the normal baseline pace = ahead
@@ -2619,9 +2698,9 @@ function paceCard(title, sub, readVal, readExp, listenVal, listenExp, grammarReq
     <div class="pace-row grammar">
       <div class="pace-row-top">
         <span class="lbl">Grammar</span>
-        <span class="val"><b>${fmt(grammarDone)}</b> / ${fmt(grammarTarget)} units</span>
+        <span class="val"><b>${fmt(grammarPeriodDone)}</b> / ${fmt(grammarPeriodTarget)} units</span>
       </div>
-      <div class="mini-bar"><i style="width:${clamp(grammarTarget ? grammarDone / grammarTarget * 100 : 0, 0, 100)}%"></i></div>
+      <div class="mini-bar"><i style="width:${clamp(grammarPeriodTarget ? grammarPeriodDone / grammarPeriodTarget * 100 : 0, 0, 100)}%"></i></div>
       <div class="bar-meta" style="margin-top:7px">
         <span>${grammarReq <= grammarBaseline ? fmt(grammarBaseline - grammarReq) + ' units ahead of pace' : fmt(grammarReq - grammarBaseline) + ' units behind pace'}</span>
         <span class="pace-tag ${gs.cls}">${gs.label}</span>
@@ -2747,8 +2826,8 @@ function viewDashboard(){
     </div>
   </div>
   <div class="grid cols-2">
-    ${paceCard('This week', `${s.weekDays} day${s.weekDays === 1 ? '' : 's'} elapsed`, s.weekRead, s.weekReadExp, s.weekListen, s.weekListenExp, s.grammarWeeklyRequired, s.weekGrammarExp, s.grammarDone, s.grammarTarget)}
-    ${paceCard('This month', `Month ${s.monthIdx + 1} · ${s.monthDays} day${s.monthDays === 1 ? '' : 's'} elapsed`, s.monthRead, s.monthReadExp, s.monthListen, s.monthListenExp, s.grammarMonthlyRequired, s.monthGrammarExp, s.grammarDone, s.grammarTarget)}
+    ${paceCard('This week', `${s.weekDays} day${s.weekDays === 1 ? '' : 's'} elapsed`, s.weekRead, s.weekReadExp, s.weekListen, s.weekListenExp, s.grammarWeeklyRequired, s.weekGrammarExp, s.weekGrammarDone, s.weekGrammarTarget)}
+    ${paceCard('This month', `Month ${s.monthIdx + 1} · ${s.monthDays} day${s.monthDays === 1 ? '' : 's'} elapsed`, s.monthRead, s.monthReadExp, s.monthListen, s.monthListenExp, s.grammarMonthlyRequired, s.monthGrammarExp, s.monthGrammarDone, s.monthGrammarTarget)}
   </div>
   ${dashboardChallengesCard()}
   <div class="card">
@@ -5627,7 +5706,11 @@ function openMaterialModal(material){
     if (!row) return;
     const st = subtasks.find(s => s.id === row.dataset.id);
     if (!st) return;
-    if (e.target.classList.contains('subtask-check')){ st.done = e.target.checked; renderSubtasksDraft(); }
+    if (e.target.classList.contains('subtask-check')){
+      st.done = e.target.checked;
+      if (st.grammarRef){ setGrammarChapterDone(st.grammarRef, st.done); saveState(); }
+      renderSubtasksDraft();
+    }
     else if (e.target.classList.contains('subtask-due-edit')){ st.due = e.target.value || ''; }
   });
   subtasksList.addEventListener('click', e => {
@@ -5677,9 +5760,10 @@ function openMaterialModal(material){
   }
   function setGrammarSection(sec, on){
     if (on){
+      const doneSet = getGrammarDoneSet(); // pre-check any chapter already completed in the external tracker
       for (let n = sec.from; n <= sec.to; n++){
         if (!subtasks.some(s => s.grammarRef === n)){
-          subtasks.push({ id: uid('st'), title: GRAMMAR_TITLES[n - 1], done: false, due: '', grammarRef: n });
+          subtasks.push({ id: uid('st'), title: GRAMMAR_TITLES[n - 1], done: doneSet.has(n), due: '', grammarRef: n });
         }
       }
     } else {
@@ -6718,7 +6802,11 @@ document.addEventListener('click', e => {
       const m = materialById(actionEl.dataset.id);
       if (!m || !Array.isArray(m.subtasks)) break;
       const st = m.subtasks.find(s => s.id === actionEl.dataset.sub);
-      if (st){ st.done = !st.done; saveState(); render(); }
+      if (st){
+        st.done = !st.done;
+        if (st.grammarRef) setGrammarChapterDone(st.grammarRef, st.done);
+        saveState(); render();
+      }
       break;
     }
     case 'toggle-material-phase': {
@@ -6851,9 +6939,20 @@ document.addEventListener('keydown', e => {
    ========================================================= */
 applyTheme(currentTheme);
 loadState();
+if (syncGrammarSubtasksFromExternal()) saveState();
 render();
 startTicker();
 setTimeout(maybeShowWelcome, 700);
+
+/* Live two-way sync with the external Grammar tracker across tabs: if it's
+   open in another tab and something gets checked there, this fires and
+   pulls the change in immediately. (Changes made from this tab don't fire
+   this listener here — only in other tabs/windows — so there's no loop.) */
+window.addEventListener('storage', e => {
+  if (e.key === GRAMMAR_STORE_KEY || e.key === GRAMMAR_SHARED_KEY){
+    if (syncGrammarSubtasksFromExternal()){ saveState(); render(); }
+  }
+});
 </script>
 </body>
 </html>
