@@ -240,12 +240,30 @@
   /* Layout */
   main{max-width:1080px;margin:0 auto;padding:20px 20px 120px}
   .grid{display:grid;gap:14px;margin-bottom:14px}
-  .cols-2,.cols-3,.cols-4{grid-template-columns:1fr}
+  .cols-2,.cols-3,.cols-4,.cols-5{grid-template-columns:1fr}
   @media(min-width:780px){
     .cols-2{grid-template-columns:1fr 1fr}
     .cols-3{grid-template-columns:repeat(3,1fr)}
     .cols-4{grid-template-columns:repeat(4,1fr)}
+    .cols-5{grid-template-columns:repeat(5,1fr)}
   }
+  /* Compact dashboard cards — same info, tighter type/spacing so the four
+     progress cards (Reading/Listening/Grammar/Vocabulary) fit one row, and
+     the five pace-summary cards (Days remaining + the four "pace needed"
+     cards) fit one row too. */
+  .dash-compact .card{padding:12px}
+  .dash-compact .card-head{margin-bottom:2px}
+  .dash-compact .card-head h2{font-size:10.5px}
+  .dash-compact .hero-stat{font-size:34px;margin:0 0 6px}
+  .dash-compact .hero-stat small{font-size:16px}
+  .dash-compact .bar{height:3px}
+  .dash-compact .hero-meta{margin-top:6px;font-size:10.5px;gap:5px}
+  .dash-compact .pace-tag{font-size:10px;padding:2px 7px}
+  .dash-compact .link-btn{font-size:11px;padding:2px 6px}
+  .dash-compact .stat-label{font-size:10px}
+  .dash-compact .stat-value{font-size:19px;margin-top:5px}
+  .dash-compact .stat-value small{font-size:11px}
+  .dash-compact .stat-sub{font-size:11px;margin-top:2px}
   .card{
     background:var(--surface);border:1px solid var(--line);
     border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);
@@ -345,18 +363,24 @@
   .form-section-title{font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:7px}
   .form-section-title .dotnum{width:18px;height:18px;border-radius:50%;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);letter-spacing:0}
 
-  /* Progress cards */
-  .progress-card .pct{font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
-  .big-numbers{display:flex;align-items:baseline;gap:7px;margin-bottom:14px;flex-wrap:wrap}
-  .big-numbers strong{font-size:31px;font-weight:680;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
-  .big-numbers span{font-size:13.5px;color:var(--muted)}
-  .bar{position:relative;height:10px;background:var(--surface-2);border-radius:999px}
+  /* Progress cards — a big hero percentage under the label, a thin pace
+     line, then one compact row of remaining/current/pace-status. */
+  .progress-card{padding-top:14px}
+  .hero-stat{font-size:46px;font-weight:800;letter-spacing:-.03em;line-height:1;margin:2px 0 12px;text-align:right;font-variant-numeric:tabular-nums}
+  .hero-stat small{font-size:20px;font-weight:650;margin-left:2px}
+  .reading .hero-stat{color:var(--reading)}
+  .listening .hero-stat{color:var(--listening)}
+  .grammar .hero-stat{color:var(--grammar)}
+  .vocab .hero-stat{color:var(--vocab)}
+  .bar{position:relative;height:4px;background:var(--surface-2);border-radius:999px}
   .bar-fill{height:100%;border-radius:999px;transition:width .45s cubic-bezier(.4,0,.2,1)}
   .reading .bar-fill{background:linear-gradient(90deg,var(--reading-2),var(--reading))}
   .listening .bar-fill{background:linear-gradient(90deg,var(--listening-2),var(--listening))}
   .grammar .bar-fill{background:linear-gradient(90deg,var(--grammar-2),var(--grammar))}
   .vocab .bar-fill{background:linear-gradient(90deg,var(--vocab-2),var(--vocab))}
   .bar-ideal{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--text);opacity:.22;border-radius:2px}
+  .hero-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+  .hero-meta span:nth-child(2){flex:1;text-align:center}
   .bar-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;font-size:12.5px;color:var(--muted)}
   .pace-tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
   .pace-tag.good{background:var(--good-bg);color:var(--good-fg)}
@@ -1206,7 +1230,7 @@
       </button>
       <div class="tabs-dropdown-menu">
         <a href="Grammar.html">Grammar <span class="ext">↗</span></a>
-        <a href="Vocabulary_index.html">Vocabulary <span class="ext">↗</span></a>
+        <a href="Vocabulary.html">Vocabulary <span class="ext">↗</span></a>
         <span class="tabs-dropdown-placeholder" aria-disabled="true">Pronunciation <span class="tabs-dropdown-soon">Soon</span></span>
       </div>
     </div>
@@ -3376,20 +3400,15 @@ function progressCard(s, kind){
 
   return `
   <div class="card progress-card ${kind}">
-    <div class="card-head">
-      <h2>${isRead ? 'Reading' : 'Listening'}</h2>
-      <span class="pct">${rawPct.toFixed(1)}%</span>
-    </div>
-    <div class="big-numbers">
-      <strong>${fmt(value)}</strong>
-      <span>/ ${fmt(target)}${suffix}</span>
-    </div>
+    <div class="card-head"><h2>${isRead ? 'Reading' : 'Listening'}</h2></div>
+    <div class="hero-stat">${rawPct.toFixed(1)}<small>%</small></div>
     <div class="bar">
       <div class="bar-fill" style="width:${barPct}%"></div>
       <div class="bar-ideal" style="left:${clamp(ideal, 0, 99)}%" title="Where you should be today"></div>
     </div>
-    <div class="bar-meta">
+    <div class="hero-meta">
       <span>${fmt(remaining)}${suffix} to go</span>
+      <span>${fmt(value)} / ${fmt(target)}${suffix}</span>
       <span class="pace-tag ${st.cls}">${st.label}</span>
     </div>
   </div>`;
@@ -3406,14 +3425,15 @@ function grammarProgressCardHTML(){
   if (!data){
     return `
     <div class="card progress-card grammar">
-      <div class="card-head">
-        <h2>Grammar</h2>
-        <span class="pct">—</span>
+      <div class="card-head"><h2>Grammar</h2></div>
+      <div class="hero-stat">—</div>
+      <div class="bar">
+        <div class="bar-fill" style="width:0%"></div>
+        <div class="bar-ideal" style="left:${clamp(ideal, 0, 99)}%" title="Where you should be today"></div>
       </div>
-      <div class="big-numbers"><strong>0</strong><span>/ ${fmt(target)} units</span></div>
-      <div class="bar"><div class="bar-fill" style="width:0%"></div></div>
-      <div class="bar-meta">
-        <span>Open the Grammar tracker to sync progress</span>
+      <div class="hero-meta">
+        <span>${fmt(target)} units to go</span>
+        <span>0 / ${fmt(target)} units</span>
         <a class="link-btn" href="Grammar.html">Open ↗</a>
       </div>
     </div>`;
@@ -3427,20 +3447,15 @@ function grammarProgressCardHTML(){
 
   return `
   <div class="card progress-card grammar">
-    <div class="card-head">
-      <h2>Grammar</h2>
-      <span class="pct">${rawPct.toFixed(1)}%</span>
-    </div>
-    <div class="big-numbers">
-      <strong>${fmt(value)}</strong>
-      <span>/ ${fmt(target)} units</span>
-    </div>
+    <div class="card-head"><h2>Grammar</h2></div>
+    <div class="hero-stat">${rawPct.toFixed(1)}<small>%</small></div>
     <div class="bar">
       <div class="bar-fill" style="width:${barPct}%"></div>
       <div class="bar-ideal" style="left:${clamp(ideal, 0, 99)}%" title="Where you should be today"></div>
     </div>
-    <div class="bar-meta">
+    <div class="hero-meta">
       <span>${fmt(remaining)} units to go</span>
+      <span>${fmt(value)} / ${fmt(target)} units</span>
       <span class="pace-tag ${st.cls}">${st.label}</span>
     </div>
   </div>`;
@@ -3457,14 +3472,15 @@ function vocabularyProgressCardHTML(){
   if (!data){
     return `
     <div class="card progress-card vocab">
-      <div class="card-head">
-        <h2>Vocabulary</h2>
-        <span class="pct">—</span>
+      <div class="card-head"><h2>Vocabulary</h2></div>
+      <div class="hero-stat">—</div>
+      <div class="bar">
+        <div class="bar-fill" style="width:0%"></div>
+        <div class="bar-ideal" style="left:${clamp(ideal, 0, 99)}%" title="Where you should be today"></div>
       </div>
-      <div class="big-numbers"><strong>0</strong><span>/ ${fmt(target)} items</span></div>
-      <div class="bar"><div class="bar-fill" style="width:0%"></div></div>
-      <div class="bar-meta">
-        <span>Open the Vocabulary tracker to sync progress</span>
+      <div class="hero-meta">
+        <span>${fmt(target)} items to go</span>
+        <span>0 / ${fmt(target)} items</span>
         <a class="link-btn" href="Vocabulary.html">Open ↗</a>
       </div>
     </div>`;
@@ -3478,20 +3494,15 @@ function vocabularyProgressCardHTML(){
 
   return `
   <div class="card progress-card vocab">
-    <div class="card-head">
-      <h2>Vocabulary</h2>
-      <span class="pct">${rawPct.toFixed(1)}%</span>
-    </div>
-    <div class="big-numbers">
-      <strong>${fmt(value)}</strong>
-      <span>/ ${fmt(target)} items</span>
-    </div>
+    <div class="card-head"><h2>Vocabulary</h2></div>
+    <div class="hero-stat">${rawPct.toFixed(1)}<small>%</small></div>
     <div class="bar">
       <div class="bar-fill" style="width:${barPct}%"></div>
       <div class="bar-ideal" style="left:${clamp(ideal, 0, 99)}%" title="Where you should be today"></div>
     </div>
-    <div class="bar-meta">
+    <div class="hero-meta">
       <span>${fmt(remaining)} items to go</span>
+      <span>${fmt(value)} / ${fmt(target)} items</span>
       <span class="pace-tag ${st.cls}">${st.label}</span>
     </div>
   </div>`;
@@ -3643,13 +3654,13 @@ function viewDashboard(){
   return `
   ${dashboardProfilePrompt()}
   ${overdueMaterialsBannerHTML()}
-  <div class="grid cols-3">
+  <div class="grid cols-4 dash-compact">
     ${progressCard(s, 'reading')}
+    ${progressCard(s, 'listening')}
     ${grammarProgressCardHTML()}
     ${vocabularyProgressCardHTML()}
-    ${progressCard(s, 'listening')}
   </div>
-  <div class="grid cols-4">
+  <div class="grid cols-5 dash-compact">
     <div class="card">
       <div class="stat-label">Days remaining</div>
       <div class="stat-value">${s.daysLeft} <small>days</small></div>
