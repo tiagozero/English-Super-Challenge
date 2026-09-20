@@ -525,6 +525,7 @@
   .mat-progress-bar.reading > i{background:linear-gradient(90deg,var(--reading-2),var(--reading))}
   .mat-progress-bar.listening > i{background:linear-gradient(90deg,var(--listening-2),var(--listening))}
   .mat-progress-bar.grammar > i{background:linear-gradient(90deg,var(--grammar-2),var(--grammar))}
+  .mat-progress-bar.vocabulary > i{background:linear-gradient(90deg,var(--vocab-2),var(--vocab))}
   .grammar-sec-list{display:flex;flex-direction:column;gap:5px;max-height:260px;overflow-y:auto;padding-right:2px}
   .grammar-sec-row{display:flex;align-items:center;gap:9px;padding:6px 9px;border-radius:9px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:12.5px}
   .grammar-sec-row:hover{background:var(--surface-2)}
@@ -540,6 +541,14 @@
   .grammar-book-row input{flex:0 0 auto}
   .gbook-name{flex:1;font-weight:600}
   .gbook-count{flex:0 0 auto;color:var(--grammar);font-size:11px;font-weight:600}
+  .vocab-sec-list{display:flex;flex-direction:column;gap:5px;max-height:260px;overflow-y:auto;padding-right:2px}
+  .vocab-sec-row{display:flex;align-items:center;gap:9px;padding:6px 9px;border-radius:9px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:12.5px}
+  .vocab-sec-row:hover{background:var(--surface-2)}
+  .vocab-sec-row.all{border-color:color-mix(in srgb, var(--vocab) 40%, var(--line));background:color-mix(in srgb, var(--vocab) 10%, var(--surface))}
+  .vocab-sec-row.some{border-style:dashed}
+  .vocab-sec-row input{flex:0 0 auto}
+  .vsec-name{flex:1;font-weight:600}
+  .vsec-count{flex:0 0 auto;color:var(--muted);font-size:11px}
   .vocab-book-group{margin-bottom:12px}
   .vocab-book-group:last-child{margin-bottom:0}
   .vocab-book-group-title{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
@@ -846,7 +855,8 @@
   .rm-queue-progress{margin-bottom:12px;padding:10px 12px;background:var(--surface-2);border:1px solid var(--line);border-radius:11px}
   .rm-progress-top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--muted);font-weight:650;margin-bottom:7px}
   .rm-progress-top .v{color:var(--text);font-variant-numeric:tabular-nums}
-  .rm-queue-columns{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .rm-queue-columns{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:1100px){.rm-queue-columns{grid-template-columns:repeat(2,1fr)}}
   @media(max-width:820px){.rm-queue-columns{grid-template-columns:1fr}}
   .rm-queue-col-head{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:750;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
   .rm-queue-col-head .qn{margin-left:auto;font-size:11px;font-weight:700;color:var(--muted);background:var(--surface-2);padding:2px 9px;border-radius:999px}
@@ -854,9 +864,11 @@
   .rm-queue-col.cat-reading .rm-queue-col-dot{background:var(--reading)}
   .rm-queue-col.cat-listening .rm-queue-col-dot{background:var(--listening)}
   .rm-queue-col.cat-grammar .rm-queue-col-dot{background:var(--grammar)}
+  .rm-queue-col.cat-vocabulary .rm-queue-col-dot{background:var(--vocab)}
   .rm-queue-col.cat-reading .rm-queue-col-head{color:var(--reading)}
   .rm-queue-col.cat-listening .rm-queue-col-head{color:var(--listening)}
   .rm-queue-col.cat-grammar .rm-queue-col-head{color:var(--grammar)}
+  .rm-queue-col.cat-vocabulary .rm-queue-col-head{color:var(--vocab)}
   .rm-queue-list{display:flex;flex-direction:column;gap:8px}
   .rm-queue-item{display:flex;align-items:stretch;gap:11px;background:color-mix(in srgb, var(--task-color, var(--line)) 9%, var(--surface-2));border:1px solid color-mix(in srgb, var(--task-color, var(--line)) 30%, var(--line));border-radius:12px;padding:11px 12px;transition:border-color .15s,background .15s;min-width:0;cursor:pointer}
   .rm-queue-item:hover{border-color:color-mix(in srgb, var(--task-color, var(--line)) 55%, var(--line))}
@@ -1430,11 +1442,12 @@ const TYPES = {
   youTube:   { label: 'YouTube',       category: 'listening', unit: 'minutes' },
   tv:        { label: 'TV',            category: 'listening', unit: 'minutes' },
   film:      { label: 'Film',          category: 'listening', unit: 'minutes' },
-  grammar:   { label: 'Grammar',       category: 'grammar',   unit: 'units' }
+  grammar:   { label: 'Grammar',       category: 'grammar',    unit: 'units' },
+  vocabulary:{ label: 'Vocabulary',    category: 'vocabulary', unit: 'items' }
 };
-const TYPE_ORDER = ['kindle', 'book', 'article', 'manga', 'other', 'youTube', 'anime', 'audiobook', 'podcast', 'tv', 'film', 'grammar'];
-const CATEGORY_ORDER = ['reading', 'listening', 'grammar'];
-const CATEGORY_LABEL = { reading: 'Reading', listening: 'Listening', grammar: 'Grammar' };
+const TYPE_ORDER = ['kindle', 'book', 'article', 'manga', 'other', 'youTube', 'anime', 'audiobook', 'podcast', 'tv', 'film', 'grammar', 'vocabulary'];
+const CATEGORY_ORDER = ['reading', 'listening', 'grammar', 'vocabulary'];
+const CATEGORY_LABEL = { reading: 'Reading', listening: 'Listening', grammar: 'Grammar', vocabulary: 'Vocabulary' };
 
 /* English Grammar in Use — same 145 units / 25 sections as the standalone
    Grammar.html tracker, kept here so "New material" can build a matching
@@ -1852,20 +1865,285 @@ const GRAMMAR_BOOK_ORDER = ['giu', 'ref', 'prep', 'logic'];
    built the same way as the Grammar tracker: its own checklist UI and
    storage, publishing a small summary object to a shared localStorage key
    per book every time something changes there (see sharedKeyFor() /
-   publishShared() in Vocabulary.html). This list only needs enough
-   metadata to let Settings offer a picker and to read those shared keys —
-   the actual checklist content lives in Vocabulary.html. */
+   publishShared() in Vocabulary.html).
+
+   To let "New material" treat Vocabulary exactly like Grammar — pick a
+   book, see its sections, check sections to add their topics as subtasks —
+   each book below also carries the same chapter/lesson data as the
+   standalone tracker, normalized into { name, topics:[{ref, title}] }
+   sections the same shape GRAMMAR_BOOKS uses. `ref` is the 1-based item
+   number counted across the whole book, exactly how Vocabulary.html numbers
+   items (see its buildVariant/publishShared) — so a subtask's ref lines up
+   with that book's own storage key (storeKey) and completions stay in sync
+   in both directions, the same as Grammar's two-way sync. */
+function numberVocabTopics(groups){
+  let n = 0;
+  return groups.map(g => ({
+    name: g.name,
+    topics: g.items.map(raw => {
+      n += 1;
+      const text = typeof raw === 'string' ? raw : (raw.text || '');
+      return { ref: n, title: text };
+    })
+  }));
+}
 const VOCAB_BOOKS = [
-  { id: 'vocab1',  group: 'Vocabulary',      label: 'Vocabulary in Use – Elementary' },
-  { id: 'vocab2',  group: 'Vocabulary',      label: 'English Conversation' },
-  { id: 'colloc1', group: 'Collocations',    label: '1000 English Collocations in 10 Minutes a Day' },
-  { id: 'colloc2', group: 'Collocations',    label: 'Master English Collocations' },
-  { id: 'colloc3', group: 'Collocations',    label: 'Shortcut To English Collocations' },
-  { id: 'pv1',     group: 'Phrasal Verbs',   label: 'Work On Your Phrasal Verbs' },
-  { id: 'pv2',     group: 'Phrasal Verbs',   label: 'Phrasal Verbs' },
-  { id: 'pv3',     group: 'Phrasal Verbs',   label: '1000 Phrasal Verbs with meaning' },
-  { id: 'idioms1', group: 'Idioms',          label: 'English for Everyone - English Idioms' }
+  { id: 'vocab1',  group: 'Vocabulary',   label: 'Vocabulary in Use – Elementary', storeKey: 'vocab-progress-v1', keyType: 'number', data: [
+    { name: "People", items: [
+      { text: "The family",                    sub: "mother, uncle, relatives" },
+      { text: "Birth, marriage and death",     sub: "birthday, married, die" },
+      { text: "Parts of the body",             sub: "head, foot, shoulder" },
+      { text: "Clothes",                       sub: "hat, shirt, trousers" },
+      { text: "Describing people",             sub: "tall, dark, good-looking" },
+      { text: "Health and illness",            sub: "headache, heart attack, exercise" },
+      { text: "Feelings",                      sub: "love, tired, thirsty" },
+      { text: "Conversations 1: Greetings and wishes", sub: "Good morning, Happy New Year, well done" },
+      { text: "Conversations 2: Useful words and expressions", sub: "I don't mind, anyway, let's" }
+    ]},
+    { name: "At home", items: [
+      { text: "Food and drink",                sub: "rice, tea, vegetables" },
+      { text: "In the kitchen",                sub: "fridge, glass, saucepan" },
+      { text: "In the bedroom and bathroom",   sub: "wardrobe, shampoo, mirror" },
+      { text: "In the living room",            sub: "bookshelf, lamp, remote control" }
+    ]},
+    { name: "School and workplace", items: [
+      { text: "Jobs",                          sub: "secretary, factory, nurse" },
+      { text: "At school and university",      sub: "biology, notebook, pass an exam" },
+      { text: "Communications",                sub: "address, computer, memory stick" }
+    ]},
+    { name: "Leisure", items: [
+      { text: "Your phone",                    sub: "apps, voicemail, text" },
+      { text: "Holidays",                      sub: "package holiday, currency, visa" },
+      { text: "Shops and shopping",            sub: "chemist's, department store, credit card" },
+      { text: "Online shopping",               sub: "reviews, basket, delivery" },
+      { text: "In a hotel",                    sub: "single room, key, luggage" },
+      { text: "Eating out",                    sub: "café, menu, fish and chips" },
+      { text: "Sports",                        sub: "table tennis, judo, volleyball" },
+      { text: "Cinema",                        sub: "western, film star, director" },
+      { text: "Free time at home",             sub: "gardening, listening to CDs, programme" },
+      { text: "Music and musical instruments", sub: "guitar, jazz, orchestra" }
+    ]},
+    { name: "The world", items: [
+      { text: "Countries and nationalities",   sub: "Spain, Chinese, continent" },
+      { text: "Weather",                       sub: "cold, rain, storm" },
+      { text: "In the town",                   sub: "railway station, bank, town hall" },
+      { text: "In the countryside",            sub: "hill, farm, river" },
+      { text: "Animals",                       sub: "horse, giraffe, pet" },
+      { text: "Travelling",                    sub: "train, map, flight" },
+      { text: "UK culture",                    sub: "fireworks, roast beef, Christmas" }
+    ]},
+    { name: "Social issues", items: [
+      { text: "Crime",                         sub: "murder, prison, guilty" },
+      { text: "The media",                     sub: "TV channel, magazine, talk show" },
+      { text: "Problems at home and work",     sub: "repair, untidy, in a bad mood" },
+      { text: "Global problems",               sub: "hurricane, war, strike" }
+    ]},
+    { name: "Words and grammar", items: [
+      { text: "Have / had / had",              sub: "have breakfast, have time, have a swim" },
+      { text: "Go / went / gone",              sub: "go away, go shopping, go home" },
+      { text: "Do / did / done",               sub: "do an exercise, do your best, do the washing" },
+      { text: "Make / made / made",            sub: "make coffee, make a mistake, make a noise" },
+      { text: "Come / came / come",            sub: "come in, come from, come back" },
+      { text: "Take / took / taken",           sub: "take the bus, take a photo, take an exam" },
+      { text: "Bring / brought / brought",     sub: "bring something here, bring back, take" },
+      { text: "Get / got / got",               sub: "get tired, get better, get married" },
+      { text: "Phrasal verbs",                 sub: "get up, put on, turn down" },
+      { text: "Everyday things",               sub: "watch TV, wash clothes, go for a walk" },
+      { text: "Talking",                       sub: "say, tell, ask" },
+      { text: "Moving",                        sub: "walk, drive, fly" },
+      { text: "Conjunctions and connecting words", sub: "because, only, before" },
+      { text: "Days, months, seasons",         sub: "Monday, July, winter" },
+      { text: "Time words",                    sub: "next year, often, once a week" },
+      { text: "Places",                        sub: "middle, front, abroad" },
+      { text: "Manner",                        sub: "fast, loud, the right way" },
+      { text: "Common uncountable nouns",      sub: "money, bread, information" },
+      { text: "Common adjectives: Good and bad things", sub: "nice, awful, lovely" },
+      { text: "Words and prepositions",        sub: "wait for, belong to, good at" },
+      { text: "Prefixes",                      sub: "impossible, ex-wife, unsafe" },
+      { text: "Suffixes",                      sub: "swimmer, useless, sunny" },
+      { text: "Words you may confuse",         sub: "quiet / quite, lend / borrow, cook / cooker" }
+    ]}
+  ]},
+  { id: 'vocab2',  group: 'Vocabulary',   label: 'English Conversation', storeKey: 'vocab2-progress-v1', keyType: 'number', data: [
+    { name: "Section 1 · Getting Started", items: [
+      "Introducing yourself and others",
+      "Expressing opinions, likes, and dislikes",
+      "Describing people, places, and things"
+    ]},
+    { name: "Section 2 · Everyday Interactions", items: [
+      "Striking up a conversation",
+      "Making dates and appointments",
+      "Expressing wants and needs"
+    ]},
+    { name: "Section 3 · Requests and Uncertainty", items: [
+      "Making requests and offers",
+      "Expressing doubts and uncertainty"
+    ]},
+    { name: "Section 4 · Advanced Conversation", items: [
+      "Talking about future events",
+      "Making a case or arguing a point",
+      "Narrating a story"
+    ]},
+    { name: "Section 5 · Complex and Digital", items: [
+      "Retelling a conversation",
+      "Talking about controversial issues",
+      "Electronic conversation"
+    ]}
+  ]},
+  { id: 'colloc1', group: 'Collocations', label: '1000 English Collocations in 10 Minutes a Day', storeKey: 'colloc-progress-v1', keyType: 'number', data: [
+    { name: "Section 1", items: [
+      "Lesson 1",  "Lesson 2",  "Lesson 3",  "Lesson 4",  "Lesson 5",
+      "Lesson 6",  "Lesson 7",  "Lesson 8",  "Lesson 9",  "Lesson 10"
+    ]},
+    { name: "Section 2", items: [
+      "Lesson 11", "Lesson 12", "Lesson 13", "Lesson 14", "Lesson 15",
+      "Lesson 16", "Lesson 17", "Lesson 18", "Lesson 19", "Lesson 20"
+    ]},
+    { name: "Section 3", items: [
+      "Lesson 21", "Lesson 22", "Lesson 23", "Lesson 24", "Lesson 25",
+      "Lesson 26", "Lesson 27", "Lesson 28", "Lesson 29", "Lesson 30"
+    ]},
+    { name: "Section 4", items: [
+      "Lesson 31", "Lesson 32", "Lesson 33", "Lesson 34", "Lesson 35",
+      "Lesson 36", "Lesson 37", "Lesson 38", "Lesson 39", "Lesson 40"
+    ]},
+    { name: "Section 5", items: [
+      "Lesson 41", "Lesson 42", "Lesson 43", "Lesson 44", "Lesson 45",
+      "Lesson 46", "Lesson 47", "Lesson 48", "Lesson 49", "Lesson 50"
+    ]}
+  ]},
+  { id: 'colloc2', group: 'Collocations', label: 'Master English Collocations', storeKey: 'colloc2-progress-v1', keyType: 'number', data: [
+    { name: "A – E", items: [
+      'ENGLISH COLLOCATIONS STARTING WITH "A"',
+      'ENGLISH COLLOCATIONS STARTING WITH "B"',
+      'ENGLISH COLLOCATIONS STARTING WITH "C"',
+      'ENGLISH COLLOCATIONS STARTING WITH "D"',
+      'ENGLISH COLLOCATIONS STARTING WITH "E"'
+    ]},
+    { name: "F – J", items: [
+      'ENGLISH COLLOCATIONS STARTING WITH "F"',
+      'ENGLISH COLLOCATIONS STARTING WITH "G"',
+      'ENGLISH COLLOCATIONS STARTING WITH "H"',
+      'ENGLISH COLLOCATIONS STARTING WITH "I"',
+      'ENGLISH COLLOCATIONS STARTING WITH "J"'
+    ]},
+    { name: "K – O", items: [
+      'ENGLISH COLLOCATIONS STARTING WITH "K"',
+      'ENGLISH COLLOCATIONS STARTING WITH "L"',
+      'ENGLISH COLLOCATIONS STARTING WITH "M"',
+      'ENGLISH COLLOCATIONS STARTING WITH "N"',
+      'ENGLISH COLLOCATIONS STARTING WITH "O"'
+    ]},
+    { name: "P – T", items: [
+      'ENGLISH COLLOCATIONS STARTING WITH "P"',
+      'ENGLISH COLLOCATIONS STARTING WITH "Q"',
+      'ENGLISH COLLOCATIONS STARTING WITH "R"',
+      'ENGLISH COLLOCATIONS STARTING WITH "S"',
+      'ENGLISH COLLOCATIONS STARTING WITH "T"'
+    ]},
+    { name: "U – Y", items: [
+      'ENGLISH COLLOCATIONS STARTING WITH "U"',
+      'ENGLISH COLLOCATIONS STARTING WITH "V"',
+      'ENGLISH COLLOCATIONS STARTING WITH "W"',
+      'ENGLISH COLLOCATIONS STARTING WITH "X"',
+      'ENGLISH COLLOCATIONS STARTING WITH "Y"'
+    ]}
+  ]},
+  { id: 'colloc3', group: 'Collocations', label: 'Shortcut To English Collocations', storeKey: 'colloc3-progress-v1', keyType: 'number', data: [
+    { name: "A – E", items: [ "COLLOCATIONS/A", "COLLOCATIONS/B", "COLLOCATIONS/C", "COLLOCATIONS/D", "COLLOCATIONS/E" ]},
+    { name: "F – J", items: [ "COLLOCATIONS/F", "COLLOCATIONS/G", "COLLOCATIONS/H", "COLLOCATIONS/I", "COLLOCATIONS/J" ]},
+    { name: "K – O", items: [ "COLLOCATIONS/K", "COLLOCATIONS/L", "COLLOCATIONS/M", "COLLOCATIONS/N", "COLLOCATIONS/O" ]},
+    { name: "P – T", items: [ "COLLOCATIONS/P", "COLLOCATIONS/Q", "COLLOCATIONS/R", "COLLOCATIONS/S", "COLLOCATIONS/T" ]},
+    { name: "U – W", items: [ "COLLOCATIONS/U", "COLLOCATIONS/V", "COLLOCATIONS/W" ]}
+  ]},
+  { id: 'pv1',     group: 'Phrasal Verbs', label: 'Work On Your Phrasal Verbs', storeKey: 'pv-progress-v1', keyType: 'number', data: [
+    { name: "Section 1", items: [ "Basic actions", "Actions with an object", "Movement and change", "Communication", "Giving information" ]},
+    { name: "Section 2", items: [ "Planning and organizing", "Discussions", "Advice or warnings", "Thinking and knowing", "Feelings" ]},
+    { name: "Section 3", items: [ "Attitudes", "Relationships", "Socializing and leisure time", "Sport and fitness", "Travel and tourism" ]},
+    { name: "Section 4", items: [ "Clothing and fashion", "Studying and learning", "Jobs and careers", "Business", "Money and spending" ]},
+    { name: "Section 5", items: [ "Reporting in the media", "Political events", "Crime", "Disaster and destruction", "Helping and recovering" ]}
+  ]},
+  { id: 'pv2',     group: 'Phrasal Verbs', label: 'Phrasal Verbs', storeKey: 'pv2-progress-v1', keyType: 'number', data: [
+    { name: "Units 1 – 10", items: [
+      "Unit 1: Definition of Phrasal Verbs, Separable/Inseparable, and Transitive/Intransitive",
+      "Unit 2: Phrasal Verbs and Do, Does, and Did",
+      "Unit 3: Three-Word Phrasal Verbs",
+      "Unit 4: Present and Past Continuous Phrasal Verbs",
+      "Unit 5: Stress in Two-Word Phrasal Verbs, Part 1",
+      "Unit 6: Stress in Three-Word Phrasal Verbs, Part 1",
+      "Unit 7: Separable Phrasal Verbs with Long Objects",
+      "Unit 8: Present Perfect Phrasal Verbs",
+      "Unit 9: Two-Word Phrasal Verbs that Require a Preposition when Used with an Object, Part 1",
+      "Unit 10: Phrasal Verbs Used as Nouns"
+    ]},
+    { name: "Units 11 – 20", items: [
+      "Unit 11: Phrasal Verbs Used in Compound Nouns",
+      "Unit 12: Past Perfect Phrasal Verbs",
+      "Unit 13: Passive Phrasal Verbs, Part 1",
+      "Unit 14: Participle Adjectives Formed from Phrasal Verbs, Part 1",
+      "Unit 15: Phrasal Verbs and Will or Be Going To",
+      "Unit 16: Phrasal Verbs with Gerund Objects, Part 1",
+      "Unit 17: Adverbs and Phrasal Verbs",
+      "Unit 18: Phrasal Verbs and Can, Could, Will, and Would",
+      "Unit 19: Phrasal Verbs and the Adverb Right",
+      "Unit 20: Phrasal Verbs Followed by the -ing Form"
+    ]},
+    { name: "Units 21 – 30", items: [
+      "Unit 21: Phrasal Verbs and Should and Ought To",
+      "Unit 22: The Particle Up and the Adverbs Right and All",
+      "Unit 23: Two-Word Phrasal Verbs that Require a Preposition when Used with an Object, Part 2",
+      "Unit 24: Stress and Phrasal Verbs Used as Nouns",
+      "Unit 25: Phrasal Verbs and Have to, Have Got to, and Must",
+      "Unit 26: Phrasal Verbs and the Adverb Back",
+      "Unit 27: Phrasal Verbs with the Particle Off and the Adverb Right",
+      "Unit 28: Passive Phrasal Verbs, Part 2",
+      "Unit 29: Phrasal Verbs and Might, May, and Can",
+      "Unit 30: Participle Adjectives Formed from Phrasal Verbs, Part 2"
+    ]},
+    { name: "Units 31 – 40", items: [
+      "Unit 31: Phrasal Verbs and Gerund Subjects",
+      "Unit 32: Phrasal Verbs with the Particle Out",
+      "Unit 33: Phrasal Verbs and Midsentence Adverbs",
+      "Unit 34: Stress in Two- and Three-Word Phrasal Verbs, Part 2",
+      "Unit 35: Gerund Phrasal Verbs",
+      "Unit 36: Phrasal Verbs with the Particle Down",
+      "Unit 37: Phrasal Verbs Used as Nouns, Part 3",
+      "Unit 38: The Verb Keep and Adverbs and Adverbials Showing Degrees of Variability",
+      "Unit 39: Passive Phrasal Verbs, Part 3",
+      "Unit 40: Gerund Phrasal Verbs vs Phrasal Verbs Followed by the -ing Form"
+    ]},
+    { name: "Units 41 – 50", items: [
+      "Unit 41: Two-Word Phrasal Verbs with the Particle In that Require Into when Used with an Object",
+      "Unit 42: Phrasal Verbs with Get, Part 1",
+      "Unit 43: Modals and Present Perfect Phrasal Verbs",
+      "Unit 44: Participle Adjectives and Passive Phrasal Verbs with the Verb Get",
+      "Unit 45: Phrasal Verbs with the Verb Turn",
+      "Unit 46: Stress in Phrasal Verbs with the Particle Into",
+      "Unit 47: Particles Used Without Verbs",
+      "Unit 48: Modals and Present Perfect Passive Phrasal Verbs",
+      "Unit 49: Combinations of Get, Right, Back, and To",
+      "Unit 50: Keep at it!"
+    ]}
+  ]},
+  { id: 'pv3',     group: 'Phrasal Verbs', label: '1000 Phrasal Verbs with meaning', storeKey: 'pv3-progress-v1', keyType: 'number', data: [
+    { name: "A – E", items: [ "Phrasal verbs starting with 'A'", "Phrasal verbs starting with 'B'", "Phrasal verbs starting with 'C'", "Phrasal verbs starting with 'D'", "Phrasal verbs starting with 'E'" ]},
+    { name: "F – J", items: [ "Phrasal verbs starting with 'F'", "Phrasal verbs starting with 'G'", "Phrasal verbs starting with 'H'", "Phrasal verbs starting with 'I'", "Phrasal verbs starting with 'J'" ]},
+    { name: "K – O", items: [ "Phrasal verbs starting with 'K'", "Phrasal verbs starting with 'L'", "Phrasal verbs starting with 'M'", "Phrasal verbs starting with 'N'", "Phrasal verbs starting with 'O'" ]},
+    { name: "P – T", items: [ "Phrasal verbs starting with 'P'", "Phrasal verbs starting with 'Q'", "Phrasal verbs starting with 'R'", "Phrasal verbs starting with 'S'", "Phrasal verbs starting with 'T'" ]},
+    { name: "U – Z", items: [ "Phrasal verbs starting with 'U'", "Phrasal verbs starting with 'V'", "Phrasal verbs starting with 'W'", "Phrasal verbs starting with 'X'", "Phrasal verbs starting with 'Y'", "Phrasal verbs starting with 'Z'" ]}
+  ]},
+  { id: 'idioms1', group: 'Idioms',       label: 'English for Everyone - English Idioms', storeKey: 'idiom-progress-v1', keyType: 'number', data: [
+    { name: "DESCRIBING PEOPLE AND THINGS", items: [ "Age", "Friends and family", "Appearance and background", "Personality traits", "Good things", "Bad things", "Animals", "Food" ]},
+    { name: "ATTITUDE", items: [ "Agreeing and disagreeing", "Behavior", "Emotions", "Positive emotions", "Negative emotions", "Memory", "The body", "War and weapons" ]},
+    { name: "SITUATIONS AND CIRCUMSTANCES", items: [ "Amount and distance", "Beginning and ending", "Chance, luck, and probability", "Ease and difficulty", "Safety and danger", "Difficult situations", "The weather and nature" ]},
+    { name: "COMMUNICATION", items: [ "Talking", "Sharing information", "Truth and lies", "Looking and listening", "Music and the arts" ]},
+    { name: "EVERYDAY LIFE", items: [ "Eating and drinking", "Describing your health", "Knowledge and education", "Money", "Shopping", "Time", "Clothes" ]},
+    { name: "WORK AND ACHIEVEMENTS", items: [ "Working and relaxing", "Movement and progress", "Rules, law, and authority", "Success and failure", "Work and business 1", "Work and business 2", "Sports" ]},
+    { name: "EXPRESSIONS", items: [ '"Make" and "do"', '"Give" and "take"', '"Have" and "get"', '"Set" and "put"', '"Go" and "come"', "Expressions with other verbs", "Intensifying adverbs", "Similes", "Proverbs", "Easily confused words 1", "Easily confused words 2", "Colors" ]}
+  ]}
 ];
+VOCAB_BOOKS.forEach(b => { b.sections = numberVocabTopics(b.data); });
+const VOCAB_BOOK_ORDER = VOCAB_BOOKS.map(b => b.id);
 const VOCAB_BOOK_GROUPS = ['Vocabulary', 'Collocations', 'Phrasal Verbs', 'Idioms'];
 function vocabSharedKey(bookId){ return 'esc-vocab-shared-' + bookId; }
 
@@ -1940,10 +2218,11 @@ const MATERIAL_COLORS = [
   { name: 'Ocean',  hex: '#3E5B78' }
 ];
 const MATERIAL_EMOJI_SUGGESTIONS = ['📖','📗','📙','📘','🎧','🎙️','📻','🎬','📰','📝','🗞️','🔖'];
-const UNIT_SUGGESTIONS = { reading: ['Percent', 'Pages', 'Chapters', 'Words'], listening: ['Minutes', 'Hours', 'Episodes'], grammar: ['Units', 'Chapters'] };
+const UNIT_SUGGESTIONS = { reading: ['Percent', 'Pages', 'Chapters', 'Words'], listening: ['Minutes', 'Hours', 'Episodes'], grammar: ['Units', 'Chapters'], vocabulary: ['Items', 'Words', 'Lessons'] };
 function defaultUnitFor(category){
   if (category === 'listening') return 'Minutes';
   if (category === 'grammar') return 'Units';
+  if (category === 'vocabulary') return 'Items';
   return 'Percent';
 }
 const LANGUAGES = [
@@ -2405,6 +2684,88 @@ function syncGrammarSubtasksFromExternal(){
         if (!s.grammarRef) return;
         if ((s.grammarBook || 'giu') !== bookId) return;
         const shouldBeDone = doneSet.has(s.grammarRef);
+        if (!!s.done !== shouldBeDone){ s.done = shouldBeDone; changed = true; }
+      });
+    });
+  });
+  return changed;
+}
+/* ---- Vocabulary two-way sync --------------------------------------------
+   Mirrors the Grammar two-way sync above, exactly. Materials subtasks
+   created from a Vocabulary section (tagged with vocabBook + vocabRef, see
+   openMaterialModal's "Vocabulary sections" picker) track the exact same
+   items as the matching book/variant in the external Vocabulary tracker.
+   Each book in VOCAB_BOOKS has its own storage key over there (storeKey)
+   and its own shared summary key (vocabSharedKey) — the set of completed
+   refs (item numbers) is the single source of truth for that book. */
+function getVocabDoneSet(bookId){
+  const book = VOCAB_BOOKS.find(b => b.id === bookId);
+  if (!book) return new Set();
+  try {
+    const raw = JSON.parse(localStorage.getItem(book.storeKey) || 'null');
+    if (Array.isArray(raw)) return new Set(raw.map(Number));
+    if (raw && typeof raw === 'object') return new Set((raw.done || []).map(Number));
+    return new Set();
+  } catch (e) { return new Set(); }
+}
+/* Writes the completed-refs set back to the external app's own storage key
+   for this book (preserving any per-item dates already stored there), then
+   republishes the shared digest so every reader sees the change right away. */
+function publishVocabShared(bookId, doneSet){
+  const book = VOCAB_BOOKS.find(b => b.id === bookId);
+  if (!book) return;
+  try {
+    const allTopics = book.sections.flatMap(sec => sec.topics);
+    const total = allTopics.length;
+    const groups = book.sections.map(sec => ({
+      name: sec.name,
+      size: sec.topics.length,
+      done: sec.topics.filter(t => doneSet.has(t.ref)).length
+    }));
+    localStorage.setItem(vocabSharedKey(bookId), JSON.stringify({
+      total,
+      done: doneSet.size,
+      pct: total ? Math.round((doneSet.size / total) * 100) : 0,
+      groups,
+      title: book.label,
+      label: 'items',
+      updated_at: new Date().toISOString()
+    }));
+  } catch (e) {}
+}
+/* Push direction: a vocab-linked subtask was checked/unchecked in this app. */
+function setVocabItemDone(bookId, ref, done){
+  const book = VOCAB_BOOKS.find(b => b.id === bookId);
+  if (!book) return;
+  const doneSet = getVocabDoneSet(bookId);
+  if (done) doneSet.add(ref); else doneSet.delete(ref);
+  try {
+    let dates = {};
+    const raw = JSON.parse(localStorage.getItem(book.storeKey) || 'null');
+    if (raw && typeof raw === 'object' && !Array.isArray(raw)) dates = raw.dates || {};
+    localStorage.setItem(book.storeKey, JSON.stringify({ done: [...doneSet], dates }));
+  } catch (e) {}
+  publishVocabShared(bookId, doneSet);
+  state.materials.forEach(m => {
+    (m.subtasks || []).forEach(s => {
+      if (s.vocabBook === bookId && s.vocabRef === ref) s.done = done;
+    });
+  });
+}
+/* Pull direction: something changed in the external tracker (checked there,
+   or synced from another tab), for any book. Brings every vocab-linked
+   subtask back in line with it. Returns true if anything changed. */
+function syncVocabSubtasksFromExternal(){
+  let changed = false;
+  VOCAB_BOOK_ORDER.forEach(bookId => {
+    const book = VOCAB_BOOKS.find(b => b.id === bookId);
+    if (!book || !localStorage.getItem(book.storeKey)) return; // that book never opened over there — nothing to sync
+    const doneSet = getVocabDoneSet(bookId);
+    state.materials.forEach(m => {
+      (m.subtasks || []).forEach(s => {
+        if (!s.vocabRef) return;
+        if (s.vocabBook !== bookId) return;
+        const shouldBeDone = doneSet.has(s.vocabRef);
         if (!!s.done !== shouldBeDone){ s.done = shouldBeDone; changed = true; }
       });
     });
@@ -3845,6 +4206,15 @@ function phasePlannedTotals(phaseIndex){
 const RMTIMELINE_HIDE_KEY = 'esc-rm-timeline-hidden';
 let rmTimelineHidden = false;
 try { rmTimelineHidden = localStorage.getItem(RMTIMELINE_HIDE_KEY) === '1'; } catch (e) {}
+
+/* Vocabulary "Book(s) to track" list in Settings — hidden by default since
+   it's a long list most people set once and rarely revisit. */
+const SETVOCAB_BOOKS_HIDE_KEY = 'esc-setvocab-books-hidden';
+let setVocabBooksHidden = true;
+try {
+  const v = localStorage.getItem(SETVOCAB_BOOKS_HIDE_KEY);
+  setVocabBooksHidden = v === null ? true : v === '1';
+} catch (e) {}
 function roadmapTimelineOverviewHTML(rm){
   const toggleBtn = `<button type="button" class="btn btn-ghost btn-sm" data-action="rm-toggle-timeline">${rmTimelineHidden ? '▾ Show' : '▴ Hide'}</button>`;
   if (rmTimelineHidden){
@@ -4146,7 +4516,7 @@ function roadmapQueueHTML(phase){
   const options = state.materials
     .filter(m => m.status !== 'archived' && !rawIds.includes(m.id))
     .sort((a, b) => a.title.localeCompare(b.title));
-  const optCounts = { reading: 0, listening: 0, grammar: 0 };
+  const optCounts = { reading: 0, listening: 0, grammar: 0, vocabulary: 0 };
   options.forEach(m => { if (optCounts[m.default_category] !== undefined) optCounts[m.default_category]++; });
   const pickedCat = rmQueueAddCategory[phase.index] || '';
   const catOptions = pickedCat ? options.filter(m => m.default_category === pickedCat) : [];
@@ -4207,7 +4577,7 @@ function roadmapQueueHTML(phase){
   return `
   <div class="rm-queue">
     <div class="rm-queue-label">
-      <span class="ql">Reading, listening &amp; grammar queue</span>
+      <span class="ql">Reading, listening, grammar &amp; vocabulary queue</span>
       <span class="qn">${items.length} item${items.length === 1 ? '' : 's'}</span>
     </div>
     <div class="rm-queue-columns">${columns}</div>
@@ -6080,6 +6450,21 @@ function openMaterialModal(material){
             <div class="grammar-sec-list" id="matGrammarSections"></div>
           </div>
         </div>
+        <div class="field" id="matVocabField" style="display:${m.default_input_type === 'vocabulary' ? '' : 'none'}">
+          <label>Vocabulary book</label>
+          <p class="hint" style="margin:0 0 8px">
+            Pick a book, then choose which sections to track — each section adds its topics as subtasks below.
+          </p>
+          <div id="matVocabBooks"></div>
+          <div id="matVocabSectionsWrap" style="margin-top:14px">
+            <label id="matVocabSectionsLabel">Sections</label>
+            <div style="display:flex;gap:8px;margin:8px 0">
+              <button type="button" class="btn btn-ghost btn-sm" id="matVocabAllBtn">Select all</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="matVocabNoneBtn">Clear</button>
+            </div>
+            <div class="vocab-sec-list" id="matVocabSections"></div>
+          </div>
+        </div>
         <div class="two-col">
           <div class="field"><label for="matTotalUnits">Total units</label>
             <input type="number" id="matTotalUnits" min="0" step="1" inputmode="numeric" placeholder="e.g. 320" value="${m.total_units ? escapeHtml(String(m.total_units)) : ''}">
@@ -6087,7 +6472,7 @@ function openMaterialModal(material){
           <div class="field"><label for="matUnit">Unit</label>
             <input type="text" id="matUnit" list="matUnitOptions" placeholder="${escapeHtml(defaultUnitFor(m.default_category))}" value="${escapeHtml(m.unit || '')}">
             <datalist id="matUnitOptions">
-              ${[...UNIT_SUGGESTIONS.reading, ...UNIT_SUGGESTIONS.listening, ...UNIT_SUGGESTIONS.grammar].map(u => `<option value="${u}"></option>`).join('')}
+              ${[...UNIT_SUGGESTIONS.reading, ...UNIT_SUGGESTIONS.listening, ...UNIT_SUGGESTIONS.grammar, ...UNIT_SUGGESTIONS.vocabulary].map(u => `<option value="${u}"></option>`).join('')}
             </datalist>
           </div>
         </div>
@@ -6210,7 +6595,7 @@ function openMaterialModal(material){
   refreshCoverThumb();
 
   let subtasks = Array.isArray(m.subtasks)
-    ? m.subtasks.map(s => ({ id: s.id || uid('st'), title: s.title, done: !!s.done, due: s.due || '', grammarRef: s.grammarRef || null, grammarBook: s.grammarRef ? (s.grammarBook || 'giu') : null }))
+    ? m.subtasks.map(s => ({ id: s.id || uid('st'), title: s.title, done: !!s.done, due: s.due || '', grammarRef: s.grammarRef || null, grammarBook: s.grammarRef ? (s.grammarBook || 'giu') : null, vocabRef: s.vocabRef || null, vocabBook: s.vocabRef ? (s.vocabBook || null) : null }))
     : [];
   const subtasksList = $('#matSubtasksList');
   function renderSubtasksDraft(){
@@ -6236,6 +6621,7 @@ function openMaterialModal(material){
     if (e.target.classList.contains('subtask-check')){
       st.done = e.target.checked;
       if (st.grammarRef){ setGrammarChapterDone(st.grammarBook || 'giu', st.grammarRef, st.done); saveState(); }
+      if (st.vocabRef && st.vocabBook){ setVocabItemDone(st.vocabBook, st.vocabRef, st.done); saveState(); }
       renderSubtasksDraft();
     }
     else if (e.target.classList.contains('subtask-due-edit')){ st.due = e.target.value || ''; }
@@ -6356,6 +6742,108 @@ function openMaterialModal(material){
     renderGrammarBooks();
   });
 
+  /* Vocabulary book + sections — only relevant when the Vocabulary type is
+     selected. Works exactly like Grammar above. Step 1: pick one of the
+     books (grouped the same way the Settings modal groups them). Step 2:
+     that book's sections appear below — checking a section adds its topics
+     as subtasks tagged with vocabBook + vocabRef so we know which book and
+     section they came from; unchecking removes just those. Switching books
+     doesn't touch subtasks already added from a different book — a
+     material can track sections from more than one vocabulary book at
+     once, each shown with a "selected" count on its book row. */
+  const vocabField = $('#matVocabField');
+  const vocabBookBox = $('#matVocabBooks');
+  const vocabSectionsBox = $('#matVocabSections');
+  const vocabSectionsLabel = $('#matVocabSectionsLabel');
+
+  // Default to the book already used by this material's existing vocab
+  // subtasks (if any), else its saved vocab_book, else the first book.
+  let vocabBookId = (() => {
+    const existing = subtasks.find(s => s.vocabRef != null);
+    return (existing && existing.vocabBook) || m.vocab_book || VOCAB_BOOKS[0].id;
+  })();
+
+  function vocabSectionState(bookId, sec){
+    let count = 0;
+    sec.topics.forEach(t => { if (subtasks.some(s => s.vocabBook === bookId && s.vocabRef === t.ref)) count++; });
+    const size = sec.topics.length;
+    return { count, size, all: size > 0 && count === size, some: count > 0 && count < size };
+  }
+  function renderVocabBooks(){
+    vocabBookBox.innerHTML = VOCAB_BOOK_GROUPS.map(group => `
+      <div class="vocab-book-group">
+        <div class="vocab-book-group-title">${escapeHtml(group)}</div>
+        <div class="vocab-book-list">
+          ${VOCAB_BOOKS.filter(b => b.group === group).map(b => {
+            const n = subtasks.filter(s => s.vocabBook === b.id && s.vocabRef != null).length;
+            return `
+            <label class="vocab-book-row ${vocabBookId === b.id ? 'active' : ''}">
+              <input type="radio" name="matVocabBook" data-vbook="${b.id}" ${vocabBookId === b.id ? 'checked' : ''}>
+              <span class="vbook-name">${escapeHtml(b.label)}</span>
+              ${n ? `<span class="vbook-count">${n} selected</span>` : ''}
+            </label>`;
+          }).join('')}
+        </div>
+      </div>
+    `).join('');
+  }
+  function renderVocabSections(){
+    const book = VOCAB_BOOKS.find(b => b.id === vocabBookId);
+    vocabSectionsLabel.textContent = `${book.label} — sections`;
+    vocabSectionsBox.innerHTML = book.sections.map((sec, i) => {
+      const st = vocabSectionState(vocabBookId, sec);
+      return `
+        <label class="vocab-sec-row ${st.all ? 'all' : st.some ? 'some' : ''}">
+          <input type="checkbox" data-vsec="${i}" ${st.all ? 'checked' : ''}>
+          <span class="vsec-name">${escapeHtml(sec.name)}</span>
+          <span class="vsec-count">${st.size} topic${st.size === 1 ? '' : 's'}${st.some ? ` · ${st.count} selected` : ''}</span>
+        </label>`;
+    }).join('');
+  }
+  function setVocabSection(bookId, sec, on){
+    if (on){
+      const doneSet = getVocabDoneSet(bookId); // pre-check any topic already completed in the external tracker
+      sec.topics.forEach(t => {
+        if (!subtasks.some(s => s.vocabBook === bookId && s.vocabRef === t.ref)){
+          subtasks.push({ id: uid('st'), title: t.title, done: doneSet.has(t.ref), due: '', vocabBook: bookId, vocabRef: t.ref });
+        }
+      });
+    } else {
+      const refs = new Set(sec.topics.map(t => t.ref));
+      subtasks = subtasks.filter(s => !(s.vocabBook === bookId && refs.has(s.vocabRef)));
+    }
+  }
+  renderVocabBooks();
+  renderVocabSections();
+  vocabBookBox.addEventListener('change', e => {
+    const r = e.target.closest('[data-vbook]');
+    if (!r) return;
+    vocabBookId = r.dataset.vbook;
+    renderVocabBooks();
+    renderVocabSections();
+  });
+  vocabSectionsBox.addEventListener('change', e => {
+    const cb = e.target.closest('[data-vsec]');
+    if (!cb) return;
+    const book = VOCAB_BOOKS.find(b => b.id === vocabBookId);
+    setVocabSection(vocabBookId, book.sections[Number(cb.dataset.vsec)], cb.checked);
+    renderSubtasksDraft();
+    renderVocabSections();
+    renderVocabBooks();
+  });
+  $('#matVocabAllBtn').addEventListener('click', () => {
+    VOCAB_BOOKS.find(b => b.id === vocabBookId).sections.forEach(sec => setVocabSection(vocabBookId, sec, true));
+    renderSubtasksDraft();
+    renderVocabSections();
+    renderVocabBooks();
+  });
+  $('#matVocabNoneBtn').addEventListener('click', () => {
+    VOCAB_BOOKS.find(b => b.id === vocabBookId).sections.forEach(sec => setVocabSection(vocabBookId, sec, false));
+    renderSubtasksDraft();
+    renderVocabSections();
+    renderVocabBooks();
+  });
+
   let channels = Array.isArray(m.channels)
     ? m.channels.map(c => ({ id: c.id || uid('ch'), name: c.name, estimated_minutes: (c.estimated_minutes ?? null), cover_url: c.cover_url || null }))
     : [];
@@ -6427,6 +6915,8 @@ function openMaterialModal(material){
     $('#matChannelsHint').textContent = `Add each ${lbl.singular.toLowerCase()} you're tracking, with an optional time estimate. Logged minutes tally automatically from time you log against each one.`;
     grammarField.style.display = t === 'grammar' ? '' : 'none';
     if (t === 'grammar'){ renderGrammarBooks(); renderGrammarSections(); }
+    vocabField.style.display = t === 'vocabulary' ? '' : 'none';
+    if (t === 'vocabulary'){ renderVocabBooks(); renderVocabSections(); }
   });
 
   const deadlineClearBtn = $('#matDeadlineClearBtn');
@@ -6452,6 +6942,7 @@ function openMaterialModal(material){
       description: $('#matDescription').value.trim(),
       default_input_type: type,
       default_category: category,
+      vocab_book: type === 'vocabulary' ? vocabBookId : (m.vocab_book || null),
       status: $('#matStatus').value,
       cover_url: coverUrl,
       deadline: $('#matDeadline').value || null,
@@ -7003,9 +7494,12 @@ function openSettings(){
             How many Vocabulary chapters/lessons you're aiming to finish over the challenge, added up across whichever book(s) you track below.
             ${vocabData ? `Selected book(s) currently have ${vocabData.total} items total, ${vocabData.done} done.` : `Open the Vocabulary tracker at least once so this app can read its progress.`}
           </p>
-          <label style="margin-top:10px;display:block">Book(s) to track</label>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px">
+            <label style="display:block;margin:0">Book(s) to track</label>
+            <button type="button" class="btn btn-ghost btn-sm" id="setVocabBooksToggle">${setVocabBooksHidden ? '▾ Show books' : '▴ Hide books'}</button>
+          </div>
           <p class="hint" style="margin:2px 0 8px">Pick one or more — their progress will be added together.</p>
-          <div id="setVocabBooks">
+          <div id="setVocabBooks" style="display:${setVocabBooksHidden ? 'none' : ''}">
             ${VOCAB_BOOK_GROUPS.map(group => `
               <div class="vocab-book-group">
                 <div class="vocab-book-group-title">${escapeHtml(group)}</div>
@@ -7082,6 +7576,14 @@ function openSettings(){
       const row = cb.closest('.vocab-book-row');
       if (row) row.classList.toggle('active', cb.checked);
     });
+  });
+  const setVocabBooksToggleBtn = $('#setVocabBooksToggle');
+  const setVocabBooksWrap = $('#setVocabBooks');
+  setVocabBooksToggleBtn.addEventListener('click', () => {
+    setVocabBooksHidden = !setVocabBooksHidden;
+    try { localStorage.setItem(SETVOCAB_BOOKS_HIDE_KEY, setVocabBooksHidden ? '1' : '0'); } catch (e) {}
+    setVocabBooksWrap.style.display = setVocabBooksHidden ? 'none' : '';
+    setVocabBooksToggleBtn.textContent = setVocabBooksHidden ? '▾ Show books' : '▴ Hide books';
   });
   $('#setForm').addEventListener('submit', e => {
     e.preventDefault();
@@ -7409,6 +7911,7 @@ document.addEventListener('click', e => {
       if (st){
         st.done = !st.done;
         if (st.grammarRef) setGrammarChapterDone(st.grammarBook || 'giu', st.grammarRef, st.done);
+        if (st.vocabRef && st.vocabBook) setVocabItemDone(st.vocabBook, st.vocabRef, st.done);
         saveState(); render();
         // If this checkbox was inside the detail pop-up, refresh it too —
         // render() only rebuilds the page behind it, so the pop-up's own
@@ -7583,19 +8086,26 @@ document.addEventListener('keydown', e => {
    ========================================================= */
 applyTheme(currentTheme);
 loadState();
-if (syncGrammarSubtasksFromExternal()) saveState();
+const bootGrammarSynced = syncGrammarSubtasksFromExternal();
+const bootVocabSynced = syncVocabSubtasksFromExternal();
+if (bootGrammarSynced || bootVocabSynced) saveState();
 render();
 startTicker();
 setTimeout(maybeShowWelcome, 700);
 
-/* Live two-way sync with the external Grammar tracker across tabs: if it's
-   open in another tab and something gets checked there, this fires and
-   pulls the change in immediately. (Changes made from this tab don't fire
-   this listener here — only in other tabs/windows — so there's no loop.) */
+/* Live two-way sync with the external Grammar and Vocabulary trackers
+   across tabs: if either is open in another tab and something gets
+   checked there, this fires and pulls the change in immediately. (Changes
+   made from this tab don't fire this listener here — only in other
+   tabs/windows — so there's no loop.) */
 const GRAMMAR_ALL_STORE_AND_SHARED_KEYS = GRAMMAR_BOOK_ORDER.flatMap(id => [GRAMMAR_BOOKS[id].storeKey, GRAMMAR_BOOKS[id].sharedKey]);
+const VOCAB_ALL_STORE_AND_SHARED_KEYS = VOCAB_BOOKS.flatMap(b => [b.storeKey, vocabSharedKey(b.id)]);
 window.addEventListener('storage', e => {
-  if (GRAMMAR_ALL_STORE_AND_SHARED_KEYS.includes(e.key)){
-    if (syncGrammarSubtasksFromExternal()){
+  if (GRAMMAR_ALL_STORE_AND_SHARED_KEYS.includes(e.key) || VOCAB_ALL_STORE_AND_SHARED_KEYS.includes(e.key)){
+    const changed = GRAMMAR_ALL_STORE_AND_SHARED_KEYS.includes(e.key)
+      ? syncGrammarSubtasksFromExternal()
+      : syncVocabSubtasksFromExternal();
+    if (changed){
       saveState(); render();
       if (openMaterialModalId){
         const m = materialById(openMaterialModalId);
