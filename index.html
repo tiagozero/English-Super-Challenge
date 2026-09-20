@@ -504,6 +504,13 @@
   .grammar-sec-row input{flex:0 0 auto}
   .gsec-name{flex:1;font-weight:600}
   .gsec-count{flex:0 0 auto;color:var(--muted);font-size:11px}
+  .grammar-book-list{display:flex;flex-direction:column;gap:6px}
+  .grammar-book-row{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:13px}
+  .grammar-book-row:hover{background:var(--surface-2)}
+  .grammar-book-row.active{border-color:color-mix(in srgb, var(--grammar) 45%, var(--line));background:color-mix(in srgb, var(--grammar) 10%, var(--surface))}
+  .grammar-book-row input{flex:0 0 auto}
+  .gbook-name{flex:1;font-weight:600}
+  .gbook-count{flex:0 0 auto;color:var(--grammar);font-size:11px;font-weight:600}
   .mat-progress-bar.complete > i{background:var(--good-fg)}
   .mat .mat-progress{border-top:none;margin-top:6px;padding-top:0}
 
@@ -1537,6 +1544,240 @@ const GRAMMAR_GROUPS = [
   { name: "Causatives, there & it",       from: 127, to: 130 },
   { name: "Question words",               from: 131, to: 145 }
 ];
+
+/* Data for the other three Grammar books (kept alongside GRAMMAR_TITLES /
+   GRAMMAR_GROUPS above, which cover "Grammar in Use"). Same source content
+   as the standalone Grammar tracker's other tabs, so the sections and topic
+   wording line up exactly and two-way sync (below) can key off matching
+   identifiers. */
+const GRAMMAR_ORDINALS = ["One","Two","Three","Four","Five","Six","Seven","Eight",
+  "Nine","Ten","Eleven","Twelve","Thirteen","Fourteen"];
+const GRAMMAR_REF_BOOK = [
+  { title:"To Be or Not to Be", sections:[
+    "ADJECTIVES ASSOCIATED WITH THE TENSES",
+    "PRESENT SIMPLE V. PRESENT CONTINUOUS"
+  ]},
+  { title:"", sections:[
+    "THIRD PERSON SINGULAR V. THIRD PERSON PLURAL",
+    "SUBJECT BEFORE VERB IN THE AFFIRMATIVE",
+    "DOUBLE SUBJECT ERROR",
+    "OMISSION OF SUBJECT",
+    "PRONOUNS AND POSSESSIVE PRONOUNS",
+    "WHEN NOT TO USE A SUBJECT PRONOUN",
+    "SUBJECT BEFORE VERB IN QUESTIONS",
+    "OMISSION OF AUXILIARY VERB IN QUESTIONS",
+    "SUBJECT AND OBJECT PRONOUN CONFUSION",
+    "SUBJECT QUESTION ERROR",
+    "LIKE V. WOULD LIKE",
+    "INFINITIVE OF PURPOSE"
+  ]},
+  { title:"", sections:[
+    "ADVERBS OF FREQUENCY",
+    "ADJECTIVE OR ADVERB",
+    "ADVERBS OF MANNER",
+    "ADVERBS OF PLACE",
+    "ADVERBS OF TIME",
+    "ADVERBS OF DEGREE"
+  ]},
+  { title:"", sections:[
+    "TO HAVE OR NOT TO HAVE",
+    "ERRORS WHEN FORMING PAST SIMPLE NEGATIVES",
+    "PAST SIMPLE VERSUS PAST PROGRESSIVE",
+    "NON EXISTENT PLURAL ADJECTIVES",
+    "PLURAL NOUNS STANDARD AND IRREGULAR",
+    "ARTICLE ERRORS",
+    "WRONG USAGE",
+    "THE GENITIVE/POSSESSIVE",
+    "COMPARISON ERRORS"
+  ]},
+  { title:"", sections:[
+    "USED TO - BE USED TO - GET USED TO",
+    "BE USED TO VERSUS GET USED TO",
+    "THINK AND HOPE ERRORS",
+    "COUNTABLE OR UNCOUNTABLE",
+    "TOO - TOO MUCH - TOO MANY",
+    "FEWER VERSUS LESS",
+    "ENOUGH + NOUN VERSUS ADJECTIVE + ENOUGH",
+    "BOTH - EITHER - NEITHER",
+    "REFLEXIVE ERRORS",
+    "EACH OTHER VERSUS ONE ANOTHER"
+  ]},
+  { title:"", sections:[
+    "ERRORS WHEN USING MODAL AUXILIARY VERBS",
+    "MAY VERSUS CAN AND COULD",
+    "SHALL AND MAY",
+    "SHOULD"
+  ]},
+  { title:"", sections:[
+    "SUPPOSED TO - MEANT TO - SHOULD"
+  ]},
+  { title:"", sections:[
+    "THE PERFECT ERRORS",
+    "PRESENT PERFECT (1)",
+    "A TIME IN YOUR LIFE BEFORE NOW",
+    "PRESENT PERFECT (2)",
+    "PAST TO PRESENT",
+    "PRESENT PERFECT (3)",
+    "BEFORE NOW OR RIGHT NOW",
+    "PRESENT PERFECT CONTINUOUS (1)",
+    "IN PROGRESS FROM PAST TO PRESENT",
+    "PRESENT PERFECT CONTINUOUS (2)",
+    "UNTIL RECENTLY",
+    "PAST PERFECT ERRORS",
+    "PAST PERFECT CONTINUOUS (1)",
+    "PAST PERFECT CONTINUOUS (2)"
+  ]},
+  { title:"", sections:[
+    "CONDITIONAL ERRORS",
+    "FIRST CONDITIONAL",
+    "SECOND CONDITIONAL ERRORS",
+    "THIRD CONDITIONAL ERRORS",
+    "THE MIXED CONDITIONAL",
+    "WISH ERRORS",
+    "EVEN THOUGH VERSUS EVEN IF",
+    "ANY LONGER VERSUS ANYMORE AND NO LONGER",
+    "ANYMORE VERSUS ANY MORE"
+  ]},
+  { title:"", sections:[
+    "NO FUTURE IN ENGLISH",
+    "TO BE GOING TO + INFINITIVE",
+    "WILL VERSUS GOING TO",
+    "COMMON ERRORS WHEN USING 'WILL'",
+    "THE FUTURE CONTINUOUS",
+    "THE FUTURE PERFECT",
+    "FUTURE PERFECT CONTINUOUS",
+    "REPORTED ERRORS",
+    "DIRECT AND INDIRECT OBJECT ERRORS"
+  ]},
+  { title:"", sections:[
+    "PREPOSITION ERRORS",
+    "VERBS WITH MORE THAN ONE PREPOSITION"
+  ]},
+  { title:"", sections:[
+    "WRONG VERB USAGE",
+    "WRONG ADJECTIVE/ADVERB USAGE",
+    "FEELING ERRORS",
+    "VERBS OF FEELING",
+    "MISCELLANEOUS ERRORS"
+  ]},
+  { title:"", sections:[
+    "WRONG USAGE OF 'SPEND'",
+    "NON PERSONALIZED USAGE"
+  ]},
+  { title:"", sections:[
+    "INFINITIVE OR GERUND",
+    "USING CONNECTORS",
+    "TERMS OF CONFUSION",
+    "EXPRESSING YOUR OPINION"
+  ]}
+];
+const GRAMMAR_PREP_BOOK = [
+  { name:"Part One: The Prepositions", items:[
+    "How to Use Part One",
+    "Unit 1: About", "Unit 2: Above", "Unit 3: Across", "Unit 4: After", "Unit 5: Against",
+    "Unit 6: Ahead Of*", "Unit 7: Along", "Unit 8: Among", "Unit 9: Around", "Unit 10: As",
+    "Unit 11: At", "Unit 12: Back To* / Back From*", "Unit 13: Before", "Unit 14: Behind",
+    "Unit 15: Below", "Unit 16: Beneath", "Unit 17: Beside", "Unit 18: Besides", "Unit 19: Between",
+    "Unit 20: Beyond", "Unit 21: But", "Unit 22: By", "Unit 23: Close To*",
+    "Unit 24: Despite / In Spite Of*", "Unit 25: Down", "Unit 26: During", "Unit 27: Except",
+    "Unit 28: Far From*", "Unit 29: For", "Unit 30: From", "Unit 31: In", "Unit 32: In Back Of*",
+    "Unit 33: In Front Of*", "Unit 34: Inside", "Unit 35: Instead Of*", "Unit 36: Into",
+    "Unit 37: Like", "Unit 38: Near", "Unit 39: Next To*", "Unit 40: Of", "Unit 41: Off",
+    "Unit 42: On", "Unit 43: Onto", "Unit 44: On Top Of*", "Unit 45: Opposite", "Unit 46: Out",
+    "Unit 47: Outside", "Unit 48: Over", "Unit 49: Past", "Unit 50: Through", "Unit 51: Throughout",
+    "Unit 52: To", "Unit 53: Toward", "Unit 54: Towards", "Unit 55: Under", "Unit 56: Underneath",
+    "Unit 57: Until", "Unit 58: Up", "Unit 59: With", "Unit 60: Within", "Unit 61: Without"
+  ]},
+  { name:"Part Two: Prepositions by Function", items:[
+    "How to Use Part Two",
+    "Unit 1: Time", "Unit 2: Location", "Unit 3: Direction", "Unit 4: Number", "Unit 5: Weather",
+    "Unit 6: Source of Information", "Unit 7: Affiliation", "Unit 8: Description", "Unit 9: Wearing",
+    "Unit 10: Topic", "Unit 11: Recipient", "Unit 12: State", "Unit 13: Separation",
+    "Unit 14: Attitude", "Unit 15: Behavior"
+  ]},
+  { name:"Part Three: Using Prepositions", items:[
+    "How to Use Part Three",
+    "Unit 1: Prepositional Phrases", "Unit 2: Prepositions in Questions",
+    "Unit 3: Prepositions in Noun Clauses", "Unit 4: Prepositions in Adjective Clauses"
+  ]},
+  { name:"Part Four: Phrasal Verbs", items:[
+    "How to Use Part Four",
+    "Unit 1: Nonseparable Combinations", "Unit 2: Must-Be-Separated Combinations",
+    "Unit 3: Separable Combinations", "Unit 4: Nonseparable Combinations with an Additional Preposition",
+    "Unit 5: Separable Combinations with an Additional Preposition", "Unit 6: Intransitive Combinations",
+    "Unit 7: Intransitive Verb-Adverb Combinations Followed by a Preposition",
+    "Unit 8: Phrasal Verbs Used as Nouns", "Unit 9: Phrasal Verbs Used as Adjectives"
+  ]},
+  { name:"Part Five: Prepositions as Nouns, Adjectives, and Verbs", items:[
+    "Unit 1: Nouns", "Unit 2: Adjectives", "Unit 3: Verbs"
+  ]}
+];
+const GRAMMAR_LOGIC_BOOK = [
+  { name:"Core Prepositions", items:[
+    "OF","ON","TO","IN","FOR","AT","UP","BY","FROM","OUT",
+    "WITH","ABOUT","OVER","AROUND","OFF","DOWN","UNDER"
+  ]}
+];
+
+/* Unified registry so "New material" (and its two-way sync with the
+   standalone Grammar tracker) can treat all four books the same way.
+   Each book normalizes into { name, topics:[{ref, title}] } sections —
+   `ref` matches the identifier the standalone tracker's own storage uses
+   for that book, so completions stay in sync in both directions. */
+const GRAMMAR_BOOKS = {
+  giu: {
+    id: 'giu',
+    label: 'Grammar in Use – Intermediate (5th Edition)',
+    storeKey: 'giu-simple-v1',
+    sharedKey: 'esc-grammar-data',
+    keyType: 'number',
+    sections: GRAMMAR_GROUPS.map(g => ({
+      name: g.name,
+      topics: Array.from({ length: g.to - g.from + 1 }, (_, i) => {
+        const n = g.from + i;
+        return { ref: n, title: GRAMMAR_TITLES[n - 1] };
+      })
+    }))
+  },
+  ref: {
+    id: 'ref',
+    label: 'English Grammar Reference Book',
+    storeKey: 'giu-ref-v1',
+    sharedKey: 'esc-grammar-ref-data',
+    keyType: 'string',
+    sections: GRAMMAR_REF_BOOK.map((ch, ci) => ({
+      name: `Chapter ${GRAMMAR_ORDINALS[ci] || (ci + 1)}${ch.title ? ' · ' + ch.title : ''}`,
+      topics: ch.sections.map((s, si) => ({ ref: `${ci + 1}.${si + 1}`, title: s }))
+    }))
+  },
+  prep: {
+    id: 'prep',
+    label: 'Prepositions',
+    storeKey: 'giu-prep-v1',
+    sharedKey: 'esc-grammar-prep-data',
+    keyType: 'string',
+    sections: GRAMMAR_PREP_BOOK.map((part, pi) => ({
+      name: part.name,
+      topics: part.items.map((raw, ii) => {
+        const m = raw.match(/^Unit\s+\d+:\s*(.+)$/);
+        return { ref: `P${pi + 1}.${ii + 1}`, title: m ? m[1] : raw };
+      })
+    }))
+  },
+  logic: {
+    id: 'logic',
+    label: 'Logic of Prepositions',
+    storeKey: 'giu-logic-v1',
+    sharedKey: 'esc-grammar-logic-data',
+    keyType: 'string',
+    sections: GRAMMAR_LOGIC_BOOK.map((grp, gi) => ({
+      name: grp.name,
+      topics: grp.items.map((title, ii) => ({ ref: `L${gi + 1}.${ii + 1}`, title }))
+    }))
+  }
+};
+const GRAMMAR_BOOK_ORDER = ['giu', 'ref', 'prep', 'logic'];
+
 const STATUS_ORDER = ['active', 'scheduled', 'not_scheduled', 'completed', 'archived'];
 const STATUS_LABEL = { active: 'Active', not_scheduled: 'Not Scheduled', scheduled: 'Scheduled', completed: 'Completed', archived: 'Archived' };
 
@@ -1990,66 +2231,87 @@ function getGrammarData(){
 
 /* ---- Grammar two-way sync ----------------------------------------------
    Materials subtasks created from a Grammar section (tagged with a
-   grammarRef, see openMaterialModal's "Grammar sections" picker) track the
-   exact same 145 units as the external Grammar.html tracker. GRAMMAR_STORE_KEY
-   is that app's own storage — the set of completed chapter numbers — which we
-   treat as the single source of truth so both sides always agree. */
-const GRAMMAR_STORE_KEY = 'giu-simple-v1';
-function getGrammarDoneSet(){
+   grammarBook + grammarRef, see openMaterialModal's "Grammar sections"
+   picker) track the exact same units/sections as the matching tab in the
+   external Grammar tracker. Each book in GRAMMAR_BOOKS has its own storage
+   key over there (book.storeKey / book.sharedKey — "giu"'s happen to be
+   GRAMMAR_SHARED_KEY, defined above, and 'giu-simple-v1') — the set of
+   completed refs — which we treat as the single source of truth for that
+   book so both sides always agree. Older subtasks (saved before books
+   other than Grammar in Use existed) have no grammarBook field and default
+   to 'giu' everywhere below. */
+function getGrammarDoneSet(bookId){
+  const book = GRAMMAR_BOOKS[bookId];
+  if (!book) return new Set();
   try {
-    const raw = localStorage.getItem(GRAMMAR_STORE_KEY);
+    const raw = localStorage.getItem(book.storeKey);
     const arr = raw ? JSON.parse(raw) : [];
-    return new Set(Array.isArray(arr) ? arr.map(Number) : []);
+    if (!Array.isArray(arr)) return new Set();
+    return new Set(book.keyType === 'number' ? arr.map(Number) : arr.map(String));
   } catch (e) { return new Set(); }
 }
-/* Writes the completed-chapters set back to the external app's own storage
-   key, then republishes the shared digest (same shape Grammar.html's own
-   publishShared() writes) so every reader — this app's Grammar card,
-   Timeline overview, and the external app itself if open in another tab —
-   sees the change immediately. */
-function publishGrammarShared(doneSet){
+/* Writes the completed-refs set back to the external app's own storage key
+   for this book, then republishes the shared digest (same shape the
+   external tracker's own publishShared()-style functions write) so every
+   reader — this app's Grammar card, Timeline overview, and the external
+   app itself if open in another tab — sees the change immediately. */
+function publishGrammarShared(bookId, doneSet){
+  const book = GRAMMAR_BOOKS[bookId];
+  if (!book) return;
   try {
-    const groups = GRAMMAR_GROUPS.map(g => {
-      let doneInGroup = 0;
-      for (let n = g.from; n <= g.to; n++) if (doneSet.has(n)) doneInGroup++;
-      return { name: g.name, from: g.from, to: g.to, size: g.to - g.from + 1, done: doneInGroup };
-    });
-    const chapters = GRAMMAR_TITLES.map((title, i) => ({ n: i + 1, title, done: doneSet.has(i + 1) }));
-    localStorage.setItem(GRAMMAR_SHARED_KEY, JSON.stringify({
-      total: GRAMMAR_TITLES.length,
+    const allTopics = book.sections.flatMap(sec => sec.topics);
+    const total = allTopics.length;
+    const groups = book.sections.map(sec => ({
+      name: sec.name,
+      size: sec.topics.length,
+      done: sec.topics.filter(t => doneSet.has(t.ref)).length
+    }));
+    const chapters = allTopics.map(t => ({ n: t.ref, title: t.title, done: doneSet.has(t.ref) }));
+    localStorage.setItem(book.sharedKey, JSON.stringify({
+      total,
       done: doneSet.size,
-      pct: GRAMMAR_TITLES.length ? Math.round((doneSet.size / GRAMMAR_TITLES.length) * 100) : 0,
+      pct: total ? Math.round((doneSet.size / total) * 100) : 0,
       groups, chapters,
       updated_at: new Date().toISOString()
     }));
   } catch (e) {}
 }
 /* Push direction: a grammar-linked subtask was checked/unchecked in this
-   app. Updates the external tracker's own storage (and every subtask, in
-   every material, that shares the same grammarRef) so both sides agree
-   right away — including if Grammar.html is open in another tab. */
-function setGrammarChapterDone(n, done){
-  const doneSet = getGrammarDoneSet();
-  if (done) doneSet.add(n); else doneSet.delete(n);
-  try { localStorage.setItem(GRAMMAR_STORE_KEY, JSON.stringify([...doneSet])); } catch (e) {}
-  publishGrammarShared(doneSet);
+   app. Updates the external tracker's own storage for that book (and every
+   subtask, in every material, that shares the same grammarBook + grammarRef)
+   so both sides agree right away — including if the tracker is open in
+   another tab. */
+function setGrammarChapterDone(bookId, ref, done){
+  const book = GRAMMAR_BOOKS[bookId];
+  if (!book) return;
+  const doneSet = getGrammarDoneSet(bookId);
+  if (done) doneSet.add(ref); else doneSet.delete(ref);
+  try { localStorage.setItem(book.storeKey, JSON.stringify([...doneSet])); } catch (e) {}
+  publishGrammarShared(bookId, doneSet);
   state.materials.forEach(m => {
-    (m.subtasks || []).forEach(s => { if (s.grammarRef === n) s.done = done; });
+    (m.subtasks || []).forEach(s => {
+      if ((s.grammarBook || 'giu') === bookId && s.grammarRef === ref) s.done = done;
+    });
   });
 }
 /* Pull direction: something changed in the external tracker (checked there,
-   or synced from another tab). Brings every grammar-linked subtask back in
-   line with it. Returns true if anything in state actually changed, so the
-   caller knows whether a save + re-render is worth doing. */
+   or synced from another tab), for any of the four books. Brings every
+   grammar-linked subtask back in line with it. Returns true if anything in
+   state actually changed, so the caller knows whether a save + re-render is
+   worth doing. */
 function syncGrammarSubtasksFromExternal(){
-  const doneSet = getGrammarDoneSet();
-  if (!doneSet.size && !localStorage.getItem(GRAMMAR_STORE_KEY)) return false; // tracker never opened yet — nothing to sync
   let changed = false;
-  state.materials.forEach(m => {
-    (m.subtasks || []).forEach(s => {
-      if (!s.grammarRef) return;
-      const shouldBeDone = doneSet.has(s.grammarRef);
-      if (!!s.done !== shouldBeDone){ s.done = shouldBeDone; changed = true; }
+  GRAMMAR_BOOK_ORDER.forEach(bookId => {
+    const book = GRAMMAR_BOOKS[bookId];
+    if (!localStorage.getItem(book.storeKey)) return; // that tab of the tracker never opened — nothing to sync
+    const doneSet = getGrammarDoneSet(bookId);
+    state.materials.forEach(m => {
+      (m.subtasks || []).forEach(s => {
+        if (!s.grammarRef) return;
+        if ((s.grammarBook || 'giu') !== bookId) return;
+        const shouldBeDone = doneSet.has(s.grammarRef);
+        if (!!s.done !== shouldBeDone){ s.done = shouldBeDone; changed = true; }
+      });
     });
   });
   return changed;
@@ -5544,15 +5806,19 @@ function openMaterialModal(material){
           </select>
         </div>
         <div class="field" id="matGrammarField" style="display:${m.default_input_type === 'grammar' ? '' : 'none'}">
-          <label>Grammar sections</label>
+          <label>Grammar book</label>
           <p class="hint" style="margin:0 0 8px">
-            Pick the sections to track — each adds its topics as subtasks below. e.g. "Present tenses" adds its 4 topics.
+            Pick a book, then choose which sections to track — each section adds its topics as subtasks below.
           </p>
-          <div style="display:flex;gap:8px;margin-bottom:8px">
-            <button type="button" class="btn btn-ghost btn-sm" id="matGrammarAllBtn">Select all 25</button>
-            <button type="button" class="btn btn-ghost btn-sm" id="matGrammarNoneBtn">Clear</button>
+          <div class="grammar-book-list" id="matGrammarBooks"></div>
+          <div id="matGrammarSectionsWrap" style="margin-top:14px">
+            <label id="matGrammarSectionsLabel">Sections</label>
+            <div style="display:flex;gap:8px;margin:8px 0">
+              <button type="button" class="btn btn-ghost btn-sm" id="matGrammarAllBtn">Select all</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="matGrammarNoneBtn">Clear</button>
+            </div>
+            <div class="grammar-sec-list" id="matGrammarSections"></div>
           </div>
-          <div class="grammar-sec-list" id="matGrammarSections"></div>
         </div>
         <div class="two-col">
           <div class="field"><label for="matTotalUnits">Total units</label>
@@ -5684,7 +5950,7 @@ function openMaterialModal(material){
   refreshCoverThumb();
 
   let subtasks = Array.isArray(m.subtasks)
-    ? m.subtasks.map(s => ({ id: s.id || uid('st'), title: s.title, done: !!s.done, due: s.due || '', grammarRef: s.grammarRef || null }))
+    ? m.subtasks.map(s => ({ id: s.id || uid('st'), title: s.title, done: !!s.done, due: s.due || '', grammarRef: s.grammarRef || null, grammarBook: s.grammarRef ? (s.grammarBook || 'giu') : null }))
     : [];
   const subtasksList = $('#matSubtasksList');
   function renderSubtasksDraft(){
@@ -5709,7 +5975,7 @@ function openMaterialModal(material){
     if (!st) return;
     if (e.target.classList.contains('subtask-check')){
       st.done = e.target.checked;
-      if (st.grammarRef){ setGrammarChapterDone(st.grammarRef, st.done); saveState(); }
+      if (st.grammarRef){ setGrammarChapterDone(st.grammarBook || 'giu', st.grammarRef, st.done); saveState(); }
       renderSubtasksDraft();
     }
     else if (e.target.classList.contains('subtask-due-edit')){ st.due = e.target.value || ''; }
@@ -5736,21 +6002,49 @@ function openMaterialModal(material){
     if (e.key === 'Enter'){ e.preventDefault(); addSubtaskFromInput(); }
   });
 
-  /* Grammar sections — only relevant when the Grammar type is selected.
-     Checking a section adds its topics (from GRAMMAR_TITLES) as subtasks
-     tagged with grammarRef so we can tell which section they came from;
-     unchecking removes just those. */
+  /* Grammar book + sections — only relevant when the Grammar type is
+     selected. Step 1: pick one of the four books. Step 2: that book's
+     sections appear below — checking a section adds its topics as subtasks
+     tagged with grammarBook + grammarRef so we know which book and section
+     they came from; unchecking removes just those. Switching books doesn't
+     touch subtasks already added from a different book — a material can
+     track sections from more than one book at once, each shown with a
+     "selected" count on its book row. */
   const grammarField = $('#matGrammarField');
+  const grammarBookBox = $('#matGrammarBooks');
   const grammarSectionsBox = $('#matGrammarSections');
-  function grammarSectionState(sec){
+  const grammarSectionsLabel = $('#matGrammarSectionsLabel');
+
+  // Default to the book already used by this material's existing grammar
+  // subtasks (if any), else the first book in the list.
+  let grammarBookId = (() => {
+    const existing = subtasks.find(s => s.grammarRef != null);
+    return (existing && existing.grammarBook) || GRAMMAR_BOOK_ORDER[0];
+  })();
+
+  function grammarSectionState(bookId, sec){
     let count = 0;
-    for (let n = sec.from; n <= sec.to; n++){ if (subtasks.some(s => s.grammarRef === n)) count++; }
-    const size = sec.to - sec.from + 1;
-    return { count, size, all: count === size, some: count > 0 && count < size };
+    sec.topics.forEach(t => { if (subtasks.some(s => (s.grammarBook || 'giu') === bookId && s.grammarRef === t.ref)) count++; });
+    const size = sec.topics.length;
+    return { count, size, all: size > 0 && count === size, some: count > 0 && count < size };
+  }
+  function renderGrammarBooks(){
+    grammarBookBox.innerHTML = GRAMMAR_BOOK_ORDER.map(id => {
+      const book = GRAMMAR_BOOKS[id];
+      const n = subtasks.filter(s => (s.grammarBook || 'giu') === id && s.grammarRef != null).length;
+      return `
+        <label class="grammar-book-row ${grammarBookId === id ? 'active' : ''}">
+          <input type="radio" name="matGrammarBook" data-gbook="${id}" ${grammarBookId === id ? 'checked' : ''}>
+          <span class="gbook-name">${escapeHtml(book.label)}</span>
+          ${n ? `<span class="gbook-count">${n} selected</span>` : ''}
+        </label>`;
+    }).join('');
   }
   function renderGrammarSections(){
-    grammarSectionsBox.innerHTML = GRAMMAR_GROUPS.map((sec, i) => {
-      const st = grammarSectionState(sec);
+    const book = GRAMMAR_BOOKS[grammarBookId];
+    grammarSectionsLabel.textContent = `${book.label} — sections`;
+    grammarSectionsBox.innerHTML = book.sections.map((sec, i) => {
+      const st = grammarSectionState(grammarBookId, sec);
       return `
         <label class="grammar-sec-row ${st.all ? 'all' : st.some ? 'some' : ''}">
           <input type="checkbox" data-gsec="${i}" ${st.all ? 'checked' : ''}>
@@ -5759,35 +6053,47 @@ function openMaterialModal(material){
         </label>`;
     }).join('');
   }
-  function setGrammarSection(sec, on){
+  function setGrammarSection(bookId, sec, on){
     if (on){
-      const doneSet = getGrammarDoneSet(); // pre-check any chapter already completed in the external tracker
-      for (let n = sec.from; n <= sec.to; n++){
-        if (!subtasks.some(s => s.grammarRef === n)){
-          subtasks.push({ id: uid('st'), title: GRAMMAR_TITLES[n - 1], done: doneSet.has(n), due: '', grammarRef: n });
+      const doneSet = getGrammarDoneSet(bookId); // pre-check any topic already completed in the external tracker
+      sec.topics.forEach(t => {
+        if (!subtasks.some(s => (s.grammarBook || 'giu') === bookId && s.grammarRef === t.ref)){
+          subtasks.push({ id: uid('st'), title: t.title, done: doneSet.has(t.ref), due: '', grammarBook: bookId, grammarRef: t.ref });
         }
-      }
+      });
     } else {
-      subtasks = subtasks.filter(s => !(s.grammarRef >= sec.from && s.grammarRef <= sec.to));
+      const refs = new Set(sec.topics.map(t => t.ref));
+      subtasks = subtasks.filter(s => !((s.grammarBook || 'giu') === bookId && refs.has(s.grammarRef)));
     }
   }
+  renderGrammarBooks();
   renderGrammarSections();
+  grammarBookBox.addEventListener('change', e => {
+    const r = e.target.closest('[data-gbook]');
+    if (!r) return;
+    grammarBookId = r.dataset.gbook;
+    renderGrammarBooks();
+    renderGrammarSections();
+  });
   grammarSectionsBox.addEventListener('change', e => {
     const cb = e.target.closest('[data-gsec]');
     if (!cb) return;
-    setGrammarSection(GRAMMAR_GROUPS[Number(cb.dataset.gsec)], cb.checked);
+    setGrammarSection(grammarBookId, GRAMMAR_BOOKS[grammarBookId].sections[Number(cb.dataset.gsec)], cb.checked);
     renderSubtasksDraft();
     renderGrammarSections();
+    renderGrammarBooks();
   });
   $('#matGrammarAllBtn').addEventListener('click', () => {
-    GRAMMAR_GROUPS.forEach(sec => setGrammarSection(sec, true));
+    GRAMMAR_BOOKS[grammarBookId].sections.forEach(sec => setGrammarSection(grammarBookId, sec, true));
     renderSubtasksDraft();
     renderGrammarSections();
+    renderGrammarBooks();
   });
   $('#matGrammarNoneBtn').addEventListener('click', () => {
-    GRAMMAR_GROUPS.forEach(sec => setGrammarSection(sec, false));
+    GRAMMAR_BOOKS[grammarBookId].sections.forEach(sec => setGrammarSection(grammarBookId, sec, false));
     renderSubtasksDraft();
     renderGrammarSections();
+    renderGrammarBooks();
   });
 
   let channels = Array.isArray(m.channels)
@@ -5860,7 +6166,7 @@ function openMaterialModal(material){
     $('#matChannelInput').placeholder = `${lbl.singular} name`;
     $('#matChannelsHint').textContent = `Add each ${lbl.singular.toLowerCase()} you're tracking, with an optional time estimate. Logged minutes tally automatically from time you log against each one.`;
     grammarField.style.display = t === 'grammar' ? '' : 'none';
-    if (t === 'grammar') renderGrammarSections();
+    if (t === 'grammar'){ renderGrammarBooks(); renderGrammarSections(); }
   });
 
   const deadlineClearBtn = $('#matDeadlineClearBtn');
@@ -6807,7 +7113,7 @@ document.addEventListener('click', e => {
       const st = m.subtasks.find(s => s.id === actionEl.dataset.sub);
       if (st){
         st.done = !st.done;
-        if (st.grammarRef) setGrammarChapterDone(st.grammarRef, st.done);
+        if (st.grammarRef) setGrammarChapterDone(st.grammarBook || 'giu', st.grammarRef, st.done);
         saveState(); render();
         // If this checkbox was inside the detail pop-up, refresh it too —
         // render() only rebuilds the page behind it, so the pop-up's own
@@ -6956,8 +7262,9 @@ setTimeout(maybeShowWelcome, 700);
    open in another tab and something gets checked there, this fires and
    pulls the change in immediately. (Changes made from this tab don't fire
    this listener here — only in other tabs/windows — so there's no loop.) */
+const GRAMMAR_ALL_STORE_AND_SHARED_KEYS = GRAMMAR_BOOK_ORDER.flatMap(id => [GRAMMAR_BOOKS[id].storeKey, GRAMMAR_BOOKS[id].sharedKey]);
 window.addEventListener('storage', e => {
-  if (e.key === GRAMMAR_STORE_KEY || e.key === GRAMMAR_SHARED_KEY){
+  if (GRAMMAR_ALL_STORE_AND_SHARED_KEYS.includes(e.key)){
     if (syncGrammarSubtasksFromExternal()){
       saveState(); render();
       if (openMaterialModalId){
