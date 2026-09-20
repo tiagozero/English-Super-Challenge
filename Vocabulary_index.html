@@ -929,7 +929,53 @@ function save(variantId){
       dates: st.dates
     }));
   } catch(e){}
+  publishShared(variantId);
 }
+
+/* ============================================================
+   SHARED PROGRESS PUBLISHING
+   This tracker is a standalone page. Every time progress changes
+   (or the page loads) it writes a small summary object to a
+   per-book localStorage key so the main English Super Challenge
+   dashboard (index.html) can show progress and let the user pick
+   a study target — without knowing anything about this app's
+   internal data shapes. Mirrors the Grammar tracker's own sync
+   key (esc-grammar-data).
+   ============================================================ */
+function sharedKeyFor(variantId){ return 'esc-vocab-shared-' + variantId; }
+
+function publishShared(variantId){
+  const v  = VARIANT_MAP[variantId];
+  const st = state[variantId];
+  if (!v || !st) return;
+  try {
+    const total = v.data.reduce((sum, g) => sum + g.items.length, 0);
+    const groups = v.data.map((g, gi) => {
+      const size = g.items.length;
+      let done = 0, base = 0;
+      // recompute item numbers the same way buildVariant does
+      for (let i = 0; i < gi; i++) base += v.data[i].items.length;
+      for (let i = 1; i <= size; i++) if (st.done.has(base + i)) done++;
+      return { name: g.name, size, done };
+    });
+    localStorage.setItem(sharedKeyFor(variantId), JSON.stringify({
+      total,
+      done: st.done.size,
+      pct: total ? Math.round((st.done.size / total) * 100) : 0,
+      groups,
+      title: v.title,
+      label: v.label || 'items',
+      updated_at: new Date().toISOString()
+    }));
+  } catch(e){}
+}
+
+/* Publish current state for every book right away, so the main
+   dashboard has numbers to show as soon as this tracker has been
+   opened once — even before anything has been checked off. */
+Object.keys(VARIANT_MAP).forEach(vid => {
+  if (VARIANT_MAP[vid].data.length) publishShared(vid);
+});
 
 function normalise(it){
   if (typeof it === 'string') return { text: it, sub: '' };
