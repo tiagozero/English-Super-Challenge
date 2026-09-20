@@ -649,6 +649,16 @@ themeBtn.addEventListener('click', () => {
    ============================================================ */
 render();
 publishShared(); // make sure the main app has fresh data even if nothing changed this visit
+
+/* Live two-way sync: if a Grammar-linked subtask gets checked in the main
+   challenge app while this tracker is open in another tab, pick it up and
+   re-render immediately. */
+window.addEventListener('storage', e => {
+  if (e.key === STORE_KEY){
+    done = new Set(JSON.parse(localStorage.getItem(STORE_KEY) || '[]'));
+    render();
+  }
+});
 </script>
 </body>
 </html>
