@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vocabulary Builder — Checklists</title>
+<style>
+  :root{
+    --bg:#ffffff;
+    --surface:#f7f7f8;
+    --border:#e4e4e7;
+    --text:#18181b;
+    --muted:#71717a;
+    --accent:#2563eb;
+    --accent-soft:#eff4ff;
+    --done:#16a34a;
+    --radius:8px;
+  }
+  [data-theme="dark"]{
+    --bg:#1e1e1e;
+    --surface:#2a2a2a;
+    --border:#3d3d3d;
+    --text:#e6e6e6;
+    --muted:#9a9a9a;
+    --accent:#6ea8fe;
+    --accent-soft:#2b3444;
+    --done:#4ade80;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.5;
+    transition:background .2s,color .2s;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{max-width:760px;margin:0 auto;padding:24px 16px 72px}
+
+  header{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;margin-bottom:16px;
+  }
+  header h1{font-size:18px;font-weight:600;letter-spacing:-.2px}
+  header h1 span{color:var(--muted);font-weight:400}
+
+  .icon-btn{
+    width:36px;height:36px;border:1px solid var(--border);border-radius:var(--radius);
+    background:var(--bg);color:var(--text);cursor:pointer;font-size:15px;
+    display:grid;place-items:center;transition:.15s;
+  }
+  .icon-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+  .tabs{
+    display:flex;gap:4px;padding:4px;margin-bottom:12px;
+    border:1px solid var(--border);border-radius:var(--radius);
+    background:var(--surface);
+    overflow-x:auto;
+    scrollbar-width:none;
+    -ms-overflow-style:none;
+  }
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{
+    flex:1 0 auto;padding:9px 14px;font-size:13px;font-family:inherit;font-weight:600;
+    background:transparent;color:var(--muted);border:none;border-radius:6px;
+    cursor:pointer;transition:.15s;white-space:nowrap;
+  }
+  .tab:hover{color:var(--text)}
+  .tab.on{background:var(--bg);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+  [data-theme="dark"] .tab.on{box-shadow:0 1px 3px rgba(0,0,0,.4)}
+
+  .variant-row{display:flex;margin-bottom:14px}
+  .variant-row[hidden]{display:none}
+  .variant-wrap{position:relative;flex:1}
+  .variant-select{
+    width:100%;
+    padding:10px 38px 10px 12px;
+    font-size:13.5px;font-family:inherit;font-weight:600;
+    color:var(--text);background:var(--bg);
+    border:1px solid var(--border);border-radius:var(--radius);
+    cursor:pointer;outline:none;
+    appearance:none;-webkit-appearance:none;-moz-appearance:none;
+    transition:border-color .15s;
+  }
+  .variant-select:hover{border-color:var(--accent)}
+  .variant-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .variant-arrow{
+    position:absolute;right:12px;top:50%;transform:translateY(-50%);
+    pointer-events:none;color:var(--muted);
+  }
+
+  .panel{
+    border:1px solid var(--border);border-radius:var(--radius);
+    padding:16px;margin-bottom:16px;
+  }
+  .bar-row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .bar{
+    flex:1;height:6px;border-radius:3px;background:var(--surface);
+    overflow:hidden;border:1px solid var(--border);
+  }
+  .bar i{
+    display:block;height:100%;width:0;background:var(--accent);
+    transition:width .3s ease;
+  }
+  .pct{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;min-width:38px;text-align:right}
+
+  .stats{display:flex;gap:24px}
+  .stats div{display:flex;flex-direction:column}
+  .stats b{font-size:16px;font-weight:600;font-variant-numeric:tabular-nums}
+  .stats span{font-size:12px;color:var(--muted)}
+
+  .done-msg{
+    margin-top:14px;padding:10px 12px;border-radius:var(--radius);
+    background:var(--accent-soft);color:var(--accent);
+    font-size:13px;font-weight:500;
+  }
+
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+
+  .search{position:relative;flex:1 1 220px}
+  .search svg{
+    position:absolute;left:10px;top:50%;transform:translateY(-50%);
+    color:var(--muted);pointer-events:none;
+  }
+  input[type="search"]{
+    width:100%;padding:8px 12px 8px 32px;font-size:14px;font-family:inherit;
+    color:var(--text);background:var(--bg);
+    border:1px solid var(--border);border-radius:var(--radius);
+    outline:none;transition:.15s;
+  }
+  input[type="search"]::placeholder{color:var(--muted)}
+  input[type="search"]:focus{border-color:var(--accent)}
+
+  .seg{display:flex;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+  .seg button{
+    padding:8px 12px;font-size:13px;font-family:inherit;font-weight:500;
+    background:var(--bg);color:var(--muted);border:none;cursor:pointer;
+    border-right:1px solid var(--border);transition:.15s;white-space:nowrap;
+  }
+  .seg button:last-child{border-right:none}
+  .seg button:hover{color:var(--text)}
+  .seg button.on{background:var(--accent);color:#fff}
+
+  .btn{
+    padding:8px 12px;font-size:13px;font-family:inherit;font-weight:500;
+    background:var(--bg);color:var(--text);
+    border:1px solid var(--border);border-radius:var(--radius);
+    cursor:pointer;transition:.15s;white-space:nowrap;
+  }
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+
+  .group{
+    border:1px solid var(--border);border-radius:var(--radius);
+    margin-bottom:10px;overflow:hidden;
+  }
+  .group-head{
+    width:100%;display:flex;align-items:center;gap:10px;
+    padding:11px 12px;font-family:inherit;font-size:14px;font-weight:600;
+    background:var(--surface);color:var(--text);
+    border:none;cursor:pointer;text-align:left;transition:.15s;
+  }
+  .group-head:hover{background:var(--border)}
+  .group-head .chev{transition:transform .2s;color:var(--muted);flex:0 0 auto}
+  .group.collapsed .chev{transform:rotate(-90deg)}
+  .group-head .count{
+    margin-left:auto;font-size:12px;font-weight:500;color:var(--muted);
+    font-variant-numeric:tabular-nums;
+  }
+  .group.complete .count{color:var(--done)}
+
+  .group-body{padding:4px 6px 8px}
+  .group.collapsed .group-body{display:none}
+
+  .item{
+    display:flex;align-items:flex-start;gap:8px;
+    padding:7px 6px;border-radius:6px;
+    transition:background .12s;
+  }
+  .item:hover{background:var(--surface)}
+
+  .item-row{
+    display:flex;align-items:flex-start;gap:10px;
+    flex:1;min-width:0;cursor:pointer;
+  }
+  .item-row input{position:absolute;opacity:0;width:0;height:0}
+
+  .item .box{
+    width:18px;height:18px;flex:0 0 auto;margin-top:2px;
+    border:1.5px solid var(--border);border-radius:5px;
+    display:grid;place-items:center;transition:.15s;
+  }
+  .item:hover .box{border-color:var(--accent)}
+  .item .box svg{
+    width:11px;height:11px;stroke:#fff;stroke-width:3.5;
+    fill:none;stroke-linecap:round;stroke-linejoin:round;
+    opacity:0;transition:opacity .15s;
+  }
+  .item.on .box{background:var(--accent);border-color:var(--accent)}
+  .item.on .box svg{opacity:1}
+
+  .item .n{
+    font-size:12px;color:var(--muted);min-width:26px;text-align:right;
+    font-variant-numeric:tabular-nums;margin-top:1px;flex:0 0 auto;
+  }
+  .item .t{font-size:14px}
+  .item .t em{color:var(--muted);font-style:normal;font-size:12.5px}
+  .item.on .t{color:var(--muted);text-decoration:line-through}
+  .item.on .t em{color:var(--muted);opacity:.75}
+
+  .date{
+    font-family:inherit;font-size:11.5px;
+    padding:3px 5px;
+    border:1px solid var(--border);border-radius:5px;
+    background:var(--bg);color:var(--text);
+    width:132px;flex:0 0 auto;
+    margin-top:1px;
+    visibility:hidden;
+    transition:border-color .15s,color .15s;
+  }
+  .item.on .date{visibility:visible}
+  .date:hover{border-color:var(--accent)}
+  .date:focus{outline:none;border-color:var(--accent)}
+  [data-theme="dark"] .date::-webkit-calendar-picker-indicator{filter:invert(.8)}
+
+  .hidden{display:none !important}
+
+  .empty{
+    text-align:center;padding:48px 16px;color:var(--muted);font-size:14px;
+  }
+  .empty-state{
+    text-align:center;
+    padding:56px 24px;
+    border:1px dashed var(--border);
+    border-radius:var(--radius);
+    color:var(--muted);
+  }
+  .empty-state .es-icon{
+    font-size:34px;line-height:1;margin-bottom:14px;opacity:.55;
+  }
+  .empty-state .es-title{
+    font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px;
+  }
+  .empty-state .es-hint{
+    font-size:13px;line-height:1.6;
+  }
+  .empty-state code{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:12px;
+    padding:2px 5px;border-radius:4px;
+    background:var(--surface);border:1px solid var(--border);
+    color:var(--accent);
+  }
+
+  @media (max-width:560px){
+    .stats{gap:18px}
+    .toolbar{gap:6px}
+    .seg{flex:1 1 100%}
+    .seg button{flex:1}
+    .item .t{font-size:13.5px}
+    .date{width:110px;font-size:11px;padding:2px 4px}
+    .tab{font-size:12px;padding:8px 10px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1 id="pageTitle">Vocabulary in Use - Elementary <span id="pageCount">· 0 chapters</span></h1>
+    <button class="icon-btn" id="themeBtn" aria-label="Toggle dark mode">🌙</button>
+  </header>
+
+  <nav class="tabs" id="tabs"></nav>
+
+  <div class="variant-row" id="variantRow" hidden>
+    <div class="variant-wrap">
+      <select class="variant-select" id="variantSelect"></select>
+      <svg class="variant-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+  </div>
+
+  <section class="panel">
+    <div class="bar-row">
+      <div class="bar"><i id="fill"></i></div>
+      <span class="pct" id="pct">0%</span>
+    </div>
+    <div class="stats">
+      <div><b id="sDone">0</b><span>completed</span></div>
+      <div><b id="sLeft">0</b><span>remaining</span></div>
+      <div><b id="sSec">0 / 0</b><span>sections</span></div>
+    </div>
+    <div class="done-msg" id="doneMsg" hidden>All items complete. Excellent work!</div>
+  </section>
+
+  <div class="toolbar">
+    <div class="search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+      <input type="search" id="search" placeholder="Search…" autocomplete="off">
+    </div>
+    <div class="seg" id="filters">
+      <button class="on" data-f="all">All</button>
+      <button data-f="todo">To do</button>
+      <button data-f="done">Done</button>
+    </div>
+    <button class="btn" id="collapseBtn">Expand</button>
+    <button class="btn" id="resetBtn">Reset</button>
+  </div>
+
+  <main id="list"></main>
+  <div class="empty" id="empty" hidden>No items match your search.</div>
+
+  <div class="empty-state" id="emptyState" hidden>
+    <div class="es-icon" id="emptyIcon">📝</div>
+    <div class="es-title" id="emptyTitle">No entries yet</div>
+    <div class="es-hint" id="emptyHint">
+      Add data to this variant in the <code>DATASETS</code> object to get started.
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   DATASETS — tabs + variants
+   ============================================================ */
+const DATASETS = [
+
+  /* ================= VOCABULARY ================= */
+  {
+    id: "vocabulary",
+    title: "Vocabulary",
+    variants: [
+      {
+        id: "vocab1",
+        title: "Vocabulary in Use - Elementary",
+        label: "chapters",
+        storeKey: "vocab-progress-v1",
+        data: [
+          { name: "People", items: [
+            { text: "The family",                    sub: "mother, uncle, relatives" },
+            { text: "Birth, marriage and death",     sub: "birthday, married, die" },
+            { text: "Parts of the body",             sub: "head, foot, shoulder" },
+            { text: "Clothes",                       sub: "hat, shirt, trousers" },
+            { text: "Describing people",             sub: "tall, dark, good-looking" },
+            { text: "Health and illness",            sub: "headache, heart attack, exercise" },
+            { text: "Feelings",                      sub: "love, tired, thirsty" },
+            { text: "Conversations 1: Greetings and wishes", sub: "Good morning, Happy New Year, well done" },
+            { text: "Conversations 2: Useful words and expressions", sub: "I don't mind, anyway, let's" }
+          ]},
+          { name: "At home", items: [
+            { text: "Food and drink",                sub: "rice, tea, vegetables" },
+            { text: "In the kitchen",                sub: "fridge, glass, saucepan" },
+            { text: "In the bedroom and bathroom",   sub: "wardrobe, shampoo, mirror" },
+            { text: "In the living room",            sub: "bookshelf, lamp, remote control" }
+          ]},
+          { name: "School and workplace", items: [
+            { text: "Jobs",                          sub: "secretary, factory, nurse" },
+            { text: "At school and university",      sub: "biology, notebook, pass an exam" },
+            { text: "Communications",                sub: "address, computer, memory stick" }
+          ]},
+          { name: "Leisure", items: [
+            { text: "Your phone",                    sub: "apps, voicemail, text" },
+            { text: "Holidays",                      sub: "package holiday, currency, visa" },
+            { text: "Shops and shopping",            sub: "chemist's, department store, credit card" },
+            { text: "Online shopping",               sub: "reviews, basket, delivery" },
+            { text: "In a hotel",                    sub: "single room, key, luggage" },
+            { text: "Eating out",                    sub: "café, menu, fish and chips" },
+            { text: "Sports",                        sub: "table tennis, judo, volleyball" },
+            { text: "Cinema",                        sub: "western, film star, director" },
+            { text: "Free time at home",             sub: "gardening, listening to CDs, programme" },
+            { text: "Music and musical instruments", sub: "guitar, jazz, orchestra" }
+          ]},
+          { name: "The world", items: [
+            { text: "Countries and nationalities",   sub: "Spain, Chinese, continent" },
+            { text: "Weather",                       sub: "cold, rain, storm" },
+            { text: "In the town",                   sub: "railway station, bank, town hall" },
+            { text: "In the countryside",            sub: "hill, farm, river" },
+            { text: "Animals",                       sub: "horse, giraffe, pet" },
+            { text: "Travelling",                    sub: "train, map, flight" },
+            { text: "UK culture",                    sub: "fireworks, roast beef, Christmas" }
+          ]},
+          { name: "Social issues", items: [
+            { text: "Crime",                         sub: "murder, prison, guilty" },
+            { text: "The media",                     sub: "TV channel, magazine, talk show" },
+            { text: "Problems at home and work",     sub: "repair, untidy, in a bad mood" },
+            { text: "Global problems",               sub: "hurricane, war, strike" }
+          ]},
+          { name: "Words and grammar", items: [
+            { text: "Have / had / had",              sub: "have breakfast, have time, have a swim" },
+            { text: "Go / went / gone",              sub: "go away, go shopping, go home" },
+            { text: "Do / did / done",               sub: "do an exercise, do your best, do the washing" },
+            { text: "Make / made / made",            sub: "make coffee, make a mistake, make a noise" },
+            { text: "Come / came / come",            sub: "come in, come from, come back" },
+            { text: "Take / took / taken",           sub: "take the bus, take a photo, take an exam" },
+            { text: "Bring / brought / brought",     sub: "bring something here, bring back, take" },
+            { text: "Get / got / got",               sub: "get tired, get better, get married" },
+            { text: "Phrasal verbs",                 sub: "get up, put on, turn down" },
+            { text: "Everyday things",               sub: "watch TV, wash clothes, go for a walk" },
+            { text: "Talking",                       sub: "say, tell, ask" },
+            { text: "Moving",                        sub: "walk, drive, fly" },
+            { text: "Conjunctions and connecting words", sub: "because, only, before" },
+            { text: "Days, months, seasons",         sub: "Monday, July, winter" },
+            { text: "Time words",                    sub: "next year, often, once a week" },
+            { text: "Places",                        sub: "middle, front, abroad" },
+            { text: "Manner",                        sub: "fast, loud, the right way" },
+            { text: "Common uncountable nouns",      sub: "money, bread, information" },
+            { text: "Common adjectives: Good and bad things", sub: "nice, awful, lovely" },
+            { text: "Words and prepositions",        sub: "wait for, belong to, good at" },
+            { text: "Prefixes",                      sub: "impossible, ex-wife, unsafe" },
+            { text: "Suffixes",                      sub: "swimmer, useless, sunny" },
+            { text: "Words you may confuse",         sub: "quiet / quite, lend / borrow, cook / cooker" }
+          ]}
+        ]
+      },
+
+      {
+        id: "vocab2",
+        title: "English Conversation",
+        label: "chapters",
+        storeKey: "vocab2-progress-v1",
+        data: [
+          { name: "Section 1 · Getting Started", items: [
+            "Introducing yourself and others",
+            "Expressing opinions, likes, and dislikes",
+            "Describing people, places, and things"
+          ]},
+          { name: "Section 2 · Everyday Interactions", items: [
+            "Striking up a conversation",
+            "Making dates and appointments",
+            "Expressing wants and needs"
+          ]},
+          { name: "Section 3 · Requests and Uncertainty", items: [
+            "Making requests and offers",
+            "Expressing doubts and uncertainty"
+          ]},
+          { name: "Section 4 · Advanced Conversation", items: [
+            "Talking about future events",
+            "Making a case or arguing a point",
+            "Narrating a story"
+          ]},
+          { name: "Section 5 · Complex and Digital", items: [
+            "Retelling a conversation",
+            "Talking about controversial issues",
+            "Electronic conversation"
+          ]}
+        ]
+      },
+
+      {
+        id: "vocab3",
+        title: "Vocabulary 3 · Soon",
+        label: "words",
+        storeKey: "vocab3-progress-v1",
+        data: []
+      }
+    ]
+  },
+
+  /* ================= COLLOCATIONS ================= */
+  {
+    id: "collocations",
+    title: "Collocations",
+    variants: [
+
+      {
+        id: "colloc1",
+        title: "1000 English Collocations in 10 Minutes a Day",
+        label: "lessons",
+        storeKey: "colloc-progress-v1",
+        data: [
+          { name: "Section 1", items: [
+            "Lesson 1",  "Lesson 2",  "Lesson 3",  "Lesson 4",  "Lesson 5",
+            "Lesson 6",  "Lesson 7",  "Lesson 8",  "Lesson 9",  "Lesson 10"
+          ]},
+          { name: "Section 2", items: [
+            "Lesson 11", "Lesson 12", "Lesson 13", "Lesson 14", "Lesson 15",
+            "Lesson 16", "Lesson 17", "Lesson 18", "Lesson 19", "Lesson 20"
+          ]},
+          { name: "Section 3", items: [
+            "Lesson 21", "Lesson 22", "Lesson 23", "Lesson 24", "Lesson 25",
+            "Lesson 26", "Lesson 27", "Lesson 28", "Lesson 29", "Lesson 30"
+          ]},
+          { name: "Section 4", items: [
+            "Lesson 31", "Lesson 32", "Lesson 33", "Lesson 34", "Lesson 35",
+            "Lesson 36", "Lesson 37", "Lesson 38", "Lesson 39", "Lesson 40"
+          ]},
+          { name: "Section 5", items: [
+            "Lesson 41", "Lesson 42", "Lesson 43", "Lesson 44", "Lesson 45",
+            "Lesson 46", "Lesson 47", "Lesson 48", "Lesson 49", "Lesson 50"
+          ]}
+        ]
+      },
+
+      {
+        id: "colloc2",
+        title: "Master English Collocations",
+        label: "chapters",
+        storeKey: "colloc2-progress-v1",
+        data: [
+          { name: "A – E", items: [
+            'ENGLISH COLLOCATIONS STARTING WITH "A"',
+            'ENGLISH COLLOCATIONS STARTING WITH "B"',
+            'ENGLISH COLLOCATIONS STARTING WITH "C"',
+            'ENGLISH COLLOCATIONS STARTING WITH "D"',
+            'ENGLISH COLLOCATIONS STARTING WITH "E"'
+          ]},
+          { name: "F – J", items: [
+            'ENGLISH COLLOCATIONS STARTING WITH "F"',
+            'ENGLISH COLLOCATIONS STARTING WITH "G"',
+            'ENGLISH COLLOCATIONS STARTING WITH "H"',
+            'ENGLISH COLLOCATIONS STARTING WITH "I"',
+            'ENGLISH COLLOCATIONS STARTING WITH "J"'
+          ]},
+          { name: "K – O", items: [
+            'ENGLISH COLLOCATIONS STARTING WITH "K"',
+            'ENGLISH COLLOCATIONS STARTING WITH "L"',
+            'ENGLISH COLLOCATIONS STARTING WITH "M"',
+            'ENGLISH COLLOCATIONS STARTING WITH "N"',
+            'ENGLISH COLLOCATIONS STARTING WITH "O"'
+          ]},
+          { name: "P – T", items: [
+            'ENGLISH COLLOCATIONS STARTING WITH "P"',
+            'ENGLISH COLLOCATIONS STARTING WITH "Q"',
+            'ENGLISH COLLOCATIONS STARTING WITH "R"',
+            'ENGLISH COLLOCATIONS STARTING WITH "S"',
+            'ENGLISH COLLOCATIONS STARTING WITH "T"'
+          ]},
+          { name: "U – Y", items: [
+            'ENGLISH COLLOCATIONS STARTING WITH "U"',
+            'ENGLISH COLLOCATIONS STARTING WITH "V"',
+            'ENGLISH COLLOCATIONS STARTING WITH "W"',
+            'ENGLISH COLLOCATIONS STARTING WITH "X"',
+            'ENGLISH COLLOCATIONS STARTING WITH "Y"'
+          ]}
+        ]
+      },
+
+      {
+        id: "colloc3",
+        title: "Shortcut To English Collocations",
+        label: "chapters",
+        storeKey: "colloc3-progress-v1",
+        data: [
+          { name: "A – E", items: [
+            "COLLOCATIONS/A",
+            "COLLOCATIONS/B",
+            "COLLOCATIONS/C",
+            "COLLOCATIONS/D",
+            "COLLOCATIONS/E"
+          ]},
+          { name: "F – J", items: [
+            "COLLOCATIONS/F",
+            "COLLOCATIONS/G",
+            "COLLOCATIONS/H",
+            "COLLOCATIONS/I",
+            "COLLOCATIONS/J"
+          ]},
+          { name: "K – O", items: [
+            "COLLOCATIONS/K",
+            "COLLOCATIONS/L",
+            "COLLOCATIONS/M",
+            "COLLOCATIONS/N",
+            "COLLOCATIONS/O"
+          ]},
+          { name: "P – T", items: [
+            "COLLOCATIONS/P",
+            "COLLOCATIONS/Q",
+            "COLLOCATIONS/R",
+            "COLLOCATIONS/S",
+            "COLLOCATIONS/T"
+          ]},
+          { name: "U – W", items: [
+            "COLLOCATIONS/U",
+            "COLLOCATIONS/V",
+            "COLLOCATIONS/W"
+          ]}
+        ]
+      }
+    ]
+  },
+
+  /* ================= PHRASAL VERBS ================= */
+  {
+    id: "phrasalverbs",
+    title: "Phrasal Verbs",
+    variants: [
+
+      {
+        id: "pv1",
+        title: "Work On Your Phrasal Verbs",
+        label: "units",
+        storeKey: "pv-progress-v1",
+        data: [
+          { name: "Section 1", items: [
+            "Basic actions",
+            "Actions with an object",
+            "Movement and change",
+            "Communication",
+            "Giving information"
+          ]},
+          { name: "Section 2", items: [
+            "Planning and organizing",
+            "Discussions",
+            "Advice or warnings",
+            "Thinking and knowing",
+            "Feelings"
+          ]},
+          { name: "Section 3", items: [
+            "Attitudes",
+            "Relationships",
+            "Socializing and leisure time",
+            "Sport and fitness",
+            "Travel and tourism"
+          ]},
+          { name: "Section 4", items: [
+            "Clothing and fashion",
+            "Studying and learning",
+            "Jobs and careers",
+            "Business",
+            "Money and spending"
+          ]},
+          { name: "Section 5", items: [
+            "Reporting in the media",
+            "Political events",
+            "Crime",
+            "Disaster and destruction",
+            "Helping and recovering"
+          ]}
+        ]
+      },
+
+      {
+        id: "pv2",
+        title: "Phrasal Verbs",
+        label: "units",
+        storeKey: "pv2-progress-v1",
+        data: [
+          { name: "Units 1 – 10", items: [
+            "Unit 1: Definition of Phrasal Verbs, Separable/Inseparable, and Transitive/Intransitive",
+            "Unit 2: Phrasal Verbs and Do, Does, and Did",
+            "Unit 3: Three-Word Phrasal Verbs",
+            "Unit 4: Present and Past Continuous Phrasal Verbs",
+            "Unit 5: Stress in Two-Word Phrasal Verbs, Part 1",
+            "Unit 6: Stress in Three-Word Phrasal Verbs, Part 1",
+            "Unit 7: Separable Phrasal Verbs with Long Objects",
+            "Unit 8: Present Perfect Phrasal Verbs",
+            "Unit 9: Two-Word Phrasal Verbs that Require a Preposition when Used with an Object, Part 1",
+            "Unit 10: Phrasal Verbs Used as Nouns"
+          ]},
+          { name: "Units 11 – 20", items: [
+            "Unit 11: Phrasal Verbs Used in Compound Nouns",
+            "Unit 12: Past Perfect Phrasal Verbs",
+            "Unit 13: Passive Phrasal Verbs, Part 1",
+            "Unit 14: Participle Adjectives Formed from Phrasal Verbs, Part 1",
+            "Unit 15: Phrasal Verbs and Will or Be Going To",
+            "Unit 16: Phrasal Verbs with Gerund Objects, Part 1",
+            "Unit 17: Adverbs and Phrasal Verbs",
+            "Unit 18: Phrasal Verbs and Can, Could, Will, and Would",
+            "Unit 19: Phrasal Verbs and the Adverb Right",
+            "Unit 20: Phrasal Verbs Followed by the -ing Form"
+          ]},
+          { name: "Units 21 – 30", items: [
+            "Unit 21: Phrasal Verbs and Should and Ought To",
+            "Unit 22: The Particle Up and the Adverbs Right and All",
+            "Unit 23: Two-Word Phrasal Verbs that Require a Preposition when Used with an Object, Part 2",
+            "Unit 24: Stress and Phrasal Verbs Used as Nouns",
+            "Unit 25: Phrasal Verbs and Have to, Have Got to, and Must",
+            "Unit 26: Phrasal Verbs and the Adverb Back",
+            "Unit 27: Phrasal Verbs with the Particle Off and the Adverb Right",
+            "Unit 28: Passive Phrasal Verbs, Part 2",
+            "Unit 29: Phrasal Verbs and Might, May, and Can",
+            "Unit 30: Participle Adjectives Formed from Phrasal Verbs, Part 2"
+          ]},
+          { name: "Units 31 – 40", items: [
+            "Unit 31: Phrasal Verbs and Gerund Subjects",
+            "Unit 32: Phrasal Verbs with the Particle Out",
+            "Unit 33: Phrasal Verbs and Midsentence Adverbs",
+            "Unit 34: Stress in Two- and Three-Word Phrasal Verbs, Part 2",
+            "Unit 35: Gerund Phrasal Verbs",
+            "Unit 36: Phrasal Verbs with the Particle Down",
+            "Unit 37: Phrasal Verbs Used as Nouns, Part 3",
+            "Unit 38: The Verb Keep and Adverbs and Adverbials Showing Degrees of Variability",
+            "Unit 39: Passive Phrasal Verbs, Part 3",
+            "Unit 40: Gerund Phrasal Verbs vs Phrasal Verbs Followed by the -ing Form"
+          ]},
+          { name: "Units 41 – 50", items: [
+            "Unit 41: Two-Word Phrasal Verbs with the Particle In that Require Into when Used with an Object",
+            "Unit 42: Phrasal Verbs with Get, Part 1",
+            "Unit 43: Modals and Present Perfect Phrasal Verbs",
+            "Unit 44: Participle Adjectives and Passive Phrasal Verbs with the Verb Get",
+            "Unit 45: Phrasal Verbs with the Verb Turn",
+            "Unit 46: Stress in Phrasal Verbs with the Particle Into",
+            "Unit 47: Particles Used Without Verbs",
+            "Unit 48: Modals and Present Perfect Passive Phrasal Verbs",
+            "Unit 49: Combinations of Get, Right, Back, and To",
+            "Unit 50: Keep at it!"
+          ]}
+        ]
+      },
+
+      {
+        id: "pv3",
+        title: "1000 Phrasal Verbs with meaning",
+        label: "chapters",
+        storeKey: "pv3-progress-v1",
+        data: [
+          { name: "A – E", items: [
+            "Phrasal verbs starting with 'A'",
+            "Phrasal verbs starting with 'B'",
+            "Phrasal verbs starting with 'C'",
+            "Phrasal verbs starting with 'D'",
+            "Phrasal verbs starting with 'E'"
+          ]},
+          { name: "F – J", items: [
+            "Phrasal verbs starting with 'F'",
+            "Phrasal verbs starting with 'G'",
+            "Phrasal verbs starting with 'H'",
+            "Phrasal verbs starting with 'I'",
+            "Phrasal verbs starting with 'J'"
+          ]},
+          { name: "K – O", items: [
+            "Phrasal verbs starting with 'K'",
+            "Phrasal verbs starting with 'L'",
+            "Phrasal verbs starting with 'M'",
+            "Phrasal verbs starting with 'N'",
+            "Phrasal verbs starting with 'O'"
+          ]},
+          { name: "P – T", items: [
+            "Phrasal verbs starting with 'P'",
+            "Phrasal verbs starting with 'Q'",
+            "Phrasal verbs starting with 'R'",
+            "Phrasal verbs starting with 'S'",
+            "Phrasal verbs starting with 'T'"
+          ]},
+          { name: "U – Z", items: [
+            "Phrasal verbs starting with 'U'",
+            "Phrasal verbs starting with 'V'",
+            "Phrasal verbs starting with 'W'",
+            "Phrasal verbs starting with 'X'",
+            "Phrasal verbs starting with 'Y'",
+            "Phrasal verbs starting with 'Z'"
+          ]}
+        ]
+      }
+    ]
+  },
+
+  /* ================= IDIOMS ================= */
+  {
+    id: "idioms",
+    title: "Idioms",
+    variants: [
+      {
+        id: "idioms1",
+        title: "English for Everyone - English Idioms",
+        label: "topics",
+        storeKey: "idiom-progress-v1",
+        data: [
+          { name: "DESCRIBING PEOPLE AND THINGS", items: [
+            "Age",
+            "Friends and family",
+            "Appearance and background",
+            "Personality traits",
+            "Good things",
+            "Bad things",
+            "Animals",
+            "Food"
+          ]},
+          { name: "ATTITUDE", items: [
+            "Agreeing and disagreeing",
+            "Behavior",
+            "Emotions",
+            "Positive emotions",
+            "Negative emotions",
+            "Memory",
+            "The body",
+            "War and weapons"
+          ]},
+          { name: "SITUATIONS AND CIRCUMSTANCES", items: [
+            "Amount and distance",
+            "Beginning and ending",
+            "Chance, luck, and probability",
+            "Ease and difficulty",
+            "Safety and danger",
+            "Difficult situations",
+            "The weather and nature"
+          ]},
+          { name: "COMMUNICATION", items: [
+            "Talking",
+            "Sharing information",
+            "Truth and lies",
+            "Looking and listening",
+            "Music and the arts"
+          ]},
+          { name: "EVERYDAY LIFE", items: [
+            "Eating and drinking",
+            "Describing your health",
+            "Knowledge and education",
+            "Money",
+            "Shopping",
+            "Time",
+            "Clothes"
+          ]},
+          { name: "WORK AND ACHIEVEMENTS", items: [
+            "Working and relaxing",
+            "Movement and progress",
+            "Rules, law, and authority",
+            "Success and failure",
+            "Work and business 1",
+            "Work and business 2",
+            "Sports"
+          ]},
+          { name: "EXPRESSIONS", items: [
+            '"Make" and "do"',
+            '"Give" and "take"',
+            '"Have" and "get"',
+            '"Set" and "put"',
+            '"Go" and "come"',
+            "Expressions with other verbs",
+            "Intensifying adverbs",
+            "Similes",
+            "Proverbs",
+            "Easily confused words 1",
+            "Easily confused words 2",
+            "Colors"
+          ]}
+        ]
+      }
+    ]
+  }
+];
+
+const THEME_KEY = 'vocab-theme';
+
+/* ============================================================
+   LOOKUPS + STATE
+   ============================================================ */
+const TAB_MAP     = {};
+const VARIANT_MAP = {};
+
+DATASETS.forEach(tab => {
+  TAB_MAP[tab.id] = tab;
+  tab.variants.forEach(v => {
+    v.tabId = tab.id;
+    VARIANT_MAP[v.id] = v;
+  });
+});
+
+let activeTabId = DATASETS[0].id;
+const activeVariant = {};
+DATASETS.forEach(tab => { activeVariant[tab.id] = tab.variants[0].id; });
+
+const state = {};
+
+function loadSaved(storeKey){
+  let raw = null;
+  try { raw = JSON.parse(localStorage.getItem(storeKey) || 'null'); } catch(e){}
+  if (Array.isArray(raw))             return { done: new Set(raw), dates: {} };
+  if (raw && typeof raw === 'object') return { done: new Set(raw.done || []), dates: raw.dates || {} };
+  return { done: new Set(), dates: {} };
+}
+
+Object.keys(VARIANT_MAP).forEach(vid => {
+  const saved = loadSaved(VARIANT_MAP[vid].storeKey);
+  state[vid] = {
+    done: saved.done,
+    dates: saved.dates,
+    collapsed: new Set(),
+    filter: 'all',
+    query: '',
+    records: [],
+    sections: [],
+    total: 0
+  };
+});
+
+/* ============================================================
+   DOM
+   ============================================================ */
+const listEl       = document.getElementById('list');
+const emptyEl      = document.getElementById('empty');
+const emptyStateEl = document.getElementById('emptyState');
+const emptyIcon    = document.getElementById('emptyIcon');
+const emptyTitle   = document.getElementById('emptyTitle');
+const emptyHint    = document.getElementById('emptyHint');
+const fillEl       = document.getElementById('fill');
+const pctEl        = document.getElementById('pct');
+const sDone        = document.getElementById('sDone');
+const sLeft        = document.getElementById('sLeft');
+const sSec         = document.getElementById('sSec');
+const doneMsg      = document.getElementById('doneMsg');
+const searchEl     = document.getElementById('search');
+const filterEl     = document.getElementById('filters');
+const collapseBtn  = document.getElementById('collapseBtn');
+const resetBtn     = document.getElementById('resetBtn');
+const themeBtn     = document.getElementById('themeBtn');
+const tabsEl       = document.getElementById('tabs');
+const variantRow   = document.getElementById('variantRow');
+const variantSelect= document.getElementById('variantSelect');
+const pageTitle    = document.getElementById('pageTitle');
+const pageCount    = document.getElementById('pageCount');
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function todayStr(){
+  const d = new Date();
+  return d.getFullYear() + '-' +
+         String(d.getMonth() + 1).padStart(2, '0') + '-' +
+         String(d.getDate()).padStart(2, '0');
+}
+
+function currentVariantId(){ return activeVariant[activeTabId]; }
+function currentVariant()  { return VARIANT_MAP[currentVariantId()]; }
+function currentState()    { return state[currentVariantId()]; }
+
+function save(variantId){
+  const st = state[variantId];
+  try {
+    localStorage.setItem(VARIANT_MAP[variantId].storeKey, JSON.stringify({
+      done: [...st.done],
+      dates: st.dates
+    }));
+  } catch(e){}
+}
+
+function normalise(it){
+  if (typeof it === 'string') return { text: it, sub: '' };
+  return { text: it.text || '', sub: it.sub || '' };
+}
+
+function match(st, it){
+  const isDone = st.done.has(it.n);
+  if (st.filter === 'done' && !isDone) return false;
+  if (st.filter === 'todo' && isDone)  return false;
+  if (!st.query) return true;
+  if (/^\d+$/.test(st.query)) return String(it.n).startsWith(st.query);
+  return it.hay.includes(st.query);
+}
+
+/* ============================================================
+   BUILD TOP TABS
+   ============================================================ */
+DATASETS.forEach(tab => {
+  const btn = document.createElement('button');
+  btn.className = 'tab' + (tab.id === activeTabId ? ' on' : '');
+  btn.dataset.tab = tab.id;
+  btn.textContent = tab.title;
+  tabsEl.appendChild(btn);
+});
+
+/* ============================================================
+   BUILD VARIANT LIST
+   ============================================================ */
+function buildVariant(variantId){
+  const v    = VARIANT_MAP[variantId];
+  const st   = state[variantId];
+  const data = v.data;
+
+  st.records  = [];
+  st.sections = [];
+  st.total    = data.reduce((sum, g) => sum + g.items.length, 0);
+  let counter = 0;
+
+  data.forEach((g, gi) => {
+    const size = g.items.length;
+
+    const sec = document.createElement('section');
+    sec.className = 'group';
+
+    const head = document.createElement('button');
+    head.className = 'group-head';
+    head.type = 'button';
+    head.innerHTML =
+      '<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+      'stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>' +
+      '<span class="gname"></span><span class="count">0/' + size + '</span>';
+    head.querySelector('.gname').textContent = g.name;
+
+    const body = document.createElement('div');
+    body.className = 'group-body';
+
+    const items = [];
+    g.items.forEach(rawItem => {
+      counter++;
+      const n = counter;
+      const { text, sub } = normalise(rawItem);
+
+      const row = document.createElement('div');
+      row.className = 'item';
+
+      const label = document.createElement('label');
+      label.className = 'item-row';
+      label.innerHTML =
+        '<input type="checkbox" data-n="' + n + '">' +
+        '<span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>' +
+        '<span class="n">' + n + '</span>' +
+        '<span class="t"></span>';
+
+      const titleEl = label.querySelector('.t');
+      titleEl.textContent = text;
+      if (sub) {
+        const em = document.createElement('em');
+        em.textContent = ' — ' + sub;
+        titleEl.appendChild(em);
+      }
+
+      const dateInput = document.createElement('input');
+      dateInput.type = 'date';
+      dateInput.className = 'date';
+      dateInput.dataset.n = n;
+      dateInput.title = 'Date studied';
+
+      row.append(label, dateInput);
+      body.appendChild(row);
+
+      items.push({
+        n: n,
+        el: row,
+        input: label.querySelector('input'),
+        dateInput: dateInput,
+        hay: (text + ' ' + sub + ' ' + g.name).toLowerCase()
+      });
+    });
+
+    head.addEventListener('click', () => {
+      if (st.query || st.filter !== 'all') return;
+      st.collapsed.has(gi) ? st.collapsed.delete(gi) : st.collapsed.add(gi);
+      render();
+    });
+
+    sec.append(head, body);
+
+    st.records.push({
+      gi, items, size, sec,
+      countEl: head.querySelector('.count')
+    });
+
+    st.collapsed.add(gi);
+    st.sections.push(sec);
+  });
+}
+
+Object.keys(VARIANT_MAP).forEach(buildVariant);
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function render(){
+  const v  = currentVariant();
+  const st = currentState();
+  const hasData = v.data.length > 0;
+
+  pageTitle.firstChild.textContent = v.title + ' ';
+  pageCount.textContent = '· ' + st.total + ' ' + (v.label || 'items');
+
+  const n     = st.done.size;
+  const ratio = st.total ? n / st.total : 0;
+  fillEl.style.width = (ratio * 100) + '%';
+  pctEl.textContent  = Math.round(ratio * 100) + '%';
+  sDone.textContent  = n;
+  sLeft.textContent  = st.total - n;
+  doneMsg.hidden     = n !== st.total || st.total === 0;
+
+  let cleared = 0, anyVisible = false;
+  const isFiltering = st.query.length > 0 || st.filter !== 'all';
+
+  st.records.forEach(rec => {
+    let visible = 0, groupDone = 0;
+
+    rec.items.forEach(it => {
+      const isDone = st.done.has(it.n);
+      it.el.classList.toggle('on', isDone);
+      it.input.checked = isDone;
+      if (isDone) groupDone++;
+
+      const dateStr = st.dates[it.n] || '';
+      if (document.activeElement !== it.dateInput && it.dateInput.value !== dateStr) {
+        it.dateInput.value = dateStr;
+      }
+
+      const show = match(st, it);
+      it.el.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+
+    if (visible) anyVisible = true;
+
+    rec.sec.classList.toggle('hidden', visible === 0);
+    rec.sec.classList.toggle('complete', groupDone === rec.size);
+    rec.sec.classList.toggle('collapsed', st.collapsed.has(rec.gi) && !isFiltering);
+    rec.countEl.textContent = groupDone + '/' + rec.size;
+
+    if (groupDone === rec.size) cleared++;
+  });
+
+  sSec.textContent = cleared + ' / ' + v.data.length;
+
+  if (!hasData) {
+    /* placeholder empty state ("Soon" or generic) */
+    const isSoon = /soon/i.test(v.title);
+    emptyIcon.textContent  = isSoon ? '⏳' : '📝';
+    emptyTitle.textContent = isSoon ? 'Coming Soon' : 'No entries yet';
+    emptyHint.innerHTML    = isSoon
+      ? 'This section is being prepared. Check back soon!'
+      : 'Add data to this variant in the <code>DATASETS</code> object to get started.';
+
+    emptyStateEl.hidden  = false;
+    emptyEl.hidden       = true;
+    collapseBtn.disabled = true;
+    collapseBtn.style.opacity = '.4';
+    collapseBtn.style.cursor  = 'default';
+  } else {
+    emptyStateEl.hidden = true;
+    emptyEl.hidden      = anyVisible;
+    collapseBtn.disabled = false;
+    collapseBtn.style.opacity = '';
+    collapseBtn.style.cursor  = '';
+
+    const allCollapsed = v.data.every((_, i) => st.collapsed.has(i));
+    collapseBtn.textContent = allCollapsed ? 'Expand' : 'Collapse';
+  }
+}
+
+/* ============================================================
+   TAB + VARIANT SWITCHING
+   ============================================================ */
+function selectTab(tabId){
+  activeTabId = tabId;
+
+  tabsEl.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('on', t.dataset.tab === tabId);
+  });
+
+  buildVariantDropdown();
+  showVariant(activeVariant[tabId]);
+}
+
+function buildVariantDropdown(){
+  const tab = TAB_MAP[activeTabId];
+
+  if (tab.variants.length > 1) {
+    variantRow.hidden = false;
+    variantSelect.innerHTML = '';
+    tab.variants.forEach(v => {
+      const opt = document.createElement('option');
+      opt.value = v.id;
+      opt.textContent = v.title;
+      variantSelect.appendChild(opt);
+    });
+    variantSelect.value = activeVariant[tab.id];
+  } else {
+    variantRow.hidden = true;
+    variantSelect.innerHTML = '';
+  }
+}
+
+function showVariant(variantId){
+  const tab = TAB_MAP[activeTabId];
+  activeVariant[tab.id] = variantId;
+
+  if (tab.variants.length > 1) variantSelect.value = variantId;
+
+  listEl.innerHTML = '';
+  state[variantId].sections.forEach(sec => listEl.appendChild(sec));
+
+  searchEl.value = state[variantId].query;
+  filterEl.querySelectorAll('button').forEach(b => {
+    b.classList.toggle('on', b.dataset.f === state[variantId].filter);
+  });
+
+  render();
+}
+
+/* ============================================================
+   EVENTS
+   ============================================================ */
+tabsEl.addEventListener('click', e => {
+  const btn = e.target.closest('.tab');
+  if (!btn || btn.dataset.tab === activeTabId) return;
+  selectTab(btn.dataset.tab);
+});
+
+variantSelect.addEventListener('change', () => {
+  showVariant(variantSelect.value);
+});
+
+listEl.addEventListener('change', e => {
+  const vid = currentVariantId();
+  const st  = state[vid];
+
+  if (e.target.matches('input.date')) {
+    const num = Number(e.target.dataset.n);
+    if (e.target.value) st.dates[num] = e.target.value;
+    else delete st.dates[num];
+    save(vid);
+    return;
+  }
+
+  const input = e.target.closest('input[type="checkbox"]');
+  if (!input) return;
+  const num = Number(input.dataset.n);
+
+  if (input.checked) {
+    st.done.add(num);
+    if (!st.dates[num]) st.dates[num] = todayStr();
+  } else {
+    st.done.delete(num);
+    delete st.dates[num];
+  }
+  save(vid);
+  render();
+});
+
+searchEl.addEventListener('input', () => {
+  currentState().query = searchEl.value.trim().toLowerCase();
+  render();
+});
+
+filterEl.addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  filterEl.querySelectorAll('button').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  currentState().filter = btn.dataset.f;
+  render();
+});
+
+collapseBtn.addEventListener('click', () => {
+  if (collapseBtn.disabled) return;
+  const st = currentState();
+  const v  = currentVariant();
+  const allCollapsed = v.data.every((_, i) => st.collapsed.has(i));
+  st.collapsed.clear();
+  if (!allCollapsed) v.data.forEach((_, i) => st.collapsed.add(i));
+  render();
+});
+
+resetBtn.addEventListener('click', () => {
+  const vid = currentVariantId();
+  const st  = state[vid];
+  if (!st.done.size && !Object.keys(st.dates).length) return;
+  if (confirm('Reset all progress for "' + VARIANT_MAP[vid].title + '"?')) {
+    st.done.clear();
+    st.dates = {};
+    save(vid);
+    render();
+  }
+});
+
+/* ============================================================
+   THEME
+   ============================================================ */
+function setTheme(t){
+  document.documentElement.dataset.theme = t;
+  themeBtn.textContent = t === 'dark' ? '☀️' : '🌙';
+  try { localStorage.setItem(THEME_KEY, t); } catch(e){}
+}
+
+let savedTheme = 'light';
+try { savedTheme = localStorage.getItem(THEME_KEY) || 'light'; } catch(e){}
+setTheme(savedTheme);
+
+themeBtn.addEventListener('click', () => {
+  setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+});
+
+/* ============================================================
+   GO
+   ============================================================ */
+selectTab(activeTabId);
+</script>
+</body>
+</html>
