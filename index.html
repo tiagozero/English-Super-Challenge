@@ -11,7 +11,7 @@
   :root, html[data-theme="sand"]{
     --bg:#FAF7F3; --surface:#FFFFFF; --surface-2:#F4EFE9; --line:#EAE2D8;
     --text:#26211C; --muted:#8A7F73; --reading:#C2703D; --reading-2:#D89A6C;
-    --listening:#3F7A6E; --listening-2:#66A093; --grammar:#7A5EA8; --grammar-2:#A98FD0; --xp:#A9855C;
+    --listening:#3F7A6E; --listening-2:#66A093; --grammar:#7A5EA8; --grammar-2:#A98FD0; --vocab:#3E6FA5; --vocab-2:#7FA4CC; --xp:#A9855C;
     --good-bg:#E2F0E9;  --good-fg:#2F6B54;
     --ok-bg:#EBF1E7;    --ok-fg:#4B6B36;
     --warn-bg:#FBF0DC;  --warn-fg:#8A6420;
@@ -29,7 +29,7 @@
   html[data-theme="mint"]{
     --bg:#F3F8F4; --surface:#FFFFFF; --surface-2:#E9F1EB; --line:#DAE7DE;
     --text:#1A2620; --muted:#6E8378; --reading:#2F7A57; --reading-2:#68A98A;
-    --listening:#2F6E8A; --listening-2:#6EA0B8; --grammar:#8A5EA0; --grammar-2:#B08FC7; --xp:#7A8C4A;
+    --listening:#2F6E8A; --listening-2:#6EA0B8; --grammar:#8A5EA0; --grammar-2:#B08FC7; --vocab:#2F5FA0; --vocab-2:#6E93C4; --xp:#7A8C4A;
     --good-bg:#DDF0E4;  --good-fg:#25674A;
     --ok-bg:#E5EFE3;    --ok-fg:#4A6B34;
     --warn-bg:#F7EFD9;  --warn-fg:#836018;
@@ -47,7 +47,7 @@
   html[data-theme="lavender"]{
     --bg:#F8F6FC; --surface:#FFFFFF; --surface-2:#F0EBF7; --line:#E3DCF0;
     --text:#211C2B; --muted:#7C7489; --reading:#7A5EA8; --reading-2:#A98FD0;
-    --listening:#3E7C8A; --listening-2:#74A7B3; --grammar:#A05E82; --grammar-2:#C98FAD; --xp:#A9855C;
+    --listening:#3E7C8A; --listening-2:#74A7B3; --grammar:#A05E82; --grammar-2:#C98FAD; --vocab:#3E6FA5; --vocab-2:#7FA4CC; --xp:#A9855C;
     --good-bg:#E4F0E8;  --good-fg:#2E6B52;
     --ok-bg:#EBF1E7;    --ok-fg:#4B6B36;
     --warn-bg:#FBF0DC;  --warn-fg:#8A6420;
@@ -65,7 +65,7 @@
   html[data-theme="midnight"]{
     --bg:#11141A; --surface:#181D25; --surface-2:#212832; --line:#2C3542;
     --text:#E7ECF3; --muted:#8A95A6; --reading:#E29A62; --reading-2:#B9743F;
-    --listening:#63B3A2; --listening-2:#3F7A6E; --grammar:#B189D9; --grammar-2:#8A5EB0; --xp:#CBA97C;
+    --listening:#63B3A2; --listening-2:#3F7A6E; --grammar:#B189D9; --grammar-2:#8A5EB0; --vocab:#6FA8DC; --vocab-2:#3E6FA5; --xp:#CBA97C;
     --good-bg:#17352A;  --good-fg:#7FD3AD;
     --ok-bg:#26331C;    --ok-fg:#B3D48C;
     --warn-bg:#382C15;  --warn-fg:#E8C377;
@@ -83,7 +83,7 @@
   html[data-theme="espresso"]{
     --bg:#16120F; --surface:#1F1A15; --surface-2:#2A231C; --line:#392F26;
     --text:#F0E8DF; --muted:#9E9184; --reading:#E39A62; --reading-2:#B9743F;
-    --listening:#6FB6A6; --listening-2:#3F7A6E; --grammar:#B98FD4; --grammar-2:#8A5EB0; --xp:#CFAC7C;
+    --listening:#6FB6A6; --listening-2:#3F7A6E; --grammar:#B98FD4; --grammar-2:#8A5EB0; --vocab:#7EB6E0; --vocab-2:#3E6FA5; --xp:#CFAC7C;
     --good-bg:#1B352A;  --good-fg:#84D2AE;
     --ok-bg:#2A331D;    --ok-fg:#B7D590;
     --warn-bg:#3A2D16;  --warn-fg:#EAC57B;
@@ -355,6 +355,7 @@
   .reading .bar-fill{background:linear-gradient(90deg,var(--reading-2),var(--reading))}
   .listening .bar-fill{background:linear-gradient(90deg,var(--listening-2),var(--listening))}
   .grammar .bar-fill{background:linear-gradient(90deg,var(--grammar-2),var(--grammar))}
+  .vocab .bar-fill{background:linear-gradient(90deg,var(--vocab-2),var(--vocab))}
   .bar-ideal{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--text);opacity:.22;border-radius:2px}
   .bar-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;font-size:12.5px;color:var(--muted)}
   .pace-tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
@@ -366,6 +367,7 @@
   .stat-label{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
   .stat-value{font-size:27px;font-weight:680;letter-spacing:-.025em;margin-top:7px;font-variant-numeric:tabular-nums}
   .stat-value.grammar{color:var(--grammar)}
+  .stat-value.vocab{color:var(--vocab)}
   .stat-value small{font-size:13px;font-weight:550;color:var(--muted);letter-spacing:0}
   .stat-sub{font-size:12.5px;color:var(--muted);margin-top:3px}
 
@@ -381,6 +383,7 @@
   .reading .mini-bar i{background:var(--reading)}
   .listening .mini-bar i{background:var(--listening)}
   .grammar .mini-bar i{background:var(--grammar)}
+  .vocab .mini-bar i{background:var(--vocab)}
 
   .act{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
   .act:last-of-type{border-bottom:0}
@@ -537,6 +540,16 @@
   .grammar-book-row input{flex:0 0 auto}
   .gbook-name{flex:1;font-weight:600}
   .gbook-count{flex:0 0 auto;color:var(--grammar);font-size:11px;font-weight:600}
+  .vocab-book-group{margin-bottom:12px}
+  .vocab-book-group:last-child{margin-bottom:0}
+  .vocab-book-group-title{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .vocab-book-list{display:flex;flex-direction:column;gap:6px}
+  .vocab-book-row{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:13px}
+  .vocab-book-row:hover{background:var(--surface-2)}
+  .vocab-book-row.active{border-color:color-mix(in srgb, var(--vocab) 45%, var(--line));background:color-mix(in srgb, var(--vocab) 10%, var(--surface))}
+  .vocab-book-row input{flex:0 0 auto}
+  .vbook-name{flex:1;font-weight:600}
+  .vbook-count{flex:0 0 auto;color:var(--vocab);font-size:11px;font-weight:600}
   .mat-progress-bar.complete > i{background:var(--good-fg)}
   .mat .mat-progress{border-top:none;margin-top:6px;padding-top:0}
 
@@ -1181,7 +1194,7 @@
       </button>
       <div class="tabs-dropdown-menu">
         <a href="Grammar.html">Grammar <span class="ext">↗</span></a>
-        <span class="tabs-dropdown-placeholder" aria-disabled="true">Vocabulary <span class="tabs-dropdown-soon">Soon</span></span>
+        <a href="Vocabulary.html">Vocabulary <span class="ext">↗</span></a>
         <span class="tabs-dropdown-placeholder" aria-disabled="true">Pronunciation <span class="tabs-dropdown-soon">Soon</span></span>
       </div>
     </div>
@@ -1834,6 +1847,28 @@ const GRAMMAR_BOOKS = {
 };
 const GRAMMAR_BOOK_ORDER = ['giu', 'ref', 'prep', 'logic'];
 
+/* ---- Vocabulary (external app) -----------------------------------------
+   The Vocabulary tracker is a separate standalone page (Vocabulary.html),
+   built the same way as the Grammar tracker: its own checklist UI and
+   storage, publishing a small summary object to a shared localStorage key
+   per book every time something changes there (see sharedKeyFor() /
+   publishShared() in Vocabulary.html). This list only needs enough
+   metadata to let Settings offer a picker and to read those shared keys —
+   the actual checklist content lives in Vocabulary.html. */
+const VOCAB_BOOKS = [
+  { id: 'vocab1',  group: 'Vocabulary',      label: 'Vocabulary in Use – Elementary' },
+  { id: 'vocab2',  group: 'Vocabulary',      label: 'English Conversation' },
+  { id: 'colloc1', group: 'Collocations',    label: '1000 English Collocations in 10 Minutes a Day' },
+  { id: 'colloc2', group: 'Collocations',    label: 'Master English Collocations' },
+  { id: 'colloc3', group: 'Collocations',    label: 'Shortcut To English Collocations' },
+  { id: 'pv1',     group: 'Phrasal Verbs',   label: 'Work On Your Phrasal Verbs' },
+  { id: 'pv2',     group: 'Phrasal Verbs',   label: 'Phrasal Verbs' },
+  { id: 'pv3',     group: 'Phrasal Verbs',   label: '1000 Phrasal Verbs with meaning' },
+  { id: 'idioms1', group: 'Idioms',          label: 'English for Everyone - English Idioms' }
+];
+const VOCAB_BOOK_GROUPS = ['Vocabulary', 'Collocations', 'Phrasal Verbs', 'Idioms'];
+function vocabSharedKey(bookId){ return 'esc-vocab-shared-' + bookId; }
+
 const STATUS_ORDER = ['active', 'scheduled', 'not_scheduled', 'completed', 'archived'];
 const STATUS_LABEL = { active: 'Active', not_scheduled: 'Not Scheduled', scheduled: 'Scheduled', completed: 'Completed', archived: 'Archived' };
 
@@ -2015,6 +2050,8 @@ function freshData(){
       reading_target_percent: 1000,
       listening_target_minutes: 4500,
       grammar_target_units: 145,
+      vocabulary_target_items: 50,
+      vocab_target_books: ['vocab1'],
       created_at: new Date().toISOString()
     },
     profile: null,
@@ -2040,6 +2077,12 @@ function normalizeState(s){
   if (!Array.isArray(s.customChallenges)) s.customChallenges = [];
   if (s.challenge && typeof s.challenge === 'object' && !(Number(s.challenge.grammar_target_units) > 0)){
     s.challenge.grammar_target_units = 145;
+  }
+  if (s.challenge && typeof s.challenge === 'object' && !(Number(s.challenge.vocabulary_target_items) > 0)){
+    s.challenge.vocabulary_target_items = 50;
+  }
+  if (s.challenge && typeof s.challenge === 'object' && !Array.isArray(s.challenge.vocab_target_books)){
+    s.challenge.vocab_target_books = ['vocab1'];
   }
   if (s.profile === undefined) s.profile = null;
   if (s.profile && typeof s.profile !== 'object') s.profile = null;
@@ -2368,6 +2411,49 @@ function syncGrammarSubtasksFromExternal(){
   });
   return changed;
 }
+/* ---- Vocabulary (external app) -----------------------------------------
+   Reads the per-book summaries the Vocabulary tracker publishes to
+   localStorage (see VOCAB_BOOKS / vocabSharedKey above and
+   publishShared() in Vocabulary.html), and aggregates whichever books
+   the user picked in Settings as their "Vocabulary target". */
+function getVocabBookData(bookId){
+  try {
+    const raw = localStorage.getItem(vocabSharedKey(bookId));
+    if (!raw) return null;
+    const d = JSON.parse(raw);
+    if (!d || typeof d !== 'object' || !(Number(d.total) > 0)) return null;
+    return {
+      total: Number(d.total) || 0,
+      done: Math.max(0, Number(d.done) || 0),
+      title: d.title || (VOCAB_BOOKS.find(b => b.id === bookId) || {}).label || bookId,
+      updated_at: d.updated_at || null
+    };
+  } catch (e) { return null; }
+}
+function getVocabularyTargetBooks(){
+  const ch = state.challenge;
+  const picked = Array.isArray(ch.vocab_target_books) ? ch.vocab_target_books : ['vocab1'];
+  return picked.filter(id => VOCAB_BOOKS.some(b => b.id === id));
+}
+/* Aggregate total/done across every selected book that has ever been
+   opened (published data). Returns null only if none of the selected
+   books have been opened yet, so the card can show its "open the
+   tracker" hint. */
+function getVocabularyData(){
+  const books = getVocabularyTargetBooks();
+  let total = 0, done = 0, any = false, latest = null;
+  books.forEach(id => {
+    const d = getVocabBookData(id);
+    if (!d) return;
+    any = true;
+    total += d.total;
+    done += d.done;
+    if (d.updated_at && (!latest || d.updated_at > latest)) latest = d.updated_at;
+  });
+  if (!any) return null;
+  return { total, done, pct: total ? Math.round((done / total) * 100) : 0, updated_at: latest };
+}
+
 function getStats(){
   const ch = state.challenge;
   const today = todayISO();
@@ -2405,6 +2491,18 @@ function getStats(){
   const grammarWeeklyRequired = grammarRequired * 7;
   const grammarMonthlyRequired = grammarRequired * 30;
 
+  // Same reasoning as Grammar above: Vocabulary progress comes from the
+  // external tracker's shared digest (aggregated across whichever books
+  // are picked as the target in Settings), not a per-day activity log.
+  const vocabData = getVocabularyData();
+  const vocabDone = vocabData ? vocabData.done : 0;
+  const vocabTarget = Number(ch.vocabulary_target_items) || 1;
+  const vocabPct = vocabDone / vocabTarget * 100;
+  const vocabDailyRate = vocabTarget / totalDays;
+  const vocabRequired = Math.max(0, vocabTarget - vocabDone) / daysLeft;
+  const vocabWeeklyRequired = vocabRequired * 7;
+  const vocabMonthlyRequired = vocabRequired * 30;
+
   const idealReadPct   = elapsed / totalDays * 100;
   const idealListenPct = elapsed / totalDays * 100;
 
@@ -2423,6 +2521,9 @@ function getStats(){
   const weekFullDays = Math.max(0, diffDays(weekStart, weekFullEnd) + 1);
   const weekGrammarTarget = grammarDailyRate * weekFullDays;
   const weekGrammarDone = Math.min(grammarDone, weekGrammarTarget);
+  const weekVocabExp = vocabDailyRate * weekDays;
+  const weekVocabTarget = vocabDailyRate * weekFullDays;
+  const weekVocabDone = Math.min(vocabDone, weekVocabTarget);
 
   const dayIdx   = clamp(diffDays(ch.start_date, today) + 1, 1, totalDays);
   const monthIdx = Math.min(2, Math.floor((dayIdx - 1) / 30));
@@ -2439,6 +2540,9 @@ function getStats(){
   const monthFullDays = Math.max(0, diffDays(monthStart, monthEnd) + 1);
   const monthGrammarTarget = grammarDailyRate * monthFullDays;
   const monthGrammarDone = Math.min(grammarDone, monthGrammarTarget);
+  const monthVocabExp = vocabDailyRate * monthDays;
+  const monthVocabTarget = vocabDailyRate * monthFullDays;
+  const monthVocabDone = Math.min(vocabDone, monthVocabTarget);
 
   return {
     ch, today, totalDays, elapsed, daysLeft,
@@ -2447,11 +2551,14 @@ function getStats(){
     readDailyRate, listenDailyRate, idealReadPct, idealListenPct,
     grammarData, grammarDone, grammarTarget, grammarPct, grammarDailyRate,
     grammarRequired, grammarWeeklyRequired, grammarMonthlyRequired,
+    vocabData, vocabDone, vocabTarget, vocabPct, vocabDailyRate,
+    vocabRequired, vocabWeeklyRequired, vocabMonthlyRequired,
     monthIdx, monthStart, monthEnd, monthDays,
     weekStart, weekEnd, weekDays,
-    weekRead, weekListen, weekReadExp, weekListenExp, weekGrammarExp,
-    monthRead, monthListen, monthReadExp, monthListenExp, monthGrammarExp,
-    weekGrammarTarget, weekGrammarDone, monthGrammarTarget, monthGrammarDone
+    weekRead, weekListen, weekReadExp, weekListenExp, weekGrammarExp, weekVocabExp,
+    monthRead, monthListen, monthReadExp, monthListenExp, monthGrammarExp, monthVocabExp,
+    weekGrammarTarget, weekGrammarDone, monthGrammarTarget, monthGrammarDone,
+    weekVocabTarget, weekVocabDone, monthVocabTarget, monthVocabDone
   };
 }
 
@@ -2977,10 +3084,62 @@ function grammarProgressCardHTML(){
     </div>
   </div>`;
 }
-function paceCard(title, sub, readVal, readExp, listenVal, listenExp, grammarReq, grammarBaseline, grammarPeriodDone, grammarPeriodTarget){
+function vocabularyProgressCardHTML(){
+  const ch = state.challenge;
+  const data = getVocabularyData();
+  const target = Number(ch.vocabulary_target_items) || (data ? data.total : 50) || 50;
+
+  const totalDays = Math.max(1, diffDays(ch.start_date, ch.end_date) + 1);
+  const elapsed = clamp(diffDays(ch.start_date, todayISO()) + 1, 0, totalDays);
+  const ideal = elapsed / totalDays * 100;
+
+  if (!data){
+    return `
+    <div class="card progress-card vocab">
+      <div class="card-head">
+        <h2>Vocabulary</h2>
+        <span class="pct">—</span>
+      </div>
+      <div class="big-numbers"><strong>0</strong><span>/ ${fmt(target)} items</span></div>
+      <div class="bar"><div class="bar-fill" style="width:0%"></div></div>
+      <div class="bar-meta">
+        <span>Open the Vocabulary tracker to sync progress</span>
+        <a class="link-btn" href="Vocabulary.html">Open ↗</a>
+      </div>
+    </div>`;
+  }
+
+  const value = data.done;
+  const rawPct = target ? value / target * 100 : 0;
+  const st = paceStatePct(rawPct, ideal);
+  const barPct = clamp(rawPct, 0, 100);
+  const remaining = Math.max(0, target - value);
+
+  return `
+  <div class="card progress-card vocab">
+    <div class="card-head">
+      <h2>Vocabulary</h2>
+      <span class="pct">${rawPct.toFixed(1)}%</span>
+    </div>
+    <div class="big-numbers">
+      <strong>${fmt(value)}</strong>
+      <span>/ ${fmt(target)} items</span>
+    </div>
+    <div class="bar">
+      <div class="bar-fill" style="width:${barPct}%"></div>
+      <div class="bar-ideal" style="left:${clamp(ideal, 0, 99)}%" title="Where you should be today"></div>
+    </div>
+    <div class="bar-meta">
+      <span>${fmt(remaining)} items to go</span>
+      <span class="pace-tag ${st.cls}">${st.label}</span>
+    </div>
+  </div>`;
+}
+function paceCard(title, sub, readVal, readExp, listenVal, listenExp, grammarReq, grammarBaseline, grammarPeriodDone, grammarPeriodTarget, vocabReq, vocabBaseline, vocabPeriodDone, vocabPeriodTarget){
   const rs = paceStateRatio(readVal, readExp);
   const ls = paceStateRatio(listenVal, listenExp);
   const gs = paceStateRatio(grammarBaseline, grammarReq); // inverted: needing less than the normal baseline pace = ahead
+  const vs = paceStateRatio(vocabBaseline, vocabReq); // inverted, same reasoning as Grammar
   return `
   <div class="card">
     <div class="card-head">
@@ -3018,6 +3177,17 @@ function paceCard(title, sub, readVal, readExp, listenVal, listenExp, grammarReq
       <div class="bar-meta" style="margin-top:7px">
         <span>${grammarReq <= grammarBaseline ? fmt(grammarBaseline - grammarReq) + ' units ahead of pace' : fmt(grammarReq - grammarBaseline) + ' units behind pace'}</span>
         <span class="pace-tag ${gs.cls}">${gs.label}</span>
+      </div>
+    </div>
+    <div class="pace-row vocab">
+      <div class="pace-row-top">
+        <span class="lbl">Vocabulary</span>
+        <span class="val"><b>${fmt(vocabPeriodDone)}</b> / ${fmt(vocabPeriodTarget)} items</span>
+      </div>
+      <div class="mini-bar"><i style="width:${clamp(vocabPeriodTarget ? vocabPeriodDone / vocabPeriodTarget * 100 : 0, 0, 100)}%"></i></div>
+      <div class="bar-meta" style="margin-top:7px">
+        <span>${vocabReq <= vocabBaseline ? fmt(vocabBaseline - vocabReq) + ' items ahead of pace' : fmt(vocabReq - vocabBaseline) + ' items behind pace'}</span>
+        <span class="pace-tag ${vs.cls}">${vs.label}</span>
       </div>
     </div>
   </div>`;
@@ -3115,6 +3285,7 @@ function viewDashboard(){
   <div class="grid cols-3">
     ${progressCard(s, 'reading')}
     ${grammarProgressCardHTML()}
+    ${vocabularyProgressCardHTML()}
     ${progressCard(s, 'listening')}
   </div>
   <div class="grid cols-4">
@@ -3138,10 +3309,15 @@ function viewDashboard(){
       <div class="stat-value grammar">${fmt(s.grammarRequired)} <small>units/day</small></div>
       <div class="stat-sub">From today to finish on time</div>
     </div>
+    <div class="card">
+      <div class="stat-label">Vocabulary pace needed</div>
+      <div class="stat-value vocab">${fmt(s.vocabRequired)} <small>items/day</small></div>
+      <div class="stat-sub">From today to finish on time</div>
+    </div>
   </div>
   <div class="grid cols-2">
-    ${paceCard('This week', `${s.weekDays} day${s.weekDays === 1 ? '' : 's'} elapsed`, s.weekRead, s.weekReadExp, s.weekListen, s.weekListenExp, s.grammarWeeklyRequired, s.weekGrammarExp, s.weekGrammarDone, s.weekGrammarTarget)}
-    ${paceCard('This month', `Month ${s.monthIdx + 1} · ${s.monthDays} day${s.monthDays === 1 ? '' : 's'} elapsed`, s.monthRead, s.monthReadExp, s.monthListen, s.monthListenExp, s.grammarMonthlyRequired, s.monthGrammarExp, s.monthGrammarDone, s.monthGrammarTarget)}
+    ${paceCard('This week', `${s.weekDays} day${s.weekDays === 1 ? '' : 's'} elapsed`, s.weekRead, s.weekReadExp, s.weekListen, s.weekListenExp, s.grammarWeeklyRequired, s.weekGrammarExp, s.weekGrammarDone, s.weekGrammarTarget, s.vocabWeeklyRequired, s.weekVocabExp, s.weekVocabDone, s.weekVocabTarget)}
+    ${paceCard('This month', `Month ${s.monthIdx + 1} · ${s.monthDays} day${s.monthDays === 1 ? '' : 's'} elapsed`, s.monthRead, s.monthReadExp, s.monthListen, s.monthListenExp, s.grammarMonthlyRequired, s.monthGrammarExp, s.monthGrammarDone, s.monthGrammarTarget, s.vocabMonthlyRequired, s.monthVocabExp, s.monthVocabDone, s.monthVocabTarget)}
   </div>
   ${dashboardChallengesCard()}
   <div class="card">
@@ -6788,6 +6964,8 @@ function openSettings(){
   const msCount = (state.roadmap.milestones || []).length;
   const hasProfile = !!state.profile;
   const grammarData = getGrammarData();
+  const vocabData = getVocabularyData();
+  const vocabTargetBooks = getVocabularyTargetBooks();
 
   openModal(`
     <div class="modal-backdrop" data-action="close-modal"></div>
@@ -6817,6 +6995,35 @@ function openSettings(){
             How many Grammar in Use units you're aiming to finish over the challenge.
             ${grammarData ? `The external Grammar tracker currently has ${grammarData.total} units total, ${grammarData.done} done.` : `Open the Grammar tracker at least once so this app can read its progress.`}
           </p>
+        </div>
+
+        <div class="field"><label for="setVocab">Vocabulary target (items)</label>
+          <input type="number" id="setVocab" min="1" step="1" value="${Number(ch.vocabulary_target_items) || 50}">
+          <p class="hint" style="margin-top:6px">
+            How many Vocabulary chapters/lessons you're aiming to finish over the challenge, added up across whichever book(s) you track below.
+            ${vocabData ? `Selected book(s) currently have ${vocabData.total} items total, ${vocabData.done} done.` : `Open the Vocabulary tracker at least once so this app can read its progress.`}
+          </p>
+          <label style="margin-top:10px;display:block">Book(s) to track</label>
+          <p class="hint" style="margin:2px 0 8px">Pick one or more — their progress will be added together.</p>
+          <div id="setVocabBooks">
+            ${VOCAB_BOOK_GROUPS.map(group => `
+              <div class="vocab-book-group">
+                <div class="vocab-book-group-title">${escapeHtml(group)}</div>
+                <div class="vocab-book-list">
+                  ${VOCAB_BOOKS.filter(b => b.group === group).map(b => {
+                    const checked = vocabTargetBooks.includes(b.id);
+                    const bd = getVocabBookData(b.id);
+                    return `
+                    <label class="vocab-book-row${checked ? ' active' : ''}" data-vbook-row="${b.id}">
+                      <input type="checkbox" data-vbook="${b.id}" ${checked ? 'checked' : ''}>
+                      <span class="vbook-name">${escapeHtml(b.label)}</span>
+                      ${bd ? `<span class="vbook-count">${bd.done}/${bd.total}</span>` : ''}
+                    </label>`;
+                  }).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
         </div>
 
         <div class="data-block">
@@ -6870,6 +7077,12 @@ function openSettings(){
       </form>
     </div>
   `);
+  $$('#setVocabBooks input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const row = cb.closest('.vocab-book-row');
+      if (row) row.classList.toggle('active', cb.checked);
+    });
+  });
   $('#setForm').addEventListener('submit', e => {
     e.preventDefault();
     ch.name = $('#setName').value.trim() || 'English Super Challenge';
@@ -6878,6 +7091,9 @@ function openSettings(){
     ch.reading_target_percent = Math.max(1, Number($('#setRead').value) || 1000);
     ch.listening_target_minutes = Math.max(1, Number($('#setListen').value) || 4500);
     ch.grammar_target_units = Math.max(1, Number($('#setGrammar').value) || 145);
+    ch.vocabulary_target_items = Math.max(1, Number($('#setVocab').value) || 50);
+    const pickedBooks = $$('#setVocabBooks input[type="checkbox"]:checked').map(cb => cb.dataset.vbook);
+    ch.vocab_target_books = pickedBooks.length ? pickedBooks : ['vocab1'];
     saveState(); closeModal(); render();
   });
 }
