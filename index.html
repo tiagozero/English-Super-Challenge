@@ -605,7 +605,7 @@
     display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s,border-color .15s;
   }
   .mat-card-edit-btn:hover{background:var(--surface-2);color:var(--text);border-color:var(--line)}
-  .mat-card-title{font-size:14.5px;font-weight:650;letter-spacing:-.005em;line-height:1.25;word-break:break-word}
+  .mat-card-title{font-size:14.5px;font-weight:650;letter-spacing:-.005em;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .mat-card-sub{font-size:12px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .mat-card-stats{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
   .mat-card-figure{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
@@ -6508,10 +6508,6 @@ function openMaterialModal(material){
             `).join('')}
           </div>
         </div>
-        <div class="field"><label for="matManualUnits">Logged units so far (manual override)</label>
-          <input type="number" id="matManualUnits" min="0" step="1" inputmode="numeric" placeholder="Auto from logged activities" value="${m.manual_units !== null && m.manual_units !== undefined && m.manual_units !== '' ? escapeHtml(String(m.manual_units)) : ''}">
-          <p class="hint" style="margin-top:6px">Normally this comes from your logged activities — set a number here to override the tally, or leave it blank to calculate automatically.</p>
-        </div>
         <div class="field"><label for="matStatus">Status</label>
           <select id="matStatus">
             <option value="active" ${m.status === 'active' ? 'selected' : ''}>Active</option>
@@ -6946,7 +6942,6 @@ function openMaterialModal(material){
     const category = TYPES[type].category;
     const totalUnitsRaw = $('#matTotalUnits').value.trim();
     const episodesRaw = $('#matEpisodes').value.trim();
-    const manualUnitsRaw = $('#matManualUnits').value.trim();
     const payload = {
       title,
       creator: $('#matCreator').value.trim(),
@@ -6962,7 +6957,7 @@ function openMaterialModal(material){
       total_units: totalUnitsRaw ? Math.max(0, Number(totalUnitsRaw) || 0) : null,
       unit: $('#matUnit').value.trim() || defaultUnitFor(category),
       episodes_total: episodesRaw ? Math.max(0, Number(episodesRaw) || 0) : null,
-      manual_units: manualUnitsRaw ? Math.max(0, Number(manualUnitsRaw) || 0) : null,
+      manual_units: (m.manual_units !== null && m.manual_units !== undefined && m.manual_units !== '') ? m.manual_units : null,
       emoji: matEmoji,
       color: matColor
     };
