@@ -9,6 +9,8 @@
     --bg:#FAF7F3; --surface:#FFFFFF; --surface-2:#F4EFE9; --line:#EAE2D8;
     --text:#26211C; --muted:#8A7F73; --reading:#C2703D; --reading-2:#D89A6C;
     --listening:#3F7A6E; --listening-2:#66A093; --xp:#A9855C;
+    --deliberate: color-mix(in srgb, #7A5EA8 50%, #3E6FA5);
+    --deliberate-2: color-mix(in srgb, #A98FD0 50%, #7FA4CC);
     --good-bg:#E2F0E9;  --good-fg:#2F6B54;
     --warn-bg:#FBF0DC;  --warn-fg:#8A6420;
     --bad-bg:#FBE6E1;   --bad-fg:#9C4230;
@@ -26,6 +28,8 @@
     --bg:#F3F8F4; --surface:#FFFFFF; --surface-2:#E9F1EB; --line:#DAE7DE;
     --text:#1A2620; --muted:#6E8378; --reading:#2F7A57; --reading-2:#68A98A;
     --listening:#2F6E8A; --listening-2:#6EA0B8; --xp:#7A8C4A;
+    --deliberate: color-mix(in srgb, #8A5EA0 50%, #2F5FA0);
+    --deliberate-2: color-mix(in srgb, #B08FC7 50%, #6E93C4);
     --good-bg:#DDF0E4; --good-fg:#25674A; --warn-bg:#F7EFD9; --warn-fg:#836018;
     --bad-bg:#F9E3DD; --bad-fg:#943D2B; --info-bg:#E2EEF3; --info-fg:#356278;
     --neutral-bg:#EBEFEA; --neutral-fg:#6E8378; --tag-bg:#E2EFE6; --tag-fg:#2F6B50;
@@ -39,6 +43,8 @@
     --bg:#F8F6FC; --surface:#FFFFFF; --surface-2:#F0EBF7; --line:#E3DCF0;
     --text:#211C2B; --muted:#7C7489; --reading:#7A5EA8; --reading-2:#A98FD0;
     --listening:#3E7C8A; --listening-2:#74A7B3; --xp:#A9855C;
+    --deliberate: color-mix(in srgb, #A05E82 50%, #3E6FA5);
+    --deliberate-2: color-mix(in srgb, #C98FAD 50%, #7FA4CC);
     --good-bg:#E4F0E8; --good-fg:#2E6B52; --warn-bg:#FBF0DC; --warn-fg:#8A6420;
     --bad-bg:#FBE6E1; --bad-fg:#9C4230; --info-bg:#E7E9F6; --info-fg:#47528F;
     --neutral-bg:#EDE9F1; --neutral-fg:#7C7489; --tag-bg:#EDE4F6; --tag-fg:#6A4E9A;
@@ -52,6 +58,8 @@
     --bg:#11141A; --surface:#181D25; --surface-2:#212832; --line:#2C3542;
     --text:#E7ECF3; --muted:#8A95A6; --reading:#E29A62; --reading-2:#B9743F;
     --listening:#63B3A2; --listening-2:#3F7A6E; --xp:#CBA97C;
+    --deliberate: color-mix(in srgb, #B189D9 50%, #6FA8DC);
+    --deliberate-2: color-mix(in srgb, #8A5EB0 50%, #3E6FA5);
     --good-bg:#17352A; --good-fg:#7FD3AD; --warn-bg:#382C15; --warn-fg:#E8C377;
     --bad-bg:#3A1E19; --bad-fg:#EFA08A; --info-bg:#1B2A3A; --info-fg:#96BEE6;
     --neutral-bg:#262C35; --neutral-fg:#9AA4B2; --tag-bg:#38291B; --tag-fg:#E5BA85;
@@ -65,6 +73,8 @@
     --bg:#16120F; --surface:#1F1A15; --surface-2:#2A231C; --line:#392F26;
     --text:#F0E8DF; --muted:#9E9184; --reading:#E39A62; --reading-2:#B9743F;
     --listening:#6FB6A6; --listening-2:#3F7A6E; --xp:#CFAC7C;
+    --deliberate: color-mix(in srgb, #B98FD4 50%, #7EB6E0);
+    --deliberate-2: color-mix(in srgb, #8A5EB0 50%, #3E6FA5);
     --good-bg:#1B352A; --good-fg:#84D2AE; --warn-bg:#3A2D16; --warn-fg:#EAC57B;
     --bad-bg:#3C1F19; --bad-fg:#F0A48D; --info-bg:#2A2A38; --info-fg:#A0B4D8;
     --neutral-bg:#2C2520; --neutral-fg:#A69A8C; --tag-bg:#3A2A1A; --tag-fg:#E5BA85;
@@ -254,6 +264,7 @@
   .bar i{display:block;height:100%;border-radius:999px;transition:width .45s cubic-bezier(.4,0,.2,1)}
   .bar.reading i{background:linear-gradient(90deg,var(--reading-2),var(--reading))}
   .bar.listening i{background:linear-gradient(90deg,var(--listening-2),var(--listening))}
+  .bar.deliberate i{background:linear-gradient(90deg,var(--deliberate-2),var(--deliberate))}
 
   .task-group{margin-bottom:6px}
   .task-group-head{display:flex;align-items:center;gap:9px;margin:16px 2px 8px}
@@ -261,6 +272,7 @@
   .gdot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
   .gdot.reading{background:var(--reading)}
   .gdot.listening{background:var(--listening)}
+  .gdot.deliberate{background:var(--deliberate)}
   .task-group-head .gt{font-size:11.5px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
   .task-group-head .gn{font-size:11px;font-weight:700;color:var(--muted);background:var(--surface-2);
     padding:2px 9px;border-radius:999px;font-variant-numeric:tabular-nums}
@@ -851,9 +863,23 @@ const TYPES = {
   anime:     { label: 'Anime',         category: 'listening' },
   youTube:   { label: 'YouTube',       category: 'listening' },
   tv:        { label: 'TV',            category: 'listening' },
-  film:      { label: 'Film',          category: 'listening' }
+  film:      { label: 'Film',          category: 'listening' },
+  grammar:   { label: 'Grammar',       category: 'deliberate', unit: 'units' },
+  vocabulary:{ label: 'Vocabulary',    category: 'deliberate', unit: 'items' }
 };
-const TYPE_ORDER = ['kindle','book','article','manga','other','youTube','anime','audiobook','podcast','tv','film'];
+const TYPE_ORDER = ['kindle','book','article','manga','other','youTube','anime','audiobook','podcast','tv','film','grammar','vocabulary'];
+
+/* Three-way display category for a material: 'reading' | 'listening' | 'deliberate'.
+   Grammar and Vocabulary materials are classified as 'deliberate' (see TYPES
+   above), same as in the main app. */
+function materialGroup(m){
+  if (!m) return 'reading';
+  if (m.default_category === 'listening') return 'listening';
+  if (m.default_category === 'deliberate') return 'deliberate';
+  return 'reading';
+}
+const CATEGORY_RANK = { reading: 0, listening: 1, deliberate: 2 };
+const CATEGORY_LABEL = { reading: 'Reading', listening: 'Listening', deliberate: 'Deliberate' };
 
 const PRIORITIES = [
   { id:'p1', hex:'#D5473F', fg:'#FFFFFF', border:false },
@@ -864,7 +890,8 @@ const PRIORITIES = [
 const DEFAULT_PRIORITY = 'p4';
 function priorityMeta(id){ return PRIORITIES.find(p => p.id === id) || PRIORITIES[PRIORITIES.length - 1]; }
 function materialTint(m){
-  return m.default_category === 'listening' ? 'var(--listening)' : 'var(--reading)';
+  const g = materialGroup(m);
+  return g === 'listening' ? 'var(--listening)' : g === 'deliberate' ? 'var(--deliberate)' : 'var(--reading)';
 }
 function materialEmoji(m){
   if (m.emoji) return m.emoji;
@@ -879,6 +906,8 @@ function materialEmoji(m){
   if (t === 'manga')     return '📘';
   if (t === 'book')      return '📗';
   if (t === 'kindle')    return '📖';
+  if (t === 'grammar')   return '✏️';
+  if (t === 'vocabulary')return '🔤';
   return '📚';
 }
 function coverHTML(m, size){
@@ -1120,14 +1149,24 @@ function plannedMaterials(){
     .filter(isInCurrentPhase)
     .slice()
     .sort((a, b) => {
-      const ca = a.default_category === 'listening' ? 1 : 0;
-      const cb = b.default_category === 'listening' ? 1 : 0;
+      const ca = CATEGORY_RANK[materialGroup(a)];
+      const cb = CATEGORY_RANK[materialGroup(b)];
       if (ca !== cb) return ca - cb;
       return (a.title || '').localeCompare(b.title || '');
     });
 }
-function materialUnit(m){ return m && m.default_category === 'listening' ? 'min' : '%'; }
-function materialUnitLong(m){ return m && m.default_category === 'listening' ? 'minutes' : 'percent'; }
+function materialUnit(m){
+  const g = materialGroup(m);
+  if (g === 'listening') return 'min';
+  if (g === 'deliberate') return (TYPES[m.default_input_type] || {}).unit === 'items' ? 'items' : 'units';
+  return '%';
+}
+function materialUnitLong(m){
+  const g = materialGroup(m);
+  if (g === 'listening') return 'minutes';
+  if (g === 'deliberate') return materialUnit(m);
+  return 'percent';
+}
 
 /* =========================================================
    Plan model
@@ -1247,7 +1286,7 @@ function tickTask(mid, date){
       challenge_id: shared.challenge.id,
       logged_on: date,
       category: m.default_category || 'reading',
-      input_type: m.default_input_type || (m.default_category === 'listening' ? 'podcast' : 'kindle'),
+      input_type: m.default_input_type || (m.default_category === 'listening' ? 'podcast' : m.default_category === 'deliberate' ? 'grammar' : 'kindle'),
       material_id: mid,
       amount: Math.round(need * 10) / 10,
       unit: materialUnitLong(m),
@@ -1303,7 +1342,7 @@ function recordFocusInShared(m, value, unit, date){
     input_type: m.default_input_type || 'other',
     material_id: m.id,
     amount: amount,
-    unit: unit || (m.default_category === 'listening' ? 'minutes' : 'percent'),
+    unit: unit || materialUnitLong(m),
     note: 'Focus session',
     origin: 'focus',
     created_at: now,
@@ -1330,13 +1369,17 @@ function dayTasks(iso){
 }
 function dayTotals(iso){
   const tasks = dayTasks(iso);
-  let readPlan = 0, listenPlan = 0, readDone = 0, listenDone = 0;
+  let readPlan = 0, listenPlan = 0, deliberatePlan = 0, readDone = 0, listenDone = 0, deliberateDone = 0;
   tasks.forEach(t => {
     const m = t.material;
     const logged = Math.min(totalLogged(m.id, iso), t.amount);
-    if (m.default_category === 'listening'){
+    const g = materialGroup(m);
+    if (g === 'listening'){
       listenPlan += t.amount;
       listenDone += logged;
+    } else if (g === 'deliberate'){
+      deliberatePlan += t.amount;
+      deliberateDone += logged;
     } else {
       readPlan += t.amount;
       readDone += logged;
@@ -1346,7 +1389,7 @@ function dayTotals(iso){
   const doneCount = tasks.filter(t => isTaskDone(t.mid, iso)).length;
   return {
     tasks, total, doneCount,
-    readPlan, listenPlan, readDone, listenDone,
+    readPlan, listenPlan, deliberatePlan, readDone, listenDone, deliberateDone,
     pct: total ? Math.round(doneCount / total * 100) : 0
   };
 }
@@ -1357,15 +1400,15 @@ function weekDays(weekStart){
 }
 function weekTotals(weekStart){
   const days = weekDays(weekStart);
-  let readPlan = 0, listenPlan = 0, readDone = 0, listenDone = 0, total = 0, doneCount = 0;
+  let readPlan = 0, listenPlan = 0, deliberatePlan = 0, readDone = 0, listenDone = 0, deliberateDone = 0, total = 0, doneCount = 0;
   days.forEach(d => {
     const t = dayTotals(d);
-    readPlan += t.readPlan; listenPlan += t.listenPlan;
-    readDone += t.readDone; listenDone += t.listenDone;
+    readPlan += t.readPlan; listenPlan += t.listenPlan; deliberatePlan += t.deliberatePlan;
+    readDone += t.readDone; listenDone += t.listenDone; deliberateDone += t.deliberateDone;
     total += t.total; doneCount += t.doneCount;
   });
   return {
-    days, readPlan, listenPlan, readDone, listenDone, total, doneCount,
+    days, readPlan, listenPlan, deliberatePlan, readDone, listenDone, deliberateDone, total, doneCount,
     pct: total ? Math.round(doneCount / total * 100) : 0
   };
 }
@@ -1826,7 +1869,10 @@ function openFocusLogModal(){
   }
   const g = focusGroup(p.groupId);
   const sessionMin = g ? g.minutes : (p.minutes || 0);
-  const isReading = mat.default_category !== 'listening';
+  const mode = mat.default_category === 'listening' ? 'minutes' : mat.default_category === 'deliberate' ? 'count' : 'percent';
+  const isReading = mode === 'percent';
+  const unitWord = materialUnit(mat);         // 'units' / 'items' for deliberate
+  const unitWordLong = materialUnitLong(mat); // long form for deliberate too
   const sch = scheduledFor(mat.id, p.date);
   const typeLabel = (TYPES[mat.default_input_type] || { label: 'Other' }).label;
   const tint = materialTint(mat);
@@ -1834,8 +1880,8 @@ function openFocusLogModal(){
   // Reset the stored input value whenever the modal opens
   pendingLogInputValue = '';
 
-  // ----- body: percentage input for reading, duration box for listening -----
-  const bodyHTML = isReading
+  // ----- body: percentage input for reading, count input for deliberate, duration box for listening -----
+  const bodyHTML = mode === 'percent'
     ? `
       <div class="field">
         <label for="logPct">How much did you read?</label>
@@ -1856,6 +1902,23 @@ function openFocusLogModal(){
         <span class="hint" style="margin:8px 0 0">
           Enter the percentage of <b>${esc(mat.title)}</b> you completed during this session.
           ${sch > 0 ? `Today's scheduled target is <b>${fmtAmount(sch)}%</b>.` : ''}
+        </span>
+      </div>`
+    : mode === 'count'
+    ? `
+      <div class="field">
+        <label for="logPct">How many ${esc(unitWord)} did you complete?</label>
+        <div class="pct-wrap">
+          <input type="number" id="logPct" inputmode="decimal"
+                 value="" min="0" step="1"
+                 placeholder="0"
+                 autocomplete="off"
+                 data-focus-key="log-pct">
+          <span class="pct-unit">${esc(unitWord)}</span>
+        </div>
+        <span class="hint" style="margin:8px 0 0">
+          Enter the number of ${esc(unitWord)} of <b>${esc(mat.title)}</b> you completed during this session.
+          ${sch > 0 ? `Today's scheduled target is <b>${fmtAmount(sch)} ${esc(unitWord)}</b>.` : ''}
         </span>
       </div>`
     : `
@@ -1903,9 +1966,13 @@ function openFocusLogModal(){
         <div class="info-row" style="margin-top:14px">
           <span class="info-dot" style="background:${tint};
             box-shadow:0 0 0 3px color-mix(in srgb,${tint} 22%,transparent)"></span>
-          <span>${isReading
+          <span>${mode === 'percent'
             ? `The percentage you enter is added to the shared activity log.
                Today's planned target${sch > 0 ? ` (<b>${fmtAmount(sch)}%</b>)` : ''} stays unchanged —
+               it's used for progress, not for recording completed work.`
+            : mode === 'count'
+            ? `The number of ${esc(unitWord)} you enter is added to the shared activity log.
+               Today's planned target${sch > 0 ? ` (<b>${fmtAmount(sch)} ${esc(unitWord)}</b>)` : ''} stays unchanged —
                it's used for progress, not for recording completed work.`
             : `The <b>${sessionMin} min</b> session time is added to the shared activity log.`}</span>
         </div>
@@ -1915,7 +1982,7 @@ function openFocusLogModal(){
             Skip
           </button>
           <button type="submit" class="btn btn-primary" id="focusLogSubmit">
-            ${isReading ? 'Log percentage' : `Log ${sessionMin} min`}
+            ${mode === 'percent' ? 'Log percentage' : mode === 'count' ? `Log ${esc(unitWord)}` : `Log ${sessionMin} min`}
           </button>
         </div>
       </form>
@@ -1932,8 +1999,8 @@ function openFocusLogModal(){
     });
   });
 
-  // Focus the input for reading
-  if (isReading){
+  // Focus the input for reading / deliberate (both use the #logPct field)
+  if (mode === 'percent' || mode === 'count'){
     setTimeout(() => {
       const el = document.getElementById('logPct');
       if (el){ el.focus(); el.select(); }
@@ -1957,7 +2024,11 @@ function openFocusLogModal(){
       const btn = document.getElementById('focusLogSubmit');
       if (!btn) return;
       const v = Math.round((Number(pctInput.value) || 0) * 10) / 10;
-      btn.textContent = v > 0 ? `Log ${fmtAmount(v)}%` : 'Log percentage';
+      if (mode === 'percent'){
+        btn.textContent = v > 0 ? `Log ${fmtAmount(v)}%` : 'Log percentage';
+      } else if (mode === 'count'){
+        btn.textContent = v > 0 ? `Log ${fmtAmount(v)} ${unitWord}` : `Log ${unitWord}`;
+      }
     });
   }
 }
@@ -1968,14 +2039,25 @@ function confirmFocusLog(){
   const mat = materialById(p.mid);
   if (!mat){ skipFocusLog(); return; }
 
-  const isReading = mat.default_category !== 'listening';
+  const mode = mat.default_category === 'listening' ? 'minutes' : mat.default_category === 'deliberate' ? 'count' : 'percent';
   let value = 0;
   let unit = 'minutes';
 
-  if (isReading){
+  if (mode === 'percent'){
     const input = document.getElementById('logPct');
     value = input ? Math.max(0, Math.min(100, Number(input.value) || 0)) : 0;
     unit = 'percent';
+    if (value <= 0){
+      if (input){
+        input.focus();
+        input.select();
+      }
+      return;
+    }
+  } else if (mode === 'count'){
+    const input = document.getElementById('logPct');
+    value = input ? Math.max(0, Number(input.value) || 0) : 0;
+    unit = materialUnitLong(mat);
     if (value <= 0){
       if (input){
         input.focus();
@@ -2456,7 +2538,7 @@ function builderCardHTML(){
           ${coverHTML(m, 26)}
           <span class="mchip-txt">
             ${esc(m.title)}
-            <span class="mchip-cat">${m.default_category === 'listening' ? 'Listening' : 'Reading'}</span>
+            <span class="mchip-cat">${CATEGORY_LABEL[materialGroup(m)]}</span>
           </span>
         </button>`;
       }).join('')}
@@ -2483,7 +2565,8 @@ function builderCardHTML(){
       <span class="info-dot"></span>
       <span>When a session ends, a popup appears asking you to log it:
         <b>reading materials log a percentage</b> you enter,
-        <b>listening materials log the session time</b>.
+        <b>listening materials log the session time</b>,
+        <b>deliberate materials (grammar/vocabulary) log a count</b> you enter.
         The planned target is never used as the completed amount.</span>
     </div>
 
@@ -2515,7 +2598,8 @@ function viewFocus(){
     Build a group from <b>today's plan</b> — pick materials, then give each one its own
     number of sessions (e.g. <b>2 × Material A + 1 × Material B = 3 × 50 min</b>).<br>
     When a session ends, the <b>“Log activity” popup</b> opens:
-    <b>reading</b> asks for the percentage you completed, <b>listening</b> logs the session minutes.<br>
+    <b>reading</b> asks for the percentage you completed, <b>listening</b> logs the session minutes,
+    <b>deliberate</b> asks for a count of units/items.<br>
     Groups are stored separately from the main challenge data, so nothing here can
     overwrite your materials or plan.
   </p>`;
@@ -2598,15 +2682,14 @@ function taskRowHTML(iso, task){
 }
 
 function taskGroupHTML(iso, category){
-  const tasks = dayTasks(iso).filter(t => (t.material.default_category === 'listening' ? 'listening' : 'reading') === category);
+  const tasks = dayTasks(iso).filter(t => materialGroup(t.material) === category);
   if (!tasks.length) return '';
   const doneCount = tasks.filter(t => isTaskDone(t.mid, iso)).length;
-  const isRead = category === 'reading';
   return `
   <div class="task-group">
     <div class="task-group-head">
       <span class="gdot ${category}"></span>
-      <span class="gt">${isRead ? 'Reading' : 'Listening'}</span>
+      <span class="gt">${CATEGORY_LABEL[category]}</span>
       <span class="gn">${doneCount}/${tasks.length}</span>
       <span class="gline"></span>
     </div>
@@ -2649,7 +2732,7 @@ function viewDaily(){
     DOW_LONG[dowOf(iso)];
 
   const tasksHtml = t.tasks.length
-    ? taskGroupHTML(iso, 'reading') + taskGroupHTML(iso, 'listening')
+    ? taskGroupHTML(iso, 'reading') + taskGroupHTML(iso, 'listening') + taskGroupHTML(iso, 'deliberate')
     : `<div class="empty">
          <span class="em-icon">🌤️</span>
          Nothing scheduled for this day — a rest day.
@@ -2670,7 +2753,8 @@ function viewDaily(){
         <span class="nb-v">${esc(longDate(iso))}</span>
         <span class="nb-sub">
           ${t.doneCount} of ${t.total} tasks · ${fmtAmount(t.readPlan)}% reading ·
-          ${fmtAmount(t.listenPlan)} min listening
+          ${fmtAmount(t.listenPlan)} min listening ·
+          ${fmtAmount(t.deliberatePlan)} deliberate
         </span>
       </div>
       <button class="icon-btn" data-shift-day="1" aria-label="Next day">›</button>
@@ -2685,9 +2769,10 @@ function viewDaily(){
     </div>
   </div>
 
-  <div class="grid cols-2">
+  <div class="grid cols-3">
     ${progressCardHTML('Reading today', 'reading', t.readDone, t.readPlan, '%')}
     ${progressCardHTML('Listening today', 'listening', t.listenDone, t.listenPlan, 'min')}
+    ${progressCardHTML('Deliberate today', 'deliberate', t.deliberateDone, t.deliberatePlan, 'units')}
   </div>
 
   <div class="grid cols-3">
@@ -2700,8 +2785,9 @@ function viewDaily(){
       <div class="stat-label">Materials</div>
       <div class="stat-value">${new Set(t.tasks.map(x => x.mid)).size} <small>in play</small></div>
       <div class="stat-sub">
-        ${t.tasks.filter(x => x.material.default_category !== 'listening').length} reading ·
-        ${t.tasks.filter(x => x.material.default_category === 'listening').length} listening
+        ${t.tasks.filter(x => materialGroup(x.material) === 'reading').length} reading ·
+        ${t.tasks.filter(x => materialGroup(x.material) === 'listening').length} listening ·
+        ${t.tasks.filter(x => materialGroup(x.material) === 'deliberate').length} deliberate
       </div>
     </div>
     <div class="card">
@@ -2749,7 +2835,7 @@ function planRowHTML(m){
       ${coverHTML(m, 32)}
       <span class="pr-mat-txt">
         <span class="pr-title">${esc(m.title)}</span>
-        <span class="pr-cat">${m.default_category === 'listening' ? 'Listening' : 'Reading'}</span>
+        <span class="pr-cat">${CATEGORY_LABEL[materialGroup(m)]}</span>
       </span>
     </div>
 
@@ -2786,7 +2872,7 @@ function planRowHTML(m){
 
     <div class="pr-daily">
       <span class="pr-daily-val ${overrideCount ? 'custom' : ''}">
-        ${fmtAmount(daily)}${unitLabel === 'min' ? ' min' : '%'}
+        ${fmtAmount(daily)}${unitLabel === 'min' ? ' min' : unitLabel === '%' ? '%' : ' ' + unitLabel}
       </span>
       <span class="pr-daily-sub">
         per day · ${p.days.length} day${p.days.length === 1 ? '' : 's'}${overrideCount ? ` · ${overrideCount} override${overrideCount === 1 ? '' : 's'}` : ''}
@@ -3012,6 +3098,7 @@ function viewWeekly(){
 
   const readPct = w.readPlan > 0 ? clamp(w.readDone / w.readPlan * 100, 0, 100) : 0;
   const listenPct = w.listenPlan > 0 ? clamp(w.listenDone / w.listenPlan * 100, 0, 100) : 0;
+  const deliberatePct = w.deliberatePlan > 0 ? clamp(w.deliberateDone / w.deliberatePlan * 100, 0, 100) : 0;
 
   return `
   ${phaseBannerHTML()}
@@ -3059,10 +3146,21 @@ function viewWeekly(){
       <div class="bar listening" style="margin-top:12px"><i style="width:${listenPct}%"></i></div>
     </div>
     <div class="card">
-      <div class="stat-label">Week progress</div>
-      <div class="stat-value">${w.pct} <small>%</small></div>
-      <div class="stat-sub">${w.doneCount} of ${w.total} scheduled tasks</div>
+      <div class="stat-label">Weekly deliberate</div>
+      <div class="stat-value">${fmtAmount(w.deliberateDone)} <small>/ ${fmtAmount(w.deliberatePlan)} units</small></div>
+      <div class="stat-sub">
+        ${w.deliberatePlan > w.deliberateDone
+          ? fmtAmount(w.deliberatePlan - w.deliberateDone) + ' remaining'
+          : (w.deliberatePlan > 0 ? 'Target reached' : 'Nothing planned')}
+      </div>
+      <div class="bar deliberate" style="margin-top:12px"><i style="width:${deliberatePct}%"></i></div>
     </div>
+  </div>
+
+  <div class="card" style="margin-bottom:14px">
+    <div class="stat-label">Week progress</div>
+    <div class="stat-value">${w.pct} <small>%</small></div>
+    <div class="stat-sub">${w.doneCount} of ${w.total} scheduled tasks</div>
   </div>
 
   ${showPlanEditor ? planEditorHTML() : planHiddenBarHTML()}
