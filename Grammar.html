@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vocabulary Builder — Checklists</title>
+<title>Grammar in Use — Chapter Checklist</title>
 <style>
   :root{
     --bg:#ffffff;
@@ -57,22 +57,20 @@
 
   /* ---------- tabs ---------- */
   .tabs{
-    display:flex;gap:4px;padding:4px;margin-bottom:16px;
-    border:1px solid var(--border);border-radius:var(--radius);
-    background:var(--surface);
-    overflow-x:auto;
-    scrollbar-width:none;
-    -ms-overflow-style:none;
+    display:flex;flex-wrap:wrap;gap:2px;
+    border-bottom:1px solid var(--border);
+    margin-bottom:16px;
   }
-  .tabs::-webkit-scrollbar{display:none}
   .tab{
-    flex:1 0 auto;padding:9px 14px;font-size:13px;font-family:inherit;font-weight:600;
-    background:transparent;color:var(--muted);border:none;border-radius:6px;
-    cursor:pointer;transition:.15s;white-space:nowrap;
+    appearance:none;background:none;border:none;
+    border-bottom:2px solid transparent;margin-bottom:-1px;
+    padding:9px 12px;font-family:inherit;font-size:13.5px;font-weight:500;
+    color:var(--muted);cursor:pointer;transition:.15s;white-space:nowrap;
   }
   .tab:hover{color:var(--text)}
-  .tab.on{background:var(--bg);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.06)}
-  [data-theme="dark"] .tab.on{box-shadow:0 1px 3px rgba(0,0,0,.4)}
+  .tab.on{color:var(--accent);border-bottom-color:var(--accent)}
+
+  .view[hidden]{display:none !important}
 
   /* ---------- progress panel ---------- */
   .panel{
@@ -152,26 +150,26 @@
   .group.collapsed .chev{transform:rotate(-90deg)}
   .group-head .count{
     margin-left:auto;font-size:12px;font-weight:500;color:var(--muted);
-    font-variant-numeric:tabular-nums;
+    font-variant-numeric:tabular-nums;flex:0 0 auto;
   }
   .group.complete .count{color:var(--done)}
+
+  .group-head .gname{flex:0 0 auto}
+  .group-head .gsub{
+    font-size:12.5px;font-weight:400;color:var(--muted);
+    flex:1 1 auto;min-width:0;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
 
   .group-body{padding:4px 6px 8px}
   .group.collapsed .group-body{display:none}
 
   .item{
-    display:flex;align-items:flex-start;gap:8px;
-    padding:7px 6px;border-radius:6px;
-    transition:background .12s;
+    display:flex;align-items:flex-start;gap:10px;
+    padding:7px 6px;border-radius:6px;cursor:pointer;transition:background .12s;
   }
   .item:hover{background:var(--surface)}
-
-  .item-row{
-    display:flex;align-items:flex-start;gap:10px;
-    flex:1;min-width:0;cursor:pointer;
-  }
-  .item-row input{position:absolute;opacity:0;width:0;height:0}
-
+  .item input{position:absolute;opacity:0;width:0;height:0}
   .item .box{
     width:18px;height:18px;flex:0 0 auto;margin-top:2px;
     border:1.5px solid var(--border);border-radius:5px;
@@ -190,64 +188,45 @@
     font-size:12px;color:var(--muted);min-width:26px;text-align:right;
     font-variant-numeric:tabular-nums;margin-top:1px;flex:0 0 auto;
   }
-  .item .t{font-size:14px}
-  .item .t em{color:var(--muted);font-style:normal;font-size:12.5px}
+  .item .t{font-size:14px;flex:1 1 auto;min-width:0}
   .item.on .t{color:var(--muted);text-decoration:line-through}
-  .item.on .t em{color:var(--muted);opacity:.75}
 
-  .date{
-    font-family:inherit;font-size:11.5px;
-    padding:3px 5px;
-    border:1px solid var(--border);border-radius:5px;
-    background:var(--bg);color:var(--text);
-    width:132px;flex:0 0 auto;
-    margin-top:1px;
-    visibility:hidden;
-    transition:border-color .15s,color .15s;
+  /* ---------- arrow link to the topic page ---------- */
+  .item .go{
+    flex:0 0 auto;margin-top:0;
+    width:24px;height:24px;border-radius:6px;
+    display:grid;place-items:center;
+    color:var(--muted);text-decoration:none;
+    opacity:.45;transition:.15s;
   }
-  .item.on .date{visibility:visible}
-  .date:hover{border-color:var(--accent)}
-  .date:focus{outline:none;border-color:var(--accent)}
-  [data-theme="dark"] .date::-webkit-calendar-picker-indicator{filter:invert(.8)}
+  .item:hover .go{opacity:1;color:var(--accent);background:var(--accent-soft)}
+  .item .go:hover{color:var(--accent);background:var(--accent-soft)}
+  .item .go:focus-visible{opacity:1;outline:2px solid var(--accent);outline-offset:1px}
+  .item .go svg{width:13px;height:13px;display:block}
+
+  /* reference sections are all-caps — soften slightly */
+  .ref-list .item .t{font-size:13.5px;letter-spacing:.25px}
+
+  /* logic prepositions — display in caps-ish style */
+  .logic-list .item .t{
+    font-size:14px;font-weight:600;letter-spacing:.6px;
+    text-transform:uppercase;
+  }
 
   .hidden{display:none !important}
 
-  /* ---------- empty states ---------- */
   .empty{
     text-align:center;padding:48px 16px;color:var(--muted);font-size:14px;
   }
-  .empty-state{
-    text-align:center;
-    padding:56px 24px;
-    border:1px dashed var(--border);
-    border-radius:var(--radius);
-    color:var(--muted);
-  }
-  .empty-state .es-icon{
-    font-size:34px;line-height:1;margin-bottom:14px;opacity:.55;
-  }
-  .empty-state .es-title{
-    font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px;
-  }
-  .empty-state .es-hint{
-    font-size:13px;line-height:1.6;
-  }
-  .empty-state code{
-    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    font-size:12px;
-    padding:2px 5px;border-radius:4px;
-    background:var(--surface);border:1px solid var(--border);
-    color:var(--accent);
-  }
 
-  @media (max-width:560px){
+  @media (max-width:520px){
     .stats{gap:18px}
     .toolbar{gap:6px}
     .seg{flex:1 1 100%}
     .seg button{flex:1}
     .item .t{font-size:13.5px}
-    .date{width:110px;font-size:11px;padding:2px 4px}
-    .tab{font-size:12px;padding:8px 10px}
+    .ref-list .item .t{font-size:13px}
+    .tab{flex:1 1 auto;text-align:center;white-space:normal;font-size:12px;padding:8px 6px}
   }
 </style>
 </head>
@@ -255,420 +234,1234 @@
 <div class="wrap">
 
   <header>
-    <h1 id="pageTitle">Vocabulary <span id="pageCount">· 0 words</span></h1>
-    <button class="icon-btn" id="themeBtn" aria-label="Toggle dark mode">🌙</button>
+    <h1 id="pageTitle">Grammar in Use <span id="pageSub">· 145 units</span></h1>
+    <div style="display:flex;gap:8px;align-items:center">
+      <a class="icon-btn" href="index.html" title="Back to challenge" aria-label="Back to challenge" style="text-decoration:none;font-size:16px">←</a>
+      <button class="icon-btn" id="themeBtn" aria-label="Toggle dark mode">🌙</button>
+    </div>
   </header>
 
-  <!-- tab switcher -->
-  <nav class="tabs" id="tabs"></nav>
+  <!-- ================= TABS ================= -->
+  <nav class="tabs" id="tabs" role="tablist">
+    <button class="tab on" data-tab="units" role="tab" aria-selected="true">Grammar in Use Intermediate 5th</button>
+    <button class="tab" data-tab="ref" role="tab" aria-selected="false">English Grammar Reference Book</button>
+    <button class="tab" data-tab="prep" role="tab" aria-selected="false">Prepositions</button>
+    <button class="tab" data-tab="logic" role="tab" aria-selected="false">Logic of Prepositions</button>
+  </nav>
 
-  <section class="panel">
-    <div class="bar-row">
-      <div class="bar"><i id="fill"></i></div>
-      <span class="pct" id="pct">0%</span>
-    </div>
-    <div class="stats">
-      <div><b id="sDone">0</b><span>completed</span></div>
-      <div><b id="sLeft">0</b><span>remaining</span></div>
-      <div><b id="sSec">0 / 0</b><span>sections</span></div>
-    </div>
-    <div class="done-msg" id="doneMsg" hidden>All items complete. Excellent work!</div>
-  </section>
+  <!-- ================= VIEW 1 : UNITS ================= -->
+  <div class="view" id="view-units">
 
-  <div class="toolbar">
-    <div class="search">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-           stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
-      <input type="search" id="search" placeholder="Search…" autocomplete="off">
+    <section class="panel">
+      <div class="bar-row">
+        <div class="bar"><i id="fill"></i></div>
+        <span class="pct" id="pct">0%</span>
+      </div>
+      <div class="stats">
+        <div><b id="sDone">0</b><span>completed</span></div>
+        <div><b id="sLeft">145</b><span>remaining</span></div>
+        <div><b id="sSec">0 / 25</b><span>sections</span></div>
+      </div>
+      <div class="done-msg" id="doneMsg" hidden>All chapters complete. Well done!</div>
+    </section>
+
+    <div class="toolbar">
+      <div class="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input type="search" id="search" placeholder="Search chapters…" autocomplete="off">
+      </div>
+      <div class="seg" id="filters">
+        <button class="on" data-f="all">All</button>
+        <button data-f="todo">To do</button>
+        <button data-f="done">Done</button>
+      </div>
+      <button class="btn" id="collapseBtn">Collapse</button>
+      <button class="btn" id="resetBtn">Reset</button>
     </div>
-    <div class="seg" id="filters">
-      <button class="on" data-f="all">All</button>
-      <button data-f="todo">To do</button>
-      <button data-f="done">Done</button>
-    </div>
-    <button class="btn" id="collapseBtn">Expand</button>
-    <button class="btn" id="resetBtn">Reset</button>
+
+    <main id="list"></main>
+    <div class="empty" id="empty" hidden>No chapters match your search.</div>
+
   </div>
 
-  <main id="list"></main>
-  <div class="empty" id="empty" hidden>No items match your search.</div>
+  <!-- ================= VIEW 2 : REFERENCE BOOK ================= -->
+  <div class="view" id="view-ref" hidden>
 
-  <div class="empty-state" id="emptyState" hidden>
-    <div class="es-icon">📝</div>
-    <div class="es-title">No entries yet</div>
-    <div class="es-hint">
-      Add data to the <code>DATASETS</code> object in the script to get started.
+    <section class="panel">
+      <div class="bar-row">
+        <div class="bar"><i id="refFill"></i></div>
+        <span class="pct" id="refPct">0%</span>
+      </div>
+      <div class="stats">
+        <div><b id="refSDone">0</b><span>completed</span></div>
+        <div><b id="refSLeft">0</b><span>remaining</span></div>
+        <div><b id="refSCh">0 / 14</b><span>chapters</span></div>
+      </div>
+      <div class="done-msg" id="refDoneMsg" hidden>All sections complete. Well done!</div>
+    </section>
+
+    <div class="toolbar">
+      <div class="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input type="search" id="refSearch" placeholder="Search chapters and sections…" autocomplete="off">
+      </div>
+      <div class="seg" id="refFilters">
+        <button class="on" data-f="all">All</button>
+        <button data-f="todo">To do</button>
+        <button data-f="done">Done</button>
+      </div>
+      <button class="btn" id="refCollapseBtn">Collapse</button>
+      <button class="btn" id="refResetBtn">Reset</button>
     </div>
+
+    <main id="refList" class="ref-list"></main>
+    <div class="empty" id="refEmpty" hidden>No sections match your search.</div>
+
+  </div>
+
+  <!-- ================= VIEW 3 : PREPOSITIONS ================= -->
+  <div class="view" id="view-prep" hidden>
+
+    <section class="panel">
+      <div class="bar-row">
+        <div class="bar"><i id="prepFill"></i></div>
+        <span class="pct" id="prepPct">0%</span>
+      </div>
+      <div class="stats">
+        <div><b id="prepSDone">0</b><span>completed</span></div>
+        <div><b id="prepSLeft">0</b><span>remaining</span></div>
+        <div><b id="prepSParts">0 / 5</b><span>parts</span></div>
+      </div>
+      <div class="done-msg" id="prepDoneMsg" hidden>All preposition units complete. Well done!</div>
+    </section>
+
+    <div class="toolbar">
+      <div class="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input type="search" id="prepSearch" placeholder="Search parts and units…" autocomplete="off">
+      </div>
+      <div class="seg" id="prepFilters">
+        <button class="on" data-f="all">All</button>
+        <button data-f="todo">To do</button>
+        <button data-f="done">Done</button>
+      </div>
+      <button class="btn" id="prepCollapseBtn">Collapse</button>
+      <button class="btn" id="prepResetBtn">Reset</button>
+    </div>
+
+    <main id="prepList" class="prep-list"></main>
+    <div class="empty" id="prepEmpty" hidden>No units match your search.</div>
+
+  </div>
+
+  <!-- ================= VIEW 4 : LOGIC OF PREPOSITIONS ================= -->
+  <div class="view" id="view-logic" hidden>
+
+    <section class="panel">
+      <div class="bar-row">
+        <div class="bar"><i id="logicFill"></i></div>
+        <span class="pct" id="logicPct">0%</span>
+      </div>
+      <div class="stats">
+        <div><b id="logicSDone">0</b><span>completed</span></div>
+        <div><b id="logicSLeft">0</b><span>remaining</span></div>
+        <div><b id="logicSGroups">0 / 1</b><span>groups</span></div>
+      </div>
+      <div class="done-msg" id="logicDoneMsg" hidden>All prepositions complete. Well done!</div>
+    </section>
+
+    <div class="toolbar">
+      <div class="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input type="search" id="logicSearch" placeholder="Search prepositions…" autocomplete="off">
+      </div>
+      <div class="seg" id="logicFilters">
+        <button class="on" data-f="all">All</button>
+        <button data-f="todo">To do</button>
+        <button data-f="done">Done</button>
+      </div>
+      <button class="btn" id="logicCollapseBtn">Collapse</button>
+      <button class="btn" id="logicResetBtn">Reset</button>
+    </div>
+
+    <main id="logicList" class="logic-list"></main>
+    <div class="empty" id="logicEmpty" hidden>No prepositions match your search.</div>
+
   </div>
 
 </div>
 
 <script>
 /* ============================================================
-   DATASETS
-   ------------------------------------------------------------
-   Each group: { name: "Section name", items: ["Item 1", "Item 2"] }
-   Use `text` + `sub` for a two-part label:
-     { text: "The family", sub: "mother, uncle, relatives" }
+   DATA — 145 chapters
    ============================================================ */
-const DATASETS = {
+const TITLES = [
+  "Present continuous (I am doing)",
+  "Present simple (I do)",
+  "Present continuous and present simple 1 (I am doing and I do)",
+  "Present continuous and present simple 2 (I am doing and I do)",
+  "Past simple (I did)",
+  "Past continuous (I was doing)",
+  "Present perfect 1 (I have done)",
+  "Present perfect 2 (I have done)",
+  "Present perfect continuous (I have been doing)",
+  "Present perfect continuous and simple (I have been doing and I have done)",
+  "How long have you (been)...?",
+  "For and since / when...? and how long...?",
+  "Present perfect and past 1 (I have done and I did)",
+  "Present perfect and past 2 (I have done and I did)",
+  "Past perfect (I had done)",
+  "Past perfect continuous (I had been doing)",
+  "Have and have got",
+  "Used to (do)",
+  "Present tenses for the future (I am doing / I do)",
+  "Going to (I'm going to do)",
+  "Will/shall 1",
+  "Will/shall 2",
+  "I will vs I'm going to",
+  "Will be doing / will have done",
+  "Can, could, be able to",
+  "May and might",
+  "Must, mustn't, don't need to",
+  "Should",
+  "Have to and must",
+  "Would you like...? / I'd like...",
+  "Imperatives (Do this! Don't do that!)",
+  "Used to",
+  "Passive 1 (is done / was done)",
+  "Passive 2 (is being done / has been done)",
+  "Be, have, do in present and past",
+  "Regular and irregular verbs",
+  "Questions 1 (is it...? do they...?)",
+  "Questions 2 (Who saw you? Who did you see?)",
+  "Questions 3 (Who is she talking to?)",
+  "Questions 4 (What...? Which...? How...?)",
+  "Reported speech (She said that...)",
+  "Verb + –ing / verb + to",
+  "I want you to... / I told you to...",
+  "Purpose clauses (I went to the shop to...)",
+  "Go (go to, go on, go for, go –ing)",
+  "Get",
+  "Do and make",
+  "Have",
+  "I/me, he/him, they/them",
+  "My/his/their",
+  "Whose...? It's mine/yours/hers...",
+  "I/me/my/mine",
+  "Myself/yourself/themselves",
+  "'s (Kate's camera / my brother's car)",
+  "A/an...",
+  "Singular and plural (train(s), bus(es))",
+  "Countable/uncountable 1 (a bottle / some water)",
+  "Countable/uncountable 2 (a cake / some cake / some cakes)",
+  "A/an and the",
+  "The...",
+  "Go to work / go home / go to the cinema",
+  "I like music / I hate exams",
+  "The... (names of places)",
+  "This/that/these/those",
+  "One/ones",
+  "Some and any",
+  "Not + any / no / none",
+  "Not + anybody/anyone/anything / nobody/no one",
+  "Somebody/anybody/nobody",
+  "Everybody/everything",
+  "All / all of, most / most of, no / none of",
+  "All, most, both, etc.",
+  "Each and every",
+  "Relative clauses 1 (the woman who...)",
+  "Relative clauses 2 (the people we met...)",
+  "Relative clauses 3 (whose / whom / where)",
+  "Relative clauses 4 (extra information clauses)",
+  "Relative clauses 5 (extra information clauses – with which)",
+  "Adjectives ending in –ing and –ed (boring / bored etc.)",
+  "Adjectives: a nice new house, you look tired",
+  "Adjectives and adverbs 1 (quick/quickly)",
+  "Adjectives and adverbs 2 (well, fast, late, hard/hardly)",
+  "Adjectives and adverbs 3 (comparative: older, more important, etc.)",
+  "Adjectives and adverbs 4 (comparative 2: much better / any better / better and better / the sooner the better)",
+  "Adjectives and adverbs 5 (superlative: the longest, the most enjoyable, etc.)",
+  "Word order 1 (He always goes to work. / I cleaned the house carefully.)",
+  "Word order 2 (usually/always/often, etc.)",
+  "Still, yet, already, anymore",
+  "Even",
+  "Although, though, even though, in spite of, despite",
+  "In case",
+  "Unless",
+  "As (reason and time)",
+  "Like and as",
+  "As if",
+  "During and while",
+  "By and until",
+  "By the time...",
+  "As soon as / until / till",
+  "If I do... and If I did...",
+  "If I knew... I wish I knew...",
+  "If I had known... I wish I had known...",
+  "Wish...",
+  "If I do and If I did (other uses)",
+  "If I had done (other uses)",
+  "At/on/in (time)",
+  "On time and in time / at the end and in the end",
+  "In/at/on (position) 1",
+  "In/at/on (position) 2",
+  "In/at/on (position) 3",
+  "To, at, in, into",
+  "On, onto",
+  "By",
+  "Noun + preposition (reason for, cause of, etc.)",
+  "Adjective + preposition (good at, interested in, etc.)",
+  "Verb + preposition 1 (apologise for, belong to, etc.)",
+  "Verb + preposition 2 (depend on, insist on, etc.)",
+  "Verb + preposition 3 (suffer from, protect against, etc.)",
+  "Phrasal verbs 1 (get up, get on, etc.)",
+  "Phrasal verbs 2 (put off, turn up, etc.)",
+  "Phrasal verbs 3 (break down, wake up, etc.)",
+  "Phrasal verbs 4 (carry on, give up, etc.)",
+  "Phrasal verbs 5 (go on, come on, etc.)",
+  "Phrasal verbs 6 (take off, put on, etc.)",
+  "Phrasal verbs 7 (look after, look for, etc.)",
+  "Phrasal verbs 8 (look forward to, look out, etc.)",
+  "Have something done",
+  "Get something done",
+  "There's / there are",
+  "It...",
+  "What...? Which...?",
+  "How...?",
+  "How long...?",
+  "How often...?",
+  "How far...?",
+  "How old...?",
+  "How much...? How many...?",
+  "What is... like?",
+  "What... for?",
+  "Who...?",
+  "Whose...?",
+  "Which...?",
+  "Where...?",
+  "When...?",
+  "Why...?"
+];
 
-  /* ---------- Vocabulary: English Vocabulary in Use Elementary ---------- */
-  vocabulary: {
-    title: "Vocabulary",
-    label: "chapters",
-    storeKey: "vocab-progress-v1",
-    data: [
-      { name: "People", items: [
-        { text: "The family",                    sub: "mother, uncle, relatives" },
-        { text: "Birth, marriage and death",     sub: "birthday, married, die" },
-        { text: "Parts of the body",             sub: "head, foot, shoulder" },
-        { text: "Clothes",                       sub: "hat, shirt, trousers" },
-        { text: "Describing people",             sub: "tall, dark, good-looking" },
-        { text: "Health and illness",            sub: "headache, heart attack, exercise" },
-        { text: "Feelings",                      sub: "love, tired, thirsty" },
-        { text: "Conversations 1: Greetings and wishes", sub: "Good morning, Happy New Year, well done" },
-        { text: "Conversations 2: Useful words and expressions", sub: "I don't mind, anyway, let's" }
-      ]},
+const GROUPS = [
+  { name:"Present tenses",               from:1,   to:4   },
+  { name:"Past tenses",                  from:5,   to:6   },
+  { name:"Present perfect",              from:7,   to:14  },
+  { name:"Past perfect",                 from:15,  to:16  },
+  { name:"Have & used to",               from:17,  to:18  },
+  { name:"Future",                       from:19,  to:24  },
+  { name:"Modals",                       from:25,  to:30  },
+  { name:"Imperatives & habits",         from:31,  to:32  },
+  { name:"Passive & verbs",              from:33,  to:36  },
+  { name:"Questions & reported speech",  from:37,  to:41  },
+  { name:"Verb patterns",                from:42,  to:44  },
+  { name:"Common verbs",                 from:45,  to:48  },
+  { name:"Pronouns & possessives",       from:49,  to:54  },
+  { name:"Nouns & articles",             from:55,  to:63  },
+  { name:"Demonstratives & quantity",    from:64,  to:73  },
+  { name:"Relative clauses",             from:74,  to:78  },
+  { name:"Adjectives & adverbs",         from:79,  to:85  },
+  { name:"Word order & linking",         from:86,  to:95  },
+  { name:"Time clauses",                 from:96,  to:99  },
+  { name:"Conditionals & wish",          from:100, to:105 },
+  { name:"Prepositions of time & place", from:106, to:113 },
+  { name:"Preposition combinations",     from:114, to:118 },
+  { name:"Phrasal verbs",                from:119, to:126 },
+  { name:"Causatives, there & it",       from:127, to:130 },
+  { name:"Question words",               from:131, to:145 }
+];
 
-      { name: "At home", items: [
-        { text: "Food and drink",                sub: "rice, tea, vegetables" },
-        { text: "In the kitchen",                sub: "fridge, glass, saucepan" },
-        { text: "In the bedroom and bathroom",   sub: "wardrobe, shampoo, mirror" },
-        { text: "In the living room",            sub: "bookshelf, lamp, remote control" }
-      ]},
+const TOTAL      = TITLES.length;
+const STORE_KEY  = 'giu-simple-v1';
+const THEME_KEY  = 'giu-simple-theme';
+const TAB_KEY    = 'giu-simple-tab';
+const SHARED_KEY = 'esc-grammar-data';      // read by the main challenge app
+const REF_STORE_KEY   = 'giu-ref-v1';
+const REF_SHARED_KEY  = 'esc-grammar-ref-data';
+const PREP_STORE_KEY  = 'giu-prep-v1';
+const PREP_SHARED_KEY = 'esc-grammar-prep-data';
+const LOGIC_STORE_KEY  = 'giu-logic-v1';
+const LOGIC_SHARED_KEY = 'esc-grammar-logic-data';
 
-      { name: "School and workplace", items: [
-        { text: "Jobs",                          sub: "secretary, factory, nurse" },
-        { text: "At school and university",      sub: "biology, notebook, pass an exam" },
-        { text: "Communications",                sub: "address, computer, memory stick" }
-      ]},
+/* ============================================================
+   DATA — English Grammar Reference Book
+   ============================================================ */
+const REF_BOOK = [
+  { title:"To Be or Not to Be", sections:[
+    "ADJECTIVES ASSOCIATED WITH THE TENSES",
+    "PRESENT SIMPLE V. PRESENT CONTINUOUS"
+  ]},
+  { title:"", sections:[
+    "THIRD PERSON SINGULAR V. THIRD PERSON PLURAL",
+    "SUBJECT BEFORE VERB IN THE AFFIRMATIVE",
+    "DOUBLE SUBJECT ERROR",
+    "OMISSION OF SUBJECT",
+    "PRONOUNS AND POSSESSIVE PRONOUNS",
+    "WHEN NOT TO USE A SUBJECT PRONOUN",
+    "SUBJECT BEFORE VERB IN QUESTIONS",
+    "OMISSION OF AUXILIARY VERB IN QUESTIONS",
+    "SUBJECT AND OBJECT PRONOUN CONFUSION",
+    "SUBJECT QUESTION ERROR",
+    "LIKE V. WOULD LIKE",
+    "INFINITIVE OF PURPOSE"
+  ]},
+  { title:"", sections:[
+    "ADVERBS OF FREQUENCY",
+    "ADJECTIVE OR ADVERB",
+    "ADVERBS OF MANNER",
+    "ADVERBS OF PLACE",
+    "ADVERBS OF TIME",
+    "ADVERBS OF DEGREE"
+  ]},
+  { title:"", sections:[
+    "TO HAVE OR NOT TO HAVE",
+    "ERRORS WHEN FORMING PAST SIMPLE NEGATIVES",
+    "PAST SIMPLE VERSUS PAST PROGRESSIVE",
+    "NON EXISTENT PLURAL ADJECTIVES",
+    "PLURAL NOUNS STANDARD AND IRREGULAR",
+    "ARTICLE ERRORS",
+    "WRONG USAGE",
+    "THE GENITIVE/POSSESSIVE",
+    "COMPARISON ERRORS"
+  ]},
+  { title:"", sections:[
+    "USED TO - BE USED TO - GET USED TO",
+    "BE USED TO VERSUS GET USED TO",
+    "THINK AND HOPE ERRORS",
+    "COUNTABLE OR UNCOUNTABLE",
+    "TOO - TOO MUCH - TOO MANY",
+    "FEWER VERSUS LESS",
+    "ENOUGH + NOUN VERSUS ADJECTIVE + ENOUGH",
+    "BOTH - EITHER - NEITHER",
+    "REFLEXIVE ERRORS",
+    "EACH OTHER VERSUS ONE ANOTHER"
+  ]},
+  { title:"", sections:[
+    "ERRORS WHEN USING MODAL AUXILIARY VERBS",
+    "MAY VERSUS CAN AND COULD",
+    "SHALL AND MAY",
+    "SHOULD"
+  ]},
+  { title:"", sections:[
+    "SUPPOSED TO - MEANT TO - SHOULD"
+  ]},
+  { title:"", sections:[
+    "THE PERFECT ERRORS",
+    "PRESENT PERFECT (1)",
+    "A TIME IN YOUR LIFE BEFORE NOW",
+    "PRESENT PERFECT (2)",
+    "PAST TO PRESENT",
+    "PRESENT PERFECT (3)",
+    "BEFORE NOW OR RIGHT NOW",
+    "PRESENT PERFECT CONTINUOUS (1)",
+    "IN PROGRESS FROM PAST TO PRESENT",
+    "PRESENT PERFECT CONTINUOUS (2)",
+    "UNTIL RECENTLY",
+    "PAST PERFECT ERRORS",
+    "PAST PERFECT CONTINUOUS (1)",
+    "PAST PERFECT CONTINUOUS (2)"
+  ]},
+  { title:"", sections:[
+    "CONDITIONAL ERRORS",
+    "FIRST CONDITIONAL",
+    "SECOND CONDITIONAL ERRORS",
+    "THIRD CONDITIONAL ERRORS",
+    "THE MIXED CONDITIONAL",
+    "WISH ERRORS",
+    "EVEN THOUGH VERSUS EVEN IF",
+    "ANY LONGER VERSUS ANYMORE AND NO LONGER",
+    "ANYMORE VERSUS ANY MORE"
+  ]},
+  { title:"", sections:[
+    "NO FUTURE IN ENGLISH",
+    "TO BE GOING TO + INFINITIVE",
+    "WILL VERSUS GOING TO",
+    "COMMON ERRORS WHEN USING ‘WILL’",
+    "THE FUTURE CONTINUOUS",
+    "THE FUTURE PERFECT",
+    "FUTURE PERFECT CONTINUOUS",
+    "REPORTED ERRORS",
+    "DIRECT AND INDIRECT OBJECT ERRORS"
+  ]},
+  { title:"", sections:[
+    "PREPOSITION ERRORS",
+    "VERBS WITH MORE THAN ONE PREPOSITION"
+  ]},
+  { title:"", sections:[
+    "WRONG VERB USAGE",
+    "WRONG ADJECTIVE/ADVERB USAGE",
+    "FEELING ERRORS",
+    "VERBS OF FEELING",
+    "MISCELLANEOUS ERRORS"
+  ]},
+  { title:"", sections:[
+    "WRONG USAGE OF ‘SPEND’",
+    "NON PERSONALIZED USAGE"
+  ]},
+  { title:"", sections:[
+    "INFINITIVE OR GERUND",
+    "USING CONNECTORS",
+    "TERMS OF CONFUSION",
+    "EXPRESSING YOUR OPINION"
+  ]}
+];
 
-      { name: "Leisure", items: [
-        { text: "Your phone",                    sub: "apps, voicemail, text" },
-        { text: "Holidays",                      sub: "package holiday, currency, visa" },
-        { text: "Shops and shopping",            sub: "chemist's, department store, credit card" },
-        { text: "Online shopping",               sub: "reviews, basket, delivery" },
-        { text: "In a hotel",                    sub: "single room, key, luggage" },
-        { text: "Eating out",                    sub: "café, menu, fish and chips" },
-        { text: "Sports",                        sub: "table tennis, judo, volleyball" },
-        { text: "Cinema",                        sub: "western, film star, director" },
-        { text: "Free time at home",             sub: "gardening, listening to CDs, programme" },
-        { text: "Music and musical instruments", sub: "guitar, jazz, orchestra" }
-      ]},
+const ORDINALS = ["One","Two","Three","Four","Five","Six","Seven","Eight",
+                  "Nine","Ten","Eleven","Twelve","Thirteen","Fourteen"];
 
-      { name: "The world", items: [
-        { text: "Countries and nationalities",   sub: "Spain, Chinese, continent" },
-        { text: "Weather",                       sub: "cold, rain, storm" },
-        { text: "In the town",                   sub: "railway station, bank, town hall" },
-        { text: "In the countryside",            sub: "hill, farm, river" },
-        { text: "Animals",                       sub: "horse, giraffe, pet" },
-        { text: "Travelling",                    sub: "train, map, flight" },
-        { text: "UK culture",                    sub: "fireworks, roast beef, Christmas" }
-      ]},
+/* ============================================================
+   DATA — The Prepositions (Part One–Five)
+   ============================================================ */
+const PREP_BOOK = [
+  { name:"Part One: The Prepositions", items:[
+    "How to Use Part One",
+    "Unit 1: About",
+    "Unit 2: Above",
+    "Unit 3: Across",
+    "Unit 4: After",
+    "Unit 5: Against",
+    "Unit 6: Ahead Of*",
+    "Unit 7: Along",
+    "Unit 8: Among",
+    "Unit 9: Around",
+    "Unit 10: As",
+    "Unit 11: At",
+    "Unit 12: Back To* / Back From*",
+    "Unit 13: Before",
+    "Unit 14: Behind",
+    "Unit 15: Below",
+    "Unit 16: Beneath",
+    "Unit 17: Beside",
+    "Unit 18: Besides",
+    "Unit 19: Between",
+    "Unit 20: Beyond",
+    "Unit 21: But",
+    "Unit 22: By",
+    "Unit 23: Close To*",
+    "Unit 24: Despite / In Spite Of*",
+    "Unit 25: Down",
+    "Unit 26: During",
+    "Unit 27: Except",
+    "Unit 28: Far From*",
+    "Unit 29: For",
+    "Unit 30: From",
+    "Unit 31: In",
+    "Unit 32: In Back Of*",
+    "Unit 33: In Front Of*",
+    "Unit 34: Inside",
+    "Unit 35: Instead Of*",
+    "Unit 36: Into",
+    "Unit 37: Like",
+    "Unit 38: Near",
+    "Unit 39: Next To*",
+    "Unit 40: Of",
+    "Unit 41: Off",
+    "Unit 42: On",
+    "Unit 43: Onto",
+    "Unit 44: On Top Of*",
+    "Unit 45: Opposite",
+    "Unit 46: Out",
+    "Unit 47: Outside",
+    "Unit 48: Over",
+    "Unit 49: Past",
+    "Unit 50: Through",
+    "Unit 51: Throughout",
+    "Unit 52: To",
+    "Unit 53: Toward",
+    "Unit 54: Towards",
+    "Unit 55: Under",
+    "Unit 56: Underneath",
+    "Unit 57: Until",
+    "Unit 58: Up",
+    "Unit 59: With",
+    "Unit 60: Within",
+    "Unit 61: Without"
+  ]},
+  { name:"Part Two: Prepositions by Function", items:[
+    "How to Use Part Two",
+    "Unit 1: Time",
+    "Unit 2: Location",
+    "Unit 3: Direction",
+    "Unit 4: Number",
+    "Unit 5: Weather",
+    "Unit 6: Source of Information",
+    "Unit 7: Affiliation",
+    "Unit 8: Description",
+    "Unit 9: Wearing",
+    "Unit 10: Topic",
+    "Unit 11: Recipient",
+    "Unit 12: State",
+    "Unit 13: Separation",
+    "Unit 14: Attitude",
+    "Unit 15: Behavior"
+  ]},
+  { name:"Part Three: Using Prepositions", items:[
+    "How to Use Part Three",
+    "Unit 1: Prepositional Phrases",
+    "Unit 2: Prepositions in Questions",
+    "Unit 3: Prepositions in Noun Clauses",
+    "Unit 4: Prepositions in Adjective Clauses"
+  ]},
+  { name:"Part Four: Phrasal Verbs", items:[
+    "How to Use Part Four",
+    "Unit 1: Nonseparable Combinations",
+    "Unit 2: Must-Be-Separated Combinations",
+    "Unit 3: Separable Combinations",
+    "Unit 4: Nonseparable Combinations with an Additional Preposition",
+    "Unit 5: Separable Combinations with an Additional Preposition",
+    "Unit 6: Intransitive Combinations",
+    "Unit 7: Intransitive Verb-Adverb Combinations Followed by a Preposition",
+    "Unit 8: Phrasal Verbs Used as Nouns",
+    "Unit 9: Phrasal Verbs Used as Adjectives"
+  ]},
+  { name:"Part Five: Prepositions as Nouns, Adjectives, and Verbs", items:[
+    "Unit 1: Nouns",
+    "Unit 2: Adjectives",
+    "Unit 3: Verbs"
+  ]}
+];
 
-      { name: "Social issues", items: [
-        { text: "Crime",                         sub: "murder, prison, guilty" },
-        { text: "The media",                     sub: "TV channel, magazine, talk show" },
-        { text: "Problems at home and work",     sub: "repair, untidy, in a bad mood" },
-        { text: "Global problems",               sub: "hurricane, war, strike" }
-      ]},
-
-      { name: "Words and grammar", items: [
-        { text: "Have / had / had",              sub: "have breakfast, have time, have a swim" },
-        { text: "Go / went / gone",              sub: "go away, go shopping, go home" },
-        { text: "Do / did / done",               sub: "do an exercise, do your best, do the washing" },
-        { text: "Make / made / made",            sub: "make coffee, make a mistake, make a noise" },
-        { text: "Come / came / come",            sub: "come in, come from, come back" },
-        { text: "Take / took / taken",           sub: "take the bus, take a photo, take an exam" },
-        { text: "Bring / brought / brought",     sub: "bring something here, bring back, take" },
-        { text: "Get / got / got",               sub: "get tired, get better, get married" },
-        { text: "Phrasal verbs",                 sub: "get up, put on, turn down" },
-        { text: "Everyday things",               sub: "watch TV, wash clothes, go for a walk" },
-        { text: "Talking",                       sub: "say, tell, ask" },
-        { text: "Moving",                        sub: "walk, drive, fly" },
-        { text: "Conjunctions and connecting words", sub: "because, only, before" },
-        { text: "Days, months, seasons",         sub: "Monday, July, winter" },
-        { text: "Time words",                    sub: "next year, often, once a week" },
-        { text: "Places",                        sub: "middle, front, abroad" },
-        { text: "Manner",                        sub: "fast, loud, the right way" },
-        { text: "Common uncountable nouns",      sub: "money, bread, information" },
-        { text: "Common adjectives: Good and bad things", sub: "nice, awful, lovely" },
-        { text: "Words and prepositions",        sub: "wait for, belong to, good at" },
-        { text: "Prefixes",                      sub: "impossible, ex-wife, unsafe" },
-        { text: "Suffixes",                      sub: "swimmer, useless, sunny" },
-        { text: "Words you may confuse",         sub: "quiet / quite, lend / borrow, cook / cooker" }
-      ]}
-    ]
-  },
-
-  /* ---------- Collocations (empty) ---------- */
-  collocations: {
-    title: "Collocations",
-    label: "collocations",
-    storeKey: "colloc-progress-v1",
-    data: []
-  },
-
-  /* ---------- Phrasal Verbs (empty) ---------- */
-  phrasalverbs: {
-    title: "Phrasal Verbs",
-    label: "phrasal verbs",
-    storeKey: "pv-progress-v1",
-    data: []
-  },
-
-  /* ---------- Idioms (empty) ---------- */
-  idioms: {
-    title: "Idioms",
-    label: "idioms",
-    storeKey: "idiom-progress-v1",
-    data: []
-  },
-
-  /* ---------- Essay (empty) ---------- */
-  essay: {
-    title: "Essay",
-    label: "essays",
-    storeKey: "essay-progress-v1",
-    data: []
-  }
-};
-
-const THEME_KEY = 'vocab-theme';
+/* ============================================================
+   DATA — Logic of Prepositions
+   ============================================================ */
+const LOGIC_BOOK = [
+  { name:"Core Prepositions", items:[
+    "OF","ON","TO","IN","FOR","AT","UP","BY","FROM","OUT",
+    "WITH","ABOUT","OVER","AROUND","OFF","DOWN","UNDER"
+  ]}
+];
 
 /* ============================================================
    STATE
    ============================================================ */
-let activeTab = Object.keys(DATASETS)[0];
-const state = {};
+let done      = new Set(JSON.parse(localStorage.getItem(STORE_KEY) || '[]'));
+let collapsed = new Set();
+let filter    = 'all';
+let query     = '';
 
-function loadSaved(storeKey){
-  let raw = null;
-  try { raw = JSON.parse(localStorage.getItem(storeKey) || 'null'); } catch(e){}
-  if (Array.isArray(raw))             return { done: new Set(raw), dates: {} };
-  if (raw && typeof raw === 'object') return { done: new Set(raw.done || []), dates: raw.dates || {} };
-  return { done: new Set(), dates: {} };
-}
+let refDone      = new Set(JSON.parse(localStorage.getItem(REF_STORE_KEY) || '[]'));
+let refCollapsed = new Set();
+let refFilter    = 'all';
+let refQuery     = '';
 
-Object.keys(DATASETS).forEach(key => {
-  const saved = loadSaved(DATASETS[key].storeKey);
-  state[key] = {
-    done: saved.done,
-    dates: saved.dates,
-    collapsed: new Set(),
-    filter: 'all',
-    query: '',
-    records: [],
-    sections: [],
-    total: 0
-  };
-});
+let prepDone      = new Set(JSON.parse(localStorage.getItem(PREP_STORE_KEY) || '[]'));
+let prepCollapsed = new Set();
+let prepFilter    = 'all';
+let prepQuery     = '';
+
+let logicDone      = new Set(JSON.parse(localStorage.getItem(LOGIC_STORE_KEY) || '[]'));
+let logicCollapsed = new Set();
+let logicFilter    = 'all';
+let logicQuery     = '';
 
 /* ============================================================
    DOM
    ============================================================ */
-const listEl      = document.getElementById('list');
-const emptyEl     = document.getElementById('empty');
-const emptyStateEl= document.getElementById('emptyState');
-const fillEl      = document.getElementById('fill');
-const pctEl       = document.getElementById('pct');
-const sDone       = document.getElementById('sDone');
-const sLeft       = document.getElementById('sLeft');
-const sSec        = document.getElementById('sSec');
-const doneMsg     = document.getElementById('doneMsg');
-const searchEl    = document.getElementById('search');
-const filterEl    = document.getElementById('filters');
+const pageTitle = document.getElementById('pageTitle');
+const pageSub   = document.getElementById('pageSub');
+
+const listEl   = document.getElementById('list');
+const emptyEl  = document.getElementById('empty');
+const fillEl   = document.getElementById('fill');
+const pctEl    = document.getElementById('pct');
+const sDone    = document.getElementById('sDone');
+const sLeft    = document.getElementById('sLeft');
+const sSec     = document.getElementById('sSec');
+const doneMsg  = document.getElementById('doneMsg');
+const searchEl = document.getElementById('search');
+const filterEl = document.getElementById('filters');
 const collapseBtn = document.getElementById('collapseBtn');
-const resetBtn    = document.getElementById('resetBtn');
-const themeBtn    = document.getElementById('themeBtn');
-const tabsEl      = document.getElementById('tabs');
-const pageTitle   = document.getElementById('pageTitle');
-const pageCount   = document.getElementById('pageCount');
+const resetBtn = document.getElementById('resetBtn');
+const themeBtn = document.getElementById('themeBtn');
+
+const tabsEl        = document.getElementById('tabs');
+const viewUnits     = document.getElementById('view-units');
+const viewRef       = document.getElementById('view-ref');
+const viewPrep      = document.getElementById('view-prep');
+const viewLogic     = document.getElementById('view-logic');
+
+const refListEl     = document.getElementById('refList');
+const refEmptyEl    = document.getElementById('refEmpty');
+const refSearchEl   = document.getElementById('refSearch');
+const refFilterEl   = document.getElementById('refFilters');
+const refCollapseBtn= document.getElementById('refCollapseBtn');
+const refResetBtn   = document.getElementById('refResetBtn');
+const refFillEl     = document.getElementById('refFill');
+const refPctEl      = document.getElementById('refPct');
+const refSDone      = document.getElementById('refSDone');
+const refSLeft      = document.getElementById('refSLeft');
+const refSCh        = document.getElementById('refSCh');
+const refDoneMsg    = document.getElementById('refDoneMsg');
+
+const prepListEl     = document.getElementById('prepList');
+const prepEmptyEl    = document.getElementById('prepEmpty');
+const prepSearchEl   = document.getElementById('prepSearch');
+const prepFilterEl   = document.getElementById('prepFilters');
+const prepCollapseBtn= document.getElementById('prepCollapseBtn');
+const prepResetBtn   = document.getElementById('prepResetBtn');
+const prepFillEl     = document.getElementById('prepFill');
+const prepPctEl      = document.getElementById('prepPct');
+const prepSDone      = document.getElementById('prepSDone');
+const prepSLeft      = document.getElementById('prepSLeft');
+const prepSParts     = document.getElementById('prepSParts');
+const prepDoneMsg    = document.getElementById('prepDoneMsg');
+
+const logicListEl     = document.getElementById('logicList');
+const logicEmptyEl    = document.getElementById('logicEmpty');
+const logicSearchEl   = document.getElementById('logicSearch');
+const logicFilterEl   = document.getElementById('logicFilters');
+const logicCollapseBtn= document.getElementById('logicCollapseBtn');
+const logicResetBtn   = document.getElementById('logicResetBtn');
+const logicFillEl     = document.getElementById('logicFill');
+const logicPctEl      = document.getElementById('logicPct');
+const logicSDone      = document.getElementById('logicSDone');
+const logicSLeft      = document.getElementById('logicSLeft');
+const logicSGroups    = document.getElementById('logicSGroups');
+const logicDoneMsg    = document.getElementById('logicDoneMsg');
+
+const CHEV =
+  '<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+  'stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
 
 /* ============================================================
-   HELPERS
+   TOPIC PAGE LINKS
+   ------------------------------------------------------------
+   Every topic gets a small arrow on the right that opens the
+   page that belongs to it, e.g.
+       "Present continuous (I am doing)"  ->  Present_Continuous.html
    ============================================================ */
-function todayStr(){
-  const d = new Date();
-  return d.getFullYear() + '-' +
-         String(d.getMonth() + 1).padStart(2, '0') + '-' +
-         String(d.getDate()).padStart(2, '0');
+const ARROW =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" ' +
+  'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+  '<path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>';
+
+/* Title -> file name.  Change this ONE function if your files are
+   named differently (e.g. add a prefix or keep the unit number). */
+function pageFor(title){
+  const words = String(title)
+    .replace(/\([^)]*\)/g, ' ')        // drop the parenthetical hint
+    .replace(/[’'"]/g, '')             // drop apostrophes / quotes
+    .replace(/[^A-Za-z0-9]+/g, ' ')    // everything else -> space
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  const name = words
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join('_');
+
+  return (name || 'Topic') + '.html';
 }
 
-function save(key){
-  const st = state[key];
-  try {
-    localStorage.setItem(DATASETS[key].storeKey, JSON.stringify({
-      done: [...st.done],
-      dates: st.dates
-    }));
-  } catch(e){}
-}
+/* Append the arrow link to a row. */
+function appendTopicLink(row, title){
+  const href = pageFor(title);
 
-/* Normalise item — accepts string or {text, sub} */
-function normalise(it){
-  if (typeof it === 'string') return { text: it, sub: '' };
-  return { text: it.text || '', sub: it.sub || '' };
-}
+  const a = document.createElement('a');
+  a.className = 'go';
+  a.href = href;
+  a.title = 'Open ' + href;
+  a.setAttribute('aria-label', 'Open ' + title);
+  a.innerHTML = ARROW;
 
-function match(st, it){
-  const isDone = st.done.has(it.n);
-  if (st.filter === 'done' && !isDone) return false;
-  if (st.filter === 'todo' && isDone)  return false;
-  if (!st.query) return true;
-  if (/^\d+$/.test(st.query)) return String(it.n).startsWith(st.query);
-  return it.hay.includes(st.query);
+  // stop the click from bubbling to the <label> and toggling the checkbox
+  a.addEventListener('click', e => e.stopPropagation());
+
+  row.appendChild(a);
+  return a;
 }
 
 /* ============================================================
-   BUILD TABS
+   BUILD LIST — 145 units
    ============================================================ */
-Object.keys(DATASETS).forEach(key => {
-  const btn = document.createElement('button');
-  btn.className = 'tab' + (key === activeTab ? ' on' : '');
-  btn.dataset.tab = key;
-  btn.textContent = DATASETS[key].title;
-  tabsEl.appendChild(btn);
+const records = [];
+
+GROUPS.forEach((g, gi) => {
+  const size = g.to - g.from + 1;
+
+  const sec = document.createElement('section');
+  sec.className = 'group';
+
+  const head = document.createElement('button');
+  head.className = 'group-head';
+  head.type = 'button';
+  head.innerHTML =
+    CHEV +
+    '<span class="gname"></span><span class="count">0/' + size + '</span>';
+  head.querySelector('.gname').textContent = g.name;
+
+  const body = document.createElement('div');
+  body.className = 'group-body';
+
+  const items = [];
+  for (let n = g.from; n <= g.to; n++) {
+    const row = document.createElement('label');
+    row.className = 'item';
+    row.innerHTML =
+      '<input type="checkbox" data-n="' + n + '">' +
+      '<span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>' +
+      '<span class="n">' + n + '</span>' +
+      '<span class="t"></span>';
+    row.querySelector('.t').textContent = TITLES[n - 1];
+    appendTopicLink(row, TITLES[n - 1]);
+    body.appendChild(row);
+
+    items.push({
+      n: n,
+      el: row,
+      input: row.querySelector('input'),
+      hay: (TITLES[n - 1] + ' ' + g.name).toLowerCase()
+    });
+  }
+
+  head.addEventListener('click', () => {
+    if (query || filter !== 'all') return;   // keep open while filtering
+    collapsed.has(gi) ? collapsed.delete(gi) : collapsed.add(gi);
+    render();
+  });
+
+  sec.append(head, body);
+  listEl.appendChild(sec);
+
+  records.push({
+    gi, items, size,
+    sec,
+    countEl: head.querySelector('.count')
+  });
 });
 
 /* ============================================================
-   BUILD LIST FOR A GIVEN TAB
+   BUILD LIST — English Grammar Reference Book
    ============================================================ */
-function buildTab(key){
-  const ds   = DATASETS[key];
-  const st   = state[key];
-  const data = ds.data;
+const refRecords = [];
+let REF_TOTAL = 0;
 
-  st.records  = [];
-  st.sections = [];
-  st.total    = data.reduce((sum, g) => sum + g.items.length, 0);
-  let counter = 0;
+REF_BOOK.forEach((ch, ci) => {
+  const chapNo = ci + 1;
+  const size   = ch.sections.length;
 
-  data.forEach((g, gi) => {
-    const size = g.items.length;
+  const sec = document.createElement('section');
+  sec.className = 'group';
 
-    const sec = document.createElement('section');
-    sec.className = 'group';
+  const head = document.createElement('button');
+  head.className = 'group-head';
+  head.type = 'button';
+  head.innerHTML =
+    CHEV +
+    '<span class="gname"></span>' +
+    (ch.title ? '<span class="gsub"></span>' : '') +
+    '<span class="count"></span>';
 
-    const head = document.createElement('button');
-    head.className = 'group-head';
-    head.type = 'button';
-    head.innerHTML =
-      '<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
-      'stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>' +
-      '<span class="gname"></span><span class="count">0/' + size + '</span>';
-    head.querySelector('.gname').textContent = g.name;
+  head.querySelector('.gname').textContent = 'Chapter ' + ORDINALS[ci];
+  if (ch.title) head.querySelector('.gsub').textContent = '· ' + ch.title;
+  head.querySelector('.count').textContent = '0/' + size;
 
-    const body = document.createElement('div');
-    body.className = 'group-body';
+  const body = document.createElement('div');
+  body.className = 'group-body';
 
-    const items = [];
-    g.items.forEach(rawItem => {
-      counter++;
-      const n = counter;
-      const { text, sub } = normalise(rawItem);
+  const items = [];
+  ch.sections.forEach((s, si) => {
+    const key = chapNo + '.' + (si + 1);
 
-      const row = document.createElement('div');
-      row.className = 'item';
+    const row = document.createElement('label');
+    row.className = 'item';
+    row.innerHTML =
+      '<input type="checkbox" data-k="' + key + '">' +
+      '<span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>' +
+      '<span class="n">' + key + '</span>' +
+      '<span class="t"></span>';
+    row.querySelector('.t').textContent = s;
+    appendTopicLink(row, s);
+    body.appendChild(row);
 
-      const label = document.createElement('label');
-      label.className = 'item-row';
-      label.innerHTML =
-        '<input type="checkbox" data-n="' + n + '">' +
-        '<span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>' +
-        '<span class="n">' + n + '</span>' +
-        '<span class="t"></span>';
-
-      const titleEl = label.querySelector('.t');
-      titleEl.textContent = text;
-      if (sub) {
-        const em = document.createElement('em');
-        em.textContent = ' — ' + sub;
-        titleEl.appendChild(em);
-      }
-
-      const dateInput = document.createElement('input');
-      dateInput.type = 'date';
-      dateInput.className = 'date';
-      dateInput.dataset.n = n;
-      dateInput.title = 'Date studied';
-
-      row.append(label, dateInput);
-      body.appendChild(row);
-
-      items.push({
-        n: n,
-        el: row,
-        input: label.querySelector('input'),
-        dateInput: dateInput,
-        hay: (text + ' ' + sub + ' ' + g.name).toLowerCase()
-      });
+    items.push({
+      k: key,
+      el: row,
+      input: row.querySelector('input'),
+      hay: (s + ' ' + key + ' chapter ' + ORDINALS[ci] + ' ' + ch.title).toLowerCase()
     });
 
-    head.addEventListener('click', () => {
-      if (st.query || st.filter !== 'all') return;
-      st.collapsed.has(gi) ? st.collapsed.delete(gi) : st.collapsed.add(gi);
-      render();
-    });
-
-    sec.append(head, body);
-
-    st.records.push({
-      gi, items, size, sec,
-      countEl: head.querySelector('.count')
-    });
-
-    /* collapsed by default */
-    st.collapsed.add(gi);
-
-    st.sections.push(sec);
+    REF_TOTAL++;
   });
-}
 
-Object.keys(DATASETS).forEach(buildTab);
+  head.addEventListener('click', () => {
+    if (refQuery || refFilter !== 'all') return;   // keep open while filtering
+    refCollapsed.has(ci) ? refCollapsed.delete(ci) : refCollapsed.add(ci);
+    refRender();
+  });
+
+  sec.append(head, body);
+  refListEl.appendChild(sec);
+
+  refRecords.push({
+    ci, items, size,
+    sec,
+    countEl: head.querySelector('.count')
+  });
+});
+
+refSLeft.textContent = REF_TOTAL;
+refSCh.textContent   = '0 / ' + REF_BOOK.length;
 
 /* ============================================================
-   RENDER
+   BUILD LIST — The Prepositions
+   ============================================================ */
+const prepRecords = [];
+let PREP_TOTAL = 0;
+
+PREP_BOOK.forEach((part, pi) => {
+  const partNo = pi + 1;
+  const size   = part.items.length;
+
+  const sec = document.createElement('section');
+  sec.className = 'group';
+
+  const head = document.createElement('button');
+  head.className = 'group-head';
+  head.type = 'button';
+  head.innerHTML =
+    CHEV +
+    '<span class="gname"></span>' +
+    '<span class="count"></span>';
+
+  head.querySelector('.gname').textContent = part.name;
+  head.querySelector('.count').textContent = '0/' + size;
+
+  const body = document.createElement('div');
+  body.className = 'group-body';
+
+  const items = [];
+  part.items.forEach((raw, ii) => {
+    // Extract "Unit N: Title" → number = N, title = Title.
+    // Anything else (e.g. "How to Use Part One") → number = '—', title = raw.
+    let num, title;
+    const m = raw.match(/^Unit\s+(\d+):\s*(.+)$/);
+    if (m) {
+      num   = m[1];
+      title = m[2];
+    } else {
+      num   = '—';
+      title = raw;
+    }
+
+    const id = 'P' + partNo + '.' + (ii + 1);
+
+    const row = document.createElement('label');
+    row.className = 'item';
+    row.innerHTML =
+      '<input type="checkbox" data-k="' + id + '">' +
+      '<span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>' +
+      '<span class="n">' + num + '</span>' +
+      '<span class="t"></span>';
+    row.querySelector('.t').textContent = title;
+    appendTopicLink(row, title);
+    body.appendChild(row);
+
+    items.push({
+      k: id,
+      el: row,
+      input: row.querySelector('input'),
+      hay: (title + ' ' + num + ' unit ' + num + ' ' + part.name).toLowerCase()
+    });
+
+    PREP_TOTAL++;
+  });
+
+  head.addEventListener('click', () => {
+    if (prepQuery || prepFilter !== 'all') return;   // keep open while filtering
+    prepCollapsed.has(pi) ? prepCollapsed.delete(pi) : prepCollapsed.add(pi);
+    prepRender();
+  });
+
+  sec.append(head, body);
+  prepListEl.appendChild(sec);
+
+  prepRecords.push({
+    pi, items, size,
+    sec,
+    countEl: head.querySelector('.count')
+  });
+});
+
+prepSLeft.textContent  = PREP_TOTAL;
+prepSParts.textContent = '0 / ' + PREP_BOOK.length;
+
+/* ============================================================
+   BUILD LIST — Logic of Prepositions
+   ============================================================ */
+const logicRecords = [];
+let LOGIC_TOTAL = 0;
+
+LOGIC_BOOK.forEach((grp, gi) => {
+  const grpNo = gi + 1;
+  const size  = grp.items.length;
+
+  const sec = document.createElement('section');
+  sec.className = 'group';
+
+  const head = document.createElement('button');
+  head.className = 'group-head';
+  head.type = 'button';
+  head.innerHTML =
+    CHEV +
+    '<span class="gname"></span>' +
+    '<span class="count"></span>';
+
+  head.querySelector('.gname').textContent = grp.name;
+  head.querySelector('.count').textContent = '0/' + size;
+
+  const body = document.createElement('div');
+  body.className = 'group-body';
+
+  const items = [];
+  grp.items.forEach((title, ii) => {
+    const id = 'L' + grpNo + '.' + (ii + 1);
+
+    const row = document.createElement('label');
+    row.className = 'item';
+    row.innerHTML =
+      '<input type="checkbox" data-k="' + id + '">' +
+      '<span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>' +
+      '<span class="n">' + (ii + 1) + '</span>' +
+      '<span class="t"></span>';
+    row.querySelector('.t').textContent = title;
+    appendTopicLink(row, title);
+    body.appendChild(row);
+
+    items.push({
+      k: id,
+      el: row,
+      input: row.querySelector('input'),
+      hay: (title + ' ' + id + ' ' + grp.name).toLowerCase()
+    });
+
+    LOGIC_TOTAL++;
+  });
+
+  head.addEventListener('click', () => {
+    if (logicQuery || logicFilter !== 'all') return;   // keep open while filtering
+    logicCollapsed.has(gi) ? logicCollapsed.delete(gi) : logicCollapsed.add(gi);
+    logicRender();
+  });
+
+  sec.append(head, body);
+  logicListEl.appendChild(sec);
+
+  logicRecords.push({
+    gi, items, size,
+    sec,
+    countEl: head.querySelector('.count')
+  });
+});
+
+logicSLeft.textContent   = LOGIC_TOTAL;
+logicSGroups.textContent = '0 / ' + LOGIC_BOOK.length;
+
+/* ============================================================
+   HELPERS — units
+   ============================================================ */
+const save = () => {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify([...done])); } catch(e){}
+  publishShared();
+};
+
+function publishShared(){
+  try {
+    const groups = GROUPS.map(g => {
+      let doneInGroup = 0;
+      for (let n = g.from; n <= g.to; n++) if (done.has(n)) doneInGroup++;
+      return { name: g.name, from: g.from, to: g.to, size: g.to - g.from + 1, done: doneInGroup };
+    });
+    const chapters = TITLES.map((title, i) => ({ n: i + 1, title, done: done.has(i + 1) }));
+    localStorage.setItem(SHARED_KEY, JSON.stringify({
+      total: TOTAL,
+      done: done.size,
+      pct: TOTAL ? Math.round((done.size / TOTAL) * 100) : 0,
+      groups,
+      chapters,
+      updated_at: new Date().toISOString()
+    }));
+  } catch (e) {}
+}
+
+const filtering = () => query.length > 0 || filter !== 'all';
+
+function match(it){
+  const isDone = done.has(it.n);
+  if (filter === 'done' && !isDone) return false;
+  if (filter === 'todo' && isDone)  return false;
+  if (!query) return true;
+  if (/^\d+$/.test(query)) return String(it.n).startsWith(query);
+  return it.hay.includes(query);
+}
+
+/* ============================================================
+   HELPERS — reference book
+   ============================================================ */
+const refSave = () => {
+  try { localStorage.setItem(REF_STORE_KEY, JSON.stringify([...refDone])); } catch(e){}
+  publishRefShared();
+};
+
+function publishRefShared(){
+  try {
+    const chapters = REF_BOOK.map((ch, ci) => {
+      const chapNo = ci + 1;
+      const sections = ch.sections.map((title, si) => {
+        const id = chapNo + '.' + (si + 1);
+        return { id, title, done: refDone.has(id) };
+      });
+      return {
+        chapter: chapNo,
+        title: ch.title,
+        size: sections.length,
+        done: sections.filter(s => s.done).length,
+        sections
+      };
+    });
+    localStorage.setItem(REF_SHARED_KEY, JSON.stringify({
+      total: REF_TOTAL,
+      done: refDone.size,
+      pct: REF_TOTAL ? Math.round((refDone.size / REF_TOTAL) * 100) : 0,
+      chapters,
+      updated_at: new Date().toISOString()
+    }));
+  } catch (e) {}
+}
+
+const refFiltering = () => refQuery.length > 0 || refFilter !== 'all';
+
+function refMatch(it){
+  const isDone = refDone.has(it.k);
+  if (refFilter === 'done' && !isDone) return false;
+  if (refFilter === 'todo' && isDone)  return false;
+  if (!refQuery) return true;
+  return it.hay.includes(refQuery);
+}
+
+/* ============================================================
+   HELPERS — prepositions
+   ============================================================ */
+const prepSave = () => {
+  try { localStorage.setItem(PREP_STORE_KEY, JSON.stringify([...prepDone])); } catch(e){}
+  publishPrepShared();
+};
+
+function publishPrepShared(){
+  try {
+    const parts = PREP_BOOK.map((part, pi) => {
+      const partNo = pi + 1;
+      const sections = part.items.map((raw, ii) => {
+        const id = 'P' + partNo + '.' + (ii + 1);
+        const m  = raw.match(/^Unit\s+(\d+):\s*(.+)$/);
+        return {
+          id,
+          num:   m ? Number(m[1]) : null,
+          title: m ? m[2] : raw,
+          done:  prepDone.has(id)
+        };
+      });
+      return {
+        part: partNo,
+        name: part.name,
+        size: sections.length,
+        done: sections.filter(s => s.done).length,
+        sections
+      };
+    });
+    localStorage.setItem(PREP_SHARED_KEY, JSON.stringify({
+      total: PREP_TOTAL,
+      done: prepDone.size,
+      pct: PREP_TOTAL ? Math.round((prepDone.size / PREP_TOTAL) * 100) : 0,
+      parts,
+      updated_at: new Date().toISOString()
+    }));
+  } catch (e) {}
+}
+
+const prepFiltering = () => prepQuery.length > 0 || prepFilter !== 'all';
+
+function prepMatch(it){
+  const isDone = prepDone.has(it.k);
+  if (prepFilter === 'done' && !isDone) return false;
+  if (prepFilter === 'todo' && isDone)  return false;
+  if (!prepQuery) return true;
+  return it.hay.includes(prepQuery);
+}
+
+/* ============================================================
+   HELPERS — logic of prepositions
+   ============================================================ */
+const logicSave = () => {
+  try { localStorage.setItem(LOGIC_STORE_KEY, JSON.stringify([...logicDone])); } catch(e){}
+  publishLogicShared();
+};
+
+function publishLogicShared(){
+  try {
+    const groups = LOGIC_BOOK.map((grp, gi) => {
+      const grpNo = gi + 1;
+      const items = grp.items.map((title, ii) => {
+        const id = 'L' + grpNo + '.' + (ii + 1);
+        return { id, title, done: logicDone.has(id) };
+      });
+      return {
+        group: grpNo,
+        name: grp.name,
+        size: items.length,
+        done: items.filter(s => s.done).length,
+        items
+      };
+    });
+    localStorage.setItem(LOGIC_SHARED_KEY, JSON.stringify({
+      total: LOGIC_TOTAL,
+      done: logicDone.size,
+      pct: LOGIC_TOTAL ? Math.round((logicDone.size / LOGIC_TOTAL) * 100) : 0,
+      groups,
+      updated_at: new Date().toISOString()
+    }));
+  } catch (e) {}
+}
+
+const logicFiltering = () => logicQuery.length > 0 || logicFilter !== 'all';
+
+function logicMatch(it){
+  const isDone = logicDone.has(it.k);
+  if (logicFilter === 'done' && !isDone) return false;
+  if (logicFilter === 'todo' && isDone)  return false;
+  if (!logicQuery) return true;
+  return it.hay.includes(logicQuery);
+}
+
+/* ============================================================
+   RENDER — units
    ============================================================ */
 function render(){
-  const key = activeTab;
-  const ds  = DATASETS[key];
-  const st  = state[key];
-  const hasData = ds.data.length > 0;
-
-  /* header */
-  pageTitle.firstChild.textContent = ds.title + ' ';
-  pageCount.textContent = '· ' + st.total + ' ' + (ds.label || 'items');
-
-  /* dashboard */
-  const n     = st.done.size;
-  const ratio = st.total ? n / st.total : 0;
+  const n = done.size;
+  const ratio = n / TOTAL;
   fillEl.style.width = (ratio * 100) + '%';
   pctEl.textContent  = Math.round(ratio * 100) + '%';
   sDone.textContent  = n;
-  sLeft.textContent  = st.total - n;
-  doneMsg.hidden     = n !== st.total || st.total === 0;
+  sLeft.textContent  = TOTAL - n;
+  doneMsg.hidden     = n !== TOTAL;
 
-  /* groups */
   let cleared = 0, anyVisible = false;
-  const isFiltering = st.query.length > 0 || st.filter !== 'all';
+  const isFiltering = filtering();
 
-  st.records.forEach(rec => {
+  records.forEach(rec => {
     let visible = 0, groupDone = 0;
 
     rec.items.forEach(it => {
-      const isDone = st.done.has(it.n);
+      const isDone = done.has(it.n);
       it.el.classList.toggle('on', isDone);
       it.input.checked = isDone;
       if (isDone) groupDone++;
 
-      const dateStr = st.dates[it.n] || '';
-      if (document.activeElement !== it.dateInput && it.dateInput.value !== dateStr) {
-        it.dateInput.value = dateStr;
-      }
-
-      const show = match(st, it);
+      const show = match(it);
       it.el.classList.toggle('hidden', !show);
       if (show) visible++;
     });
@@ -677,93 +1470,208 @@ function render(){
 
     rec.sec.classList.toggle('hidden', visible === 0);
     rec.sec.classList.toggle('complete', groupDone === rec.size);
-    rec.sec.classList.toggle('collapsed', st.collapsed.has(rec.gi) && !isFiltering);
+    rec.sec.classList.toggle('collapsed', collapsed.has(rec.gi) && !isFiltering);
     rec.countEl.textContent = groupDone + '/' + rec.size;
 
     if (groupDone === rec.size) cleared++;
   });
 
-  sSec.textContent = cleared + ' / ' + ds.data.length;
+  sSec.textContent  = cleared + ' / ' + GROUPS.length;
+  emptyEl.hidden    = anyVisible;
 
-  /* visibility logic */
-  if (!hasData) {
-    emptyStateEl.hidden = false;
-    emptyEl.hidden      = true;
-    collapseBtn.disabled = true;
-    collapseBtn.style.opacity = '.4';
-    collapseBtn.style.cursor  = 'default';
-  } else {
-    emptyStateEl.hidden = true;
-    emptyEl.hidden      = anyVisible;
-    collapseBtn.disabled = false;
-    collapseBtn.style.opacity = '';
-    collapseBtn.style.cursor  = '';
-
-    const allCollapsed = ds.data.every((_, i) => st.collapsed.has(i));
-    collapseBtn.textContent = allCollapsed ? 'Expand' : 'Collapse';
-  }
+  const allCollapsed = GROUPS.every((_, i) => collapsed.has(i));
+  collapseBtn.textContent = allCollapsed ? 'Expand' : 'Collapse';
 }
 
 /* ============================================================
-   SWAP TAB CONTENT
+   RENDER — reference book
    ============================================================ */
-function showTab(key){
-  activeTab = key;
+function refRender(){
+  const n = refDone.size;
+  const ratio = REF_TOTAL ? n / REF_TOTAL : 0;
+  refFillEl.style.width = (ratio * 100) + '%';
+  refPctEl.textContent  = Math.round(ratio * 100) + '%';
+  refSDone.textContent  = n;
+  refSLeft.textContent  = REF_TOTAL - n;
+  refDoneMsg.hidden     = n !== REF_TOTAL;
 
+  let cleared = 0, anyVisible = false;
+  const isFiltering = refFiltering();
+
+  refRecords.forEach(rec => {
+    let visible = 0, groupDone = 0;
+
+    rec.items.forEach(it => {
+      const isDone = refDone.has(it.k);
+      it.el.classList.toggle('on', isDone);
+      it.input.checked = isDone;
+      if (isDone) groupDone++;
+
+      const show = refMatch(it);
+      it.el.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+
+    if (visible) anyVisible = true;
+
+    rec.sec.classList.toggle('hidden', visible === 0);
+    rec.sec.classList.toggle('complete', groupDone === rec.size);
+    rec.sec.classList.toggle('collapsed', refCollapsed.has(rec.ci) && !isFiltering);
+    rec.countEl.textContent = groupDone + '/' + rec.size;
+
+    if (groupDone === rec.size) cleared++;
+  });
+
+  refSCh.textContent = cleared + ' / ' + REF_BOOK.length;
+  refEmptyEl.hidden  = anyVisible;
+
+  const allCollapsed = REF_BOOK.every((_, i) => refCollapsed.has(i));
+  refCollapseBtn.textContent = allCollapsed ? 'Expand' : 'Collapse';
+}
+
+/* ============================================================
+   RENDER — prepositions
+   ============================================================ */
+function prepRender(){
+  const n = prepDone.size;
+  const ratio = PREP_TOTAL ? n / PREP_TOTAL : 0;
+  prepFillEl.style.width = (ratio * 100) + '%';
+  prepPctEl.textContent  = Math.round(ratio * 100) + '%';
+  prepSDone.textContent  = n;
+  prepSLeft.textContent  = PREP_TOTAL - n;
+  prepDoneMsg.hidden     = n !== PREP_TOTAL;
+
+  let cleared = 0, anyVisible = false;
+  const isFiltering = prepFiltering();
+
+  prepRecords.forEach(rec => {
+    let visible = 0, groupDone = 0;
+
+    rec.items.forEach(it => {
+      const isDone = prepDone.has(it.k);
+      it.el.classList.toggle('on', isDone);
+      it.input.checked = isDone;
+      if (isDone) groupDone++;
+
+      const show = prepMatch(it);
+      it.el.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+
+    if (visible) anyVisible = true;
+
+    rec.sec.classList.toggle('hidden', visible === 0);
+    rec.sec.classList.toggle('complete', groupDone === rec.size);
+    rec.sec.classList.toggle('collapsed', prepCollapsed.has(rec.pi) && !isFiltering);
+    rec.countEl.textContent = groupDone + '/' + rec.size;
+
+    if (groupDone === rec.size) cleared++;
+  });
+
+  prepSParts.textContent = cleared + ' / ' + PREP_BOOK.length;
+  prepEmptyEl.hidden     = anyVisible;
+
+  const allCollapsed = PREP_BOOK.every((_, i) => prepCollapsed.has(i));
+  prepCollapseBtn.textContent = allCollapsed ? 'Expand' : 'Collapse';
+}
+
+/* ============================================================
+   RENDER — logic of prepositions
+   ============================================================ */
+function logicRender(){
+  const n = logicDone.size;
+  const ratio = LOGIC_TOTAL ? n / LOGIC_TOTAL : 0;
+  logicFillEl.style.width = (ratio * 100) + '%';
+  logicPctEl.textContent  = Math.round(ratio * 100) + '%';
+  logicSDone.textContent  = n;
+  logicSLeft.textContent  = LOGIC_TOTAL - n;
+  logicDoneMsg.hidden     = n !== LOGIC_TOTAL;
+
+  let cleared = 0, anyVisible = false;
+  const isFiltering = logicFiltering();
+
+  logicRecords.forEach(rec => {
+    let visible = 0, groupDone = 0;
+
+    rec.items.forEach(it => {
+      const isDone = logicDone.has(it.k);
+      it.el.classList.toggle('on', isDone);
+      it.input.checked = isDone;
+      if (isDone) groupDone++;
+
+      const show = logicMatch(it);
+      it.el.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+
+    if (visible) anyVisible = true;
+
+    rec.sec.classList.toggle('hidden', visible === 0);
+    rec.sec.classList.toggle('complete', groupDone === rec.size);
+    rec.sec.classList.toggle('collapsed', logicCollapsed.has(rec.gi) && !isFiltering);
+    rec.countEl.textContent = groupDone + '/' + rec.size;
+
+    if (groupDone === rec.size) cleared++;
+  });
+
+  logicSGroups.textContent = cleared + ' / ' + LOGIC_BOOK.length;
+  logicEmptyEl.hidden      = anyVisible;
+
+  const allCollapsed = LOGIC_BOOK.every((_, i) => logicCollapsed.has(i));
+  logicCollapseBtn.textContent = allCollapsed ? 'Expand' : 'Collapse';
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+function setTab(name){
   tabsEl.querySelectorAll('.tab').forEach(t => {
-    t.classList.toggle('on', t.dataset.tab === key);
+    const on = t.dataset.tab === name;
+    t.classList.toggle('on', on);
+    t.setAttribute('aria-selected', on ? 'true' : 'false');
   });
+  viewUnits.hidden = name !== 'units';
+  viewRef.hidden   = name !== 'ref';
+  viewPrep.hidden  = name !== 'prep';
+  viewLogic.hidden = name !== 'logic';
 
-  /* re-append stored section elements */
-  listEl.innerHTML = '';
-  state[key].sections.forEach(sec => listEl.appendChild(sec));
+  if (name === 'ref'){
+    pageTitle.firstChild.nodeValue = 'English Grammar Reference Book ';
+    pageSub.textContent = '· ' + REF_BOOK.length + ' chapters';
+  } else if (name === 'prep'){
+    pageTitle.firstChild.nodeValue = 'The Prepositions ';
+    pageSub.textContent = '· ' + PREP_BOOK.length + ' parts · ' + PREP_TOTAL + ' units';
+  } else if (name === 'logic'){
+    pageTitle.firstChild.nodeValue = 'Logic of Prepositions ';
+    pageSub.textContent = '· ' + LOGIC_TOTAL + ' prepositions';
+  } else {
+    pageTitle.firstChild.nodeValue = 'Grammar in Use ';
+    pageSub.textContent = '· ' + TOTAL + ' units';
+  }
 
-  /* restore toolbar to this tab's stored state */
-  searchEl.value = state[key].query;
-  filterEl.querySelectorAll('button').forEach(b => {
-    b.classList.toggle('on', b.dataset.f === state[key].filter);
-  });
-
-  render();
+  try { localStorage.setItem(TAB_KEY, name); } catch(e){}
 }
 
-/* ============================================================
-   EVENTS
-   ============================================================ */
 tabsEl.addEventListener('click', e => {
   const btn = e.target.closest('.tab');
-  if (!btn || btn.dataset.tab === activeTab) return;
-  showTab(btn.dataset.tab);
+  if (!btn) return;
+  setTab(btn.dataset.tab);
 });
 
+/* ============================================================
+   EVENTS — units
+   ============================================================ */
 listEl.addEventListener('change', e => {
-  const st = state[activeTab];
-
-  if (e.target.matches('input.date')) {
-    const num = Number(e.target.dataset.n);
-    if (e.target.value) st.dates[num] = e.target.value;
-    else delete st.dates[num];
-    save(activeTab);
-    return;
-  }
-
   const input = e.target.closest('input[type="checkbox"]');
   if (!input) return;
   const num = Number(input.dataset.n);
-
-  if (input.checked) {
-    st.done.add(num);
-    if (!st.dates[num]) st.dates[num] = todayStr();
-  } else {
-    st.done.delete(num);
-    delete st.dates[num];
-  }
-  save(activeTab);
+  input.checked ? done.add(num) : done.delete(num);
+  save();
   render();
 });
 
 searchEl.addEventListener('input', () => {
-  state[activeTab].query = searchEl.value.trim().toLowerCase();
+  query = searchEl.value.trim().toLowerCase();
   render();
 });
 
@@ -772,28 +1680,149 @@ filterEl.addEventListener('click', e => {
   if (!btn) return;
   filterEl.querySelectorAll('button').forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
-  state[activeTab].filter = btn.dataset.f;
+  filter = btn.dataset.f;
   render();
 });
 
 collapseBtn.addEventListener('click', () => {
-  if (collapseBtn.disabled) return;
-  const st   = state[activeTab];
-  const data = DATASETS[activeTab].data;
-  const allCollapsed = data.every((_, i) => st.collapsed.has(i));
-  st.collapsed.clear();
-  if (!allCollapsed) data.forEach((_, i) => st.collapsed.add(i));
+  const allCollapsed = GROUPS.every((_, i) => collapsed.has(i));
+  collapsed.clear();
+  if (!allCollapsed) GROUPS.forEach((_, i) => collapsed.add(i));
   render();
 });
 
 resetBtn.addEventListener('click', () => {
-  const st = state[activeTab];
-  if (!st.done.size && !Object.keys(st.dates).length) return;
-  if (confirm('Reset all progress for "' + DATASETS[activeTab].title + '"?')) {
-    st.done.clear();
-    st.dates = {};
-    save(activeTab);
+  if (!done.size) return;
+  if (confirm('Reset all progress?')) {
+    done.clear();
+    save();
     render();
+  }
+});
+
+/* ============================================================
+   EVENTS — reference book
+   ============================================================ */
+refListEl.addEventListener('change', e => {
+  const input = e.target.closest('input[type="checkbox"]');
+  if (!input) return;
+  const key = input.dataset.k;
+  input.checked ? refDone.add(key) : refDone.delete(key);
+  refSave();
+  refRender();
+});
+
+refSearchEl.addEventListener('input', () => {
+  refQuery = refSearchEl.value.trim().toLowerCase();
+  refRender();
+});
+
+refFilterEl.addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  refFilterEl.querySelectorAll('button').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  refFilter = btn.dataset.f;
+  refRender();
+});
+
+refCollapseBtn.addEventListener('click', () => {
+  const allCollapsed = REF_BOOK.every((_, i) => refCollapsed.has(i));
+  refCollapsed.clear();
+  if (!allCollapsed) REF_BOOK.forEach((_, i) => refCollapsed.add(i));
+  refRender();
+});
+
+refResetBtn.addEventListener('click', () => {
+  if (!refDone.size) return;
+  if (confirm('Reset all reference-book progress?')) {
+    refDone.clear();
+    refSave();
+    refRender();
+  }
+});
+
+/* ============================================================
+   EVENTS — prepositions
+   ============================================================ */
+prepListEl.addEventListener('change', e => {
+  const input = e.target.closest('input[type="checkbox"]');
+  if (!input) return;
+  const key = input.dataset.k;
+  input.checked ? prepDone.add(key) : prepDone.delete(key);
+  prepSave();
+  prepRender();
+});
+
+prepSearchEl.addEventListener('input', () => {
+  prepQuery = prepSearchEl.value.trim().toLowerCase();
+  prepRender();
+});
+
+prepFilterEl.addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  prepFilterEl.querySelectorAll('button').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  prepFilter = btn.dataset.f;
+  prepRender();
+});
+
+prepCollapseBtn.addEventListener('click', () => {
+  const allCollapsed = PREP_BOOK.every((_, i) => prepCollapsed.has(i));
+  prepCollapsed.clear();
+  if (!allCollapsed) PREP_BOOK.forEach((_, i) => prepCollapsed.add(i));
+  prepRender();
+});
+
+prepResetBtn.addEventListener('click', () => {
+  if (!prepDone.size) return;
+  if (confirm('Reset all preposition progress?')) {
+    prepDone.clear();
+    prepSave();
+    prepRender();
+  }
+});
+
+/* ============================================================
+   EVENTS — logic of prepositions
+   ============================================================ */
+logicListEl.addEventListener('change', e => {
+  const input = e.target.closest('input[type="checkbox"]');
+  if (!input) return;
+  const key = input.dataset.k;
+  input.checked ? logicDone.add(key) : logicDone.delete(key);
+  logicSave();
+  logicRender();
+});
+
+logicSearchEl.addEventListener('input', () => {
+  logicQuery = logicSearchEl.value.trim().toLowerCase();
+  logicRender();
+});
+
+logicFilterEl.addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  logicFilterEl.querySelectorAll('button').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  logicFilter = btn.dataset.f;
+  logicRender();
+});
+
+logicCollapseBtn.addEventListener('click', () => {
+  const allCollapsed = LOGIC_BOOK.every((_, i) => logicCollapsed.has(i));
+  logicCollapsed.clear();
+  if (!allCollapsed) LOGIC_BOOK.forEach((_, i) => logicCollapsed.add(i));
+  logicRender();
+});
+
+logicResetBtn.addEventListener('click', () => {
+  if (!logicDone.size) return;
+  if (confirm('Reset all Logic of Prepositions progress?')) {
+    logicDone.clear();
+    logicSave();
+    logicRender();
   }
 });
 
@@ -817,7 +1846,45 @@ themeBtn.addEventListener('click', () => {
 /* ============================================================
    GO
    ============================================================ */
-showTab(activeTab);
+render();
+refRender();
+prepRender();
+logicRender();
+publishShared();      // make sure the main app has fresh data even if nothing changed this visit
+publishRefShared();
+publishPrepShared();
+publishLogicShared();
+
+let savedTab = 'units';
+try { savedTab = localStorage.getItem(TAB_KEY) || 'units'; } catch(e){}
+setTab(
+  savedTab === 'ref'   ? 'ref'   :
+  savedTab === 'prep'  ? 'prep'  :
+  savedTab === 'logic' ? 'logic' :
+  'units'
+);
+
+/* Live two-way sync: if a Grammar-linked subtask gets checked in the main
+   challenge app while this tracker is open in another tab, pick it up and
+   re-render immediately. */
+window.addEventListener('storage', e => {
+  if (e.key === STORE_KEY){
+    done = new Set(JSON.parse(localStorage.getItem(STORE_KEY) || '[]'));
+    render();
+  }
+  if (e.key === REF_STORE_KEY){
+    refDone = new Set(JSON.parse(localStorage.getItem(REF_STORE_KEY) || '[]'));
+    refRender();
+  }
+  if (e.key === PREP_STORE_KEY){
+    prepDone = new Set(JSON.parse(localStorage.getItem(PREP_STORE_KEY) || '[]'));
+    prepRender();
+  }
+  if (e.key === LOGIC_STORE_KEY){
+    logicDone = new Set(JSON.parse(localStorage.getItem(LOGIC_STORE_KEY) || '[]'));
+    logicRender();
+  }
+});
 </script>
 </body>
 </html>
