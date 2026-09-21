@@ -46,7 +46,7 @@ html{transition:background .2s ease}
 body,.card,.list-item,.stat,.btn,.input,select,textarea,.modal,.nav-item,
 .badge,.bar,.cover,.topic-picker,.report,.modal-foot,.modal-head,th,.check-line,
 .import-panel,.alert-card,.example,.issue,table,#topbar,.theme-toggle,
-.seg,.seg-btn,.hm-cell{
+.seg,.seg-btn,.day-cell,.phase-badge,.hm-cell{
   transition:background-color .2s ease, border-color .2s ease, color .2s ease;
 }
 *{box-sizing:border-box}
@@ -240,13 +240,19 @@ tr:last-child td{border-bottom:1px solid var(--border)}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--bar-bg);border-radius:0;border:none}
 ::-webkit-scrollbar-thumb:hover{background:var(--muted)}
-
+/* ---- Roadmap ---- */
 .seg{display:inline-flex;background:transparent;border:1px solid var(--border);border-radius:var(--radius);padding:0;gap:0;flex-wrap:wrap}
 .seg-btn{border:none;background:transparent;color:var(--muted-2);font-size:12px;font-weight:500;padding:7px 14px;border-radius:0;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;transition:background .12s,color .12s;border-right:1px solid var(--border)}
 .seg-btn:last-child{border-right:none}
 .seg-btn:hover{color:var(--text);background:var(--hover)}
 .seg-btn.active{background:var(--text);color:var(--bg)}
-
+.phase-badge{width:32px;height:32px;border-radius:0;background:transparent;border:1px solid var(--text);color:var(--text);display:flex;align-items:center;justify-content:center;font-weight:500;font-size:13px;flex-shrink:0}
+.day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+.day-cell{border:none;background:var(--panel);color:var(--muted-2);border-radius:0;height:40px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:background .12s,color .12s}
+.day-cell:hover{color:var(--text);background:var(--hover)}
+.day-cell.done{background:var(--panel);color:var(--green-text);font-weight:600}
+.day-cell.today{box-shadow:inset 0 0 0 1px var(--text)}
+.phase-desc{font-size:13.5px;color:var(--muted-2);line-height:1.6}
 /* ---- Heatmap ---- */
 .hm-wrap{display:flex;flex-direction:column;gap:6px}
 .hm-months{
@@ -331,17 +337,7 @@ input[type="file"]::file-selector-button:hover{border-color:var(--text);backgrou
   transition:width .25s ease;
 }
 .expl-panel-note{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:8px}
-.expl-panel-note code{
-  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  font-size:11.5px;background:var(--panel-3);border:1px solid var(--border);
-  border-radius:2px;padding:0 4px;
-}
 .expl-status{font-size:12.5px;min-height:18px;margin-top:12px;color:var(--muted-2);line-height:1.5}
-
-/* Import panel above the editors */
-.expl-import{border:1px solid var(--border);border-radius:2px;padding:14px 16px;background:var(--panel-2);margin-bottom:14px}
-.expl-import .head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
-.expl-import .head .t{font-size:11.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--muted)}
 
 /* ============================================================
    RICH CONTENT — HTML / CSS / tables in Explanation & Examples
@@ -516,6 +512,7 @@ input[type="file"]::file-selector-button:hover{border-color:var(--text);backgrou
     <div class="brand"><span class="dot"></span><span class="txt">Grammar Study</span></div>
     <nav class="nav">
       <div class="nav-item" data-action="go" data-route="dashboard"><span class="ic">◈</span><span class="lbl">Dashboard</span></div>
+      <div class="nav-item" data-action="go" data-route="roadmap"><span class="ic">◐</span><span class="lbl">Roadmap</span></div>
       <div class="nav-item" data-action="go" data-route="heatmap"><span class="ic">▦</span><span class="lbl">Heatmap</span></div>
       <div class="nav-item" data-action="go" data-route="topics"><span class="ic">▤</span><span class="lbl">Topics</span></div>
       <div class="nav-item" data-action="go" data-route="materials"><span class="ic">▣</span><span class="lbl">Materials</span></div>
@@ -582,7 +579,23 @@ let exForm = { topicId:null, materialId:null, returnTo:null };
 let hmYear = new Date().getFullYear();
 let hmSelectedDay = null;
 
-function emptyDB(){ return { topics: [], materials: [], exercises: [], attempts: [], studySeconds: 0 }; }
+function defaultRoadmap(){
+  return {
+    view: "grid",
+    phases: [1,2,3].map(i=>({
+      id: "phase-" + i,
+      title: ["Foundations","Development","Consolidation"][i-1],
+      description: "",
+      days: 30,
+      startDate: null,
+      completedDays: [],
+      materials: [],
+      topics: [],
+      notes: ""
+    }))
+  };
+}
+function emptyDB(){ return { topics: [], materials: [], exercises: [], attempts: [], studySeconds: 0, roadmap: defaultRoadmap() }; }
 function loadDB(){
   try{
     const raw = localStorage.getItem(LS_KEY);
@@ -593,6 +606,9 @@ function loadDB(){
       d.exercises = d.exercises || [];
       d.attempts = d.attempts || [];
       d.studySeconds = d.studySeconds || 0;
+      if(!d.roadmap || typeof d.roadmap !== "object") d.roadmap = defaultRoadmap();
+      d.roadmap.phases = d.roadmap.phases || [];
+      d.roadmap.view = d.roadmap.view || "grid";
       /* ensure rich-content fields exist on topics */
       d.topics.forEach(t=>{
         if(!t.explanationFormat) t.explanationFormat = "text";
@@ -842,40 +858,6 @@ function htmlToText(html){
   return s.replace(/[ \t]+\n/g,"\n").replace(/\n{3,}/g,"\n\n").trim();
 }
 
-/* Extract the usable parts of a full HTML document:
-   keep <style> blocks, take the <body>, drop doctype/html/head/meta/etc.
-   This makes uploaded .html files land cleanly inside .rich-content. */
-function extractHtmlForEmbed(raw){
-  let s = String(raw || "");
-
-  // Collect all <style> blocks
-  const styles = [];
-  s = s.replace(/<style\b[^>]*>([\s\S]*?)<\/style>/gi, (m, css) => {
-    styles.push(css);
-    return "";
-  });
-
-  // Pull body content if the document has one
-  const bodyMatch = s.match(/<body\b[^>]*>([\s\S]*?)<\/body>/i);
-  let body = bodyMatch ? bodyMatch[1] : s;
-
-  // Strip wrappers, doctype, meta, title, link, base
-  body = body
-    .replace(/<!DOCTYPE[^>]*>/gi, "")
-    .replace(/<\/?(?:html|head|body)\b[^>]*>/gi, "")
-    .replace(/<meta\b[^>]*>/gi, "")
-    .replace(/<title\b[^>]*>[\s\S]*?<\/title>/gi, "")
-    .replace(/<link\b[^>]*>/gi, "")
-    .replace(/<base\b[^>]*>/gi, "")
-    .trim();
-
-  const styleBlock = styles.length
-    ? `<style>\n${styles.join("\n")}\n</style>\n`
-    : "";
-
-  return (styleBlock + body).trim();
-}
-
 const RICH_SNIPPETS = {
   table:
 `<table>
@@ -980,7 +962,7 @@ function richEditorHTML(id, value, opts){
       <textarea class="input mono" id="${id}" rows="${rows}" placeholder="${esc(placeholder)}">${esc(value)}</textarea>
       <div class="rich-note">
         Content renders inside <code>.rich-content</code>. Use inline <code>style="…"</code> for one-offs,
-        or a <code>&lt;style&gt;</code> block for topic-wide styling.
+        or a <code>&lt;style&gt;</code> block scoped to <code>.rich-content</code> for topic-wide styling.
         Tables, callouts (<code>.callout</code>, <code>.callout.tip</code>, <code>.callout.warn</code>)
         and two-column grids (<code>.cols</code>) are pre-styled.
       </div>
@@ -1128,6 +1110,36 @@ function createStubTopic(id, materialId, levelOverride){
 }
 
 /* =========================================================
+   3b. ROADMAP HELPERS
+   ========================================================= */
+function findPhase(id){ return (DB.roadmap.phases||[]).find(p=>p.id===id); }
+function uniquePhaseId(base){
+  let id = slugify(base) || "phase";
+  if(!findPhase(id)) return id;
+  let i = 2; while(findPhase(id+"-"+i)) i++;
+  return id+"-"+i;
+}
+function phaseProgress(p){
+  const days = p.days || 30;
+  const done = Math.min((p.completedDays||[]).length, days);
+  return { done, days, pct: pct(done, days) };
+}
+function phaseCurrentDay(p){
+  if(!p || !p.startDate) return null;
+  const elapsed = Math.floor((Date.now() - p.startDate) / 86400000) + 1;
+  return Math.max(1, elapsed);
+}
+function phaseStatus(p){
+  const {done, days} = phaseProgress(p);
+  if(days && done >= days) return {cls:"green", label:"Complete"};
+  if(done > 0) return {cls:"amber", label:"In progress"};
+  return {cls:"grey", label:"Not started"};
+}
+function phaseMaterials(p){ return (p.materials||[]).map(findMaterial).filter(Boolean); }
+function phaseTopics(p){ return (p.topics||[]).map(findTopic).filter(Boolean); }
+function barClsFor(p){ return p >= 80 ? "green" : p >= 40 ? "" : "amber"; }
+
+/* =========================================================
    3c. HEATMAP HELPERS
    ========================================================= */
 function dateKey(d){
@@ -1143,10 +1155,17 @@ function parseDayKey(k){
 }
 function activityByDay(){
   const map = {};
-  DB.attempts.forEach(a => {
-    if(!a.ts) return;
-    const key = dateKey(new Date(a.ts));
+  const add = (ts) => {
+    if(!ts) return;
+    const key = dateKey(new Date(ts));
     map[key] = (map[key]||0) + 1;
+  };
+  DB.attempts.forEach(a => add(a.ts));
+  (DB.roadmap.phases||[]).forEach(p => {
+    if(!p.startDate) return;
+    (p.completedDays||[]).forEach(dn => {
+      add(p.startDate + (dn-1) * 86400000);
+    });
   });
   return map;
 }
@@ -1204,7 +1223,7 @@ function openTopicModal(topicId, type){
     type,
     editing: false,
     mode: "text",
-    importTab: "html",
+    importTab: "text",
     drafts: null,
     fullscreen: false
   };
@@ -1233,6 +1252,12 @@ function toggleModalFullscreen(){
   modal.fullscreen = !modal.fullscreen;
   paintModal();
 }
+function syncModalDraft(){
+  if(!modal || modal.kind !== "topic" || !modal.drafts) return;
+  const id = modal.mode === "html" ? "modal-input-html" : "modal-input";
+  const ta = document.getElementById(id);
+  if(ta) modal.drafts[modal.mode] = ta.value;
+}
 function setExplStatus(msg, kind){
   const el = document.getElementById("expl-status");
   if(!el) return;
@@ -1248,132 +1273,76 @@ function setExplProgress(fraction){
   const f = Math.max(0, Math.min(1, Number(fraction) || 0));
   bar.style.width = Math.round(f * 100) + "%";
 }
-
-/* Write extracted/uploaded content into whichever editor is currently open.
-   In HTML mode plain text is wrapped in <p> blocks (unless the source was
-   already HTML, in which case it is inserted raw via opts.rawHtml). */
-function appendExplanationText(text, opts){
-  opts = opts || {};
-  if(!modal || modal.kind !== "topic") return;
-
-  const mode = modal.mode || "text";
-  const taId = mode === "html" ? "modal-input-html" : "modal-input";
-  const ta   = document.getElementById(taId);
-  if(!ta){
-    setExplStatus("Editor not found — try reopening the modal.", "err");
-    return;
-  }
-
-  text = String(text == null ? "" : text).replace(/\r\n/g, "\n").trim();
+function appendExplanationText(text){
+  const ta = document.getElementById("modal-input");
+  if(!ta) return;
+  text = String(text == null ? "" : text).replace(/\r\n/g,"\n").trim();
   if(!text){
-    setExplStatus("Nothing to add — no content was found.", "warn");
+    setExplStatus("Nothing to add — no text could be read from that file.", "warn");
     return;
   }
-
-  let toAppend;
-  if(mode === "html"){
-    toAppend = opts.rawHtml ? text : textToHtml(text);
-  } else {
-    toAppend = text;
-  }
-
-  const cur = ta.value.replace(/\s+$/, "");
-  ta.value = cur ? cur + "\n\n" + toAppend : toAppend;
-
-  if(modal.drafts){
-    if(mode === "html") modal.drafts.html = ta.value;
-    else                modal.drafts.text = ta.value;
-  }
-
-  if(mode === "html") updateRichPreview("modal-input-html");
-
-  setExplStatus(
-    `Added ${text.length.toLocaleString()} characters to the ${mode === "html" ? "HTML editor" : "text editor"}. ` +
-    `Review it above, then press Save.`,
-    "ok"
-  );
+  const cur = ta.value.replace(/\s+$/,"");
+  ta.value = cur ? cur + "\n\n" + text : text;
+  if(modal && modal.drafts) modal.drafts.text = ta.value;
+  setExplStatus(`Added ${text.length.toLocaleString()} characters to the explanation. Review it above, then press Save.`, "ok");
   setExplProgress(1);
   ta.scrollTop = ta.scrollHeight;
 }
 
-/* The import panel — same markup for both Explanation and Examples.
-   Four tabs: HTML/CSS, TXT/MD, PDF, PNG (OCR). */
-function importPanelHTML(tab){
-  tab = tab || "html";
+function explanationImportPanelHTML(tab){
+  tab = tab || "text";
   return `
-    <div class="expl-import">
-      <div class="head">
-        <span class="t">Import content from a file</span>
-        <span class="small muted">HTML files go into the HTML editor · text files go into the active editor</span>
-      </div>
+    <div class="seg" style="margin-bottom:12px;flex-wrap:wrap">
+      <button type="button" class="seg-btn ${tab==="text"?"active":""}" data-action="expl-tab" data-tab="text">✎ Paste text / TXT</button>
+      <button type="button" class="seg-btn ${tab==="pdf"?"active":""}"  data-action="expl-tab" data-tab="pdf">📄 PDF</button>
+      <button type="button" class="seg-btn ${tab==="png"?"active":""}"  data-action="expl-tab" data-tab="png">🖼 PNG</button>
+    </div>
 
-      <div class="seg" style="margin-bottom:12px;flex-wrap:wrap">
-        <button type="button" class="seg-btn ${tab==="html"?"active":""}" data-action="editor-tab" data-tab="html">⟨/⟩ HTML / CSS</button>
-        <button type="button" class="seg-btn ${tab==="text"?"active":""}" data-action="editor-tab" data-tab="text">✎ TXT / MD</button>
-        <button type="button" class="seg-btn ${tab==="pdf"?"active":""}"  data-action="editor-tab" data-tab="pdf">📄 PDF</button>
-        <button type="button" class="seg-btn ${tab==="png"?"active":""}"  data-action="editor-tab" data-tab="png">🖼 PNG (OCR)</button>
+    <div data-expl-panel="text" style="display:${tab==="text"?"":"none"}">
+      <div class="form-field">
+        <label>Load a .txt / .md file (optional)</label>
+        <input type="file" id="expl-txt-file" accept=".txt,.md,.text,text/plain">
       </div>
+      <div class="expl-panel-note">Or simply type or paste the rule into the box below.</div>
+    </div>
 
-      <div data-expl-panel="html" style="display:${tab==="html"?"":"none"}">
-        <div class="form-field">
-          <label>Upload an .html / .htm file</label>
-          <input type="file" id="expl-html-file" accept=".html,.htm,text/html">
-        </div>
-        <div class="expl-panel-note">
-          Complete HTML documents are supported. <code>&lt;style&gt;</code> blocks are preserved,
-          the <code>&lt;body&gt;</code> content is used, and <code>doctype</code> / <code>head</code>
-          wrappers are stripped automatically.
-        </div>
+    <div data-expl-panel="pdf" style="display:${tab==="pdf"?"":"none"}">
+      <div class="form-field">
+        <label>Upload a PDF — its text will be extracted</label>
+        <input type="file" id="expl-pdf-file" accept="application/pdf,.pdf">
       </div>
-
-      <div data-expl-panel="text" style="display:${tab==="text"?"":"none"}">
-        <div class="form-field">
-          <label>Upload a .txt / .md file</label>
-          <input type="file" id="expl-txt-file" accept=".txt,.md,.text,text/plain">
-        </div>
-        <div class="expl-panel-note">
-          Plain text is inserted as-is into the active editor (converted to paragraphs in HTML mode).
-        </div>
+      <div class="expl-panel-note">
+        Works with text-based PDFs. Scanned / photographed pages have no selectable text —
+        use the <strong>PNG</strong> tab (OCR) for those instead.
       </div>
+    </div>
 
-      <div data-expl-panel="pdf" style="display:${tab==="pdf"?"":"none"}">
-        <div class="form-field">
-          <label>Upload a PDF — its text will be extracted</label>
-          <input type="file" id="expl-pdf-file" accept="application/pdf,.pdf">
-        </div>
-        <div class="expl-panel-note">
-          Works with text-based PDFs. Scanned / photographed pages have no selectable text —
-          use the <strong>PNG</strong> tab (OCR) instead.
-        </div>
+    <div data-expl-panel="png" style="display:${tab==="png"?"":"none"}">
+      <div class="form-field">
+        <label>Upload a PNG / JPG — text is recognised (OCR)</label>
+        <input type="file" id="expl-png-file" accept="image/png,image/jpeg,image/webp,image/*">
       </div>
-
-      <div data-expl-panel="png" style="display:${tab==="png"?"":"none"}">
-        <div class="form-field">
-          <label>Upload a PNG / JPG — text is recognised (OCR)</label>
-          <input type="file" id="expl-png-file" accept="image/png,image/jpeg,image/webp,image/*">
-        </div>
-        <div class="expl-panel-note">
-          The first OCR run downloads a small engine and the English model (a few MB).
-          Clear, high-contrast screenshots work best.
-        </div>
+      <div class="expl-panel-note">
+        The first OCR run downloads a small engine and the English model (a few MB).
+        Clear, high-contrast screenshots work best.
       </div>
+    </div>
 
-      <div class="expl-progress" aria-hidden="true"><i id="expl-progress-bar"></i></div>
-      <div class="expl-status" id="expl-status"></div>
-    </div>`;
+    <div class="expl-progress" aria-hidden="true"><i id="expl-progress-bar"></i></div>
+    <div class="expl-status" id="expl-status"></div>`;
 }
 
 function explanationEditorHTML(t){
   const mode = modal.mode || "text";
   const draft = modal.drafts[mode] || "";
   let modeBody = "";
-
   if(mode === "text"){
     modeBody = `
-      <div class="form-field">
+      ${explanationImportPanelHTML(modal.importTab || "text")}
+      <div class="form-field" style="margin-top:14px">
         <label>Explanation text</label>
         <textarea class="input" id="modal-input" rows="12"
-          placeholder="Write the rule in your own words — or import it from a file above…">${esc(draft)}</textarea>
+          placeholder="Write the rule in your own words — or import it from a PDF, PNG or TXT file above…">${esc(draft)}</textarea>
       </div>
       <div class="btn-row" style="margin-top:10px">
         <button type="button" class="btn sm" data-action="expl-clear">Clear text</button>
@@ -1393,18 +1362,14 @@ function explanationEditorHTML(t){
 </table>`
     });
   }
-
   return `
     ${modeToggleHTML(mode)}
-    ${importPanelHTML(modal.importTab || "html")}
     ${modeBody}`;
 }
-
 function examplesEditorHTML(t){
   const mode = modal.mode || "text";
   const draft = modal.drafts[mode] || "";
   let modeBody = "";
-
   if(mode === "text"){
     modeBody = `
       <div class="small muted" style="margin-bottom:8px">One example per line. Empty lines are ignored.</div>
@@ -1426,10 +1391,8 @@ She's been working since 8am.">${esc(draft)}</textarea>`;
 </table>`
     });
   }
-
   return `
     ${modeToggleHTML(mode)}
-    ${importPanelHTML(modal.importTab || "html")}
     ${modeBody}`;
 }
 
@@ -1510,21 +1473,21 @@ function renderExplanationHTML(t){
   if(fmt === "html"){
     const html = t.explanationHtml || "";
     if(!html.trim()){
-      return `<div class="empty" style="padding:26px">No explanation yet.<br><br><span class="small">Click <strong>Edit</strong> below to write one — or to import it from an HTML, TXT, PDF or PNG file.</span></div>`;
+      return `<div class="empty" style="padding:26px">No explanation yet.<br><br><span class="small">Click <strong>Edit</strong> below to write one — or to import it from a PDF, PNG or TXT file, or to add tables and styled boxes.</span></div>`;
     }
     return renderRichContent(html);
   }
   if(t.explanation && t.explanation.trim()){
     return `<div class="explain" style="white-space:pre-wrap">${esc(t.explanation)}</div>`;
   }
-  return `<div class="empty" style="padding:26px">No explanation yet.<br><br><span class="small">Click <strong>Edit</strong> below to write one — or to import it from an HTML, TXT, PDF or PNG file.</span></div>`;
+  return `<div class="empty" style="padding:26px">No explanation yet.<br><br><span class="small">Click <strong>Edit</strong> below to write one — or to import it from a PDF, PNG or TXT file, or to add tables and styled boxes.</span></div>`;
 }
 function renderExamplesHTML(t){
   const fmt = t.examplesFormat || "text";
   if(fmt === "html"){
     const html = t.examplesHtml || "";
     if(!html.trim()){
-      return `<div class="empty" style="padding:26px">No examples yet.<br><br><span class="small">Click <strong>Edit</strong> below to add some — or import them from an HTML, TXT, PDF or PNG file.</span></div>`;
+      return `<div class="empty" style="padding:26px">No examples yet.<br><br><span class="small">Click <strong>Edit</strong> below to add some.</span></div>`;
     }
     return renderRichContent(html);
   }
@@ -1532,14 +1495,15 @@ function renderExamplesHTML(t){
   if(exs.length){
     return exs.map((ex,i)=>`<div class="example" style="display:flex;gap:8px"><span class="muted small" style="font-weight:700;min-width:18px">${i+1}.</span><span>${esc(ex)}</span></div>`).join("");
   }
-  return `<div class="empty" style="padding:26px">No examples yet.<br><br><span class="small">Click <strong>Edit</strong> below to add some — or import them from an HTML, TXT, PDF or PNG file.</span></div>`;
+  return `<div class="empty" style="padding:26px">No examples yet.<br><br><span class="small">Click <strong>Edit</strong> below to add some.</span></div>`;
 }
 
 function heatmapInfoHTML(){
   return `<div style="line-height:1.7;font-size:14px;color:var(--text-2)">
     <h3 style="margin-top:0;color:var(--text)">What counts as an activity</h3>
     <div class="small muted" style="margin-bottom:18px">
-      Every exercise attempt you make (correct or not).
+      • Every exercise attempt you make (correct or not)<br>
+      • Every roadmap day you mark as complete, mapped to its scheduled date via the phase's start date
     </div>
 
     <h3 style="color:var(--text)">Reading the colours</h3>
@@ -1561,7 +1525,8 @@ function heatmapInfoHTML(){
 
     <h3 style="color:var(--text)">Drilling into a day</h3>
     <div class="small muted">
-      Click any square to see exactly what you did that day — which exercises you attempted.
+      Click any square to see exactly what you did that day — which exercises you attempted and
+      which roadmap days you completed.
     </div>
   </div>`;
 }
@@ -1584,6 +1549,9 @@ function render(){
   let html = "";
   switch(view.name){
     case "dashboard":      html = viewDashboard(); break;
+    case "roadmap":        html = viewRoadmap(); break;
+    case "phase":          html = viewPhase(view.id); break;
+    case "phase-form":     html = viewPhaseForm(view.id); break;
     case "heatmap":        html = viewHeatmap(); break;
     case "topics":         html = viewTopics(); break;
     case "topic-form":     html = viewTopicForm(view.id); break;
@@ -1607,6 +1575,7 @@ function render(){
     let on = route === view.name;
     if(view.name === "topic" || view.name === "topic-form") on = route === "topics";
     if(view.name === "material" || view.name === "material-form") on = route === "materials";
+    if(view.name === "phase" || view.name === "phase-form") on = route === "roadmap";
     if(view.name === "exercise-form") on = route === "exercises";
     n.classList.toggle("active", on);
   });
@@ -1642,9 +1611,9 @@ function welcomeScreen(){
       </div>
     </div>
     <div class="card">
-      <h3>Track your activity</h3>
-      <div class="small muted" style="margin:8px 0 14px">See every day you studied on the heatmap, and watch your accuracy and mastery grow.</div>
-      <button class="btn" data-action="go" data-route="heatmap">Open Heatmap</button>
+      <h3>Plan it out on the Roadmap</h3>
+      <div class="small muted" style="margin:8px 0 14px">Split your study into 30-day phases and attach the materials and topics you'll cover.</div>
+      <button class="btn" data-action="go" data-route="roadmap">Open Roadmap</button>
     </div>
   </div>`;
 }
@@ -1664,6 +1633,9 @@ function viewDashboard(){
   const materials = DB.materials.slice(0,3);
   const unknown = exercisesWithUnknownTopics();
   const mismatched = topicsWithMismatchedLevels();
+  const phases = DB.roadmap.phases || [];
+  const rmTotalDays = phases.reduce((a,p)=>a+(p.days||0),0);
+  const rmDoneDays = phases.reduce((a,p)=>a+Math.min((p.completedDays||[]).length, p.days||0),0);
 
   const activity = activityByDay();
   const yearNow = new Date().getFullYear();
@@ -1729,6 +1701,22 @@ function viewDashboard(){
     </div>`;
   }).join("") : `<div class="empty">No materials yet.</div>`;
 
+  const roadmapCard = phases.length ? `
+    <div class="card clickable" data-action="go" data-route="roadmap" style="margin-top:18px">
+      <div class="between" style="margin-bottom:10px">
+        <h3 style="margin:0">Roadmap</h3>
+        <span class="open-hint" style="font-size:11px;font-weight:600;color:var(--accent-text);background:var(--accent-soft);padding:2px 9px;border-radius:20px">Open ↗</span>
+      </div>
+      <div class="between small muted" style="margin-bottom:6px">
+        <span>${phases.length} phase${phases.length===1?"":"s"} · ${rmDoneDays} / ${rmTotalDays} days</span>
+        <span>${pct(rmDoneDays, rmTotalDays)}%</span>
+      </div>
+      <div class="bar ${barClsFor(pct(rmDoneDays, rmTotalDays))}"><i style="width:${pct(rmDoneDays, rmTotalDays)}%"></i></div>
+      <div class="row wrap" style="margin-top:12px">
+        ${phases.slice(0,6).map((p,i)=>`<span class="badge ${phaseStatus(p).cls}">Phase ${i+1} · ${phaseProgress(p).pct}%</span>`).join("")}
+      </div>
+    </div>` : "";
+
   const heatmapCard = `
     <div class="card clickable" data-action="go" data-route="heatmap" style="margin-top:18px">
       <div class="between" style="margin-bottom:12px">
@@ -1755,6 +1743,7 @@ function viewDashboard(){
     <div class="stat"><div class="n">${fmtTime(o.studySeconds)}</div><div class="l">Study time</div></div>
   </div>
   ${heatmapCard}
+  ${roadmapCard}
   <div class="grid-2" style="margin-top:18px">
     <div class="card">
       <div class="between" style="margin-bottom:12px">
@@ -1778,6 +1767,7 @@ function viewDashboard(){
     <button class="btn primary" data-action="new-exercise">+ Add exercise</button>
     <button class="btn" data-action="go" data-route="exercises">Practice exercises</button>
     <button class="btn" data-action="go" data-route="heatmap">View heatmap</button>
+    <button class="btn" data-action="go" data-route="roadmap">Open roadmap</button>
     <button class="btn" data-action="go" data-route="review">Review weak topics</button>
     <button class="btn" data-action="go" data-route="import">Import data</button>
   </div>`;
@@ -1854,7 +1844,7 @@ function viewTopicForm(id){
         </div>
         <div class="form-field"><label>ID (auto from title if blank)</label><input class="input mono" name="id" value="${esc(d.id)}" placeholder="e.g. present-perfect"></div>
         <div class="form-field full"><label>Explanation (plain text)</label><textarea class="input" name="explanation" rows="5" placeholder="Explain the rule in your own words…">${esc(d.explanation)}</textarea>
-          <div class="small muted">Tip: open the topic and click the Explanation card to write rich HTML (tables, styled boxes, custom CSS), or to import its content from an HTML, TXT, PDF or PNG file.</div>
+          <div class="small muted">Tip: open the topic and click the Explanation card to write rich HTML (tables, styled boxes, custom CSS), or to import its text from a PDF, PNG or TXT file.</div>
         </div>
         <div class="form-field full"><label>Examples (one per line, plain text)</label><textarea class="input" name="examples" rows="4" placeholder="I have seen this film three times.
 She has lived here since 2015.">${esc((d.examples||[]).join("\n"))}</textarea></div>
@@ -1935,7 +1925,7 @@ function viewTopicDetail(id){
       <div class="between" style="margin-bottom:10px"><h3 style="margin:0">Explanation${explBadge}</h3><span class="open-hint">Open ↗</span></div>
       <div class="small muted" style="display:flex;align-items:center;gap:8px;padding:6px 0">
         <span style="font-size:18px">${hasExplanation ? "📘" : "＋"}</span>
-        <span>${hasExplanation ? "Click to read the full explanation" : "No explanation yet — click to write one or import an HTML / TXT / PDF / PNG file"}</span>
+        <span>${hasExplanation ? "Click to read the full explanation" : "No explanation yet — click to write or import one (PDF / PNG / TXT / HTML)"}</span>
       </div>
     </div>`;
   const examplesCard = `
@@ -1943,7 +1933,7 @@ function viewTopicDetail(id){
       <div class="between" style="margin-bottom:10px"><h3 style="margin:0">Examples${exBadge}</h3><span class="open-hint">Open ↗</span></div>
       <div class="small muted" style="display:flex;align-items:center;gap:8px;padding:6px 0">
         <span style="font-size:18px">${exampleCount ? "💬" : "＋"}</span>
-        <span>${exampleCount ? (t.examplesFormat === "html" ? "HTML content — click to view" : `${exampleCount} example${exampleCount === 1 ? "" : "s"} — click to view`) : "No examples yet — click to add some or import an HTML / TXT / PDF / PNG file"}</span>
+        <span>${exampleCount ? (t.examplesFormat === "html" ? "HTML content — click to view" : `${exampleCount} example${exampleCount === 1 ? "" : "s"} — click to view`) : "No examples yet — click to add some"}</span>
       </div>
     </div>`;
 
@@ -2219,6 +2209,290 @@ function materialImportPanelHTML(m){
 }
 
 /* =========================================================
+   8b. ROADMAP
+   ========================================================= */
+function phaseCardHTML(p, i){
+  const prog = phaseProgress(p);
+  const st = phaseStatus(p);
+  const cur = phaseCurrentDay(p);
+  const mats = (p.materials||[]).length;
+  const tops = (p.topics||[]).length;
+  const dayLabel = cur
+    ? `Day ${Math.min(cur, prog.days)} of ${prog.days}`
+    : `${prog.days} days`;
+  return `<div class="card clickable topic-card" data-action="phase" data-id="${esc(p.id)}">
+    <div class="between">
+      <span class="badge lvl">Phase ${i+1}</span>
+      <span class="badge ${st.cls}">${st.label}</span>
+    </div>
+    <div class="t">${esc(p.title)}</div>
+    <div class="small muted" style="min-height:18px">${esc(p.description || "No description")}</div>
+    <div class="bar ${barClsFor(prog.pct)}"><i style="width:${prog.pct}%"></i></div>
+    <div class="between small muted">
+      <span>${dayLabel}</span>
+      <span>${prog.done}/${prog.days} · ${prog.pct}%</span>
+    </div>
+    <div class="row wrap">
+      <span class="badge grey">${mats} material${mats===1?"":"s"}</span>
+      <span class="badge grey">${tops} topic${tops===1?"":"s"}</span>
+    </div>
+  </div>`;
+}
+function phaseRowHTML(p, i){
+  const prog = phaseProgress(p);
+  const st = phaseStatus(p);
+  const cur = phaseCurrentDay(p);
+  const mats = (p.materials||[]).length;
+  const tops = (p.topics||[]).length;
+  return `<div class="list-item clickable" data-action="phase" data-id="${esc(p.id)}">
+    <div class="row" style="gap:14px;min-width:0;flex:1">
+      <div class="phase-badge">${i+1}</div>
+      <div style="min-width:0;flex:1">
+        <div class="row wrap" style="gap:8px">
+          <strong style="font-size:14.5px">${esc(p.title)}</strong>
+          <span class="badge ${st.cls}">${st.label}</span>
+          <span class="badge grey">${mats} mat · ${tops} top</span>
+        </div>
+        <div class="small muted" style="margin:3px 0 7px">${esc(p.description || "No description")}</div>
+        <div class="bar ${barClsFor(prog.pct)}" style="max-width:460px"><i style="width:${prog.pct}%"></i></div>
+      </div>
+    </div>
+    <div style="text-align:right;flex-shrink:0;min-width:80px">
+      <div style="font-weight:700;font-size:16px">${prog.pct}%</div>
+      <div class="small muted">${cur ? `Day ${Math.min(cur, prog.days)}` : "—"} / ${prog.days}</div>
+    </div>
+  </div>`;
+}
+function viewRoadmap(){
+  const phases = DB.roadmap.phases || [];
+  const mode = DB.roadmap.view || "grid";
+  const totalDays = phases.reduce((a,p)=>a+(p.days||0),0);
+  const doneDays = phases.reduce((a,p)=>a+Math.min((p.completedDays||[]).length, p.days||0),0);
+  const matSet = new Set(), topSet = new Set();
+  phases.forEach(p=>{
+    (p.materials||[]).forEach(x=>matSet.add(x));
+    (p.topics||[]).forEach(x=>topSet.add(x));
+  });
+  const overallPct = pct(doneDays, totalDays);
+
+  const header = `
+  <div class="between wrap" style="align-items:flex-start;margin-bottom:6px">
+    <div>
+      <h1>Roadmap</h1>
+      <div class="sub" style="margin-bottom:0">
+        ${phases.length} phase${phases.length===1?"":"s"} · ${totalDays} day${totalDays===1?"":"s"} planned.
+        Attach materials and topics to each phase, then tick off the days as you go.
+      </div>
+    </div>
+    <div class="btn-row">
+      <div class="seg">
+        <button class="seg-btn ${mode==="grid"?"active":""}" data-action="roadmap-view" data-view="grid">▦ Grid</button>
+        <button class="seg-btn ${mode==="list"?"active":""}" data-action="roadmap-view" data-view="list">☰ List</button>
+      </div>
+      <button class="btn primary" data-action="new-phase">+ Add phase</button>
+    </div>
+  </div>`;
+
+  if(!phases.length){
+    return header + `<div class="empty" style="margin-top:20px">
+      No phases yet.<br><br>
+      <span class="small">A phase is a block of study days (30 by default) with its own materials and topics.</span>
+      <div class="btn-row" style="justify-content:center;margin-top:16px">
+        <button class="btn primary" data-action="new-phase">Create your first phase</button>
+        <button class="btn" data-action="seed-roadmap">Create the 3 × 30-day starter plan</button>
+      </div>
+    </div>`;
+  }
+
+  const stats = `
+  <div class="stat-grid">
+    <div class="stat"><div class="n">${phases.length}</div><div class="l">Phases</div></div>
+    <div class="stat"><div class="n">${doneDays}<span class="muted" style="font-size:15px">/${totalDays}</span></div><div class="l">Days completed</div></div>
+    <div class="stat"><div class="n">${overallPct}%</div><div class="l">Roadmap progress</div></div>
+    <div class="stat"><div class="n">${matSet.size}</div><div class="l">Materials used</div></div>
+    <div class="stat"><div class="n">${topSet.size}</div><div class="l">Topics covered</div></div>
+  </div>
+  <div class="card" style="margin-bottom:20px">
+    <div class="between small muted" style="margin-bottom:6px"><span>Overall roadmap progress</span><span>${overallPct}%</span></div>
+    <div class="bar ${barClsFor(overallPct)}"><i style="width:${overallPct}%"></i></div>
+  </div>`;
+
+  const body = mode === "list"
+    ? `<div class="list">${phases.map((p,i)=>phaseRowHTML(p,i)).join("")}</div>`
+    : `<div class="grid">${phases.map((p,i)=>phaseCardHTML(p,i)).join("")}</div>`;
+
+  return header + stats + body +
+    `<div class="btn-row" style="margin-top:22px">
+      <button class="btn" data-action="new-phase">+ Add phase</button>
+      <span class="small muted">You can keep extending the roadmap with as many phases as you need.</span>
+    </div>`;
+}
+function viewPhase(id){
+  const p = findPhase(id);
+  if(!p) return `<div class="empty">Phase not found.</div>`;
+  const idx = DB.roadmap.phases.indexOf(p) + 1;
+  const totalPhases = DB.roadmap.phases.length;
+  const prog = phaseProgress(p);
+  const cur = phaseCurrentDay(p);
+  const st = phaseStatus(p);
+  const doneSet = new Set(p.completedDays||[]);
+  const mats = phaseMaterials(p);
+  const tops = phaseTopics(p);
+  const availMats = DB.materials.filter(m=>!(p.materials||[]).includes(m.id));
+  const availTops = DB.topics.filter(t=>!(p.topics||[]).includes(t.id));
+
+  const daysHTML = Array.from({length: p.days || 30}, (_,i)=>{
+    const d = i + 1;
+    const cls = "day-cell" + (doneSet.has(d) ? " done" : "") + (cur === d ? " today" : "");
+    return `<button class="${cls}" data-action="toggle-day" data-id="${esc(p.id)}" data-day="${d}" title="Day ${d}">${d}</button>`;
+  }).join("");
+
+  const matHTML = mats.length ? mats.map(m=>{
+    const ms = materialStats(m.id);
+    return `<div class="list-item" style="padding:9px 13px">
+      <div class="row" style="gap:12px;min-width:0">
+        ${coverHTML(m)}
+        <div style="min-width:0">
+          <div style="font-weight:600;font-size:13.5px">${esc(m.title)}</div>
+          <div class="small muted">${esc(m.author||"")} · ${ms.progress}% complete</div>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn sm" data-action="material" data-id="${esc(m.id)}">Open</button>
+        <button class="btn sm danger" data-action="phase-unlink-material" data-id="${esc(p.id)}" data-mid="${esc(m.id)}" title="Remove from phase">✕</button>
+      </div>
+    </div>`;
+  }).join("") : `<div class="empty small">No materials linked to this phase yet.</div>`;
+
+  const topHTML = tops.length ? tops.map(t=>{
+    const ts = topicStats(t.id);
+    return `<div class="list-item" style="padding:9px 13px">
+      <div class="row" style="gap:10px;min-width:0">
+        <span class="badge lvl">${esc(t.level)}</span>
+        <div style="min-width:0">
+          <div style="font-weight:600;font-size:13.5px">${esc(t.title)}</div>
+          <div class="small muted">${ts.exercises} exercise${ts.exercises===1?"":"s"} · ${ts.progress}% mastered</div>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn sm" data-action="topic" data-id="${esc(t.id)}">Open</button>
+        <button class="btn sm danger" data-action="phase-unlink-topic" data-id="${esc(p.id)}" data-tid="${esc(t.id)}" title="Remove from phase">✕</button>
+      </div>
+    </div>`;
+  }).join("") : `<div class="empty small">No topics linked to this phase yet.</div>`;
+
+  const startInfo = p.startDate
+    ? `<span>Started ${esc(fmtDay(p.startDate))}${cur ? ` · day ${Math.min(cur, prog.days)}` : ""}</span>`
+    : `<span>No start date set</span>`;
+
+  return `
+  <div class="btn-row" style="margin-bottom:14px"><button class="btn sm" data-action="go" data-route="roadmap">← Roadmap</button></div>
+  <div class="between wrap" style="align-items:flex-start">
+    <div>
+      <h1>${esc(p.title)}</h1>
+      <div class="sub" style="margin-bottom:10px">
+        <span class="badge lvl">Phase ${idx} of ${totalPhases}</span>
+        <span class="badge ${st.cls}" style="margin-left:6px">${st.label}</span>
+        <span class="small muted" style="margin-left:10px">${prog.days} days</span>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn sm" data-action="edit-phase" data-id="${esc(p.id)}">Edit</button>
+      <button class="btn sm danger" data-action="delete-phase" data-id="${esc(p.id)}">Delete</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px">
+    <div class="between small muted" style="margin-bottom:6px">
+      ${startInfo}
+      <span>${prog.done} / ${prog.days} days · ${prog.pct}%</span>
+    </div>
+    <div class="bar ${barClsFor(prog.pct)}"><i style="width:${prog.pct}%"></i></div>
+    ${p.description ? `<div class="phase-desc" style="margin-top:12px">${esc(p.description)}</div>` : ""}
+  </div>
+
+  <div class="between wrap" style="margin-bottom:12px">
+    <h2 style="margin:0">Day tracker</h2>
+    <div class="btn-row">
+      ${p.startDate ? `<button class="btn sm" data-action="phase-clear-start" data-id="${esc(p.id)}">Clear start date</button>` : `<button class="btn sm" data-action="phase-start-today" data-id="${esc(p.id)}">Start today</button>`}
+      <button class="btn sm" data-action="phase-mark-all" data-id="${esc(p.id)}">Mark all</button>
+      <button class="btn sm danger" data-action="phase-reset-days" data-id="${esc(p.id)}">Reset</button>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:22px">
+    <div class="small muted" style="margin-bottom:12px">Click a day to mark it complete. The ringed day is "today" based on the start date.</div>
+    <div class="day-grid">${daysHTML}</div>
+  </div>
+
+  <div class="between wrap" style="margin-bottom:12px">
+    <h2 style="margin:0">Materials (${mats.length})</h2>
+    <button class="btn sm" data-action="go" data-route="materials">Manage materials</button>
+  </div>
+  <div class="list" style="margin-bottom:10px">${matHTML}</div>
+  <div class="row wrap" style="gap:8px;margin-bottom:26px">
+    <select id="phase-mat-select" style="max-width:340px" ${availMats.length?"":"disabled"}>
+      ${availMats.length
+        ? availMats.map(m=>`<option value="${esc(m.id)}">${esc(m.title)}</option>`).join("")
+        : `<option value="">No materials available</option>`}
+    </select>
+    <button class="btn primary" data-action="phase-link-material" data-id="${esc(p.id)}" ${availMats.length?"":"disabled"}>+ Add material</button>
+  </div>
+
+  <div class="between wrap" style="margin-bottom:12px">
+    <h2 style="margin:0">Topics (${tops.length})</h2>
+    <button class="btn sm" data-action="go" data-route="topics">Manage topics</button>
+  </div>
+  <div class="list" style="margin-bottom:10px">${topHTML}</div>
+  <div class="row wrap" style="gap:8px;margin-bottom:26px">
+    <select id="phase-top-select" style="max-width:340px" ${availTops.length?"":"disabled"}>
+      ${availTops.length
+        ? availTops.map(t=>`<option value="${esc(t.id)}">${esc(t.level)} · ${esc(t.title)}</option>`).join("")
+        : `<option value="">No topics available</option>`}
+    </select>
+    <button class="btn primary" data-action="phase-link-topic" data-id="${esc(p.id)}" ${availTops.length?"":"disabled"}>+ Add topic</button>
+  </div>
+
+  ${p.notes ? `<h2>Notes</h2><div class="card"><div class="phase-desc" style="white-space:pre-wrap">${esc(p.notes)}</div></div>` : ""}`;
+}
+function viewPhaseForm(id){
+  const editing = id && id !== "new";
+  const p = editing ? findPhase(id) : null;
+  if(editing && !p) return `<div class="empty">Phase not found.</div>`;
+  const d = p || { title:"", description:"", days:30, startDate:null, notes:"" };
+  const nextNum = (DB.roadmap.phases||[]).length + 1;
+  return `
+  <div class="btn-row" style="margin-bottom:14px"><button class="btn sm" data-action="go" data-route="roadmap">← Roadmap</button></div>
+  <h1>${editing ? "Edit phase" : "Add phase"}</h1>
+  <div class="sub">${editing ? "Update this phase's details." : "Add another block of study days to your roadmap."}</div>
+  <div class="card">
+    <form id="phase-form" onsubmit="return false">
+      <div class="form-grid">
+        <div class="form-field full"><label>Title *</label>
+          <input class="input" name="title" value="${esc(d.title)}" placeholder="e.g. Foundations, Past Tenses Deep Dive…" required>
+        </div>
+        <div class="form-field"><label>Days</label>
+          <input class="input" name="days" type="number" min="1" max="365" value="${d.days||30}">
+        </div>
+        <div class="form-field"><label>Start date (optional)</label>
+          <input class="input" name="startDate" type="date" value="${esc(toDateInput(d.startDate))}">
+        </div>
+        <div class="form-field full"><label>Description</label>
+          <textarea class="input" name="description" rows="3" placeholder="What is the goal of this phase?">${esc(d.description)}</textarea>
+        </div>
+        <div class="form-field full"><label>Notes</label>
+          <textarea class="input" name="notes" rows="4" placeholder="Anything else about this phase…">${esc(d.notes)}</textarea>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:18px">
+        <button class="btn primary" data-action="save-phase" data-editing="${editing?"1":"0"}">${editing?"Save changes":"Create phase"}</button>
+        <button class="btn" data-action="go" data-route="roadmap">Cancel</button>
+        <span class="small muted" style="margin-left:auto">Suggested number: phase ${nextNum}</span>
+      </div>
+    </form>
+  </div>`;
+}
+
+/* =========================================================
    8c. HEATMAP VIEW
    ========================================================= */
 function viewHeatmap(){
@@ -2295,7 +2569,15 @@ function viewHeatmap(){
     const d = parseDayKey(hmSelectedDay);
     const attempts = DB.attempts.filter(a => dateKey(new Date(a.ts)) === hmSelectedDay);
     const correctCount = attempts.filter(a => a.correct).length;
-    const dayTotal = attempts.length;
+    const roadmapDone = [];
+    (DB.roadmap.phases||[]).forEach(p => {
+      if(!p.startDate) return;
+      (p.completedDays||[]).forEach(dn => {
+        const ts = p.startDate + (dn-1) * 86400000;
+        if(dateKey(new Date(ts)) === hmSelectedDay) roadmapDone.push({phase: p, day: dn});
+      });
+    });
+    const dayTotal = attempts.length + roadmapDone.length;
 
     const attemptList = attempts.sort((a,b)=>b.ts-a.ts).map(a=>{
       const ex = findEx(a.exerciseId);
@@ -2311,6 +2593,15 @@ function viewHeatmap(){
       </div>`;
     }).join("");
 
+    const roadmapList = roadmapDone.map(r=>`
+      <div class="list-item clickable" data-action="phase" data-id="${esc(r.phase.id)}" style="padding:9px 13px">
+        <div style="min-width:0">
+          <div class="small" style="font-weight:600">${esc(r.phase.title)}</div>
+          <div class="small muted">Day ${r.day} of ${r.phase.days}</div>
+        </div>
+        <span class="badge green">Completed</span>
+      </div>`).join("");
+
     detailsHTML = `<div class="card" style="margin-top:18px;border-color:var(--accent)">
       <div class="between wrap" style="margin-bottom:14px">
         <div>
@@ -2318,13 +2609,16 @@ function viewHeatmap(){
           <div class="small muted">
             ${dayTotal} activit${dayTotal===1?"y":"ies"}
             ${attempts.length ? `· ${correctCount}/${attempts.length} exercise${attempts.length===1?"":"s"} correct` : ""}
+            ${roadmapDone.length ? `· ${roadmapDone.length} roadmap day${roadmapDone.length===1?"":"s"}` : ""}
           </div>
         </div>
         <button class="btn sm" data-action="hm-clear-selection">Close</button>
       </div>
       ${attempts.length ? `<h4 style="margin:0 0 8px;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)">Exercise attempts (${attempts.length})</h4>
         <div class="list" style="margin-bottom:16px">${attemptList}</div>` : ""}
-      ${!attempts.length ? `<div class="empty small">No activity recorded for this day.</div>` : ""}
+      ${roadmapDone.length ? `<h4 style="margin:0 0 8px;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)">Roadmap days completed (${roadmapDone.length})</h4>
+        <div class="list">${roadmapList}</div>` : ""}
+      ${!attempts.length && !roadmapDone.length ? `<div class="empty small">No activity recorded for this day.</div>` : ""}
     </div>`;
   }
 
@@ -2378,6 +2672,7 @@ function viewHeatmap(){
 
   <div class="btn-row" style="margin-top:22px">
     <button class="btn primary" data-action="go" data-route="exercises">Practice exercises</button>
+    <button class="btn" data-action="go" data-route="roadmap">Open roadmap</button>
     <button class="btn" data-action="go" data-route="progress">See progress</button>
   </div>`;
 }
@@ -2471,7 +2766,7 @@ Materials (JSON):
   "description": "…", "topics": ["present-perfect"], "total": 145, "current": 42 } ] }
 
 Full backup (JSON) — the file from Export → Full backup:
-{ "topics": […], "materials": […], "exercises": […], "attempts": […], "studySeconds": 0 }
+{ "topics": […], "materials": […], "exercises": […], "attempts": […], "studySeconds": 0, "roadmap": {…} }
 
 You can also paste a plain array — the type will be guessed from the fields.'>${esc(impState.text||"")}</textarea>
     <div class="btn-row" style="margin-top:12px">
@@ -2581,7 +2876,7 @@ function runImportValidation(text, format){
     invalid:[], duplicates:[], warnings:[],
     counts: { materials:0, exercises:0, topics:0 }
   };
-  const valid = { materials: [], exercises: [], topics: [], attempts: [], studySeconds: null };
+  const valid = { materials: [], exercises: [], topics: [], attempts: [], studySeconds: null, roadmap: null };
 
   let bucket = { materials: [], exercises: [], topics: [] };
 
@@ -2609,6 +2904,7 @@ function runImportValidation(text, format){
           if(Array.isArray(obj.topics))    bucket.topics    = obj.topics;
           if(Array.isArray(obj.attempts))  valid.attempts   = obj.attempts;
           if(typeof obj.studySeconds === "number") valid.studySeconds = obj.studySeconds;
+          if(obj.roadmap && typeof obj.roadmap === "object") valid.roadmap = obj.roadmap;
         } else {
           const kind = detectObjectKind(obj);
           if(!kind){
@@ -2702,6 +2998,7 @@ function runImportValidation(text, format){
   }
 
   report.validCount = valid.materials.length + valid.exercises.length + valid.topics.length;
+  if(valid.roadmap) report.validCount += 1;
   return {report, valid};
 }
 
@@ -2742,6 +3039,22 @@ function confirmImport(){
     DB.studySeconds = Math.max(DB.studySeconds || 0, impState.valid.studySeconds);
   }
 
+  let restoredRoadmap = false;
+  if(impState.valid.roadmap){
+    const rm = impState.valid.roadmap;
+    rm.phases = Array.isArray(rm.phases) ? rm.phases : [];
+    rm.view = rm.view || "grid";
+    rm.phases.forEach(p=>{
+      p.id = p.id || uid();
+      p.days = p.days || 30;
+      p.completedDays = p.completedDays || [];
+      p.materials = p.materials || [];
+      p.topics = p.topics || [];
+    });
+    DB.roadmap = rm;
+    restoredRoadmap = true;
+  }
+
   save();
   impState = { text:"", format:"auto", createMissing: impState.createMissing, report:null, valid:null };
 
@@ -2750,6 +3063,7 @@ function confirmImport(){
   if(addedM) parts.push(`${addedM} material${addedM===1?"":"s"}`);
   if(addedE) parts.push(`${addedE} exercise${addedE===1?"":"s"}`);
   if(addedA) parts.push(`${addedA} attempt${addedA===1?"":"s"}`);
+  if(restoredRoadmap) parts.push("roadmap");
 
   let msg = `Imported: ${parts.join(", ") || "nothing"}.`;
   if(createdTopics) msg += `\nCreated ${createdTopics} missing topic${createdTopics===1?"":"s"}.`;
@@ -2758,6 +3072,7 @@ function confirmImport(){
   if(addedE) go("exercises");
   else if(addedM) go("materials");
   else if(addedT) go("topics");
+  else if(restoredRoadmap) go("roadmap");
   else go("dashboard");
 }
 
@@ -3325,6 +3640,18 @@ function viewProgress(){
       <td>${s.progress}%</td>
     </tr>`;
   }).join("");
+  const phaseRows = (DB.roadmap.phases||[]).map((p,i)=>{
+    const pr = phaseProgress(p);
+    return `<tr>
+      <td>${i+1}. ${esc(p.title)}</td>
+      <td>${pr.days}</td>
+      <td>${pr.done}</td>
+      <td>${(p.materials||[]).length}</td>
+      <td>${(p.topics||[]).length}</td>
+      <td style="width:160px"><div class="bar ${barClsFor(pr.pct)}"><i style="width:${pr.pct}%"></i></div></td>
+      <td>${pr.pct}%</td>
+    </tr>`;
+  }).join("");
   return `<h1>Progress</h1>
   <div class="sub">Everything you have studied so far.</div>
   <div class="stat-grid">
@@ -3338,6 +3665,9 @@ function viewProgress(){
   <h2>Progress by CEFR level</h2>
   <table><thead><tr><th>Level</th><th>Exercises</th><th>Mastered</th><th>Attempts</th><th>Accuracy</th><th>Progress</th></tr></thead>
   <tbody>${levelRows || `<tr><td colspan="6" class="muted">No exercises yet.</td></tr>`}</tbody></table>
+  <h2>Roadmap progress</h2>
+  <table><thead><tr><th>Phase</th><th>Days</th><th>Done</th><th>Materials</th><th>Topics</th><th>Progress</th><th>%</th></tr></thead>
+  <tbody>${phaseRows || `<tr><td colspan="7" class="muted">No phases yet.</td></tr>`}</tbody></table>
   <h2>Progress by grammar topic</h2>
   <table><thead><tr><th>Topic</th><th>Level</th><th>Ex.</th><th>Attempts</th><th>Accuracy</th><th>Mistakes</th><th>Mastery</th></tr></thead>
   <tbody>${topicRows || `<tr><td colspan="7" class="muted">No topics yet.</td></tr>`}</tbody></table>
@@ -3378,11 +3708,18 @@ function exportTopicsCSV(){
   const rows = DB.topics.map(t=>({...t, examples: (t.examples||[]).join("|")}));
   download("topics.csv", toCSV(rows, headers), "text/csv");
 }
+function exportRoadmapJSON(){ download("roadmap.json", JSON.stringify(DB.roadmap, null, 2)); }
 function exportProgressJSON(){
   const data = {
     exportedAt: new Date().toISOString(),
     studySeconds: DB.studySeconds || 0,
     overall: overallStats(),
+    roadmap: (DB.roadmap.phases||[]).map((p,i)=>({
+      order: i+1, id: p.id, title: p.title, days: p.days,
+      completedDays: (p.completedDays||[]).length,
+      materials: (p.materials||[]).length, topics: (p.topics||[]).length,
+      progress: phaseProgress(p).pct
+    })),
     topics: DB.topics.map(t=>({id:t.id, title:t.title, level:t.level, ...topicStats(t.id)})),
     materials: DB.materials.map(m=>({id:m.id, title:m.title, current:m.current||0, total:m.total||0,
       progress: m.total ? Math.round((m.current/m.total)*100) : 0})),
@@ -3432,6 +3769,13 @@ function viewExport(){
       </div>
     </div>
     <div class="card">
+      <h3>Roadmap</h3>
+      <div class="small muted" style="margin-bottom:12px">${(DB.roadmap.phases||[]).length} phases — data only</div>
+      <div class="btn-row">
+        <button class="btn" data-action="exp-roadmap-json" ${(DB.roadmap.phases||[]).length?"":"disabled"}>JSON</button>
+      </div>
+    </div>
+    <div class="card">
       <h3>Progress data</h3>
       <div class="small muted" style="margin-bottom:12px">${DB.attempts.length} attempts · ${fmtTime(DB.studySeconds||0)} study time — report only</div>
       <div class="btn-row">
@@ -3443,7 +3787,7 @@ function viewExport(){
   <h2>Full backup</h2>
   <div class="card" style="border-color:var(--accent)">
     <div class="small muted" style="margin-bottom:12px">
-      <strong>Everything</strong> — topics, materials, exercises, attempts and study time —
+      <strong>Everything</strong> — topics, materials, exercises, attempts, roadmap and study time —
       in one JSON file. <strong>Re-importable</strong> via Import Data.
     </div>
     <div class="btn-row">
@@ -3741,6 +4085,138 @@ document.addEventListener("click", (e)=>{
       break;
     }
 
+    /* ---------- ROADMAP ---------- */
+    case "roadmap-view": {
+      DB.roadmap.view = el.dataset.view === "list" ? "list" : "grid";
+      save(); render();
+      break;
+    }
+    case "phase": go("phase", el.dataset.id); break;
+    case "new-phase": go("phase-form", "new"); break;
+    case "edit-phase": go("phase-form", el.dataset.id); break;
+    case "seed-roadmap": {
+      if(!DB.roadmap.phases.length){
+        DB.roadmap.phases = defaultRoadmap().phases;
+        save(); render();
+      }
+      break;
+    }
+    case "save-phase": {
+      const form = document.getElementById("phase-form");
+      if(!form) break;
+      const title = form.querySelector('[name="title"]').value.trim();
+      if(!title){ alert("Title is required."); break; }
+      const description = form.querySelector('[name="description"]').value.trim();
+      const notes = form.querySelector('[name="notes"]').value;
+      const daysRaw = Number(form.querySelector('[name="days"]').value);
+      const days = Math.max(1, Math.min(365, isNaN(daysRaw) ? 30 : daysRaw));
+      const startDate = fromDateInput(form.querySelector('[name="startDate"]').value);
+      const editing = el.dataset.editing === "1";
+      if(editing){
+        const p = findPhase(view.id);
+        if(!p) break;
+        p.title = title;
+        p.description = description;
+        p.notes = notes;
+        if(days !== p.days){
+          p.days = days;
+          p.completedDays = (p.completedDays||[]).filter(d=>d <= days);
+        }
+        p.startDate = startDate;
+        save(); go("phase", p.id);
+      } else {
+        const phase = {
+          id: uniquePhaseId("phase-" + ((DB.roadmap.phases||[]).length + 1)),
+          title, description, days, startDate, notes,
+          completedDays: [], materials: [], topics: []
+        };
+        DB.roadmap.phases.push(phase);
+        save(); go("phase", phase.id);
+      }
+      break;
+    }
+    case "delete-phase": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      if(!confirm(`Delete phase "${p.title}" and its day progress? This cannot be undone.`)) break;
+      DB.roadmap.phases = DB.roadmap.phases.filter(x=>x.id !== p.id);
+      save(); go("roadmap");
+      break;
+    }
+    case "toggle-day": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      const d = Number(el.dataset.day);
+      const set = new Set(p.completedDays||[]);
+      if(set.has(d)) set.delete(d); else set.add(d);
+      p.completedDays = Array.from(set).sort((a,b)=>a-b);
+      save(); render();
+      break;
+    }
+    case "phase-mark-all": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      p.completedDays = Array.from({length: p.days || 30}, (_,i)=>i+1);
+      save(); render();
+      break;
+    }
+    case "phase-reset-days": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      if(!confirm("Clear all completed days for this phase?")) break;
+      p.completedDays = [];
+      save(); render();
+      break;
+    }
+    case "phase-start-today": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      p.startDate = Date.now();
+      save(); render();
+      break;
+    }
+    case "phase-clear-start": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      p.startDate = null;
+      save(); render();
+      break;
+    }
+    case "phase-link-material": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      const sel = document.getElementById("phase-mat-select");
+      const mid = sel ? sel.value : "";
+      if(!mid) break;
+      p.materials = Array.from(new Set([...(p.materials||[]), mid]));
+      save(); render();
+      break;
+    }
+    case "phase-unlink-material": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      p.materials = (p.materials||[]).filter(x=>x !== el.dataset.mid);
+      save(); render();
+      break;
+    }
+    case "phase-link-topic": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      const sel = document.getElementById("phase-top-select");
+      const tid = sel ? sel.value : "";
+      if(!tid) break;
+      p.topics = Array.from(new Set([...(p.topics||[]), tid]));
+      save(); render();
+      break;
+    }
+    case "phase-unlink-topic": {
+      const p = findPhase(el.dataset.id);
+      if(!p) break;
+      p.topics = (p.topics||[]).filter(x=>x !== el.dataset.tid);
+      save(); render();
+      break;
+    }
+
     /* ---------- HEATMAP ---------- */
     case "hm-day": {
       const k = el.dataset.key;
@@ -3785,7 +4261,7 @@ document.addEventListener("click", (e)=>{
       const isExpl = modal.type === "explanation";
       modal.editing = true;
       modal.mode = isExpl ? (t.explanationFormat || "text") : (t.examplesFormat || "text");
-      modal.importTab = "html";
+      modal.importTab = "text";
       modal.drafts = {
         text: isExpl ? (t.explanation || "") : ((t.examples || []).join("\n")),
         html: isExpl ? (t.explanationHtml || "") : (t.examplesHtml || "")
@@ -3853,33 +4329,22 @@ document.addEventListener("click", (e)=>{
       break;
     }
 
-    /* Import panel tabs — shared by Explanation and Examples editors */
-    case "editor-tab": {
-      if(!modal || modal.kind !== "topic" || !modal.editing) break;
-      // Save whatever the currently mounted editor holds before switching tabs
-      const curId = modal.mode === "html" ? "modal-input-html" : "modal-input";
-      const curTa = document.getElementById(curId);
-      if(curTa && modal.drafts){
-        if(modal.mode === "html") modal.drafts.html = curTa.value;
-        else                      modal.drafts.text = curTa.value;
-      }
-      modal.importTab = el.dataset.tab || "html";
+    case "expl-tab": {
+      if(!modal || modal.kind !== "topic" || modal.type !== "explanation" || !modal.editing) break;
+      if(modal.mode !== "text") break;
+      const ta = document.getElementById("modal-input");
+      if(ta && modal.drafts) modal.drafts.text = ta.value;
+      modal.importTab = el.dataset.tab || "text";
       paintModal();
       break;
     }
-
     case "expl-clear": {
       if(!modal || modal.kind !== "topic") break;
-      const taId = modal.mode === "html" ? "modal-input-html" : "modal-input";
-      const ta = document.getElementById(taId);
+      const ta = document.getElementById("modal-input");
       if(!ta) break;
-      if(ta.value.trim() && !confirm("Clear all the content in this editor?")) break;
+      if(ta.value.trim() && !confirm("Clear all the explanation text?")) break;
       ta.value = "";
-      if(modal.drafts){
-        if(modal.mode === "html") modal.drafts.html = "";
-        else                      modal.drafts.text = "";
-      }
-      if(modal.mode === "html") updateRichPreview("modal-input-html");
+      if(modal.drafts) modal.drafts.text = "";
       setExplProgress(0);
       setExplStatus("Cleared.", "ok");
       ta.focus();
@@ -3905,6 +4370,7 @@ document.addEventListener("click", (e)=>{
           if(findTopic(newId)){ alert(`A topic with ID "${newId}" already exists.`); break; }
           DB.exercises.forEach(ex=>{ if(ex.topic_id===t.id) ex.topic_id = newId; });
           DB.materials.forEach(m=>{ if(m.topics) m.topics = m.topics.map(x=> x===t.id ? newId : x); });
+          DB.roadmap.phases.forEach(p=>{ if(p.topics) p.topics = p.topics.map(x=> x===t.id ? newId : x); });
           t.id = newId;
         }
         t.title = title; t.level = level;
@@ -3944,6 +4410,7 @@ document.addEventListener("click", (e)=>{
       DB.topics = DB.topics.filter(x=>x.id!==t.id);
       DB.exercises = DB.exercises.filter(e=>e.topic_id!==t.id);
       DB.materials.forEach(m=>{ if(m.topics) m.topics = m.topics.filter(x=>x!==t.id); });
+      DB.roadmap.phases.forEach(p=>{ if(p.topics) p.topics = p.topics.filter(x=>x!==t.id); });
       save(); go("topics");
       break;
     }
@@ -3986,6 +4453,7 @@ document.addEventListener("click", (e)=>{
       if(!confirm(msg)) break;
       DB.materials = DB.materials.filter(x=>x.id!==m.id);
       DB.exercises.forEach(e=>{ if(e.material_id===m.id) e.material_id = null; });
+      DB.roadmap.phases.forEach(p=>{ if(p.materials) p.materials = p.materials.filter(x=>x!==m.id); });
       save(); go("materials");
       break;
     }
@@ -4253,6 +4721,7 @@ ex-002,${topicId},${materialId},B1,fill_blank,She _____ (live) in London since 2
     case "exp-mat-csv":  exportMaterialsCSV(); break;
     case "exp-top-json": exportTopicsJSON(); break;
     case "exp-top-csv":  exportTopicsCSV(); break;
+    case "exp-roadmap-json": exportRoadmapJSON(); break;
     case "exp-prog-json": exportProgressJSON(); break;
     case "exp-prog-csv":  exportProgressCSV(); break;
     case "exp-all": exportAll(); break;
@@ -4274,7 +4743,7 @@ ex-002,${topicId},${materialId},B1,fill_blank,She _____ (live) in London since 2
 });
 
 /* =========================================================
-   14b. FILE INPUT HANDLERS  (HTML / TXT / PDF / PNG → editor)
+   14b. FILE INPUT HANDLERS  (PDF / PNG / TXT into explanation)
    ========================================================= */
 async function handleExplanationPdf(file){
   if(!modal || modal.kind !== "topic") return;
@@ -4357,46 +4826,7 @@ document.addEventListener("change", (e)=>{
     return;
   }
 
-  /* ---- Explanation / Examples import: HTML / TXT / PDF / PNG ---- */
-
-  /* ---- HTML / CSS file ---- */
-  if(id === "expl-html-file" && e.target.files && e.target.files[0]){
-    const file = e.target.files[0];
-    e.target.value = "";
-    setExplProgress(0.3);
-    setExplStatus("Reading HTML file…", "info");
-    const reader = new FileReader();
-    reader.onload = () => {
-      const raw = String(reader.result || "");
-      const cleaned = extractHtmlForEmbed(raw);
-
-      // Force HTML mode so the content inserts as HTML (not escaped text)
-      if(modal && modal.mode !== "html"){
-        const txtTa = document.getElementById("modal-input");
-        if(txtTa && modal.drafts) modal.drafts.text = txtTa.value;
-        if(modal.drafts && !String(modal.drafts.html || "").trim()){
-          modal.drafts.html = textToHtml(modal.drafts.text || "");
-        }
-        modal.mode = "html";
-        paintModal();
-      }
-
-      appendExplanationText(cleaned, { rawHtml: true });
-      setExplStatus(
-        `Inserted ${cleaned.length.toLocaleString()} characters of HTML / CSS into the editor. ` +
-        `Review the preview below, then press Save.`,
-        "ok"
-      );
-    };
-    reader.onerror = () => {
-      setExplProgress(0);
-      setExplStatus("Could not read that HTML file.", "err");
-    };
-    reader.readAsText(file);
-    return;
-  }
-
-  /* ---- Plain text / markdown ---- */
+  /* ---- Explanation import: TXT / PDF / PNG ---- */
   if(id === "expl-txt-file" && e.target.files && e.target.files[0]){
     const file = e.target.files[0];
     e.target.value = "";
@@ -4412,16 +4842,12 @@ document.addEventListener("change", (e)=>{
     reader.readAsText(file);
     return;
   }
-
-  /* ---- PDF ---- */
   if(id === "expl-pdf-file" && e.target.files && e.target.files[0]){
     const file = e.target.files[0];
     e.target.value = "";
     handleExplanationPdf(file);
     return;
   }
-
-  /* ---- PNG / image (OCR) ---- */
   if(id === "expl-png-file" && e.target.files && e.target.files[0]){
     const file = e.target.files[0];
     e.target.value = "";
