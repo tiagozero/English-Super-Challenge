@@ -2376,6 +2376,7 @@ function freshData(){
       reading_target_percent: 1000,
       listening_target_minutes: 4500,
       grammar_target_units: 145,
+      grammar_target_books: ['giu'],
       vocabulary_target_items: 50,
       vocab_target_books: ['vocab1'],
       created_at: new Date().toISOString()
@@ -2406,6 +2407,9 @@ function normalizeState(s){
   }
   if (s.challenge && typeof s.challenge === 'object' && !(Number(s.challenge.vocabulary_target_items) > 0)){
     s.challenge.vocabulary_target_items = 50;
+  }
+  if (s.challenge && typeof s.challenge === 'object' && !Array.isArray(s.challenge.grammar_target_books)){
+    s.challenge.grammar_target_books = ['giu'];
   }
   if (s.challenge && typeof s.challenge === 'object' && !Array.isArray(s.challenge.vocab_target_books)){
     s.challenge.vocab_target_books = ['vocab1'];
@@ -2633,21 +2637,44 @@ function materialById(id){ return state.materials.find(m => m.id === id) || null
    shared localStorage key every time something changes there, so this app
    can show progress without knowing anything about its internal format. */
 const GRAMMAR_SHARED_KEY = 'esc-grammar-data';
-function getGrammarData(){
+function getGrammarBookData(bookId){
+  const book = GRAMMAR_BOOKS[bookId];
+  if (!book) return null;
   try {
-    const raw = localStorage.getItem(GRAMMAR_SHARED_KEY);
+    const raw = localStorage.getItem(book.sharedKey);
     if (!raw) return null;
     const d = JSON.parse(raw);
     if (!d || typeof d !== 'object' || !(Number(d.total) > 0)) return null;
     return {
       total: Number(d.total) || 0,
       done: Math.max(0, Number(d.done) || 0),
-      pct: Number(d.pct) || 0,
-      groups: Array.isArray(d.groups) ? d.groups : [],
-      chapters: Array.isArray(d.chapters) ? d.chapters : [],
+      title: book.label,
       updated_at: d.updated_at || null
     };
   } catch (e) { return null; }
+}
+function getGrammarTargetBooks(){
+  const ch = state.challenge;
+  const picked = Array.isArray(ch.grammar_target_books) ? ch.grammar_target_books : ['giu'];
+  return picked.filter(id => GRAMMAR_BOOKS[id]);
+}
+/* Aggregate total/done across every selected book that has ever been
+   opened (published data) — mirrors getVocabularyData() exactly. Returns
+   null only if none of the selected books have been opened yet, so the
+   card can show its "open the tracker" hint. */
+function getGrammarData(){
+  const books = getGrammarTargetBooks();
+  let total = 0, done = 0, any = false, latest = null;
+  books.forEach(id => {
+    const d = getGrammarBookData(id);
+    if (!d) return;
+    any = true;
+    total += d.total;
+    done += d.done;
+    if (d.updated_at && (!latest || d.updated_at > latest)) latest = d.updated_at;
+  });
+  if (!any) return null;
+  return { total, done, pct: total ? Math.round((done / total) * 100) : 0, updated_at: latest };
 }
 
 /* ---- Grammar two-way sync ----------------------------------------------
@@ -4248,6 +4275,14 @@ let setVocabBooksHidden = true;
 try {
   const v = localStorage.getItem(SETVOCAB_BOOKS_HIDE_KEY);
   setVocabBooksHidden = v === null ? true : v === '1';
+} catch (e) {}
+
+/* Same idea for Grammar's "Book(s) to track" list. */
+const SETGRAMMAR_BOOKS_HIDE_KEY = 'esc-setgrammar-books-hidden';
+let setGrammarBooksHidden = true;
+try {
+  const v = localStorage.getItem(SETGRAMMAR_BOOKS_HIDE_KEY);
+  setGrammarBooksHidden = v === null ? true : v === '1';
 } catch (e) {}
 function roadmapTimelineOverviewHTML(rm){
   const toggleBtn = `<button type="button" class="btn btn-ghost btn-sm" data-action="rm-toggle-timeline">${rmTimelineHidden ? '▾ Show' : '▴ Hide'}</button>`;
@@ -7492,6 +7527,7 @@ function openSettings(){
   const msCount = (state.roadmap.milestones || []).length;
   const hasProfile = !!state.profile;
   const grammarData = getGrammarData();
+  const grammarTargetBooks = getGrammarTargetBooks();
   const vocabData = getVocabularyData();
   const vocabTargetBooks = getVocabularyTargetBooks();
 
@@ -7520,9 +7556,29 @@ function openSettings(){
         <div class="field"><label for="setGrammar">Grammar target (units)</label>
           <input type="number" id="setGrammar" min="1" step="1" value="${Number(ch.grammar_target_units) || 145}">
           <p class="hint" style="margin-top:6px">
-            How many Grammar in Use units you're aiming to finish over the challenge.
-            ${grammarData ? `The external Grammar tracker currently has ${grammarData.total} units total, ${grammarData.done} done.` : `Open the Grammar tracker at least once so this app can read its progress.`}
+            How many Grammar units you're aiming to finish over the challenge, added up across whichever book(s) you track below.
+            ${grammarData ? `Selected book(s) currently have ${grammarData.total} units total, ${grammarData.done} done.` : `Open the Grammar tracker at least once so this app can read its progress.`}
           </p>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px">
+            <label style="display:block;margin:0">Book(s) to track</label>
+            <button type="button" class="btn btn-ghost btn-sm" id="setGrammarBooksToggle">${setGrammarBooksHidden ? '▾ Show books' : '▴ Hide books'}</button>
+          </div>
+          <p class="hint" style="margin:2px 0 8px">Pick one or more — their progress will be added together.</p>
+          <div id="setGrammarBooks" style="display:${setGrammarBooksHidden ? 'none' : ''}">
+            <div class="grammar-book-list">
+              ${GRAMMAR_BOOK_ORDER.map(id => {
+                const book = GRAMMAR_BOOKS[id];
+                const checked = grammarTargetBooks.includes(id);
+                const bd = getGrammarBookData(id);
+                return `
+                <label class="grammar-book-row${checked ? ' active' : ''}" data-gbook-row="${id}">
+                  <input type="checkbox" data-gbook="${id}" ${checked ? 'checked' : ''}>
+                  <span class="gbook-name">${escapeHtml(book.label)}</span>
+                  ${bd ? `<span class="gbook-count">${bd.done}/${bd.total}</span>` : ''}
+                </label>`;
+              }).join('')}
+            </div>
+          </div>
         </div>
 
         <div class="field"><label for="setVocab">Vocabulary target (items)</label>
@@ -7608,6 +7664,20 @@ function openSettings(){
       </form>
     </div>
   `);
+  $$('#setGrammarBooks input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const row = cb.closest('.grammar-book-row');
+      if (row) row.classList.toggle('active', cb.checked);
+    });
+  });
+  const setGrammarBooksToggleBtn = $('#setGrammarBooksToggle');
+  const setGrammarBooksWrap = $('#setGrammarBooks');
+  setGrammarBooksToggleBtn.addEventListener('click', () => {
+    setGrammarBooksHidden = !setGrammarBooksHidden;
+    try { localStorage.setItem(SETGRAMMAR_BOOKS_HIDE_KEY, setGrammarBooksHidden ? '1' : '0'); } catch (e) {}
+    setGrammarBooksWrap.style.display = setGrammarBooksHidden ? 'none' : '';
+    setGrammarBooksToggleBtn.textContent = setGrammarBooksHidden ? '▾ Show books' : '▴ Hide books';
+  });
   $$('#setVocabBooks input[type="checkbox"]').forEach(cb => {
     cb.addEventListener('change', () => {
       const row = cb.closest('.vocab-book-row');
@@ -7630,6 +7700,8 @@ function openSettings(){
     ch.reading_target_percent = Math.max(1, Number($('#setRead').value) || 1000);
     ch.listening_target_minutes = Math.max(1, Number($('#setListen').value) || 4500);
     ch.grammar_target_units = Math.max(1, Number($('#setGrammar').value) || 145);
+    const pickedGrammarBooks = $$('#setGrammarBooks input[type="checkbox"]:checked').map(cb => cb.dataset.gbook);
+    ch.grammar_target_books = pickedGrammarBooks.length ? pickedGrammarBooks : ['giu'];
     ch.vocabulary_target_items = Math.max(1, Number($('#setVocab').value) || 50);
     const pickedBooks = $$('#setVocabBooks input[type="checkbox"]:checked').map(cb => cb.dataset.vbook);
     ch.vocab_target_books = pickedBooks.length ? pickedBooks : ['vocab1'];
