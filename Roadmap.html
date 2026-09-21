@@ -871,11 +871,16 @@ const TYPE_ORDER = ['kindle','book','article','manga','other','youTube','anime',
 
 /* Three-way display category for a material: 'reading' | 'listening' | 'deliberate'.
    Grammar and Vocabulary materials are classified as 'deliberate' (see TYPES
-   above), same as in the main app. */
+   above). Materials saved before that change still carry the old literal
+   default_category values ('grammar' / 'vocabulary') instead of 'deliberate',
+   so those are normalized here too — and as a last resort, the input type
+   itself (grammar/vocabulary) is checked in case default_category is missing
+   or stale altogether. */
 function materialGroup(m){
   if (!m) return 'reading';
   if (m.default_category === 'listening') return 'listening';
-  if (m.default_category === 'deliberate') return 'deliberate';
+  if (m.default_category === 'deliberate' || m.default_category === 'grammar' || m.default_category === 'vocabulary') return 'deliberate';
+  if (m.default_input_type === 'grammar' || m.default_input_type === 'vocabulary') return 'deliberate';
   return 'reading';
 }
 const CATEGORY_RANK = { reading: 0, listening: 1, deliberate: 2 };
@@ -1286,7 +1291,7 @@ function tickTask(mid, date){
       challenge_id: shared.challenge.id,
       logged_on: date,
       category: m.default_category || 'reading',
-      input_type: m.default_input_type || (m.default_category === 'listening' ? 'podcast' : m.default_category === 'deliberate' ? 'grammar' : 'kindle'),
+      input_type: m.default_input_type || (m.default_category === 'listening' ? 'podcast' : materialGroup(m) === 'deliberate' ? 'grammar' : 'kindle'),
       material_id: mid,
       amount: Math.round(need * 10) / 10,
       unit: materialUnitLong(m),
@@ -1869,7 +1874,7 @@ function openFocusLogModal(){
   }
   const g = focusGroup(p.groupId);
   const sessionMin = g ? g.minutes : (p.minutes || 0);
-  const mode = mat.default_category === 'listening' ? 'minutes' : mat.default_category === 'deliberate' ? 'count' : 'percent';
+  const mode = materialGroup(mat) === 'listening' ? 'minutes' : materialGroup(mat) === 'deliberate' ? 'count' : 'percent';
   const isReading = mode === 'percent';
   const unitWord = materialUnit(mat);         // 'units' / 'items' for deliberate
   const unitWordLong = materialUnitLong(mat); // long form for deliberate too
@@ -2039,7 +2044,7 @@ function confirmFocusLog(){
   const mat = materialById(p.mid);
   if (!mat){ skipFocusLog(); return; }
 
-  const mode = mat.default_category === 'listening' ? 'minutes' : mat.default_category === 'deliberate' ? 'count' : 'percent';
+  const mode = materialGroup(mat) === 'listening' ? 'minutes' : materialGroup(mat) === 'deliberate' ? 'count' : 'percent';
   let value = 0;
   let unit = 'minutes';
 
