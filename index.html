@@ -99,6 +99,14 @@
     color-scheme:dark;
   }
 
+  /* "Deliberate" is the combined Grammar + Vocabulary display category —
+     its color is derived from the two, so it automatically works across
+     every theme above without needing its own per-theme entry. */
+  :root{
+    --deliberate: color-mix(in srgb, var(--grammar) 50%, var(--vocab));
+    --deliberate-2: color-mix(in srgb, var(--grammar-2) 50%, var(--vocab-2));
+  }
+
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{
@@ -475,6 +483,7 @@
   .mat-group-head .gdot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
   .mat-group-head .gdot.reading{background:var(--reading)}
   .mat-group-head .gdot.listening{background:var(--listening)}
+  .mat-group-head .gdot.deliberate{background:var(--deliberate)}
   .mat-group-head .gdot.status-active{background:var(--good-fg)}
   .mat-group-head .gdot.status-scheduled{background:var(--warn-fg)}
   .mat-group-head .gdot.status-completed{background:var(--info-fg)}
@@ -889,10 +898,12 @@
   .rm-queue-col.cat-listening .rm-queue-col-dot{background:var(--listening)}
   .rm-queue-col.cat-grammar .rm-queue-col-dot{background:var(--grammar)}
   .rm-queue-col.cat-vocabulary .rm-queue-col-dot{background:var(--vocab)}
+  .rm-queue-col.cat-deliberate .rm-queue-col-dot{background:var(--deliberate)}
   .rm-queue-col.cat-reading .rm-queue-col-head{color:var(--reading)}
   .rm-queue-col.cat-listening .rm-queue-col-head{color:var(--listening)}
   .rm-queue-col.cat-grammar .rm-queue-col-head{color:var(--grammar)}
   .rm-queue-col.cat-vocabulary .rm-queue-col-head{color:var(--vocab)}
+  .rm-queue-col.cat-deliberate .rm-queue-col-head{color:var(--deliberate)}
   .rm-queue-list{display:flex;flex-direction:column;gap:8px}
   .rm-queue-item{display:flex;align-items:stretch;gap:11px;background:color-mix(in srgb, var(--task-color, var(--line)) 9%, var(--surface-2));border:1px solid color-mix(in srgb, var(--task-color, var(--line)) 30%, var(--line));border-radius:12px;padding:11px 12px;transition:border-color .15s,background .15s;min-width:0;cursor:pointer}
   .rm-queue-item:hover{border-color:color-mix(in srgb, var(--task-color, var(--line)) 55%, var(--line))}
@@ -1226,7 +1237,7 @@
     <a href="Roadmap.html">Study Plan <span class="ext">↗</span></a>
     <div class="tabs-dropdown" id="deliberateDropdown">
       <button type="button" class="tabs-dropdown-toggle" id="deliberateToggle" aria-haspopup="true" aria-expanded="false">
-        Deliberate study <span class="tabs-dropdown-caret">▾</span>
+        Deliberate <span class="tabs-dropdown-caret">▾</span>
       </button>
       <div class="tabs-dropdown-menu">
         <a href="Grammar.html">Grammar <span class="ext">↗</span></a>
@@ -1466,12 +1477,20 @@ const TYPES = {
   youTube:   { label: 'YouTube',       category: 'listening', unit: 'minutes' },
   tv:        { label: 'TV',            category: 'listening', unit: 'minutes' },
   film:      { label: 'Film',          category: 'listening', unit: 'minutes' },
-  grammar:   { label: 'Grammar',       category: 'grammar',    unit: 'units' },
-  vocabulary:{ label: 'Vocabulary',    category: 'vocabulary', unit: 'items' }
+  grammar:   { label: 'Grammar',       category: 'deliberate',    unit: 'units' },
+  vocabulary:{ label: 'Vocabulary',    category: 'deliberate', unit: 'items' }
 };
 const TYPE_ORDER = ['kindle', 'book', 'article', 'manga', 'other', 'youTube', 'anime', 'audiobook', 'podcast', 'tv', 'film', 'grammar', 'vocabulary'];
-const CATEGORY_ORDER = ['reading', 'listening', 'grammar', 'vocabulary'];
-const CATEGORY_LABEL = { reading: 'Reading', listening: 'Listening', grammar: 'Grammar', vocabulary: 'Vocabulary' };
+/* Top-level display categories. Grammar and Vocabulary materials are now
+   classified with default_category: 'deliberate' directly (see TYPES
+   above) — they still keep their own colors, units ("units" vs "items")
+   and subtask systems via their input type, just like before. CATEGORY_GROUP
+   normalizes a material's default_category for filtering/grouping; it also
+   maps the old 'grammar'/'vocabulary' category values (from materials saved
+   before this change) onto 'deliberate' so existing data keeps working. */
+const CATEGORY_ORDER = ['reading', 'listening', 'deliberate'];
+const CATEGORY_LABEL = { reading: 'Reading', listening: 'Listening', deliberate: 'Deliberate' };
+const CATEGORY_GROUP = { reading: 'reading', listening: 'listening', deliberate: 'deliberate', grammar: 'deliberate', vocabulary: 'deliberate' };
 
 /* English Grammar in Use — same 145 units / 25 sections as the standalone
    Grammar.html tracker, kept here so "New material" can build a matching
@@ -2243,10 +2262,14 @@ const MATERIAL_COLORS = [
 ];
 const MATERIAL_EMOJI_SUGGESTIONS = ['📖','📗','📙','📘','🎧','🎙️','📻','🎬','📰','📝','🗞️','🔖'];
 const UNIT_SUGGESTIONS = { reading: ['Percent', 'Pages', 'Chapters', 'Words'], listening: ['Minutes', 'Hours', 'Episodes'], grammar: ['Units', 'Chapters'], vocabulary: ['Items', 'Words', 'Lessons'] };
-function defaultUnitFor(category){
-  if (category === 'listening') return 'Minutes';
-  if (category === 'grammar') return 'Units';
-  if (category === 'vocabulary') return 'Items';
+/* Takes a material's *input type* (kindle, audiobook, grammar, vocabulary…),
+   not its display category — Grammar and Vocabulary now share the
+   "deliberate" category, but each keeps its own unit via TYPES[type].unit. */
+function defaultUnitFor(inputType){
+  const u = (TYPES[inputType] || {}).unit;
+  if (u === 'minutes') return 'Minutes';
+  if (u === 'units') return 'Units';
+  if (u === 'items') return 'Items';
   return 'Percent';
 }
 const LANGUAGES = [
@@ -4198,7 +4221,7 @@ function phasePlannedTotals(phaseIndex){
   const items = rawIds.map(id => materialById(id)).filter(Boolean);
   let plannedRead = 0, plannedListen = 0, plannedGrammar = 0, untracked = 0;
   items.forEach(m => {
-    if (m.default_category === 'grammar'){
+    if (m.default_input_type === 'grammar'){
       // Grammar materials built from the section picker track progress via
       // subtasks tagged with grammarRef — that count IS the planned topics.
       // A grammar material with an explicit numeric target uses that instead.
@@ -4527,10 +4550,10 @@ function roadmapQueueHTML(phase){
   const options = state.materials
     .filter(m => m.status !== 'archived' && !rawIds.includes(m.id))
     .sort((a, b) => a.title.localeCompare(b.title));
-  const optCounts = { reading: 0, listening: 0, grammar: 0, vocabulary: 0 };
-  options.forEach(m => { if (optCounts[m.default_category] !== undefined) optCounts[m.default_category]++; });
+  const optCounts = { reading: 0, listening: 0, deliberate: 0 };
+  options.forEach(m => { const grp = CATEGORY_GROUP[m.default_category]; if (optCounts[grp] !== undefined) optCounts[grp]++; });
   const pickedCat = rmQueueAddCategory[phase.index] || '';
-  const catOptions = pickedCat ? options.filter(m => m.default_category === pickedCat) : [];
+  const catOptions = pickedCat ? options.filter(m => CATEGORY_GROUP[m.default_category] === pickedCat) : [];
 
   const addWidget = `
     <div class="rm-queue-add-cats">
@@ -4553,7 +4576,7 @@ function roadmapQueueHTML(phase){
   const columns = CATEGORY_ORDER.map(cat => {
     const catEntries = items
       .map((m, i) => ({ m, i }))
-      .filter(x => x.m.default_category === cat);
+      .filter(x => CATEGORY_GROUP[x.m.default_category] === cat);
     const visibleEntries = catEntries.slice(0, QUEUE_VISIBLE_LIMIT);
     const hiddenCount = catEntries.length - visibleEntries.length;
     const colRows = catEntries.length
@@ -4588,7 +4611,7 @@ function roadmapQueueHTML(phase){
   return `
   <div class="rm-queue">
     <div class="rm-queue-label">
-      <span class="ql">Reading, listening, grammar &amp; vocabulary queue</span>
+      <span class="ql">Reading, listening &amp; deliberate queue</span>
       <span class="qn">${items.length} item${items.length === 1 ? '' : 's'}</span>
     </div>
     <div class="rm-queue-columns">${columns}</div>
@@ -4650,7 +4673,7 @@ function openPhaseMaterialsModal(phaseIndex, cat){
   const phase = state.roadmap && state.roadmap.phases && state.roadmap.phases[phaseIndex];
   if (!phase) return;
   const rawIds = phase.materials || [];
-  const items = rawIds.map(id => materialById(id)).filter(Boolean).filter(m => m.default_category === cat);
+  const items = rawIds.map(id => materialById(id)).filter(Boolean).filter(m => CATEGORY_GROUP[m.default_category] === cat);
 
   const tiles = items.map(m => {
     const isDone = materialIsComplete(m);
@@ -5161,7 +5184,15 @@ function materialTotalsText(t){
    has been set, in which case that number is used directly instead. Older
    materials with no target fall back to the previous subtask/status logic. */
 function materialHasTarget(m){ return Number(m.total_units) > 0; }
-function materialUnitLabel(m){ return m.unit || defaultUnitFor(m.default_category); }
+/* CSS class used for a material's category-tinted UI (progress bar fill,
+   library icon). Reading/Listening use their display category directly;
+   Grammar and Vocabulary now share the "deliberate" category but keep
+   their own individual colors by keying off their input type instead. */
+function materialColorClass(m){
+  const t = m.default_input_type;
+  return (t === 'grammar' || t === 'vocabulary') ? t : m.default_category;
+}
+function materialUnitLabel(m){ return m.unit || defaultUnitFor(m.default_input_type); }
 function materialLoggedUnits(m){
   if (m.manual_units !== null && m.manual_units !== undefined && m.manual_units !== '') {
     return Math.max(0, Number(m.manual_units) || 0);
@@ -5207,7 +5238,7 @@ function materialProgressBarHTML(m){
   const hasTarget = materialHasTarget(m);
   const pct = materialUnitPct(m);
   const isDone = materialIsComplete(m);
-  const barCls = isDone ? 'complete' : (m.default_category || 'reading');
+  const barCls = isDone ? 'complete' : (materialColorClass(m) || 'reading');
   const secondary = hasTarget
     ? `${fmt(materialLoggedUnits(m))} / ${fmt(Number(m.total_units))} ${materialUnitLabel(m).toLowerCase()}`
     : (sp ? `${sp.done}/${sp.total} subtasks done` : materialTotalsText(materialTotals(m.id)));
@@ -5324,7 +5355,7 @@ function materialRowHTML(m){
   const initials = (m.title || '?').trim().slice(0, 2).toUpperCase();
   const icon = m.cover_url
     ? `<div class="mat-icon has-cover" style="background-image:url('${escapeHtml(m.cover_url)}')"></div>`
-    : `<div class="mat-icon ${m.default_category}">${escapeHtml(initials)}</div>`;
+    : `<div class="mat-icon ${materialColorClass(m)}">${escapeHtml(initials)}</div>`;
   return `
   <div class="mat">
     ${icon}
@@ -5349,7 +5380,7 @@ function materialCardHTML(m){
   const unit = materialUnitLabel(m).toLowerCase();
   const pct = materialUnitPct(m);
   const isDone = materialIsComplete(m);
-  const barCls = isDone ? 'complete' : (m.default_category || 'reading');
+  const barCls = isDone ? 'complete' : (materialColorClass(m) || 'reading');
   const typeLabel = (TYPES[m.default_input_type] || { label: 'Other' }).label;
   const initials = (m.title || '?').trim().slice(0, 2).toUpperCase();
   const color = m.color || MATERIAL_COLORS[0].hex;
@@ -5424,7 +5455,7 @@ function materialsLibraryHTML(){
   });
   const q = materialsFilter.q.trim().toLowerCase();
   const filtered = all.filter(m => {
-    if (materialsFilter.category !== 'all' && m.default_category !== materialsFilter.category) return false;
+    if (materialsFilter.category !== 'all' && CATEGORY_GROUP[m.default_category] !== materialsFilter.category) return false;
     if (materialsFilter.type !== 'all' && m.default_input_type !== materialsFilter.type) return false;
     if (q){
       const hay = ((m.title || '') + ' ' + (m.creator || '')).toLowerCase();
@@ -5434,7 +5465,7 @@ function materialsLibraryHTML(){
   });
   const groups = CATEGORY_ORDER.map(cat => ({
     id: cat, label: CATEGORY_LABEL[cat],
-    items: filtered.filter(m => m.default_category === cat).sort(materialSorter)
+    items: filtered.filter(m => CATEGORY_GROUP[m.default_category] === cat).sort(materialSorter)
   })).filter(g => g.items.length);
   const statusGroups = STATUS_ORDER.map(st => ({
     id: st, label: STATUS_LABEL[st],
@@ -6481,7 +6512,7 @@ function openMaterialModal(material){
             <input type="number" id="matTotalUnits" min="0" step="1" inputmode="numeric" placeholder="e.g. 320" value="${m.total_units ? escapeHtml(String(m.total_units)) : ''}">
           </div>
           <div class="field"><label for="matUnit">Unit</label>
-            <input type="text" id="matUnit" list="matUnitOptions" placeholder="${escapeHtml(defaultUnitFor(m.default_category))}" value="${escapeHtml(m.unit || '')}">
+            <input type="text" id="matUnit" list="matUnitOptions" placeholder="${escapeHtml(defaultUnitFor(m.default_input_type))}" value="${escapeHtml(m.unit || '')}">
             <datalist id="matUnitOptions">
               ${[...UNIT_SUGGESTIONS.reading, ...UNIT_SUGGESTIONS.listening, ...UNIT_SUGGESTIONS.grammar, ...UNIT_SUGGESTIONS.vocabulary].map(u => `<option value="${u}"></option>`).join('')}
             </datalist>
@@ -6955,7 +6986,7 @@ function openMaterialModal(material){
       subtasks,
       channels,
       total_units: totalUnitsRaw ? Math.max(0, Number(totalUnitsRaw) || 0) : null,
-      unit: $('#matUnit').value.trim() || defaultUnitFor(category),
+      unit: $('#matUnit').value.trim() || defaultUnitFor(type),
       episodes_total: episodesRaw ? Math.max(0, Number(episodesRaw) || 0) : null,
       manual_units: (m.manual_units !== null && m.manual_units !== undefined && m.manual_units !== '') ? m.manual_units : null,
       emoji: matEmoji,
@@ -7093,7 +7124,7 @@ function openMaterialDetailModal(m){
               <div class="matd-meta-v">${fmt(materialEpisodesLogged(m))} / ${fmt(episodesTotal)}</div>
             </div>` : ''}
           </div>
-          <div class="mat-progress-bar ${isDone ? 'complete' : (m.default_category || 'reading')}" style="margin-top:12px"><i style="width:${pct}%"></i></div>
+          <div class="mat-progress-bar ${isDone ? 'complete' : (materialColorClass(m) || 'reading')}" style="margin-top:12px"><i style="width:${pct}%"></i></div>
         </div>
 
         <div class="matd-section">
@@ -8053,7 +8084,7 @@ document.addEventListener('keydown', e => {
 });
 
 /* =========================================================
-   Nav dropdown ("Deliberate study")
+   Nav dropdown ("Deliberate")
    ========================================================= */
 (function initDeliberateDropdown(){
   const dropdown = document.getElementById('deliberateDropdown');
