@@ -188,8 +188,21 @@
     font-size:12px;color:var(--muted);min-width:26px;text-align:right;
     font-variant-numeric:tabular-nums;margin-top:1px;flex:0 0 auto;
   }
-  .item .t{font-size:14px}
+  .item .t{font-size:14px;flex:1 1 auto;min-width:0}
   .item.on .t{color:var(--muted);text-decoration:line-through}
+
+  /* ---------- arrow button (opens the topic viewer) ---------- */
+  .item .go{
+    flex:0 0 auto;
+    width:24px;height:24px;border-radius:6px;
+    display:grid;place-items:center;
+    color:var(--muted);text-decoration:none;
+    opacity:.45;transition:.15s;
+  }
+  .item:hover .go{opacity:1;color:var(--accent);background:var(--accent-soft)}
+  .item .go:hover{color:var(--accent);background:var(--accent-soft)}
+  .item .go:focus-visible{opacity:1;outline:2px solid var(--accent);outline-offset:1px}
+  .item .go svg{width:13px;height:13px;display:block}
 
   /* reference sections are all-caps — soften slightly */
   .ref-list .item .t{font-size:13.5px;letter-spacing:.25px}
@@ -206,6 +219,107 @@
     text-align:center;padding:48px 16px;color:var(--muted);font-size:14px;
   }
 
+  /* ============================================================
+     TOPIC VIEWER MODAL
+     ============================================================ */
+  .modal{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:16px}
+  .modal[hidden]{display:none}
+
+  .modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+
+  .modal-card{
+    position:relative;display:flex;flex-direction:column;
+    width:min(960px,100%);height:min(88vh,900px);
+    background:var(--bg);color:var(--text);
+    border:1px solid var(--border);border-radius:12px;overflow:hidden;
+    box-shadow:0 24px 64px rgba(0,0,0,.4);
+  }
+
+  .modal-head{
+    display:flex;align-items:flex-start;gap:12px;
+    padding:14px 16px;border-bottom:1px solid var(--border);
+  }
+  .modal-head-text{flex:1 1 auto;min-width:0}
+  .modal-head h2{font-size:15px;font-weight:600;letter-spacing:-.2px}
+  .modal-sub{
+    margin-top:2px;font-size:12px;color:var(--muted);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .modal-head .icon-btn{flex:0 0 auto}
+
+  .modal-tabs{
+    display:flex;align-items:center;gap:2px;
+    padding:0 12px;border-bottom:1px solid var(--border);
+  }
+  .mtab{
+    appearance:none;background:none;border:none;
+    border-bottom:2px solid transparent;margin-bottom:-1px;
+    padding:9px 10px;font:inherit;font-size:13px;font-weight:500;
+    color:var(--muted);cursor:pointer;transition:.15s;white-space:nowrap;
+  }
+  .mtab:hover{color:var(--text)}
+  .mtab.on{color:var(--accent);border-bottom-color:var(--accent)}
+  .mtab-link{
+    margin-left:auto;padding:8px 4px;
+    font-size:12.5px;color:var(--muted);text-decoration:none;white-space:nowrap;
+  }
+  .mtab-link:hover{color:var(--accent)}
+
+  .modal-body{
+    flex:1;min-height:0;display:flex;flex-direction:column;
+    gap:10px;padding:12px 16px;
+  }
+  .mpane{display:flex;flex-direction:column;gap:8px}
+  .mpane[hidden]{display:none}
+  .mpane .btn{align-self:flex-start}
+
+  .drop{
+    display:grid;place-items:center;gap:4px;padding:18px 14px;
+    border:1.5px dashed var(--border);border-radius:var(--radius);
+    background:var(--surface);color:var(--muted);
+    font-size:13px;text-align:center;cursor:pointer;transition:.15s;
+  }
+  .drop:hover,.drop.over{
+    border-color:var(--accent);color:var(--accent);background:var(--accent-soft);
+  }
+
+  #codeInput{
+    width:100%;height:104px;resize:vertical;
+    padding:10px;font-size:12.5px;line-height:1.5;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    color:var(--text);background:var(--surface);
+    border:1px solid var(--border);border-radius:var(--radius);
+    outline:none;transition:.15s;
+  }
+  #codeInput:focus{border-color:var(--accent)}
+
+  .preview-wrap{
+    position:relative;flex:1 1 auto;min-height:180px;
+    border:1px solid var(--border);border-radius:var(--radius);
+    overflow:hidden;background:#fff;
+  }
+  #preview{display:block;width:100%;height:100%;border:0;background:#fff}
+  .preview-empty{
+    position:absolute;inset:0;display:grid;place-items:center;
+    background:var(--surface);color:var(--muted);font-size:13px;
+  }
+  .preview-empty[hidden]{display:none}
+
+  .preview-wrap:fullscreen,
+  .preview-wrap:-webkit-full-screen{
+    width:100%;height:100%;border:0;border-radius:0;background:#fff;
+  }
+  .preview-wrap:fullscreen #preview,
+  .preview-wrap:-webkit-full-screen #preview{width:100%;height:100%}
+
+  .modal-foot{
+    display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;
+    padding:12px 16px;border-top:1px solid var(--border);
+  }
+  .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.primary:hover{background:var(--accent);color:#fff;opacity:.88}
+
   @media (max-width:520px){
     .stats{gap:18px}
     .toolbar{gap:6px}
@@ -214,6 +328,12 @@
     .item .t{font-size:13.5px}
     .ref-list .item .t{font-size:13px}
     .tab{flex:1 1 auto;text-align:center;white-space:normal;font-size:12px;padding:8px 6px}
+
+    .modal{padding:0}
+    .modal-card{width:100%;height:100%;border-radius:0;border:0}
+    .modal-body{padding:10px}
+    .modal-foot{padding:10px}
+    .modal-foot .btn{flex:1 1 auto}
   }
 </style>
 </head>
@@ -380,6 +500,58 @@
 
   </div>
 
+</div>
+
+<!-- ============================================================
+     TOPIC VIEWER MODAL
+     ============================================================ -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-backdrop" data-close></div>
+
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+
+    <header class="modal-head">
+      <div class="modal-head-text">
+        <h2 id="modalTitle">Topic</h2>
+        <p class="modal-sub" id="modalSub">page.html</p>
+      </div>
+      <button class="icon-btn" type="button" data-close aria-label="Close">✕</button>
+    </header>
+
+    <div class="modal-tabs" id="modalTabs">
+      <button class="mtab on" type="button" data-src="file">Upload file</button>
+      <button class="mtab" type="button" data-src="code">Paste code</button>
+      <a class="mtab-link" id="modalOpenDefault" href="#" target="_blank" rel="noopener">Open page ↗</a>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="mpane" id="pane-file">
+        <label class="drop" id="drop">
+          <input type="file" id="fileInput" accept=".html,.htm,text/html" hidden>
+          <span>Drop an HTML file here, or <b>browse</b></span>
+        </label>
+      </div>
+
+      <div class="mpane" id="pane-code" hidden>
+        <textarea id="codeInput" placeholder="Paste HTML code here…" spellcheck="false"></textarea>
+        <button class="btn" type="button" id="renderCode">Render code</button>
+      </div>
+
+      <div class="preview-wrap" id="previewWrap">
+        <iframe id="preview" title="Page preview"></iframe>
+        <div class="preview-empty" id="previewEmpty">Loading…</div>
+      </div>
+
+    </div>
+
+    <footer class="modal-foot">
+      <button class="btn" type="button" id="btnFullscreen">Full screen</button>
+      <button class="btn" type="button" id="btnNewTab">Open in new tab</button>
+      <button class="btn primary" type="button" data-close>Done</button>
+    </footer>
+
+  </div>
 </div>
 
 <script>
@@ -915,6 +1087,250 @@ const CHEV =
   'stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
 
 /* ============================================================
+   TOPIC VIEWER MODAL — refs
+   ============================================================ */
+const modal        = document.getElementById('modal');
+const modalTitleEl = document.getElementById('modalTitle');
+const modalSubEl   = document.getElementById('modalSub');
+const modalDefault = document.getElementById('modalOpenDefault');
+const modalTabsEl  = document.getElementById('modalTabs');
+const paneFile     = document.getElementById('pane-file');
+const paneCode     = document.getElementById('pane-code');
+const dropEl       = document.getElementById('drop');
+const fileInputEl  = document.getElementById('fileInput');
+const codeInputEl  = document.getElementById('codeInput');
+const renderCodeBtn= document.getElementById('renderCode');
+const previewWrap  = document.getElementById('previewWrap');
+const previewEl    = document.getElementById('preview');
+const previewEmpty = document.getElementById('previewEmpty');
+const btnFullscreen= document.getElementById('btnFullscreen');
+const btnNewTab    = document.getElementById('btnNewTab');
+
+/* Current source shown in the preview */
+let blobUrl    = null;     // object URL of the currently loaded file
+let sourceType = 'url';    // 'url' | 'blob' | 'code'
+let sourceValue = '';      // href, blob URL, or raw HTML string
+
+/* ---------- loading helpers ---------- */
+function revokeBlob(){
+  if (blobUrl){ URL.revokeObjectURL(blobUrl); blobUrl = null; }
+}
+
+function showLoading(){
+  previewEmpty.hidden = false;
+  previewEmpty.textContent = 'Loading…';
+}
+
+function loadUrl(href){
+  const old = blobUrl;
+  blobUrl = null;
+  previewEl.removeAttribute('srcdoc');
+  previewEl.src = href;
+  if (old) URL.revokeObjectURL(old);
+  sourceType  = 'url';
+  sourceValue = href;
+  showLoading();
+}
+
+function loadFile(file){
+  const old = blobUrl;
+  const url = URL.createObjectURL(file);
+  previewEl.removeAttribute('srcdoc');
+  previewEl.src = url;
+  blobUrl = url;
+  if (old && old !== url) URL.revokeObjectURL(old);
+  sourceType  = 'blob';
+  sourceValue = url;
+  showLoading();
+}
+
+function loadCode(html){
+  const old = blobUrl;
+  blobUrl = null;
+  previewEl.removeAttribute('src');
+  previewEl.srcdoc = html;
+  if (old) URL.revokeObjectURL(old);
+  sourceType  = 'code';
+  sourceValue = html;
+  showLoading();
+}
+
+/* ---------- open / close ---------- */
+function openTopic(title){
+  const href = pageFor(title);
+
+  modalTitleEl.textContent = title;
+  modalSubEl.textContent   = href;
+  modalDefault.href        = href;
+
+  codeInputEl.value = '';
+  fileInputEl.value = '';
+  setPane('file');
+  loadUrl(href);
+
+  modal.hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(){
+  if (document.fullscreenElement){
+    document.exitFullscreen().catch(() => {});
+  }
+  modal.hidden = true;
+  document.body.style.overflow = '';
+
+  previewEl.removeAttribute('srcdoc');
+  previewEl.src = 'about:blank';
+  revokeBlob();
+  sourceType  = 'url';
+  sourceValue = '';
+}
+
+/* ---------- source tabs ---------- */
+function setPane(which){
+  modalTabsEl.querySelectorAll('.mtab').forEach(b => {
+    b.classList.toggle('on', b.dataset.src === which);
+  });
+  paneFile.hidden = which !== 'file';
+  paneCode.hidden = which !== 'code';
+}
+
+modalTabsEl.addEventListener('click', e => {
+  const btn = e.target.closest('.mtab');
+  if (!btn) return;
+  setPane(btn.dataset.src);
+});
+
+/* ---------- file input + drag & drop ---------- */
+fileInputEl.addEventListener('change', () => {
+  const f = fileInputEl.files && fileInputEl.files[0];
+  if (f) loadFile(f);
+});
+
+['dragenter','dragover'].forEach(ev => {
+  dropEl.addEventListener(ev, e => {
+    e.preventDefault();
+    dropEl.classList.add('over');
+  });
+});
+['dragleave','dragend','drop'].forEach(ev => {
+  dropEl.addEventListener(ev, e => {
+    e.preventDefault();
+    dropEl.classList.remove('over');
+  });
+});
+dropEl.addEventListener('drop', e => {
+  const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+  if (f) loadFile(f);
+});
+
+/* ---------- paste code ---------- */
+renderCodeBtn.addEventListener('click', () => {
+  const html = codeInputEl.value;
+  if (!html.trim()) return;
+  loadCode(html);
+});
+
+/* ---------- open in new tab ---------- */
+function openInNewTab(){
+  if (sourceType === 'code'){
+    const url = URL.createObjectURL(new Blob([sourceValue], { type:'text/html' }));
+    window.open(url, '_blank', 'noopener');
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+    return;
+  }
+  if (sourceValue) window.open(sourceValue, '_blank', 'noopener');
+}
+
+btnNewTab.addEventListener('click', openInNewTab);
+
+/* ---------- full screen ---------- */
+btnFullscreen.addEventListener('click', async () => {
+  try {
+    if (!document.fullscreenElement){
+      await previewWrap.requestFullscreen();
+    } else {
+      await document.exitFullscreen();
+    }
+  } catch (err){
+    // Browser refused / unsupported → fall back to a new tab
+    openInNewTab();
+  }
+});
+
+document.addEventListener('fullscreenchange', () => {
+  const on = !!document.fullscreenElement;
+  btnFullscreen.textContent = on ? 'Exit full screen' : 'Full screen';
+});
+
+/* ---------- preview load state ---------- */
+previewEl.addEventListener('load', () => {
+  if (previewEl.srcdoc){ previewEmpty.hidden = true; return; }
+  const s = previewEl.getAttribute('src');
+  if (s && s !== 'about:blank') previewEmpty.hidden = true;
+});
+
+/* ---------- close interactions ---------- */
+modal.addEventListener('click', e => {
+  if (e.target.closest('[data-close]')) closeModal();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !modal.hidden && !document.fullscreenElement){
+    closeModal();
+  }
+});
+
+/* ============================================================
+   TOPIC PAGE LINKS
+   ------------------------------------------------------------
+   Each topic gets a small arrow on the right. Clicking it opens
+   the topic viewer (preview + upload + full screen).
+   ============================================================ */
+const ARROW =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" ' +
+  'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+  '<path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>';
+
+/* Title -> file name. Change this ONE function if your files are
+   named differently (e.g. add a prefix or keep the unit number). */
+function pageFor(title){
+  const words = String(title)
+    .replace(/\([^)]*\)/g, ' ')        // drop the parenthetical hint
+    .replace(/[’'"]/g, '')             // drop apostrophes / quotes
+    .replace(/[^A-Za-z0-9]+/g, ' ')    // everything else -> space
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  const name = words
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join('_');
+
+  return (name || 'Topic') + '.html';
+}
+
+/* Append the arrow button to a row. */
+function appendTopicLink(row, title){
+  const href = pageFor(title);
+
+  const a = document.createElement('a');
+  a.className = 'go';
+  a.href = href;
+  a.setAttribute('aria-label', 'Open ' + title);
+  a.innerHTML = ARROW;
+
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    e.stopPropagation();       // don't toggle the checkbox
+    openTopic(title);
+  });
+
+  row.appendChild(a);
+  return a;
+}
+
+/* ============================================================
    BUILD LIST — 145 units
    ============================================================ */
 const records = [];
@@ -946,6 +1362,7 @@ GROUPS.forEach((g, gi) => {
       '<span class="n">' + n + '</span>' +
       '<span class="t"></span>';
     row.querySelector('.t').textContent = TITLES[n - 1];
+    appendTopicLink(row, TITLES[n - 1]);
     body.appendChild(row);
 
     items.push({
@@ -1013,6 +1430,7 @@ REF_BOOK.forEach((ch, ci) => {
       '<span class="n">' + key + '</span>' +
       '<span class="t"></span>';
     row.querySelector('.t').textContent = s;
+    appendTopicLink(row, s);
     body.appendChild(row);
 
     items.push({
@@ -1095,6 +1513,7 @@ PREP_BOOK.forEach((part, pi) => {
       '<span class="n">' + num + '</span>' +
       '<span class="t"></span>';
     row.querySelector('.t').textContent = title;
+    appendTopicLink(row, title);
     body.appendChild(row);
 
     items.push({
@@ -1165,6 +1584,7 @@ LOGIC_BOOK.forEach((grp, gi) => {
       '<span class="n">' + (ii + 1) + '</span>' +
       '<span class="t"></span>';
     row.querySelector('.t').textContent = title;
+    appendTopicLink(row, title);
     body.appendChild(row);
 
     items.push({
