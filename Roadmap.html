@@ -697,6 +697,31 @@
   .fg-bar i{display:block;height:100%;border-radius:99px;background:var(--fg-color,var(--reading));
     transition:width .35s ease}
   .fg-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;flex:0 0 auto}
+
+  /* --- drag & drop blocks (session groups / templates) --- */
+  .fg-item[draggable="true"], .tpl-item[draggable="true"]{cursor:grab}
+  .fg-item.dragging, .tpl-item.dragging{opacity:.45}
+  .fg-item.drag-over, .tpl-item.drag-over{
+    box-shadow:inset 0 2px 0 var(--reading), inset 0 0 0 1px var(--reading);
+  }
+  .drag-handle{
+    flex:0 0 auto;font-size:15px;line-height:1;color:var(--muted);
+    padding:2px 2px;cursor:grab;user-select:none;align-self:flex-start;margin-top:1px;
+  }
+  .drag-handle:active{cursor:grabbing}
+  .fg-order, .tpl-order{display:flex;flex-direction:column;gap:2px;flex:0 0 auto}
+  .fg-order .ord-btn, .tpl-order .ord-btn{width:22px;height:18px;border-radius:5px;border:1px solid var(--line);
+    background:var(--surface);color:var(--muted);font-size:9px;cursor:pointer;display:flex;
+    align-items:center;justify-content:center;line-height:1}
+  .fg-order .ord-btn:disabled, .tpl-order .ord-btn:disabled{opacity:.35;cursor:default}
+  .fg-order .ord-btn:not(:disabled):hover, .tpl-order .ord-btn:not(:disabled):hover{
+    background:var(--surface-2);color:var(--text)}
+
+  .tpl-item{display:flex;align-items:flex-start;gap:10px;padding:14px;border:1px solid var(--line);
+    border-radius:14px;background:var(--surface);border-left:3px solid var(--reading)}
+  .tpl-body{flex:1 1 180px;min-width:0}
+  .tpl-title{font-size:14.5px;font-weight:640;letter-spacing:-.01em;display:block;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   @media(max-width:640px){
     .ring{width:142px;height:142px}
     .ring-digits{font-size:28px}
@@ -1503,8 +1528,8 @@ const NUM_FIELDS = {
   breakMinutes: { min: 0, max: 60,  step: 5 }
 };
 
-let focusState = { groups: [], timer: null, log: [], pendingLog: null };
-let builder = { items: [], minutes: 50, breakMinutes: 10, editId: null };
+let focusState = { groups: [], templates: [], timer: null, log: [], pendingLog: null };
+let builder = { items: [], minutes: 50, breakMinutes: 10, editId: null, name: '' };
 let focusTick = null;
 let audioCtx = null;
 let pendingLogInputValue = '';
@@ -1580,6 +1605,7 @@ function loadFocusState(){
   } catch(e){ s = null; }
   if (!s || typeof s !== 'object') s = {};
   if (!Array.isArray(s.groups)) s.groups = [];
+  if (!Array.isArray(s.templates)) s.templates = [];
   if (!Array.isArray(s.log)) s.log = [];
   if (!s.timer || typeof s.timer !== 'object') s.timer = null;
 
@@ -1603,6 +1629,7 @@ function loadFocusState(){
       const sessions = Math.max(1, items.reduce((sum, it) => sum + it.count, 0));
       return {
         id: g.id || uid('fg'),
+        name: typeof g.name === 'string' ? g.name.trim().slice(0, 60) : '',
         items,
         mids: items.map(it => it.mid),
         sessions,
@@ -1614,6 +1641,18 @@ function loadFocusState(){
       };
     })
     .filter(g => g.items.length);
+
+  s.templates = s.templates
+    .filter(t => t && typeof t === 'object')
+    .map(t => ({
+      id: t.id || uid('tpl'),
+      name: typeof t.name === 'string' ? t.name.trim().slice(0, 60) : '',
+      items: normaliseItems(t.items),
+      minutes: clamp(Math.round(Number(t.minutes) || 25), 1, 240),
+      breakMinutes: clamp(Math.round(Number(t.breakMinutes) || 0), 0, 120),
+      created_at: t.created_at || new Date().toISOString()
+    }))
+    .filter(t => t.items.length);
 
   const today = todayISO();
   s.groups.forEach(g => {
@@ -2114,6 +2153,7 @@ function skipFocusLog(){
 function resetBuilder(){
   builder.editId = null;
   builder.items = [];
+  builder.name = '';
 }
 function builderFind(mid){ return builder.items.find(it => it.mid === mid) || null; }
 function builderTotalSessions(){
@@ -2128,11 +2168,13 @@ function createFocusGroup(autoStart){
   if (!items.length) return;
 
   const sessions = items.reduce((s, it) => s + it.count, 0);
+  const name = (builder.name || '').trim().slice(0, 60);
   let gid = null;
 
   if (builder.editId){
     const g = focusGroup(builder.editId);
     if (g){
+      g.name = name;
       g.items = items;
       g.mids = items.map(it => it.mid);
       g.sessions = sessions;
@@ -2145,6 +2187,7 @@ function createFocusGroup(autoStart){
   if (!gid){
     const g = {
       id: uid('fg'),
+      name,
       items,
       mids: items.map(it => it.mid),
       sessions,
@@ -2167,6 +2210,7 @@ function editFocusGroup(id){
   const g = focusGroup(id);
   if (!g) return;
   builder.editId = g.id;
+  builder.name = g.name || '';
   builder.items = groupItems(g)
     .filter(it => materialById(it.mid))
     .map(it => ({ mid: it.mid, count: it.count }));
@@ -2188,6 +2232,109 @@ function removeFocusGroup(id){
     closeModal();
   }
   if (builder.editId === id) resetBuilder();
+  saveFocusState();
+  render();
+}
+function moveFocusGroup(id, dir){
+  const list = focusState.groups;
+  const idx = list.findIndex(g => g.id === id);
+  const j = idx + dir;
+  if (idx < 0 || j < 0 || j >= list.length) return;
+  const tmp = list[idx]; list[idx] = list[j]; list[j] = tmp;
+  saveFocusState();
+  render();
+}
+function reorderFocusGroups(draggedId, targetId){
+  if (draggedId === targetId) return;
+  const list = focusState.groups;
+  const from = list.findIndex(g => g.id === draggedId);
+  const to = list.findIndex(g => g.id === targetId);
+  if (from < 0 || to < 0) return;
+  const [item] = list.splice(from, 1);
+  list.splice(to, 0, item);
+  saveFocusState();
+  render();
+}
+
+/* --- session group templates --- */
+function saveBuilderAsTemplate(){
+  const items = builder.items
+    .filter(it => materialById(it.mid) && it.count > 0)
+    .map(it => ({ mid: it.mid, count: clamp(Math.round(it.count), 1, MAX_SESSIONS_PER_MATERIAL) }));
+  if (!items.length) return;
+  focusState.templates.push({
+    id: uid('tpl'),
+    name: (builder.name || '').trim().slice(0, 60),
+    items,
+    minutes: builder.minutes,
+    breakMinutes: builder.breakMinutes,
+    created_at: new Date().toISOString()
+  });
+  saveFocusState();
+  render();
+}
+function saveGroupAsTemplate(id){
+  const g = focusGroup(id);
+  if (!g) return;
+  const items = groupItems(g).filter(it => materialById(it.mid));
+  if (!items.length) return;
+  focusState.templates.push({
+    id: uid('tpl'),
+    name: g.name || '',
+    items: items.map(it => ({ mid: it.mid, count: it.count })),
+    minutes: g.minutes,
+    breakMinutes: g.breakMinutes,
+    created_at: new Date().toISOString()
+  });
+  saveFocusState();
+  render();
+}
+function useTemplate(id, autoStart){
+  const t = focusState.templates.find(x => x.id === id);
+  if (!t) return;
+  const items = groupItems(t).filter(it => materialById(it.mid));
+  if (!items.length) return;
+  const sessions = items.reduce((s, it) => s + it.count, 0);
+  const g = {
+    id: uid('fg'),
+    name: t.name || '',
+    items,
+    mids: items.map(it => it.mid),
+    sessions,
+    minutes: t.minutes,
+    breakMinutes: t.breakMinutes,
+    done: 0,
+    doneDate: todayISO(),
+    created_at: new Date().toISOString()
+  };
+  focusState.groups.push(g);
+  saveFocusState();
+  render();
+  if (autoStart) startFocusTimer(g.id);
+}
+function removeTemplate(id){
+  if (!confirm('Delete this template?')) return;
+  focusState.templates = focusState.templates.filter(t => t.id !== id);
+  saveFocusState();
+  render();
+}
+function moveTemplate(id, dir){
+  const list = focusState.templates;
+  const idx = list.findIndex(t => t.id === id);
+  const j = idx + dir;
+  if (idx < 0 || j < 0 || j >= list.length) return;
+  const tmp = list[idx]; list[idx] = list[j]; list[j] = tmp;
+  saveFocusState();
+  render();
+}
+function reorderTemplates(draggedId, targetId){
+  if (draggedId === targetId) return;
+  const list = focusState.templates;
+  const from = list.findIndex(t => t.id === draggedId);
+  const to = list.findIndex(t => t.id === targetId);
+  if (from < 0 || to < 0) return;
+  const [item] = list.splice(from, 1);
+  list.splice(to, 0, item);
   saveFocusState();
   render();
 }
@@ -2331,6 +2478,7 @@ function timerCardHTML(){
 }
 
 function groupListHTML(){
+  const order = focusState.groups;
   const items = focusState.groups
     .filter(g => groupItems(g).some(it => materialById(it.mid)))
     .map(g => {
@@ -2343,9 +2491,13 @@ function groupListHTML(){
       const isActive = !!focusState.timer && focusState.timer.groupId === g.id;
       const running = isActive && focusState.timer.running;
       const complete = g.done >= total;
-      const title = mats.length === 1
+      const autoTitle = mats.length === 1
         ? first.title
         : `${mats.length} materials · ${total} sessions`;
+      const title = g.name || autoTitle;
+      const pos = order.indexOf(g);
+      const isFirst = pos <= 0;
+      const isLast = pos < 0 || pos >= order.length - 1;
 
       const queue = groupQueue(g);
 
@@ -2371,8 +2523,9 @@ function groupListHTML(){
 
       return `
       <div class="fg-item ${isActive ? 'active' : ''} ${complete ? 'complete' : ''}"
-           style="--fg-color:${tint}">
+           style="--fg-color:${tint}" draggable="true" data-group-drag="${esc(g.id)}">
         <div class="fg-head">
+          <span class="drag-handle" aria-hidden="true" title="Drag to reorder">⠿</span>
           <div class="fg-head-txt">
             <span class="fg-title">${esc(title)}</span>
             <span class="fg-sub">
@@ -2381,12 +2534,19 @@ function groupListHTML(){
             </span>
           </div>
           <div class="fg-actions">
+            <span class="fg-order">
+              <button type="button" class="ord-btn" data-group-move="${esc(g.id)}" data-dir="-1"
+                      aria-label="Move ${esc(title)} up" ${isFirst ? 'disabled' : ''}>▲</button>
+              <button type="button" class="ord-btn" data-group-move="${esc(g.id)}" data-dir="1"
+                      aria-label="Move ${esc(title)} down" ${isLast ? 'disabled' : ''}>▼</button>
+            </span>
             ${running
               ? `<button class="btn btn-ghost btn-sm" data-focus-pause>Pause</button>`
               : `<button class="btn btn-primary btn-sm" data-focus-start="${esc(g.id)}">
                    ${isActive ? 'Resume' : (complete ? 'Restart' : 'Start')}
                  </button>`}
             <button class="btn btn-ghost btn-sm" data-focus-edit="${esc(g.id)}">Edit</button>
+            <button class="btn btn-ghost btn-sm" data-focus-save-template="${esc(g.id)}">Save as template</button>
             <button class="btn btn-ghost btn-sm" data-focus-remove="${esc(g.id)}">Remove</button>
           </div>
         </div>
@@ -2413,6 +2573,70 @@ function groupListHTML(){
       <span style="font-size:11.5px;color:var(--muted)">${focusState.groups.length} saved</span>
     </div>
     <div class="fg-list">${items}</div>
+  </div>`;
+}
+
+function templateListHTML(){
+  const order = focusState.templates;
+  const items = focusState.templates
+    .filter(t => groupItems(t).some(it => materialById(it.mid)))
+    .map(t => {
+      const tItems = groupItems(t);
+      const mats = tItems.map(it => materialById(it.mid)).filter(Boolean);
+      if (!mats.length) return '';
+      const total = tItems.reduce((s, it) => s + it.count, 0);
+      const autoTitle = mats.length === 1
+        ? mats[0].title
+        : `${mats.length} materials · ${total} sessions`;
+      const title = t.name || autoTitle;
+      const pos = order.indexOf(t);
+      const isFirst = pos <= 0;
+      const isLast = pos < 0 || pos >= order.length - 1;
+
+      const chips = tItems.map(it => {
+        const m = materialById(it.mid);
+        if (!m) return '';
+        return `<span class="bd-chip" style="--bd:${materialTint(m)}">${it.count} × ${esc(m.title)}</span>`;
+      }).join('');
+
+      return `
+      <div class="tpl-item" draggable="true" data-tpl-drag="${esc(t.id)}">
+        <span class="drag-handle" aria-hidden="true" title="Drag to reorder">⠿</span>
+        <div class="tpl-body">
+          <span class="tpl-title">${esc(title)}</span>
+          <span class="fg-sub">
+            ${total} × ${t.minutes} min${t.breakMinutes ? ` · ${t.breakMinutes} min break` : ''} ·
+            ${esc(fmtMinutes(total * t.minutes))} total
+          </span>
+          <div class="builder-breakdown" style="margin-top:9px">${chips}</div>
+        </div>
+        <div class="fg-actions">
+          <span class="tpl-order">
+            <button type="button" class="ord-btn" data-tpl-move="${esc(t.id)}" data-dir="-1"
+                    aria-label="Move ${esc(title)} up" ${isFirst ? 'disabled' : ''}>▲</button>
+            <button type="button" class="ord-btn" data-tpl-move="${esc(t.id)}" data-dir="1"
+                    aria-label="Move ${esc(title)} down" ${isLast ? 'disabled' : ''}>▼</button>
+          </span>
+          <button class="btn btn-primary btn-sm" data-tpl-use="${esc(t.id)}">Use</button>
+          <button class="btn btn-ghost btn-sm" data-tpl-remove="${esc(t.id)}">Delete</button>
+        </div>
+      </div>`;
+    })
+    .filter(Boolean)
+    .join('');
+
+  if (!items) return '';
+
+  return `
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-head">
+      <h2>Templates</h2>
+      <span style="font-size:11.5px;color:var(--muted)">${focusState.templates.length} saved</span>
+    </div>
+    <div class="fg-list">${items}</div>
+    <p class="hint" style="margin-top:12px">
+      Templates are reusable blueprints — hit <b>Use</b> to instantly add one as today's session group.
+    </p>
   </div>`;
 }
 
@@ -2527,6 +2751,13 @@ function builderCardHTML(){
       <span style="font-size:11.5px;color:var(--muted)">From today's plan</span>
     </div>
 
+    <div class="field">
+      <label for="builderName">Name (optional)</label>
+      <input type="text" id="builderName" data-builder-name data-focus-key="grp-name"
+             value="${esc(builder.name || '')}" maxlength="60"
+             placeholder="e.g. Morning reading block">
+    </div>
+
     <div class="builder-chips">
       ${mats.map(m => {
         const on = !!builderFind(m.id);
@@ -2582,13 +2813,16 @@ function builderCardHTML(){
       of focus${breakTotal ? ` + ${esc(fmtMinutes(breakTotal))} of breaks` : ''}
     </p>` : ''}
 
-    <div class="modal-actions" style="justify-content:flex-start;margin-top:16px">
+    <div class="modal-actions" style="justify-content:flex-start;margin-top:16px;flex-wrap:wrap">
       <button class="btn btn-primary" data-focus-create ${canCreate ? '' : 'disabled'}>
         ${editing ? 'Save changes' : 'Create group'}
       </button>
       ${editing
         ? `<button class="btn btn-ghost" data-focus-cancel-edit>Cancel</button>`
         : `<button class="btn btn-ghost" data-focus-create-start ${canCreate ? '' : 'disabled'}>Create &amp; start</button>`}
+      <button class="btn btn-ghost" data-focus-save-template-builder ${canCreate ? '' : 'disabled'}>
+        Save as template
+      </button>
     </div>
   </div>`;
 }
@@ -2598,6 +2832,7 @@ function viewFocus(){
   ${phaseBannerHTML()}
   ${timerCardHTML()}
   ${groupListHTML()}
+  ${templateListHTML()}
   ${builderCardHTML()}
   <p class="footnote">
     Build a group from <b>today's plan</b> — pick materials, then give each one its own
@@ -2606,7 +2841,9 @@ function viewFocus(){
     <b>reading</b> asks for the percentage you completed, <b>listening</b> logs the session minutes,
     <b>deliberate</b> asks for a count of units/items.<br>
     Groups are stored separately from the main challenge data, so nothing here can
-    overwrite your materials or plan.
+    overwrite your materials or plan.<br>
+    Give a group a <b>name</b> to make it easy to spot, save one as a <b>template</b> to
+    reuse it later, and drag a block (or use the ▲▼ buttons) to reorder it.
   </p>`;
 }
 
@@ -3371,6 +3608,25 @@ document.addEventListener('click', e => {
   const fEdit = e.target.closest('[data-focus-edit]');
   if (fEdit){ editFocusGroup(fEdit.dataset.focusEdit); return; }
 
+  /* ---------- session group ordering (up/down fallback for drag) ---------- */
+  const groupMove = e.target.closest('[data-group-move]');
+  if (groupMove){
+    moveFocusGroup(groupMove.dataset.groupMove, Number(groupMove.dataset.dir) || 0);
+    return;
+  }
+
+  /* ---------- templates ---------- */
+  const saveGroupTpl = e.target.closest('[data-focus-save-template]');
+  if (saveGroupTpl){ saveGroupAsTemplate(saveGroupTpl.dataset.focusSaveTemplate); return; }
+  const saveBuilderTpl = e.target.closest('[data-focus-save-template-builder]');
+  if (saveBuilderTpl && !saveBuilderTpl.disabled){ saveBuilderAsTemplate(); return; }
+  const tplUse = e.target.closest('[data-tpl-use]');
+  if (tplUse){ useTemplate(tplUse.dataset.tplUse); return; }
+  const tplRemove = e.target.closest('[data-tpl-remove]');
+  if (tplRemove){ removeTemplate(tplRemove.dataset.tplRemove); return; }
+  const tplMove = e.target.closest('[data-tpl-move]');
+  if (tplMove){ moveTemplate(tplMove.dataset.tplMove, Number(tplMove.dataset.dir) || 0); return; }
+
   /* ---------- builder: material chips ---------- */
   const chip = e.target.closest('[data-chip-mid]');
   if (chip){
@@ -3563,6 +3819,15 @@ document.addEventListener('click', e => {
   }
 });
 
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (!t || !t.matches) return;
+  if (t.matches('[data-builder-name]')){
+    builder.name = t.value.slice(0, 60);
+    renderPreservingFocus();
+  }
+});
+
 document.addEventListener('change', e => {
   const t = e.target;
   if (!t || !t.matches) return;
@@ -3639,6 +3904,86 @@ document.addEventListener('keydown', e => {
     currentView = 'daily';
     render();
   }
+});
+
+/* ---------- drag & drop for session-group / template blocks ---------- */
+let dragGroupId = null;
+let dragTemplateId = null;
+
+document.addEventListener('dragstart', e => {
+  const card = e.target.closest('[data-group-drag]');
+  if (card){
+    dragGroupId = card.dataset.groupDrag;
+    card.classList.add('dragging');
+    if (e.dataTransfer){
+      e.dataTransfer.effectAllowed = 'move';
+      try { e.dataTransfer.setData('text/plain', dragGroupId); } catch(err){}
+    }
+    return;
+  }
+  const tpl = e.target.closest('[data-tpl-drag]');
+  if (tpl){
+    dragTemplateId = tpl.dataset.tplDrag;
+    tpl.classList.add('dragging');
+    if (e.dataTransfer){
+      e.dataTransfer.effectAllowed = 'move';
+      try { e.dataTransfer.setData('text/plain', dragTemplateId); } catch(err){}
+    }
+  }
+});
+
+document.addEventListener('dragover', e => {
+  if (dragGroupId){
+    const card = e.target.closest('[data-group-drag]');
+    if (card){
+      e.preventDefault();
+      if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+      card.classList.add('drag-over');
+    }
+    return;
+  }
+  if (dragTemplateId){
+    const tpl = e.target.closest('[data-tpl-drag]');
+    if (tpl){
+      e.preventDefault();
+      if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+      tpl.classList.add('drag-over');
+    }
+  }
+});
+
+document.addEventListener('dragleave', e => {
+  const card = e.target.closest('[data-group-drag]');
+  if (card) card.classList.remove('drag-over');
+  const tpl = e.target.closest('[data-tpl-drag]');
+  if (tpl) tpl.classList.remove('drag-over');
+});
+
+document.addEventListener('drop', e => {
+  if (dragGroupId){
+    const card = e.target.closest('[data-group-drag]');
+    if (card){
+      e.preventDefault();
+      reorderFocusGroups(dragGroupId, card.dataset.groupDrag);
+    }
+    dragGroupId = null;
+    return;
+  }
+  if (dragTemplateId){
+    const tpl = e.target.closest('[data-tpl-drag]');
+    if (tpl){
+      e.preventDefault();
+      reorderTemplates(dragTemplateId, tpl.dataset.tplDrag);
+    }
+    dragTemplateId = null;
+  }
+});
+
+document.addEventListener('dragend', () => {
+  $$('.fg-item.dragging, .tpl-item.dragging').forEach(el => el.classList.remove('dragging'));
+  $$('.fg-item.drag-over, .tpl-item.drag-over').forEach(el => el.classList.remove('drag-over'));
+  dragGroupId = null;
+  dragTemplateId = null;
 });
 
 window.addEventListener('storage', e => {
