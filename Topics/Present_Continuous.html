@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grammar Lesson: Present Perfect Continuous vs. Present Perfect Simple</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --primary-color: #2b4c7e;
+        --primary-dark: #1b3254;
+        --secondary-color: #4a7c59;
+        --bg-color: #fcfbf9;
+        --card-bg: #ffffff;
+        --text-color: #2c3e50;
+        --text-muted: #596575;
+        --border-color: #e2e8f0;
+        --highlight-bg: #ffe58a;
+        --highlight-border: #d5ad31;
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+        --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        --radius: 8px;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        line-height: 1.6;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: var(--card-bg);
+        padding: 40px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border-color);
+    }
+
+    header {
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 20px;
+        margin-bottom: 35px;
+    }
+
+    .unit-badge {
+        display: inline-block;
+        background: var(--primary-color);
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.85rem;
+        padding: 4px 12px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 10px;
+    }
+
+    h1 {
+        color: var(--primary-dark);
+        font-size: 2.2rem;
+        line-height: 1.25;
+        margin-bottom: 8px;
+    }
+
+    .subtitle {
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        font-style: italic;
+    }
+
+    section {
+        margin-bottom: 40px;
+    }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        color: var(--primary-color);
+        font-size: 1.4rem;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 8px;
+        margin-bottom: 20px;
+    }
+
+    .section-number {
+        background: var(--primary-color);
+        color: white;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        font-weight: bold;
+        margin-right: 12px;
+        flex-shrink: 0;
+    }
+
+    p {
+        margin-bottom: 15px;
+    }
+
+    .explanation {
+        background-color: #f8fafc;
+        border-left: 4px solid var(--primary-color);
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        border-radius: 0 var(--radius) var(--radius) 0;
+    }
+
+    .example-situation {
+        background-color: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        padding: 15px;
+        border-radius: var(--radius);
+        margin-bottom: 20px;
+        font-size: 0.95rem;
+    }
+
+    .example-situation strong {
+        color: var(--secondary-color);
+    }
+
+    /* Target Grammar Highlighting Class */
+    .target {
+        background: #ffe58a;
+        border-bottom: 2px solid #d5ad31;
+        padding: 2px 5px;
+        border-radius: 3px;
+        font-weight: 600;
+    }
+
+    /* Literary Passage Cards */
+    .literary-card {
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius);
+        padding: 25px;
+        margin-top: 20px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .book-meta {
+        margin-bottom: 12px;
+        font-size: 0.9rem;
+    }
+
+    .book-title {
+        font-weight: 700;
+        color: var(--primary-dark);
+        font-size: 1.1rem;
+    }
+
+    .book-author {
+        color: var(--text-muted);
+    }
+
+    .gutenberg-link {
+        display: inline-block;
+        margin-top: 4px;
+        color: var(--primary-color);
+        text-decoration: none;
+        font-size: 0.85rem;
+    }
+
+    .gutenberg-link:hover {
+        text-decoration: underline;
+    }
+
+    .context-box {
+        background-color: #f1f5f9;
+        border-radius: 6px;
+        padding: 10px 15px;
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+        color: #334155;
+    }
+
+    .context-box strong {
+        color: var(--primary-color);
+    }
+
+    .passage-text {
+        font-family: 'Literata', Georgia, serif;
+        font-size: 1.25rem;
+        line-height: 1.7;
+        color: #1a1a1a;
+        margin-bottom: 15px;
+        padding: 15px 0;
+    }
+
+    .grammar-analysis {
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        padding: 12px 15px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+    }
+
+    .btn-modal {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: background-color 0.2s;
+    }
+
+    .btn-modal:hover {
+        background-color: var(--primary-dark);
+    }
+
+    /* Comparison Table */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 0.95rem;
+    }
+
+    th, td {
+        border: 1px solid var(--border-color);
+        padding: 12px 15px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f1f5f9;
+        color: var(--primary-dark);
+        font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f8fafc;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background: white;
+        width: 90%;
+        max-width: 780px;
+        max-height: 82vh;
+        border-radius: var(--radius);
+        padding: 30px;
+        position: relative;
+        overflow-y: auto;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        font-size: 1.8rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-muted);
+    }
+
+    .modal-close:hover {
+        color: #000;
+    }
+
+    .modal-body {
+        font-family: 'Literata', Georgia, serif;
+        font-size: 1.15rem;
+        line-height: 1.8;
+        color: #222;
+        margin-top: 15px;
+    }
+
+    /* Exercise Section & Upload */
+    .exercise-section {
+        background-color: #f8fafc;
+        border: 2px dashed var(--primary-color);
+        padding: 25px;
+        border-radius: var(--radius);
+        margin-top: 40px;
+    }
+
+    .upload-box {
+        margin-bottom: 25px;
+        background: white;
+        padding: 15px;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+    }
+
+    .error-msg {
+        color: #dc2626;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        padding: 10px;
+        border-radius: 4px;
+        margin-top: 10px;
+        display: none;
+    }
+
+    .exercise-card {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 20px;
+        margin-bottom: 15px;
+    }
+
+    .exercise-card h4 {
+        margin-bottom: 10px;
+        color: var(--primary-color);
+    }
+
+    .options-list {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .options-list li {
+        margin-bottom: 8px;
+    }
+
+    .fill-input {
+        padding: 4px 8px;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    .matching-table td {
+        padding: 8px 12px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <span class="unit-badge">Unit 10</span>
+        <h1>Present Perfect Continuous and Simple</h1>
+        <div class="subtitle">(I have been doing and I have done)</div>
+    </header>
+
+    <!-- SECTION 1 -->
+    <section id="section-1">
+        <div class="section-title">
+            <div class="section-number">1</div>
+            <h2>Activity vs. Result (Painting the Bedroom)</h2>
+        </div>
+
+        <div class="explanation">
+            We use the <strong>Present Perfect Continuous</strong> (have/has been + -ing) when we are interested in the <em>activity itself</em>. It does not matter whether the activity has been finished or not.<br><br>
+            We use the <strong>Present Perfect Simple</strong> (have/has + past participle) when we are interested in the <em>completed result</em>. The action is finished, and we focus on what has been produced or achieved.
+        </div>
+
+        <div class="example-situation">
+            <strong>Example Situation:</strong><br>
+            • Kate’s clothes are covered in yellow paint. She <span class="target">has been painting</span> her bedroom. (Focus on the activity—she was doing it recently).<br>
+            • The bedroom was green. Now it is yellow. She <span class="target">has painted</span> her bedroom. (Focus on the completed result—the painting is finished).
+        </div>
+
+        <div class="literary-card">
+            <div class="book-meta">
+                <div class="book-title">A First Reader</div>
+                <div class="book-author">by Frank E. Spaulding</div>
+                <a class="gutenberg-link" href="https://www.gutenberg.org/ebooks/65323" target="_blank" rel="noopener">View on Project Gutenberg (#65323)</a>
+            </div>
+
+            <div class="context-box">
+                <strong>Context:</strong> The author describes a child’s experience learning to read, emphasizing the ongoing process and delight experienced while working through the reading primer.
+            </div>
+
+            <div class="passage-text">
+                The child finds here none of the drudgery—to him quite meaningless—so often associated with the disagreeable task of learning how to read; the child reads from the very first page—he <span class="target">has been reading</span> all through the Primer—reads with delight and real understanding...
+            </div>
+
+            <div class="grammar-analysis">
+                <strong>Why this form?</strong> The verb <span class="target">has been reading</span> is in the Present Perfect Continuous because it focuses on the child's ongoing experience and activity throughout the pages, rather than on finishing the book.
+            </div>
+
+            <button class="btn-modal" onclick="openModal('modal-1')">Read complete passage</button>
+        </div>
+    </section>
+
+    <!-- SECTION 2 -->
+    <section id="section-2">
+        <div class="section-title">
+            <div class="section-number">2</div>
+            <h2>How Long vs. How Much / How Many</h2>
+        </div>
+
+        <div class="explanation">
+            Use the <strong>Present Perfect Continuous</strong> to ask or state <em>how long</em> an action has been taking place (up to now).<br>
+            Use the <strong>Present Perfect Simple</strong> to ask or state <em>how much</em>, <em>how many</em>, or <em>how many times</em> something has been completed.
+        </div>
+
+        <div class="example-situation">
+            <strong>Example Situation:</strong><br>
+            • Amy is writing emails. She <span class="target">has been writing</span> emails all morning. (How long?)<br>
+            • Amy <span class="target">has sent</span> 40 emails this morning. (How many?)
+        </div>
+
+        <div class="literary-card">
+            <div class="book-meta">
+                <div class="book-title">How I Write My Novels</div>
+                <div class="book-author">by Duchess (Margaret Wolfe Hungerford)</div>
+                <a class="gutenberg-link" href="https://www.gutenberg.org/ebooks/27621" target="_blank" rel="noopener">View on Project Gutenberg (#27621)</a>
+            </div>
+
+            <div class="context-box">
+                <strong>Context:</strong> The author describes her process of creative effort and writing over time versus finished literary outputs.
+            </div>
+
+            <div class="passage-text">
+                To sit down in cold blood and deliberately set to cudgel one's brains with a view to dragging from them a plot wherewith to make a book is (I <span class="target">have been told</span>) the habit of some writers...
+            </div>
+
+            <div class="grammar-analysis">
+                <strong>Why this form?</strong> <span class="target">have been told</span> expresses a repeating or ongoing message given over time, focusing on the duration/experience rather than a specific counted occurrence.
+            </div>
+
+            <button class="btn-modal" onclick="openModal('modal-2')">Read complete passage</button>
+        </div>
+    </section>
+
+    <!-- SECTION 3 -->
+    <section id="section-3">
+        <div class="section-title">
+            <div class="section-number">3</div>
+            <h2>Non-Continuous Verbs & Special Exceptions</h2>
+        </div>
+
+        <div class="explanation">
+            Some verbs (e.g., <em>know, have, like, believe, understand</em>) are stative and are not normally used in continuous forms. We use the Present Perfect Simple with these verbs even when talking about duration.<br><br>
+            <em>Note exception:</em> Verbs like <strong>want</strong> and <strong>mean</strong> CAN be used in the Present Perfect Continuous to emphasize continuous inner intention (e.g., <em>I've been meaning to call you</em>).
+        </div>
+
+        <div class="example-situation">
+            <strong>Example Situation:</strong><br>
+            • Correct: I <span class="target">have known</span> about the problem for a long time. (Not <s>I've been knowing</s>).<br>
+            • Correct: I <span class="target">have been meaning</span> to write to you, but I was busy.
+        </div>
+
+        <div class="literary-card">
+            <div class="book-meta">
+                <div class="book-title">Catriona</div>
+                <div class="book-author">by Robert Louis Stevenson</div>
+                <a class="gutenberg-link" href="https://www.gutenberg.org/ebooks/589" target="_blank" rel="noopener">View on Project Gutenberg (#589)</a>
+            </div>
+
+            <div class="context-box">
+                <strong>Context:</strong> David Balfour reflects on his connection to his native city and his long-standing acquaintance with it.
+            </div>
+
+            <div class="passage-text">
+                And I <span class="target">have come</span> so far; and the sights and thoughts of my youth pursue me; and I see like a vision the youth of my father...
+            </div>
+
+            <div class="grammar-analysis">
+                <strong>Why this form?</strong> The simple perfect form <span class="target">have come</span> is used here because it states a completed state/achievement of arrival.
+            </div>
+
+            <button class="btn-modal" onclick="openModal('modal-3')">Read complete passage</button>
+        </div>
+    </section>
+
+    <!-- COMPARISON TABLE SECTION -->
+    <section id="comparison">
+        <div class="section-title">
+            <div class="section-number">4</div>
+            <h2>Comparison: Continuous vs. Simple</h2>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Present Perfect Continuous</th>
+                    <th>Present Perfect Simple</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Form</strong></td>
+                    <td>have/has + been + verb-ing</td>
+                    <td>have/has + past participle</td>
+                </tr>
+                <tr>
+                    <td><strong>Main Focus</strong></td>
+                    <td>The action/activity itself; ongoing or recent process</td>
+                    <td>The completed result or achievement</td>
+                </tr>
+                <tr>
+                    <td><strong>Key Question</strong></td>
+                    <td>How long?</td>
+                    <td>How much? How many? How many times?</td>
+                </tr>
+                <tr>
+                    <td><strong>State of Action</strong></td>
+                    <td>May or may not be finished</td>
+                    <td>Definitely completed</td>
+                </tr>
+                <tr>
+                    <td><strong>Example</strong></td>
+                    <td>I <span class="target">have been reading</span> that book for 3 hours.</td>
+                    <td>I <span class="target">have read</span> 150 pages of that book.</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- SUMMARY SECTION -->
+    <section id="summary">
+        <div class="section-title">
+            <div class="section-number">5</div>
+            <h2>Summary of Key Patterns</h2>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Pattern</th>
+                    <th>Form</th>
+                    <th>Main Use</th>
+                    <th>Example</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Ongoing Activity</td>
+                    <td>have/has + been + -ing</td>
+                    <td>Focus on activity duration or recent action</td>
+                    <td>She <span class="target">has been studying</span> all day.</td>
+                </tr>
+                <tr>
+                    <td>Completed Action</td>
+                    <td>have/has + past participle</td>
+                    <td>Focus on completed result or quantity</td>
+                    <td>She <span class="target">has passed</span> three exams.</td>
+                </tr>
+                <tr>
+                    <td>Stative Verbs</td>
+                    <td>have/has + past participle</td>
+                    <td>States existing up to now (know, have, be)</td>
+                    <td>We <span class="target">have known</span> them since 2010.</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- EXERCISES SECTION -->
+    <section class="exercise-section">
+        <h2>Interactive Exercises</h2>
+        <p>Upload a structured <code>.json</code> exercise file to test your knowledge.</p>
+        
+        <div class="upload-box">
+            <label for="json-file"><strong>Select Exercise JSON File:</strong></label><br><br>
+            <input type="file" id="json-file" accept=".json">
+            <div id="error-message" class="error-msg"></div>
+        </div>
+
+        <div id="exercise-container"></div>
+    </section>
+</div>
+
+<!-- MODALS -->
+<div id="modal-1" class="modal-overlay">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('modal-1')">&times;</button>
+        <h3>A First Reader — Frank E. Spaulding</h3>
+        <div class="modal-body">
+            The child finds here none of the drudgery—to him quite meaningless—so often associated with the disagreeable task of learning how to read; the child reads from the very first page—he <span class="target">has been reading</span> all through the Primer—reads with delight and real understanding, reads the thoughts and feels the pleasures of childhood. Hence the not infrequent remark of teachers using this book: "The children learn to read without any effort; they just read."
+        </div>
+    </div>
+</div>
+
+<div id="modal-2" class="modal-overlay">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('modal-2')">&times;</button>
+        <h3>How I Write My Novels — Duchess</h3>
+        <div class="modal-body">
+            To sit down in cold blood and deliberately set to cudgel one's brains with a view to dragging from them a plot wherewith to make a book is (I <span class="target">have been told</span>) the habit of some writers, and those of no small reputation. Happy people! What powers of concentration must be theirs! What a belief in themselves—that most desirable of all beliefs, that sweet propeller toward the temple of fame.
+        </div>
+    </div>
+</div>
+
+<div id="modal-3" class="modal-overlay">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('modal-3')">&times;</button>
+        <h3>Catriona — Robert Louis Stevenson</h3>
+        <div class="modal-body">
+            You are still—as when first I saw, as when I last addressed you—in the venerable city which I must always think of as my home. And I <span class="target">have come</span> so far; and the sights and thoughts of my youth pursue me; and I see like a vision the youth of my father, and of his father, and the whole stream of lives flowing down there far in the north, with the sound of laughter and tears, to cast me out in the end, as by a sudden freshet, on these ultimate shores.
+        </div>
+    </div>
+</div>
+
+<script>
+    function openModal(id) {
+        document.getElementById(id).style.display = 'flex';
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        const modals = document.querySelectorAll('.modal-overlay');
+        modals.forEach(modal => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    };
+
+    window.onkeydown = function(event) {
+        if (event.key === 'Escape') {
+            const modals = document.querySelectorAll('.modal-overlay');
+            modals.forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+    };
+
+    // JSON Exercise Loader
+    document.getElementById('json-file').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const errorDiv = document.getElementById('error-message');
+        const container = document.getElementById('exercise-container');
+        
+        errorDiv.style.display = 'none';
+        errorDiv.innerText = '';
+        container.innerHTML = '';
+
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                if (!data.exercises || !Array.isArray(data.exercises)) {
+                    throw new Error("JSON must contain an 'exercises' array.");
+                }
+
+                data.exercises.forEach((ex, idx) => {
+                    const card = document.createElement('div');
+                    card.className = 'exercise-card';
+                    
+                    let html = `<h4>Question ${idx + 1}</h4>`;
+                    
+                    if (ex.type === 'multiple_choice') {
+                        if (!ex.options || ex.options.length !== 4) {
+                            throw new Error(`Exercise ${idx + 1}: Multiple choice must have exactly 4 options.`);
+                        }
+                        html += `<p>${ex.question}</p><ul class="options-list">`;
+                        ex.options.forEach((opt, oIdx) => {
+                            html += `<li><label><input type="radio" name="q${idx}" value="${oIdx}"> ${opt}</label></li>`;
+                        });
+                        html += `</ul>`;
+                    } else if (ex.type === 'fill_blank') {
+                        const sentenceWithInput = ex.sentence.replace('{{blank}}', '<input type="text" class="fill-input">');
+                        html += `<p>${ex.question}</p><p>${sentenceWithInput}</p>`;
+                    } else if (ex.type === 'matching_definition') {
+                        html += `<p>${ex.question}</p><table class="matching-table">`;
+                        ex.items.forEach(item => {
+                            html += `<tr><td><strong>${item.term}</strong></td><td>${item.definition}</td></tr>`;
+                        });
+                        html += `</table>`;
+                    } else {
+                        throw new Error(`Exercise ${idx + 1}: Unsupported exercise type '${ex.type}'.`);
+                    }
+
+                    card.innerHTML = html;
+                    container.appendChild(card);
+                });
+
+            } catch (err) {
+                errorDiv.innerText = 'Error: ' + err.message;
+                errorDiv.style.display = 'block';
+            }
+        };
+        reader.readAsText(file);
+    });
+</script>
+
+</body>
+</html>
