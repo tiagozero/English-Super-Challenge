@@ -559,6 +559,24 @@
     display:flex;align-items:center;justify-content:center;box-shadow:0 1px 2px rgba(0,0,0,.06);
     transition:background .12s,color .12s;flex:0 0 auto}
   .num-ctl .nbtn:hover{background:var(--reading);color:var(--on-accent)}
+  .num-ctl-readout{justify-content:center;padding:0 10px}
+  .num-readout{font-size:14.5px;font-weight:650;color:var(--text)}
+
+  .adapt-row{margin:14px 0 2px}
+  .adapt-toggle{display:flex;align-items:flex-start;gap:11px;width:100%;text-align:left;
+    padding:11px 13px;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);
+    cursor:pointer;transition:border-color .15s,background .15s;font-family:inherit}
+  .adapt-toggle:hover{border-color:var(--hover-line)}
+  .adapt-toggle.on{border-color:var(--reading);background:color-mix(in srgb,var(--reading) 9%,var(--surface))}
+  .adapt-toggle .at-sw{flex:0 0 auto;width:34px;height:20px;margin-top:1px;border-radius:999px;
+    background:var(--bar-bg);position:relative;transition:background .15s}
+  .adapt-toggle .at-sw::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;
+    border-radius:50%;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.15);transition:left .15s}
+  .adapt-toggle.on .at-sw{background:var(--reading)}
+  .adapt-toggle.on .at-sw::after{left:16px}
+  .adapt-toggle .at-txt{min-width:0}
+  .adapt-toggle .at-title{font-size:13.5px;font-weight:650;color:var(--text);display:block}
+  .adapt-toggle .at-sub{font-size:12px;color:var(--muted);margin-top:2px;display:block;line-height:1.4}
   .builder-total{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.6}
   .builder-total b{color:var(--text)}
   .builder-breakdown{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
@@ -1525,11 +1543,12 @@ const MAX_SESSIONS_PER_MATERIAL = 24;
 
 const NUM_FIELDS = {
   minutes:      { min: 5, max: 180, step: 5 },
-  breakMinutes: { min: 0, max: 60,  step: 5 }
+  breakMinutes: { min: 0, max: 60,  step: 5 },
+  totalMinutes: { min: 5, max: 1200, step: 5 }
 };
 
 let focusState = { groups: [], templates: [], timer: null, log: [], pendingLog: null };
-let builder = { items: [], minutes: 50, breakMinutes: 10, editId: null, name: '' };
+let builder = { items: [], minutes: 50, breakMinutes: 10, editId: null, name: '', adaptTotal: false, totalMinutes: 120 };
 let focusTick = null;
 let audioCtx = null;
 let pendingLogInputValue = '';
@@ -2216,6 +2235,7 @@ function editFocusGroup(id){
     .map(it => ({ mid: it.mid, count: it.count }));
   builder.minutes = g.minutes;
   builder.breakMinutes = g.breakMinutes;
+  builder.adaptTotal = false;
   render();
   const el = document.querySelector('[data-builder-anchor]');
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -2732,9 +2752,20 @@ function builderCardHTML(){
 
   const editing = !!builder.editId;
   const totalSessions = builderTotalSessions();
+
+  if (builder.adaptTotal && totalSessions > 0){
+    builder.minutes = clamp(
+      Math.floor(builder.totalMinutes / totalSessions),
+      NUM_FIELDS.minutes.min, NUM_FIELDS.minutes.max
+    );
+  }
+
   const total = totalSessions * builder.minutes;
   const breakTotal = builder.breakMinutes * Math.max(0, totalSessions - 1);
   const canCreate = builder.items.length > 0 && totalSessions > 0;
+  const leftover = builder.adaptTotal && totalSessions > 0
+    ? builder.totalMinutes - total
+    : 0;
 
   const allocRows = builder.items.map((it, idx) => allocRowHTML(it, idx)).join('');
 
@@ -2792,10 +2823,43 @@ function builderCardHTML(){
       Pick at least one material above, then choose how many sessions each one gets.
     </p>`}
 
+    <div class="adapt-row">
+      <button type="button" class="adapt-toggle ${builder.adaptTotal ? 'on' : ''}"
+              data-adapt-toggle data-focus-key="adapt-toggle"
+              role="switch" aria-checked="${builder.adaptTotal}">
+        <span class="at-sw" aria-hidden="true"></span>
+        <span class="at-txt">
+          <span class="at-title">Adapt focus time to a total</span>
+          <span class="at-sub">Set the task's total length and how many sessions to split it into — minutes per session is worked out for you.</span>
+        </span>
+      </button>
+    </div>
+
     <div class="num-row">
+      ${builder.adaptTotal ? `
+      <div class="num-field">
+        <label>Minutes per session</label>
+        <div class="num-ctl num-ctl-readout" aria-live="polite">
+          <span class="num-readout">${totalSessions > 0 ? builder.minutes : '—'}</span>
+        </div>
+      </div>
+      ${numFieldHTML('Total task time (minutes)', 'totalMinutes', builder.totalMinutes)}
+      ` : `
       ${numFieldHTML('Minutes per session', 'minutes', builder.minutes)}
+      `}
       ${numFieldHTML('Break (minutes)', 'breakMinutes', builder.breakMinutes)}
     </div>
+
+    ${builder.adaptTotal ? `
+    <p class="hint" style="margin:8px 0 0">
+      ${totalSessions > 0
+        ? `${esc(String(totalSessions))} session${totalSessions === 1 ? '' : 's'} × ${esc(String(builder.minutes))} min
+           ${leftover !== 0
+             ? `covers ${esc(fmtMinutes(total))} of your ${esc(fmtMinutes(builder.totalMinutes))} target
+                (${leftover > 0 ? esc(fmtMinutes(leftover)) + ' left over' : esc(fmtMinutes(-leftover)) + ' more than your target'})`
+             : `exactly matches your ${esc(fmtMinutes(builder.totalMinutes))} target`}.`
+        : `Pick at least one material above to split your total time across sessions.`}
+    </p>` : ''}
 
     <div class="info-row">
       <span class="info-dot"></span>
@@ -3670,6 +3734,13 @@ document.addEventListener('click', e => {
       builder.items[j] = tmp;
       renderPreservingFocus();
     }
+    return;
+  }
+
+  /* ---------- builder: adapt total time toggle ---------- */
+  if (e.target.closest('[data-adapt-toggle]')){
+    builder.adaptTotal = !builder.adaptTotal;
+    renderPreservingFocus();
     return;
   }
 
