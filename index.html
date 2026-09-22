@@ -2334,7 +2334,7 @@ try { materialsFiltersOpen = localStorage.getItem(MATFILTERS_KEY) !== '0'; } cat
 let quickAddOpen = true;
 try { quickAddOpen = localStorage.getItem(QUICKADD_KEY) !== '0'; } catch (e) {}
 
-let materialsFilter = { q: '', type: 'all', category: 'all' };
+let materialsFilter = { q: '', type: 'all', category: 'all', author: 'all' };
 let expandedSubtasks = new Set();
 let expandedChannels = new Set();
 
@@ -2486,7 +2486,7 @@ function resetAll(){
   state = freshData();
   saveState();
   historyFilters = { from: '', to: '', category: 'all', type: 'all', material: 'all', q: '' };
-  materialsFilter = { q: '', type: 'all', category: 'all' };
+  materialsFilter = { q: '', type: 'all', category: 'all', author: 'all' };
   roadmapOpenPhases = {};
   roadmapOpenWeeks = {};
 }
@@ -5488,10 +5488,20 @@ function materialsLibraryHTML(){
     if (typeCounts[m.default_input_type] === undefined) typeCounts[m.default_input_type] = 0;
     typeCounts[m.default_input_type]++;
   });
+  const authorCounts = {};
+  all.forEach(m => {
+    const a = (m.creator || '').trim();
+    if (!a) return;
+    authorCounts[a] = (authorCounts[a] || 0) + 1;
+  });
+  const authorOptions = Object.keys(authorCounts).sort((a, b) => a.localeCompare(b));
+  if (materialsFilter.author !== 'all' && !authorCounts[materialsFilter.author]) materialsFilter.author = 'all';
+
   const q = materialsFilter.q.trim().toLowerCase();
   const filtered = all.filter(m => {
     if (materialsFilter.category !== 'all' && CATEGORY_GROUP[m.default_category] !== materialsFilter.category) return false;
     if (materialsFilter.type !== 'all' && m.default_input_type !== materialsFilter.type) return false;
+    if (materialsFilter.author !== 'all' && (m.creator || '').trim() !== materialsFilter.author) return false;
     if (q){
       const hay = ((m.title || '') + ' ' + (m.creator || '')).toLowerCase();
       if (!hay.includes(q)) return false;
@@ -5506,7 +5516,7 @@ function materialsLibraryHTML(){
     id: st, label: STATUS_LABEL[st],
     items: filtered.filter(m => (m.status || 'active') === st).sort((a, b) => a.title.localeCompare(b.title))
   })).filter(g => g.items.length);
-  const hasFilter = !!q || materialsFilter.type !== 'all' || materialsFilter.category !== 'all';
+  const hasFilter = !!q || materialsFilter.type !== 'all' || materialsFilter.category !== 'all' || materialsFilter.author !== 'all';
   const hiddenActiveCount = (!materialsFiltersOpen && materialsFilter.type !== 'all') ? 1 : 0;
 
   const typeChips = `
@@ -5519,6 +5529,14 @@ function materialsLibraryHTML(){
         </button>
       `).join('')}
     </div>`;
+
+  const authorSelectHTML = authorOptions.length ? `
+    <select id="matAuthor" style="width:auto;flex:0 0 auto;min-width:150px;max-width:220px;padding:9px 34px 9px 13px;font-size:14px">
+      <option value="all" ${materialsFilter.author === 'all' ? 'selected' : ''}>All authors</option>
+      ${authorOptions.map(a => `
+        <option value="${escapeHtml(a)}" ${materialsFilter.author === a ? 'selected' : ''}>${escapeHtml(a)} (${authorCounts[a]})</option>
+      `).join('')}
+    </select>` : '';
 
   const emptyState = `
        <div class="empty">
@@ -5578,6 +5596,7 @@ function materialsLibraryHTML(){
       <div class="mat-search">
         <input type="text" id="matSearch" placeholder="Search materials…" value="${escapeHtml(materialsFilter.q)}" autocomplete="off">
       </div>
+      ${authorSelectHTML}
       <div class="seg">
         <button class="${materialsViewMode === 'grid' ? 'active' : ''}" data-matview="grid">Grid</button>
         <button class="${materialsViewMode === 'list' ? 'active' : ''}" data-matview="list">List</button>
@@ -7949,7 +7968,7 @@ document.addEventListener('click', e => {
       render();
       break;
     case 'clear-material-filters':
-      materialsFilter = { q: '', type: 'all', category: 'all' };
+      materialsFilter = { q: '', type: 'all', category: 'all', author: 'all' };
       render();
       break;
     case 'edit-material': {
@@ -8101,6 +8120,7 @@ document.addEventListener('change', e => {
   else if (t.id === 'histCategory'){ historyFilters.category = t.value; render(); }
   else if (t.id === 'histType'){ historyFilters.type = t.value; render(); }
   else if (t.id === 'histMaterial'){ historyFilters.material = t.value; render(); }
+  else if (t.id === 'matAuthor'){ materialsFilter.author = t.value; render(); }
   else if (t.id === 'importFile'){
     const file = t.files && t.files[0];
     if (file) importJSONFile(file);
