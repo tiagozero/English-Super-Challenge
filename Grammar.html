@@ -188,21 +188,24 @@
     font-size:12px;color:var(--muted);min-width:26px;text-align:right;
     font-variant-numeric:tabular-nums;margin-top:1px;flex:0 0 auto;
   }
-  .item .t{font-size:14px;flex:1 1 auto;min-width:0}
+  .item .t{font-size:14px}
   .item.on .t{color:var(--muted);text-decoration:line-through}
 
-  /* ---------- arrow link to the topic page ---------- */
+  /* ---------- topic page link (arrow) ---------- */
   .item .go{
-    flex:0 0 auto;margin-top:0;
-    width:24px;height:24px;border-radius:6px;
+    margin-left:auto;flex:0 0 auto;
+    width:24px;height:24px;margin-top:-1px;
     display:grid;place-items:center;
-    color:var(--muted);text-decoration:none;
-    opacity:.45;transition:.15s;
+    border-radius:6px;color:var(--muted);opacity:.4;
+    text-decoration:none;transition:.15s;
   }
-  .item:hover .go{opacity:1;color:var(--accent);background:var(--accent-soft)}
-  .item .go:hover{color:var(--accent);background:var(--accent-soft)}
-  .item .go:focus-visible{opacity:1;outline:2px solid var(--accent);outline-offset:1px}
   .item .go svg{width:13px;height:13px;display:block}
+  .item:hover .go{opacity:1}
+  .item .go:hover,
+  .item .go:focus-visible{
+    color:var(--accent);background:var(--accent-soft);
+    opacity:1;outline:none;
+  }
 
   /* reference sections are all-caps — soften slightly */
   .ref-list .item .t{font-size:13.5px;letter-spacing:.25px}
@@ -226,6 +229,7 @@
     .seg button{flex:1}
     .item .t{font-size:13.5px}
     .ref-list .item .t{font-size:13px}
+    .item .go{opacity:.7}
     .tab{flex:1 1 auto;text-align:center;white-space:normal;font-size:12px;padding:8px 6px}
   }
 </style>
@@ -930,45 +934,51 @@ const CHEV =
 /* ============================================================
    TOPIC PAGE LINKS
    ------------------------------------------------------------
-   Every topic gets a small arrow on the right that opens the
-   page that belongs to it, e.g.
-       "Present continuous (I am doing)"  ->  Present_Continuous.html
+   Every topic gets a small arrow on the right that opens its
+   own page from the Topics/ folder.
+
+     "Present continuous (I am doing)"  ->  Topics/Present_Continuous.html
+     "Will/shall 1"                     ->  Topics/Will_Shall_1.html
+     "THIRD PERSON SINGULAR V. THIRD PERSON PLURAL"
+                                        ->  Topics/THIRD_PERSON_SINGULAR_V_THIRD_PERSON_PLURAL.html
    ============================================================ */
-const ARROW =
-  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" ' +
+const TOPIC_BASE = 'Topics/';
+
+function topicSlug(title){
+  return String(title)
+    .replace(/\([^)]*\)/g, ' ')          // drop "(I am doing)" etc.
+    .replace(/[^A-Za-z0-9\s]/g, ' ')     // drop / : ? . – , ' etc.
+    .replace(/\s+/g, ' ')
+    .trim()
+    .split(' ')
+    .filter(Boolean)
+    .map(function(w){
+      if (w.length === 1) return w.toUpperCase();
+      if (w === w.toLowerCase()) return w.charAt(0).toUpperCase() + w.slice(1);
+      return w;                          // already Capitalised or ALL CAPS
+    })
+    .join('_');
+}
+
+const GO_ARROW =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" ' +
   'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
   '<path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>';
 
-/* Title -> file name.  Change this ONE function if your files are
-   named differently (e.g. add a prefix or keep the unit number). */
-function pageFor(title){
-  const words = String(title)
-    .replace(/\([^)]*\)/g, ' ')        // drop the parenthetical hint
-    .replace(/[’'"]/g, '')             // drop apostrophes / quotes
-    .replace(/[^A-Za-z0-9]+/g, ' ')    // everything else -> space
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
+function addTopicLink(row, title){
+  const slug = topicSlug(title);
+  if (!slug) return null;
 
-  const name = words
-    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-    .join('_');
-
-  return (name || 'Topic') + '.html';
-}
-
-/* Append the arrow link to a row. */
-function appendTopicLink(row, title){
-  const href = pageFor(title);
-
+  const label = slug.replace(/_/g, ' ');
   const a = document.createElement('a');
   a.className = 'go';
-  a.href = href;
-  a.setAttribute('aria-label', 'Open ' + title);
-  a.innerHTML = ARROW;
+  a.href = TOPIC_BASE + slug + '.html';
+  a.title = 'Open ' + label;
+  a.setAttribute('aria-label', 'Open ' + label);
+  a.innerHTML = GO_ARROW;
 
-  // stop the click from bubbling to the <label> and toggling the checkbox
   a.addEventListener('click', e => e.stopPropagation());
+  a.addEventListener('mousedown', e => e.stopPropagation());
 
   row.appendChild(a);
   return a;
@@ -1006,7 +1016,7 @@ GROUPS.forEach((g, gi) => {
       '<span class="n">' + n + '</span>' +
       '<span class="t"></span>';
     row.querySelector('.t').textContent = TITLES[n - 1];
-    appendTopicLink(row, TITLES[n - 1]);
+    addTopicLink(row, TITLES[n - 1]);
     body.appendChild(row);
 
     items.push({
@@ -1018,7 +1028,7 @@ GROUPS.forEach((g, gi) => {
   }
 
   head.addEventListener('click', () => {
-    if (query || filter !== 'all') return;   // keep open while filtering
+    if (query || filter !== 'all') return;
     collapsed.has(gi) ? collapsed.delete(gi) : collapsed.add(gi);
     render();
   });
@@ -1074,7 +1084,7 @@ REF_BOOK.forEach((ch, ci) => {
       '<span class="n">' + key + '</span>' +
       '<span class="t"></span>';
     row.querySelector('.t').textContent = s;
-    appendTopicLink(row, s);
+    addTopicLink(row, s);
     body.appendChild(row);
 
     items.push({
@@ -1088,7 +1098,7 @@ REF_BOOK.forEach((ch, ci) => {
   });
 
   head.addEventListener('click', () => {
-    if (refQuery || refFilter !== 'all') return;   // keep open while filtering
+    if (refQuery || refFilter !== 'all') return;
     refCollapsed.has(ci) ? refCollapsed.delete(ci) : refCollapsed.add(ci);
     refRender();
   });
@@ -1135,8 +1145,6 @@ PREP_BOOK.forEach((part, pi) => {
 
   const items = [];
   part.items.forEach((raw, ii) => {
-    // Extract "Unit N: Title" → number = N, title = Title.
-    // Anything else (e.g. "How to Use Part One") → number = '—', title = raw.
     let num, title;
     const m = raw.match(/^Unit\s+(\d+):\s*(.+)$/);
     if (m) {
@@ -1157,7 +1165,7 @@ PREP_BOOK.forEach((part, pi) => {
       '<span class="n">' + num + '</span>' +
       '<span class="t"></span>';
     row.querySelector('.t').textContent = title;
-    appendTopicLink(row, title);
+    addTopicLink(row, title);
     body.appendChild(row);
 
     items.push({
@@ -1171,7 +1179,7 @@ PREP_BOOK.forEach((part, pi) => {
   });
 
   head.addEventListener('click', () => {
-    if (prepQuery || prepFilter !== 'all') return;   // keep open while filtering
+    if (prepQuery || prepFilter !== 'all') return;
     prepCollapsed.has(pi) ? prepCollapsed.delete(pi) : prepCollapsed.add(pi);
     prepRender();
   });
@@ -1228,7 +1236,7 @@ LOGIC_BOOK.forEach((grp, gi) => {
       '<span class="n">' + (ii + 1) + '</span>' +
       '<span class="t"></span>';
     row.querySelector('.t').textContent = title;
-    appendTopicLink(row, title);
+    addTopicLink(row, title);
     body.appendChild(row);
 
     items.push({
@@ -1242,7 +1250,7 @@ LOGIC_BOOK.forEach((grp, gi) => {
   });
 
   head.addEventListener('click', () => {
-    if (logicQuery || logicFilter !== 'all') return;   // keep open while filtering
+    if (logicQuery || logicFilter !== 'all') return;
     logicCollapsed.has(gi) ? logicCollapsed.delete(gi) : logicCollapsed.add(gi);
     logicRender();
   });
@@ -1849,7 +1857,7 @@ render();
 refRender();
 prepRender();
 logicRender();
-publishShared();      // make sure the main app has fresh data even if nothing changed this visit
+publishShared();
 publishRefShared();
 publishPrepShared();
 publishLogicShared();
@@ -1863,9 +1871,6 @@ setTab(
   'units'
 );
 
-/* Live two-way sync: if a Grammar-linked subtask gets checked in the main
-   challenge app while this tracker is open in another tab, pick it up and
-   re-render immediately. */
 window.addEventListener('storage', e => {
   if (e.key === STORE_KEY){
     done = new Set(JSON.parse(localStorage.getItem(STORE_KEY) || '[]'));
