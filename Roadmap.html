@@ -1843,7 +1843,38 @@ function resetFocusPhase(){
   render();
 }
 function stopFocusTimer(){
-  if (!focusState.timer) return;
+  const t = focusState.timer;
+  if (!t) return;
+
+  // If ending early during a work phase, credit the elapsed time (not the
+  // full planned duration) to the log and progress, same flow as a natural finish.
+  if (t.phase === 'work'){
+    const rem = timerRemaining();
+    const elapsedMin = Math.round(Math.max(0, t.total - rem) / 60000);
+    const g = focusGroup(t.groupId);
+
+    if (elapsedMin > 0 && g){
+      const mat = sessionMaterial(g, g.done);
+      if (mat){
+        t.running = false;
+        t.remaining = 0;
+        t.endsAt = null;
+        focusState.pendingLog = {
+          groupId: g.id,
+          mid: mat.id,
+          minutes: elapsedMin,
+          date: todayISO(),
+          stopAfter: true
+        };
+        saveFocusState();
+        stopFocusTick();
+        render();
+        openFocusLogModal();
+        return;
+      }
+    }
+  }
+
   focusState.timer = null;
   stopFocusTick();
   saveFocusState();
@@ -1931,7 +1962,7 @@ function openFocusLogModal(){
     return;
   }
   const g = focusGroup(p.groupId);
-  const sessionMin = g ? g.minutes : (p.minutes || 0);
+  const sessionMin = (p.minutes != null ? p.minutes : (g ? g.minutes : 0));
   const mode = materialGroup(mat) === 'listening' ? 'minutes' : materialGroup(mat) === 'deliberate' ? 'count' : 'percent';
   const isReading = mode === 'percent';
   const unitWord = materialUnit(mat);         // 'units' / 'items' for deliberate
@@ -2003,9 +2034,9 @@ function openFocusLogModal(){
       <form class="modal-body" id="focusLogForm" autocomplete="off" novalidate>
 
         <div class="sess-hero">
-          <span class="sess-emoji">🎉</span>
+          <span class="sess-emoji">${p.stopAfter ? '⏹️' : '🎉'}</span>
           <div class="sess-txt">
-            <span class="sess-k">Session complete</span>
+            <span class="sess-k">${p.stopAfter ? 'Session ended early' : 'Session complete'}</span>
             <span class="sess-v">${sessionMin} min <small>of focus</small></span>
           </div>
         </div>
@@ -2152,20 +2183,37 @@ function confirmFocusLog(){
   // Shared activity log — actual completed value only
   recordFocusInShared(mat, value, unit, p.date);
 
+  const stopAfter = !!p.stopAfter;
   focusState.pendingLog = null;
   pendingLogInputValue = '';
   saveFocusState();
   closeModal();
-  advancePhase({ chime: false });
+  if (stopAfter){
+    focusState.timer = null;
+    stopFocusTick();
+    saveFocusState();
+    render();
+  } else {
+    advancePhase({ chime: false });
+  }
 }
 
 function skipFocusLog(){
-  if (!focusState.pendingLog){ closeModal(); return; }
+  const p = focusState.pendingLog;
+  if (!p){ closeModal(); return; }
+  const stopAfter = !!p.stopAfter;
   focusState.pendingLog = null;
   pendingLogInputValue = '';
   saveFocusState();
   closeModal();
-  advancePhase({ chime: false });
+  if (stopAfter){
+    focusState.timer = null;
+    stopFocusTick();
+    saveFocusState();
+    render();
+  } else {
+    advancePhase({ chime: false });
+  }
 }
 
 /* --- builder helpers --- */
