@@ -476,6 +476,11 @@
     text-transform:uppercase;color:var(--muted)}
   .wc-footer-count{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--muted)}
   .wc-footer-count.complete{color:var(--good-fg)}
+  .wc-footer-time{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--listening)}
+  .wc-footer.wc-footer-time .wc-row-head,
+  .wc-footer.wc-footer-time .wc-cell{padding-top:10px}
+  .wc-footer:not(.wc-footer-time) .wc-row-head,
+  .wc-footer:not(.wc-footer-time) .wc-cell{padding-top:8px}
   .wc-footer-bar{height:4px;background:var(--bar-bg);border-radius:99px;
     overflow:hidden;margin-top:5px}
   .wc-footer-bar i{display:block;height:100%;border-radius:99px;
@@ -3377,6 +3382,23 @@ function weekCalendarHTML(weekStart){
   const weekPlan = dayStats.reduce((s, t) => s + t.total, 0);
   const weekPct = weekPlan ? Math.round(weekDone / weekPlan * 100) : 0;
 
+  // Time planned: only listening-category materials are scheduled in actual
+  // minutes (reading is tracked in % and deliberate practice in units/items,
+  // neither of which map to a duration), so the time total is the sum of
+  // scheduled listening minutes for each day / the week.
+  const listeningMats = mats.filter(m => materialGroup(m) === 'listening');
+  const dayTimePlanned = days.map(d => listeningMats.reduce((s, m) => s + scheduledFor(m.id, d), 0));
+  const weekTimePlanned = dayTimePlanned.reduce((s, v) => s + v, 0);
+
+  const timeCells = days.map((d, i) => {
+    const cls = ['wc-cell', d === today ? 'today' : '', d < today ? 'past' : ''].filter(Boolean).join(' ');
+    const mins = dayTimePlanned[i];
+    return `
+      <td class="${cls}">
+        <div class="wc-footer-time">${mins > 0 ? esc(fmtMinutes(mins)) : '—'}</div>
+      </td>`;
+  }).join('');
+
   const footerCells = days.map((d, i) => {
     const t = dayStats[i];
     const cls = ['wc-cell', d === today ? 'today' : '', d < today ? 'past' : ''].filter(Boolean).join(' ');
@@ -3401,6 +3423,13 @@ function weekCalendarHTML(weekStart){
       </thead>
       <tbody>${bodyRows}</tbody>
       <tfoot>
+        <tr class="wc-footer wc-footer-time">
+          <td class="wc-row-head wc-footer-head">Time planned</td>
+          ${timeCells}
+          <td class="wc-cell wc-total">
+            <div class="wc-total-val">${weekTimePlanned > 0 ? esc(fmtMinutes(weekTimePlanned)) : '—'}</div>
+          </td>
+        </tr>
         <tr class="wc-footer">
           <td class="wc-row-head wc-footer-head">Completed</td>
           ${footerCells}
