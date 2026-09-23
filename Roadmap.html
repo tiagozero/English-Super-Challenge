@@ -1093,10 +1093,12 @@ function phaseWeekIndexForDate(phase, dateISO){
   return clamp(Math.floor(Math.max(0, d) / 7), 0, slots.length - 1);
 }
 /* The routine actually in effect for a given phase/week: an explicit
-   per-week routine if one has been set up, otherwise the material's
-   legacy flat weekly/days plan (so existing plans keep working
-   unchanged until a specific week is customized). */
-function weekRoutine(mid, phaseId, weekIndex){
+   per-week routine if one has been set up. Otherwise, only weeks that have
+   already started (today or earlier) fall back to the material's legacy
+   flat weekly/days plan, so existing/current schedules keep working — a
+   week that hasn't started yet defaults to blank (nothing selected) rather
+   than silently mirroring another week's setup. */
+function weekRoutine(mid, phaseId, weekIndex, allowLegacyFallback){
   const p = readPlan(mid);
   const own = p.routines && p.routines[phaseId] && p.routines[phaseId][weekIndex];
   if (own){
@@ -1106,13 +1108,18 @@ function weekRoutine(mid, phaseId, weekIndex){
       hasOwnRoutine: true
     };
   }
-  return { weekly: p.weekly, days: p.days.slice(), hasOwnRoutine: false };
+  if (allowLegacyFallback){
+    return { weekly: p.weekly, days: p.days.slice(), hasOwnRoutine: false };
+  }
+  return { weekly: 0, days: [], hasOwnRoutine: false };
 }
 function planForDate(mid, dateISO){
   const phase = phaseForDate(dateISO);
   if (!phase) return readPlan(mid);
   const wi = phaseWeekIndexForDate(phase, dateISO);
-  return weekRoutine(mid, phase.id, wi);
+  const slot = phaseWeekSlots(phase)[wi];
+  const allowLegacy = !slot || slot.startISO <= todayISO();
+  return weekRoutine(mid, phase.id, wi, allowLegacy);
 }
 /* The week currently selected in the "Weekly plan" editor: the phase
    covering today, plus whichever week tab is active (defaulting to
@@ -1139,7 +1146,9 @@ function readActiveRoutine(mid){
     const p = readPlan(mid);
     return { weekly: p.weekly, days: p.days.slice(), hasOwnRoutine: false };
   }
-  return weekRoutine(mid, ctx.phase.id, ctx.weekIndex);
+  const slot = ctx.slots[ctx.weekIndex];
+  const allowLegacy = slot.startISO <= todayISO();
+  return weekRoutine(mid, ctx.phase.id, ctx.weekIndex, allowLegacy);
 }
 function ensureActiveRoutine(mid){
   const ctx = activePlanWeekContext();
@@ -1147,7 +1156,11 @@ function ensureActiveRoutine(mid){
   if (!ctx) return p;
   if (!p.routines[ctx.phase.id]) p.routines[ctx.phase.id] = {};
   if (!p.routines[ctx.phase.id][ctx.weekIndex]){
-    p.routines[ctx.phase.id][ctx.weekIndex] = { weekly: p.weekly || 0, days: p.days.slice() };
+    const slot = ctx.slots[ctx.weekIndex];
+    const allowLegacy = slot.startISO <= todayISO();
+    p.routines[ctx.phase.id][ctx.weekIndex] = allowLegacy
+      ? { weekly: p.weekly || 0, days: p.days.slice() }
+      : { weekly: 0, days: [] };
   }
   return p.routines[ctx.phase.id][ctx.weekIndex];
 }
@@ -1155,8 +1168,10 @@ function copyPreviousWeekRoutine(){
   const ctx = activePlanWeekContext();
   if (!ctx || ctx.weekIndex <= 0) return;
   const prevIndex = ctx.weekIndex - 1;
+  const prevSlot = ctx.slots[prevIndex];
+  const allowLegacy = prevSlot.startISO <= todayISO();
   plannedMaterials().forEach(m => {
-    const prev = weekRoutine(m.id, ctx.phase.id, prevIndex);
+    const prev = weekRoutine(m.id, ctx.phase.id, prevIndex, allowLegacy);
     const p = ensurePlan(m.id);
     if (!p.routines[ctx.phase.id]) p.routines[ctx.phase.id] = {};
     p.routines[ctx.phase.id][ctx.weekIndex] = { weekly: prev.weekly, days: prev.days.slice() };
@@ -3431,7 +3446,8 @@ function planEditorHTML(){
   const rows = mats.map(m => planRowHTML(m, ctx)).join('');
   const activeSlot = ctx.slots[ctx.weekIndex];
   const isCurrentWeek = ctx.weekIndex === ctx.todayIndex;
-  const timing = isCurrentWeek ? '' : (ctx.weekIndex < ctx.todayIndex ? ' · already passed' : ' · planning ahead');
+  const isFutureWeek = activeSlot.startISO > todayISO();
+  const timing = isCurrentWeek ? '' : (isFutureWeek ? ' · planning ahead' : ' · already passed');
   const canCopyPrev = ctx.weekIndex > 0;
 
   return `
@@ -3449,7 +3465,7 @@ function planEditorHTML(){
     ${weekTabsHTML(ctx)}
 
     <div class="week-plan-meta">
-      <span>Editing <b>Week ${ctx.weekIndex + 1}</b> of ${ctx.slots.length} · ${esc(shortDate(activeSlot.startISO))} – ${esc(shortDate(activeSlot.endISO))}${timing}</span>
+      <span>Editing <b>Week ${ctx.weekIndex + 1}</b> of ${ctx.slots.length} · ${esc(shortDate(activeSlot.startISO))} – ${esc(shortDate(activeSlot.endISO))}${timing}${isFutureWeek ? ' — nothing selected yet' : ''}</span>
       ${canCopyPrev ? `<button class="btn btn-ghost btn-sm" data-action="copy-prev-week">Copy Week ${ctx.weekIndex}'s plan here</button>` : ''}
     </div>
 
