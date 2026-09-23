@@ -417,6 +417,23 @@
   .plan-collapsed .card-head{margin:0}
   .plan-collapsed .pc-meta{font-size:12.5px;color:var(--muted)}
 
+  .week-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;margin-bottom:14px;
+    -webkit-overflow-scrolling:touch}
+  .week-tabs::-webkit-scrollbar{height:6px}
+  .week-tabs::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+  .week-tab{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-start;gap:2px;
+    padding:8px 13px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);
+    cursor:pointer;font-family:inherit;transition:border-color .15s,background .15s}
+  .week-tab:hover{border-color:var(--reading)}
+  .week-tab.active{border-color:var(--reading);background:color-mix(in srgb,var(--reading) 12%,var(--surface))}
+  .wt-label{font-size:12.5px;font-weight:750;color:var(--text);display:flex;align-items:center;gap:6px}
+  .wt-now{font-size:9px;font-weight:750;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--info-fg);background:var(--info-bg);border-radius:99px;padding:2px 6px}
+  .wt-range{font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .week-plan-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    flex-wrap:wrap;font-size:12px;color:var(--muted);margin:-4px 0 14px}
+  .week-plan-meta b{color:var(--text)}
+
   .week-calendar{overflow-x:auto;margin:0 -6px;padding:0 6px 4px;-webkit-overflow-scrolling:touch}
   .week-calendar::-webkit-scrollbar{height:8px}
   .week-calendar::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
@@ -1033,6 +1050,120 @@ function currentPhaseInfo(){
   };
 }
 
+/* ---------------------------------------------------------
+   Phase weeks — a phase is split into ~7-day slots so each
+   week of a phase can carry its own routine (see "Weekly
+   plan" week tabs). The last slot is clipped to the phase's
+   actual end date, so phases that aren't an exact multiple
+   of 7 days don't overflow into the next phase.
+   --------------------------------------------------------- */
+function phaseForDate(dateISO){
+  const phases = computedPhases();
+  if (!phases.length) return null;
+  let chosen = phases.find(p => dateISO >= p.startDate && dateISO <= p.endDate);
+  if (!chosen){
+    chosen = dateISO < phases[0].startDate ? phases[0] : phases[phases.length - 1];
+  }
+  return chosen;
+}
+function phaseWeekSlots(phase){
+  if (!phase) return [{ index: 0, startISO: todayISO(), endISO: todayISO() }];
+  // Anchor week boundaries to Mon–Sun calendar weeks (same grid "Week at a
+  // glance" and the Weekly tab use), not to the phase's exact start date, so
+  // a routine never appears to change mid-week. The first/last slot's
+  // displayed range is clipped to the phase's actual start/end date.
+  const firstWeekStart = startOfWeekISO(phase.startDate);
+  const totalSpan = Math.max(1, (daysBetween(firstWeekStart, phase.endDate) || 0) + 1);
+  const count = clamp(Math.ceil(totalSpan / 7), 1, 8);
+  const out = [];
+  for (let i = 0; i < count; i++){
+    let startISO = addDays(firstWeekStart, i * 7);
+    let endISO = addDays(firstWeekStart, i * 7 + 6);
+    if (startISO < phase.startDate) startISO = phase.startDate;
+    if (endISO > phase.endDate) endISO = phase.endDate;
+    out.push({ index: i, startISO, endISO });
+  }
+  return out;
+}
+function phaseWeekIndexForDate(phase, dateISO){
+  const slots = phaseWeekSlots(phase);
+  if (!phase) return 0;
+  const firstWeekStart = startOfWeekISO(phase.startDate);
+  const d = daysBetween(firstWeekStart, dateISO) || 0;
+  return clamp(Math.floor(Math.max(0, d) / 7), 0, slots.length - 1);
+}
+/* The routine actually in effect for a given phase/week: an explicit
+   per-week routine if one has been set up, otherwise the material's
+   legacy flat weekly/days plan (so existing plans keep working
+   unchanged until a specific week is customized). */
+function weekRoutine(mid, phaseId, weekIndex){
+  const p = readPlan(mid);
+  const own = p.routines && p.routines[phaseId] && p.routines[phaseId][weekIndex];
+  if (own){
+    return {
+      weekly: Math.max(0, Number(own.weekly) || 0),
+      days: Array.isArray(own.days) ? own.days.filter(d => d >= 0 && d <= 6) : [],
+      hasOwnRoutine: true
+    };
+  }
+  return { weekly: p.weekly, days: p.days.slice(), hasOwnRoutine: false };
+}
+function planForDate(mid, dateISO){
+  const phase = phaseForDate(dateISO);
+  if (!phase) return readPlan(mid);
+  const wi = phaseWeekIndexForDate(phase, dateISO);
+  return weekRoutine(mid, phase.id, wi);
+}
+/* The week currently selected in the "Weekly plan" editor: the phase
+   covering today, plus whichever week tab is active (defaulting to
+   the week that contains today). */
+function activePlanWeekContext(){
+  const info = currentPhaseInfo();
+  if (!info) return null;
+  const phase = computedPhases()[info.index];
+  if (!phase) return null;
+  if (lastPlanPhaseId !== phase.id){
+    lastPlanPhaseId = phase.id;
+    selectedPlanWeekIndex = null;
+  }
+  const slots = phaseWeekSlots(phase);
+  const todayIndex = phaseWeekIndexForDate(phase, todayISO());
+  const weekIndex = (selectedPlanWeekIndex != null)
+    ? clamp(selectedPlanWeekIndex, 0, slots.length - 1)
+    : todayIndex;
+  return { phase, slots, weekIndex, todayIndex };
+}
+function readActiveRoutine(mid){
+  const ctx = activePlanWeekContext();
+  if (!ctx){
+    const p = readPlan(mid);
+    return { weekly: p.weekly, days: p.days.slice(), hasOwnRoutine: false };
+  }
+  return weekRoutine(mid, ctx.phase.id, ctx.weekIndex);
+}
+function ensureActiveRoutine(mid){
+  const ctx = activePlanWeekContext();
+  const p = ensurePlan(mid);
+  if (!ctx) return p;
+  if (!p.routines[ctx.phase.id]) p.routines[ctx.phase.id] = {};
+  if (!p.routines[ctx.phase.id][ctx.weekIndex]){
+    p.routines[ctx.phase.id][ctx.weekIndex] = { weekly: p.weekly || 0, days: p.days.slice() };
+  }
+  return p.routines[ctx.phase.id][ctx.weekIndex];
+}
+function copyPreviousWeekRoutine(){
+  const ctx = activePlanWeekContext();
+  if (!ctx || ctx.weekIndex <= 0) return;
+  const prevIndex = ctx.weekIndex - 1;
+  plannedMaterials().forEach(m => {
+    const prev = weekRoutine(m.id, ctx.phase.id, prevIndex);
+    const p = ensurePlan(m.id);
+    if (!p.routines[ctx.phase.id]) p.routines[ctx.phase.id] = {};
+    p.routines[ctx.phase.id][ctx.weekIndex] = { weekly: prev.weekly, days: prev.days.slice() };
+  });
+  saveShared();
+}
+
 function anyPhaseHasAssignments(){
   return computedPhases().some(p => p.materials.length > 0);
 }
@@ -1226,28 +1357,30 @@ function materialUnitLong(m){
    ========================================================= */
 function readPlan(mid){
   const p = shared && shared.studyPlan ? shared.studyPlan[mid] : null;
-  if (!p) return { weekly: 0, days: [], overrides: {} };
+  if (!p) return { weekly: 0, days: [], overrides: {}, routines: {} };
   return {
     weekly: Math.max(0, Number(p.weekly) || 0),
     days: Array.isArray(p.days) ? p.days.filter(d => d >= 0 && d <= 6) : [],
-    overrides: (p.overrides && typeof p.overrides === 'object') ? p.overrides : {}
+    overrides: (p.overrides && typeof p.overrides === 'object') ? p.overrides : {},
+    routines: (p.routines && typeof p.routines === 'object') ? p.routines : {}
   };
 }
 function ensurePlan(mid){
   if (!shared.studyPlan) shared.studyPlan = {};
   if (!shared.studyPlan[mid]){
-    shared.studyPlan[mid] = { weekly: 0, days: [], overrides: {} };
+    shared.studyPlan[mid] = { weekly: 0, days: [], overrides: {}, routines: {} };
   }
   const p = shared.studyPlan[mid];
   if (!Array.isArray(p.days)) p.days = [];
   if (!p.overrides || typeof p.overrides !== 'object') p.overrides = {};
+  if (!p.routines || typeof p.routines !== 'object') p.routines = {};
   p.weekly = Math.max(0, Number(p.weekly) || 0);
   return p;
 }
-function autoAmount(mid){
-  const p = readPlan(mid);
-  if (p.weekly <= 0 || !p.days.length) return 0;
-  return p.weekly / p.days.length;
+function autoAmount(mid, date){
+  const plan = planForDate(mid, date || todayISO());
+  if (plan.weekly <= 0 || !plan.days.length) return 0;
+  return plan.weekly / plan.days.length;
 }
 function scheduledFor(mid, date){
   const p = readPlan(mid);
@@ -1255,9 +1388,10 @@ function scheduledFor(mid, date){
     const v = Number(p.overrides[date]);
     if (v > 0) return v;
   }
-  if (p.weekly <= 0 || !p.days.length) return 0;
-  if (!p.days.includes(dowOf(date))) return 0;
-  return p.weekly / p.days.length;
+  const plan = planForDate(mid, date);
+  if (plan.weekly <= 0 || !plan.days.length) return 0;
+  if (!plan.days.includes(dowOf(date))) return 0;
+  return plan.weekly / plan.days.length;
 }
 function isOverridden(mid, date){
   const p = readPlan(mid);
@@ -1268,7 +1402,7 @@ function dailyStep(m){ return m && m.default_category === 'listening' ? 5 : 1; }
 
 function setOverride(mid, date, val){
   const p = ensurePlan(mid);
-  const auto = autoAmount(mid);
+  const auto = autoAmount(mid, date);
   if (Math.abs(val - auto) < 0.01){
     delete p.overrides[date];
   } else {
@@ -1488,6 +1622,8 @@ function materialWeekProgress(weekStart){
 let currentView = 'daily';
 let selectedDate = todayISO();
 let selectedWeekStart = startOfWeekISO(todayISO());
+let selectedPlanWeekIndex = null; // null = auto (whichever week of the phase contains today)
+let lastPlanPhaseId = null;       // tracks phase changes so the week tab resets to "now"
 
 const PLAN_VIS_KEY = 'esc-roadmap-show-plan';
 let showPlanEditor = true;
@@ -3034,7 +3170,7 @@ function taskRowHTML(iso, task){
       <button class="amt-reset" type="button"
               data-day-reset="${esc(m.id)}" data-date="${iso}"
               data-focus-key="dy-rst-${esc(m.id)}-${iso}"
-              title="Reset to plan (${fmtAmount(autoAmount(m.id))}${unitLabel})"
+              title="Reset to plan (${fmtAmount(autoAmount(m.id, iso))}${unitLabel})"
               aria-label="Reset to plan">↺</button>` : ''}
     </span>
   </div>`;
@@ -3177,12 +3313,14 @@ function viewDaily(){
 /* =========================================================
    WEEKLY VIEW
    ========================================================= */
-function planRowHTML(m){
-  const p = readPlan(m.id);
-  const active = p.weekly > 0;
-  const daily = autoAmount(m.id);
+function planRowHTML(m, ctx){
+  const routine = readActiveRoutine(m.id);
+  const active = routine.weekly > 0;
+  const daily = (routine.weekly > 0 && routine.days.length) ? routine.weekly / routine.days.length : 0;
   const unitLabel = materialUnit(m);
-  const overrideCount = Object.keys(p.overrides || {}).length;
+  const slot = ctx.slots[ctx.weekIndex];
+  const p = readPlan(m.id);
+  const overrideCount = Object.keys(p.overrides || {}).filter(d => d >= slot.startISO && d <= slot.endISO).length;
   const step = weeklyStep(m);
   const tint = materialTint(m);
 
@@ -3202,16 +3340,16 @@ function planRowHTML(m){
       <div class="stepper">
         <button class="step-btn" type="button"
                 data-weekly-step="${-step}" data-mid="${esc(m.id)}"
-                data-focus-key="wk-dec-${esc(m.id)}"
+                data-focus-key="wk-dec-${esc(m.id)}-${ctx.weekIndex}"
                 aria-label="Decrease weekly target">−</button>
         <input class="step-input" type="number" inputmode="numeric"
                data-weekly-input="${esc(m.id)}"
-               data-focus-key="wk-in-${esc(m.id)}"
-               value="${fmtAmount(p.weekly)}" min="0" step="1"
+               data-focus-key="wk-in-${esc(m.id)}-${ctx.weekIndex}"
+               value="${fmtAmount(routine.weekly)}" min="0" step="1"
                aria-label="${esc(m.title)} weekly target">
         <button class="step-btn" type="button"
                 data-weekly-step="${step}" data-mid="${esc(m.id)}"
-                data-focus-key="wk-inc-${esc(m.id)}"
+                data-focus-key="wk-inc-${esc(m.id)}-${ctx.weekIndex}"
                 aria-label="Increase weekly target">+</button>
       </div>
       <span class="pr-unit">${unitLabel} / week</span>
@@ -3219,12 +3357,12 @@ function planRowHTML(m){
 
     <div class="pr-days">
       ${DOW_INITIAL.map((d, i) => `
-        <button class="day-pill ${p.days.includes(i) ? 'on' : ''}"
+        <button class="day-pill ${routine.days.includes(i) ? 'on' : ''}"
                 type="button"
                 data-toggle-day="${i}" data-mid="${esc(m.id)}"
-                data-focus-key="day-${esc(m.id)}-${i}"
+                data-focus-key="day-${esc(m.id)}-${i}-${ctx.weekIndex}"
                 title="${DOW_LONG[i]}"
-                aria-pressed="${p.days.includes(i)}"
+                aria-pressed="${routine.days.includes(i)}"
                 aria-label="${DOW_LONG[i]}">${d}</button>
       `).join('')}
     </div>
@@ -3234,9 +3372,26 @@ function planRowHTML(m){
         ${fmtAmount(daily)}${unitLabel === 'min' ? ' min' : unitLabel === '%' ? '%' : ' ' + unitLabel}
       </span>
       <span class="pr-daily-sub">
-        per day · ${p.days.length} day${p.days.length === 1 ? '' : 's'}${overrideCount ? ` · ${overrideCount} override${overrideCount === 1 ? '' : 's'}` : ''}
+        per day · ${routine.days.length} day${routine.days.length === 1 ? '' : 's'}${overrideCount ? ` · ${overrideCount} override${overrideCount === 1 ? '' : 's'}` : ''}
       </span>
     </div>
+  </div>`;
+}
+
+function weekTabsHTML(ctx){
+  return `
+  <div class="week-tabs" role="tablist" aria-label="Weeks in this phase">
+    ${ctx.slots.map(s => {
+      const isActive = s.index === ctx.weekIndex;
+      const isNow = s.index === ctx.todayIndex;
+      return `
+      <button type="button" class="week-tab ${isActive ? 'active' : ''} ${isNow ? 'current' : ''}"
+              data-plan-week="${s.index}"
+              role="tab" aria-selected="${isActive}">
+        <span class="wt-label">Week ${s.index + 1}${isNow ? '<span class="wt-now">now</span>' : ''}</span>
+        <span class="wt-range">${esc(shortDate(s.startISO))} – ${esc(shortDate(s.endISO))}</span>
+      </button>`;
+    }).join('')}
   </div>`;
 }
 
@@ -3245,6 +3400,12 @@ function planEditorHTML(){
   const excluded = countExcludedByPhase();
   const info = currentPhaseInfo();
   const phaseName = info ? info.name : 'current phase';
+  const ctx = activePlanWeekContext() || {
+    phase: { id: 'ph_fallback', startDate: todayISO(), endDate: todayISO() },
+    slots: [{ index: 0, startISO: todayISO(), endISO: todayISO() }],
+    weekIndex: 0,
+    todayIndex: 0
+  };
 
   if (!mats.length){
     const nothingInPhase = excluded > 0;
@@ -3267,7 +3428,12 @@ function planEditorHTML(){
     </div>`;
   }
 
-  const rows = mats.map(planRowHTML).join('');
+  const rows = mats.map(m => planRowHTML(m, ctx)).join('');
+  const activeSlot = ctx.slots[ctx.weekIndex];
+  const isCurrentWeek = ctx.weekIndex === ctx.todayIndex;
+  const timing = isCurrentWeek ? '' : (ctx.weekIndex < ctx.todayIndex ? ' · already passed' : ' · planning ahead');
+  const canCopyPrev = ctx.weekIndex > 0;
+
   return `
   <div class="card" style="margin-bottom:14px">
     <div class="card-head">
@@ -3279,8 +3445,17 @@ function planEditorHTML(){
                 title="Hide the weekly plan">Hide</button>
       </div>
     </div>
+
+    ${weekTabsHTML(ctx)}
+
+    <div class="week-plan-meta">
+      <span>Editing <b>Week ${ctx.weekIndex + 1}</b> of ${ctx.slots.length} · ${esc(shortDate(activeSlot.startISO))} – ${esc(shortDate(activeSlot.endISO))}${timing}</span>
+      ${canCopyPrev ? `<button class="btn btn-ghost btn-sm" data-action="copy-prev-week">Copy Week ${ctx.weekIndex}'s plan here</button>` : ''}
+    </div>
+
     <p class="plan-hint">
-      Set a <b>weekly target</b> for each material and pick the <b>days</b> you want to study it.
+      Set a <b>weekly target</b> for each material and pick the <b>days</b> you want to study it —
+      each week of the phase can have its own routine. Switch weeks with the tabs above.
       The per-day amount is calculated automatically as <b>weekly ÷ active days</b>.
       You can override any single day from the <b>Daily</b> tab.
       Only materials queued in <b>${esc(phaseName)}</b> (the phase covering today) appear here.
@@ -3299,7 +3474,7 @@ function planEditorHTML(){
 }
 
 function planHiddenBarHTML(){
-  const active = plannedMaterials().filter(m => readPlan(m.id).weekly > 0).length;
+  const active = plannedMaterials().filter(m => planForDate(m.id, todayISO()).weekly > 0).length;
   const excluded = countExcludedByPhase();
   return `
   <div class="card plan-collapsed" style="margin-bottom:14px">
@@ -3734,6 +3909,23 @@ document.addEventListener('click', e => {
       }
       return;
     }
+    if (action === 'copy-prev-week'){
+      const ctx = activePlanWeekContext();
+      if (ctx && ctx.weekIndex > 0){
+        if (confirm(`Copy Week ${ctx.weekIndex}'s targets and active days into Week ${ctx.weekIndex + 1}? This overwrites Week ${ctx.weekIndex + 1}'s current plan.`)){
+          copyPreviousWeekRoutine();
+          render();
+        }
+      }
+      return;
+    }
+  }
+
+  const weekTab = e.target.closest('[data-plan-week]');
+  if (weekTab){
+    selectedPlanWeekIndex = Number(weekTab.dataset.planWeek);
+    render();
+    return;
   }
 
   /* ---------- focus session controls ---------- */
@@ -3872,7 +4064,7 @@ document.addEventListener('click', e => {
   if (wkStep){
     const mid = wkStep.dataset.mid;
     const delta = Number(wkStep.dataset.weeklyStep) || 0;
-    const p = ensurePlan(mid);
+    const p = ensureActiveRoutine(mid);
     const cur = p.weekly || 0;
     const next = Math.max(0, Math.round((cur + delta) * 10) / 10);
     p.weekly = next;
@@ -3886,7 +4078,7 @@ document.addEventListener('click', e => {
   if (dayPill){
     const mid = dayPill.dataset.mid;
     const day = Number(dayPill.dataset.toggleDay);
-    const p = ensurePlan(mid);
+    const p = ensureActiveRoutine(mid);
     const idx = p.days.indexOf(day);
     if (idx >= 0) p.days.splice(idx, 1);
     else { p.days.push(day); p.days.sort((a, b) => a - b); }
@@ -4004,7 +4196,7 @@ document.addEventListener('change', e => {
   if (t.matches('[data-weekly-input]')){
     const mid = t.dataset.weeklyInput;
     const val = Math.max(0, Number(t.value) || 0);
-    const p = ensurePlan(mid);
+    const p = ensureActiveRoutine(mid);
     p.weekly = Math.round(val * 10) / 10;
     if (p.weekly > 0 && !p.days.length) p.days = [0, 1, 2, 3, 4, 5, 6];
     saveShared();
