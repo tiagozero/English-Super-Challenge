@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 1 — Present Continuous: I am doing</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #f4f1ea;
+            --paper: #fffdf8;
+            --text: #292724;
+            --muted: #68635c;
+            --border: #d8d1c5;
+            --accent: #5b4636;
+            --accent-light: #eee6da;
+            --target: #ffe58a;
+            --target-border: #d5ad31;
+            --context: #f0f3f4;
+            --success: #e5f2e7;
+            --error: #f8e4e1;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.65;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 50px 28px 80px;
+        }
+
+        header {
+            background: var(--paper);
+            border: 1px solid var(--border);
+            padding: 42px 45px;
+            margin-bottom: 36px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.05);
+        }
+
+        h1, h2, h3 {
+            font-family: Georgia, "Times New Roman", serif;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 2.5rem;
+            line-height: 1.2;
+        }
+
+        h2 {
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            font-size: 1.65rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+        }
+
+        section {
+            background: var(--paper);
+            border: 1px solid var(--border);
+            padding: 34px 38px;
+            margin-bottom: 28px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.035);
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .formula {
+            display: inline-block;
+            background: var(--accent-light);
+            border: 1px solid var(--border);
+            padding: 12px 18px;
+            margin: 12px 0 20px;
+            border-radius: 4px;
+            font-family: "Courier New", monospace;
+            font-weight: bold;
+        }
+
+        .situation {
+            background: #faf8f2;
+            border-left: 4px solid var(--accent);
+            padding: 18px 22px;
+            margin: 20px 0;
+        }
+
+        .context {
+            background: var(--context);
+            border: 1px solid #d6dde0;
+            padding: 18px 22px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .context strong {
+            color: var(--accent);
+        }
+
+        .literary-example {
+            margin-top: 28px;
+            border-top: 1px solid var(--border);
+            padding-top: 28px;
+        }
+
+        .book-info {
+            margin-bottom: 16px;
+        }
+
+        .book-info strong {
+            display: block;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 1.15rem;
+            color: var(--accent);
+        }
+
+        .book-info span {
+            color: var(--muted);
+        }
+
+        .book-link {
+            display: inline-block;
+            margin-top: 5px;
+            color: #604b36;
+            font-weight: 600;
+        }
+
+        .passage {
+            font-family: "Literata", Georgia, serif;
+            font-size: 1.22rem;
+            line-height: 1.9;
+            background: #fffefa;
+            border: 1px solid var(--border);
+            padding: 27px 30px;
+            margin: 20px 0;
+        }
+
+        .target {
+            background: #ffe58a;
+            border-bottom: 2px solid #d5ad31;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        .analysis {
+            background: #f8f5ed;
+            border-left: 4px solid #a78b68;
+            padding: 17px 21px;
+            margin: 20px 0;
+        }
+
+        .read-button,
+        .upload-button {
+            border: none;
+            background: var(--accent);
+            color: white;
+            padding: 10px 17px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: .95rem;
+        }
+
+        .read-button:hover,
+        .upload-button:hover {
+            background: #463529;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 22px 0;
+            background: white;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 12px 14px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: var(--accent-light);
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        ul {
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 7px;
+        }
+
+        .comparison td:first-child {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border);
+            background: #faf8f2;
+            padding: 28px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        input[type="file"] {
+            margin: 15px 0;
+        }
+
+        #exerciseStatus {
+            margin-top: 18px;
+            padding: 15px;
+            display: none;
+            border-radius: 4px;
+        }
+
+        .status-success {
+            display: block !important;
+            background: var(--success);
+            border: 1px solid #bdd5c1;
+        }
+
+        .status-error {
+            display: block !important;
+            background: var(--error);
+            border: 1px solid #e1bbb6;
+        }
+
+        #loadedExercises {
+            margin-top: 25px;
+        }
+
+        .exercise-card {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 18px 20px;
+            margin: 14px 0;
+        }
+
+        .exercise-type {
+            color: var(--muted);
+            font-size: .85rem;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            font-weight: bold;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            width: min(800px, 94vw);
+            max-height: 84vh;
+            overflow: hidden;
+            background: var(--paper);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            box-shadow: 0 10px 40px rgba(0,0,0,.25);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 17px 22px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+        }
+
+        .close-modal {
+            border: none;
+            background: transparent;
+            font-size: 1.7rem;
+            cursor: pointer;
+            color: var(--muted);
+        }
+
+        .modal-content {
+            overflow-y: auto;
+            padding: 27px 30px;
+            font-family: "Literata", Georgia, serif;
+            font-size: 1.18rem;
+            line-height: 1.9;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            margin-top: 45px;
+            font-size: .9rem;
+        }
+
+        @media (max-width: 650px) {
+            .container {
+                padding: 20px 12px 50px;
+            }
+
+            header,
+            section {
+                padding: 25px 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .passage,
+            .modal-content {
+                font-size: 1.05rem;
+                padding: 20px;
+            }
+
+            table {
+                font-size: .9rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>Unit 1: Present Continuous</h1>
+        <p class="subtitle"><em>I am doing</em></p>
+        <p>
+            The present continuous describes actions and situations that are in progress
+            now, around the present time, or changing gradually.
+        </p>
+    </header>
+
+    <!-- SECTION 1 -->
+    <section>
+        <h2>1. Core Structure and Meaning</h2>
+
+        <p>
+            We use the present continuous when an activity is happening at or around
+            the time of speaking. The action is viewed as being <strong>in progress</strong>,
+            rather than completed.
+        </p>
+
+        <div class="situation">
+            <strong>Example situation</strong><br><br>
+            Sarah is in her car. She is on her way to work.
+            <br><br>
+            <strong>She's driving to work.</strong>
+            (= She is driving to work.)
+        </div>
+
+        <p>
+            The action started before the moment of speaking and has not finished yet.
+            The speaker focuses on the activity as something currently in progress.
+        </p>
+
+        <div class="formula">am / is / are + verb-ing</div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Auxiliary</th>
+                    <th>Verb</th>
+                    <th>Example</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>I</td>
+                    <td>am</td>
+                    <td>driving</td>
+                    <td>I'm driving.</td>
+                </tr>
+                <tr>
+                    <td>he / she / it</td>
+                    <td>is</td>
+                    <td>working</td>
+                    <td>He's working.</td>
+                </tr>
+                <tr>
+                    <td>we / you / they</td>
+                    <td>are</td>
+                    <td>doing</td>
+                    <td>You're doing it.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Questions and negatives</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Form</th>
+                    <th>Example</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Affirmative</td>
+                    <td>She is working.</td>
+                </tr>
+                <tr>
+                    <td>Negative</td>
+                    <td>She isn't working.</td>
+                </tr>
+                <tr>
+                    <td>Question</td>
+                    <td>Is she working?</td>
+                </tr>
+                <tr>
+                    <td>Wh-question</td>
+                    <td>What is she doing?</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="literary-example">
+            <h3>Literary Example: An Activity Happening Now</h3>
+
+            <div class="book-info">
+                <strong>Jerry</strong>
+                <span>Jean Webster</span><br>
+                <a class="book-link"
+                   href="https://www.gutenberg.org/files/20357/20357-h/20357-h.htm"
+                   target="_blank">
+                    Read on Project Gutenberg
+                </a>
+            </div>
+
+            <div class="context">
+                <strong>Context:</strong>
+                A character is trying to understand why a young American man is still
+                staying in Valedolmo. She asks what he is doing there.
+            </div>
+
+            <div class="passage">
+                ‘By the way, Gustavo, how does it happen that that young American man
+                who left last week is still here?’
+                <br><br>
+                Gustavo nearly dropped the eggs.
+                <br><br>
+                ‘I just saw him in the garden with a book—I am sure it was the same
+                young man. <span class="target">What is he doing</span> all this time
+                in Valedolmo?’
+            </div>
+
+            <div class="analysis">
+                <strong>Grammar analysis:</strong>
+                <span class="target">What is he doing</span> asks about an activity
+                that is happening or continuing around the present situation.
+                The speaker uses <strong>is + doing</strong> because the activity is
+                viewed as being in progress rather than as a habitual activity.
+            </div>
+
+            <button class="read-button" data-modal="modal1">
+                Read complete passage
+            </button>
+        </div>
+    </section>
+
+
+    <!-- SECTION 2 -->
+    <section>
+        <h2>2. Actions in Progress Around Now</h2>
+
+        <p>
+            The present continuous is not limited to something happening at the exact
+            second when you speak. It can describe an activity that is in progress
+            during a period surrounding the present.
+        </p>
+
+        <div class="situation">
+            <strong>Compare:</strong><br><br>
+            “Where's Mark?”<br>
+            “He's having a shower.”
+            <br><br>
+            Mark may not be visible to the speaker, but the activity is happening now.
+        </div>
+
+        <p>Other natural examples include:</p>
+
+        <ul>
+            <li>Please don't make so much noise. <strong>I'm trying to work.</strong></li>
+            <li>Let's go out now. <strong>It isn't raining</strong> any more.</li>
+            <li>How's your new job? <strong>Are you enjoying it?</strong></li>
+            <li>What's all that noise? <strong>What's going on?</strong></li>
+        </ul>
+
+        <p>
+            The same form can describe a temporary activity taking place over a wider
+            period:
+        </p>
+
+        <ul>
+            <li>I'm reading a really good book at the moment.</li>
+            <li>She's learning Italian.</li>
+            <li>Some friends of mine are building their own house.</li>
+        </ul>
+
+        <div class="literary-example">
+            <h3>Literary Example: An Activity in Progress</h3>
+
+            <div class="book-info">
+                <strong>The New Tenants</strong>
+                <span>Elanora Kinsley Marble, in <em>Birds Illustrated by Color Photography</em></span><br>
+                <a class="book-link"
+                   href="https://www.gutenberg.org/files/34165/34165-h/34165-h.htm"
+                   target="_blank">
+                    Read on Project Gutenberg
+                </a>
+            </div>
+
+            <div class="context">
+                <strong>Context:</strong>
+                The poem describes a pair of wrens constructing a nest during the
+                summer. The activities are presented as ongoing work.
+            </div>
+
+            <div class="passage">
+                Father and mother <span class="target">are building</span> a nest;
+                <br>
+                They have found in Greenwood the place that is best.
+                <br>
+                They <span class="target">are working</span> so hard through the long
+                summer day,
+                <br>
+                Gathering grasses and hair and hay.
+            </div>
+
+            <div class="analysis">
+                <strong>Grammar analysis:</strong>
+                <span class="target">are building</span> and
+                <span class="target">are working</span> describe activities that are
+                currently in progress over a period of time. The birds are not
+                necessarily performing every part of the activity at the exact second
+                the reader sees the sentence; the focus is on an unfinished,
+                ongoing process.
+            </div>
+
+            <button class="read-button" data-modal="modal2">
+                Read complete passage
+            </button>
+        </div>
+    </section>
+
+
+    <!-- SECTION 3 -->
+    <section>
+        <h2>3. Periods Around Now</h2>
+
+        <p>
+            We can use the present continuous with expressions such as
+            <strong>today</strong>, <strong>this week</strong>, <strong>this month</strong>,
+            and <strong>this year</strong>.
+        </p>
+
+        <p>
+            These expressions refer to a period that includes the present moment.
+            The speaker presents the situation as temporary or currently developing.
+        </p>
+
+        <div class="situation">
+            <strong>Examples:</strong>
+            <br><br>
+            You're working hard <strong>today</strong>.
+            <br>
+            The company I work for isn't doing so well <strong>this year</strong>.
+        </div>
+
+        <p>
+            Compare this with the present simple when the speaker is describing a
+            regular or permanent situation:
+        </p>
+
+        <table class="comparison">
+            <thead>
+                <tr>
+                    <th>Present continuous</th>
+                    <th>Present simple</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>I'm working hard this week.</td>
+                    <td>I work hard every week.</td>
+                </tr>
+                <tr>
+                    <td>The company is doing well this year.</td>
+                    <td>The company does well every year.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="literary-example">
+            <h3>Literary Example: An Ongoing Situation</h3>
+
+            <div class="book-info">
+                <strong>How to Build a House</strong>
+                <span>Published by Project Gutenberg</span><br>
+                <a class="book-link"
+                   href="https://www.gutenberg.org/files/71669/71669-h/71669-h.htm"
+                   target="_blank">
+                    Read on Project Gutenberg
+                </a>
+            </div>
+
+            <div class="context">
+                <strong>Context:</strong>
+                The speaker is discussing architectural construction and explains that
+                the subject under discussion is a house currently being constructed.
+            </div>
+
+            <div class="passage">
+                “But just now, let us keep to our proper business. It is a house, not a
+                temple or a basilica, that <span class="target">we are building</span>.
+                We have to consider all its parts; and this is work enough for us.
+                <br><br>
+                We have leisure to consider the details of our building thoroughly,
+                since the frost obliges us to suspend the works. Construction, my dear
+                fellow, is an art requiring foresight. The good builder is he who leaves
+                nothing to chance, who does not put off the solution of any problem,
+                and who knows how to give each function its place and value with respect
+                to the whole, and that at the right moment.
+            </div>
+
+            <div class="analysis">
+                <strong>Grammar analysis:</strong>
+                <span class="target">we are building</span> describes a project that
+                is underway. The construction is not presented as a completed fact;
+                it is an unfinished activity extending over a period of time.
+            </div>
+
+            <button class="read-button" data-modal="modal3">
+                Read complete passage
+            </button>
+        </div>
+    </section>
+
+
+    <!-- SECTION 4 -->
+    <section>
+        <h2>4. Gradual Changes and Developments</h2>
+
+        <p>
+            The present continuous is also used when something is changing,
+            developing, increasing, decreasing, or gradually becoming different.
+        </p>
+
+        <p>Common verbs include:</p>
+
+        <ul>
+            <li><strong>get / become</strong> — getting better, becoming more difficult</li>
+            <li><strong>start / begin</strong> — starting to change</li>
+            <li><strong>change</strong> — changing rapidly</li>
+            <li><strong>improve</strong> — improving steadily</li>
+            <li><strong>increase / rise</strong> — increasing, rising</li>
+            <li><strong>fall / decrease</strong> — falling, decreasing</li>
+            <li><strong>grow</strong> — growing larger or greater</li>
+        </ul>
+
+        <div class="situation">
+            <strong>Examples:</strong>
+            <br><br>
+            Is your English <strong>getting better</strong>?
+            <br>
+            The population of the world <strong>is increasing</strong> very fast.
+            <br>
+            I'm <strong>starting</strong> to enjoy my job now.
+        </div>
+
+        <p>
+            The important idea is not simply that something exists now. The speaker
+            sees a process of change taking place.
+        </p>
+
+        <div class="literary-example">
+            <h3>Literary Example: A Gradual Change</h3>
+
+            <div class="book-info">
+                <strong>Anne of Green Gables</strong>
+                <span>Lucy Maud Montgomery</span><br>
+                <a class="book-link"
+                   href="https://www.gutenberg.org/files/45/45-h/45-h"
+                   target="_blank">
+                    Read on Project Gutenberg
+                </a>
+            </div>
+
+            <div class="context">
+                <strong>Context:</strong>
+                Anne is describing her appearance and imagines that she is gradually
+                becoming less thin. The change is presented as something developing
+                over time.
+            </div>
+
+            <div class="passage">
+                There’s a piece of a plate with a spray of red and yellow ivy on it
+                that is especially beautiful. We keep it in the parlor and we have the
+                fairy glass there, too. The fairy glass is as lovely as a dream.
+                Diana found it out in the woods behind their chicken house. It’s all
+                full of rainbows—just little young rainbows that haven’t grown big yet—
+                and Diana’s mother told her it was broken off a hanging lamp they once
+                had. But it’s nice to imagine the fairies lost it one night when they
+                had a ball, so we call it the fairy glass.
+                <br><br>
+                Matthew is going to make us a table. Oh, we have named that little round
+                pool over in Mr. Barry’s field Willowmere. I got that name out of the
+                book Diana lent me. That was a thrilling book, Marilla. The heroine had
+                five lovers. I’d be satisfied with one, wouldn’t you? She was very
+                handsome and she went through great tribulations. She could faint as
+                easy as anything. I’d love to be able to faint, wouldn’t you, Marilla?
+                It’s so romantic. But I’m really very healthy for all I’m so thin.
+                I believe <span class="target">I’m getting fatter</span>, though.
+                Don’t you think I am?
+            </div>
+
+            <div class="analysis">
+                <strong>Grammar analysis:</strong>
+                <span class="target">I'm getting fatter</span> describes a gradual
+                change. Anne is not simply saying that she is fat; she is describing
+                a developing change in her condition.
+            </div>
+
+            <button class="read-button" data-modal="modal4">
+                Read complete passage
+            </button>
+        </div>
+
+        <div class="literary-example">
+            <h3>Literary Example: Something Gradually Changing</h3>
+
+            <div class="book-info">
+                <strong>Little Women</strong>
+                <span>Louisa May Alcott</span><br>
+                <a class="book-link"
+                   href="https://www.gutenberg.org/files/514/514-h/514-h.htm"
+                   target="_blank">
+                    Read on Project Gutenberg
+                </a>
+            </div>
+
+            <div class="context">
+                <strong>Context:</strong>
+                Jo is outside during changing winter weather. The narrator describes
+                how the length of the days is gradually changing.
+            </div>
+
+            <div class="passage">
+                Meg went back to toast her feet and read Ivanhoe, and Jo began to dig
+                paths with great energy. The snow was light, and with her broom she
+                soon swept a path all round the garden, for Beth to walk in when the
+                sun came out and the invalid dolls needed air. Now, the garden separated
+                the Marches’ house from that of Mr. Laurence. Both stood in a suburb of
+                the city, which was still country-like, with groves and lawns, large
+                gardens, and quiet streets. The days kept getting longer and longer,
+                the weather was unusually variable and so were tempers; an unsettled
+                feeling possessed everyone, and Satan found plenty of mischief for the
+                idle hands to do.
+            </div>
+
+            <div class="analysis">
+                <strong>Grammar note:</strong>
+                This passage illustrates the same idea of gradual development, although
+                the literary narrative uses the past form <em>were</em> rather than the
+                present continuous because the story is being narrated in the past.
+                The present-continuous equivalent would be:
+                <strong>The days are getting longer and longer.</strong>
+            </div>
+
+            <button class="read-button" data-modal="modal5">
+                Read complete passage
+            </button>
+        </div>
+    </section>
+
+
+    <!-- SECTION 5 -->
+    <section>
+        <h2>5. Present Continuous vs. Present Simple</h2>
+
+        <p>
+            The most important contrast in this unit is between an action viewed as
+            <strong>temporary and in progress</strong> and an action viewed as
+            <strong>regular, habitual, or generally true</strong>.
+        </p>
+
+        <table class="comparison">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Present continuous</th>
+                    <th>Present simple</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Form</td>
+                    <td>am / is / are + -ing</td>
+                    <td>base verb / -s</td>
+                </tr>
+                <tr>
+                    <td>Main meaning</td>
+                    <td>Activity in progress or temporary situation</td>
+                    <td>Habit, routine, fact, or general situation</td>
+                </tr>
+                <tr>
+                    <td>Time relationship</td>
+                    <td>Now or around now</td>
+                    <td>Generally, repeatedly, or habitually</td>
+                </tr>
+                <tr>
+                    <td>Focus</td>
+                    <td>The activity/process</td>
+                    <td>The fact, habit, or regular situation</td>
+                </tr>
+                <tr>
+                    <td>Example</td>
+                    <td>I'm reading a good book at the moment.</td>
+                    <td>I read before bed every night.</td>
+                </tr>
+                <tr>
+                    <td>Example</td>
+                    <td>She's learning Italian.</td>
+                    <td>She speaks Italian.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="situation">
+            <strong>Useful question:</strong>
+            <br><br>
+            Ask yourself: <em>Am I describing something in progress or developing
+            around now, or am I describing something generally true or habitual?</em>
+        </div>
+    </section>
+
+
+    <!-- SECTION 6 -->
+    <section>
+        <h2>6. Summary</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Pattern</th>
+                    <th>Form</th>
+                    <th>Main use</th>
+                    <th>Example</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Action now</td>
+                    <td>am/is/are + -ing</td>
+                    <td>Something happening at the time of speaking</td>
+                    <td>She's driving.</td>
+                </tr>
+                <tr>
+                    <td>Activity around now</td>
+                    <td>am/is/are + -ing</td>
+                    <td>An unfinished temporary activity</td>
+                    <td>I'm reading a good book.</td>
+                </tr>
+                <tr>
+                    <td>Current period</td>
+                    <td>am/is/are + -ing</td>
+                    <td>A temporary situation during today, this week, this year, etc.</td>
+                    <td>You're working hard this week.</td>
+                </tr>
+                <tr>
+                    <td>Gradual change</td>
+                    <td>am/is/are + -ing</td>
+                    <td>A process of change or development</td>
+                    <td>My English is getting better.</td>
+                </tr>
+                <tr>
+                    <td>Question</td>
+                    <td>Am/Is/Are + subject + -ing?</td>
+                    <td>Ask about an activity in progress</td>
+                    <td>What are you doing?</td>
+                </tr>
+                <tr>
+                    <td>Negative</td>
+                    <td>am/is/are + not + -ing</td>
+                    <td>Say that an activity is not in progress</td>
+                    <td>It isn't raining.</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+
+    <!-- SECTION 7 -->
+    <section>
+        <h2>7. Exercises</h2>
+
+        <p>
+            You can load an external exercise file in JSON format. The file must
+            contain an <code>exercises</code> array and may contain only the supported
+            exercise types:
+            <strong>matching_definition</strong>,
+            <strong>multiple_choice</strong>, and
+            <strong>fill_blank</strong>.
+        </p>
+
+        <div class="upload-area">
+            <strong>Upload Exercise JSON</strong>
+            <br>
+            <input type="file" id="jsonFile" accept=".json,application/json">
+            <br>
+            <button class="upload-button" id="loadExercises">
+                Load Exercises
+            </button>
+
+            <div id="exerciseStatus"></div>
+        </div>
+
+        <div id="loadedExercises"></div>
+    </section>
+
+    <footer>
+        Unit 1 — Present Continuous (<em>I am doing</em>)
+    </footer>
+
+</div>
+
+
+<!-- MODALS -->
+
+<div class="modal-overlay" id="modal1">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Jerry — Complete Passage</h3>
+            <button class="close-modal" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-content">
+            The parrot, since she had last conversed with him, had acquired several new
+            expressions in the English tongue. As Gustavo reappeared with the eggs,
+            she confronted him sternly.
+            <br><br>
+            ‘Have you been teaching this bird English? I am surprised!’
+            <br><br>
+            ‘No, signorina. It was—it was——’ Gustavo mopped his brow. ‘He jus’ pick it up.’
+            <br><br>
+            ‘I’m sorry that the Hotel du Lac has guests that use such language; it’s
+            very shocking.’
+            <br><br>
+            ‘Si, signorina.’
+            <br><br>
+            ‘By the way, Gustavo, how does it happen that that young American man who
+            left last week is still here?’
+            <br><br>
+            Gustavo nearly dropped the eggs.
+            <br><br>
+            ‘I just saw him in the garden with a book—I am sure it was the same young
+            man. <span class="target">What is he doing</span> all this time in
+            Valedolmo?’
+            <br><br>
+            Gustavo’s eyes roved wildly until they lighted on the tennis-court.
+            <br><br>
+            ‘He—he stay, signorina, to play lawn-tennis wif me, but he go to-morrow.’
+            <br><br>
+            ‘Oh, he is going to-morrow?—What’s his name, Gustavo?’
+        </div>
+    </div>
+</div>
+
+
+<div class="modal-overlay" id="modal2">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>The New Tenants — Complete Passage</h3>
+            <button class="close-modal" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-content">
+            Father and mother <span class="target">are building</span> a nest;
+            <br>
+            They have found in Greenwood the place that is best.
+            <br>
+            They <span class="target">are working</span> so hard through the long
+            summer day,
+            <br>
+            Gathering grasses and hair and hay.
+            <br><br>
+            They are so happy, for soon they will hear
+            <br>
+            The eager “Peep, peep!” of their babies so dear.
+            <br>
+            Dear mother, gather them safe ’neath each wing;
+            <br>
+            Kind father, hasten, for food you must bring.
+            <br><br>
+            Now mother and father will teach them to fly:
+            <br>
+            “Come, timid birdies; come, try; come, try.
+            <br>
+            Fly out in the Greenwood, dear birdies, with me;
+            <br>
+            Then back to the nest in the dear old tree.”
+        </div>
+    </div>
+</div>
+
+
+<div class="modal-overlay" id="modal3">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>How to Build a House — Complete Passage</h3>
+            <button class="close-modal" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-content">
+            “But you will study these branches of architecture a little later on. I
+            think it a bad method of teaching art to allow flowers to be introduced
+            into discourse before the power of expressing thought clearly has been
+            acquired; and it is thus that writers and speakers are formed who take
+            balderdash for eloquence; and architects, who before they think of doing
+            justice to the exigencies of construction, and studying the requirements
+            of the case, amuse themselves with reproducing forms into whose origin,
+            justification, and real meaning they have never inquired. But just now,
+            let us keep to our proper business. It is a house, not a temple or a
+            basilica, that <span class="target">we are building</span>. We have to
+            consider all its parts; and this is work enough for us.
+            <br><br>
+            “We have leisure to consider the details of our building thoroughly, since
+            the frost obliges us to suspend the works. Construction, my dear fellow,
+            is an art requiring foresight. The good builder is he who leaves nothing
+            to chance, who does not put off the solution of any problem, and who knows
+            how to give each function its place and value with respect to the whole,
+            and that at the right moment. We have drawn plans for the several stories;
+            we have given the details necessary for constructing the lower parts of
+            the house; now we must draw the working elevations. The first thing is to
+            make an exact section of the front walls giving the height of the floors,
+            the levels of the tie-bars, and the base of the roof.”
+        </div>
+    </div>
+</div>
+
+
+<div class="modal-overlay" id="modal4">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Anne of Green Gables — Complete Passage</h3>
+            <button class="close-modal" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-content">
+            There’s a piece of a plate with a spray of red and yellow ivy on it that is
+            especially beautiful. We keep it in the parlor and we have the fairy glass
+            there, too. The fairy glass is as lovely as a dream. Diana found it out in
+            the woods behind their chicken house. It’s all full of rainbows—just little
+            young rainbows that haven’t grown big yet—and Diana’s mother told her it
+            was broken off a hanging lamp they once had. But it’s nice to imagine the
+            fairies lost it one night when they had a ball, so we call it the fairy glass.
+            <br><br>
+            Matthew is going to make us a table. Oh, we have named that little round
+            pool over in Mr. Barry’s field Willowmere. I got that name out of the book
+            Diana lent me. That was a thrilling book, Marilla. The heroine had five
+            lovers. I’d be satisfied with one, wouldn’t you? She was very handsome and
+            she went through great tribulations. She could faint as easy as anything.
+            I’d love to be able to faint, wouldn’t you, Marilla? It’s so romantic. But
+            I’m really very healthy for all I’m so thin. I believe
+            <span class="target">I’m getting fatter</span>, though. Don’t you think I am?
+        </div>
+    </div>
+</div>
+
+
+<div class="modal-overlay" id="modal5">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Little Women — Complete Passage</h3>
+            <button class="close-modal" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-content">
+            Meg went back to toast her feet and read Ivanhoe, and Jo began to dig paths
+            with great energy. The snow was light, and with her broom she soon swept a
+            path all round the garden, for Beth to walk in when the sun came out and
+            the invalid dolls needed air. Now, the garden separated the Marches’ house
+            from that of Mr. Laurence. Both stood in a suburb of the city, which was
+            still country-like, with groves and lawns, large gardens, and quiet streets.
+            The days kept getting longer and longer, the weather was unusually variable
+            and so were tempers; an unsettled feeling possessed everyone, and Satan
+            found plenty of mischief for the idle hands to do.
+        </div>
+    </div>
+</div>
+
+
+<script>
+    /* -----------------------------
+       Passage Modals
+    ----------------------------- */
+
+    const modalButtons = document.querySelectorAll(".read-button");
+    const modalOverlays = document.querySelectorAll(".modal-overlay");
+
+    modalButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const modalId = button.dataset.modal;
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add("active");
+            }
+        });
+    });
+
+    modalOverlays.forEach(overlay => {
+        const closeButton = overlay.querySelector(".close-modal");
+
+        closeButton.addEventListener("click", () => {
+            overlay.classList.remove("active");
+        });
+
+        overlay.addEventListener("click", event => {
+            if (event.target === overlay) {
+                overlay.classList.remove("active");
+            }
+        });
+    });
+
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+            modalOverlays.forEach(overlay => {
+                overlay.classList.remove("active");
+            });
+        }
+    });
+
+
+    /* -----------------------------
+       JSON Exercise Loader
+    ----------------------------- */
+
+    const fileInput = document.getElementById("jsonFile");
+    const loadButton = document.getElementById("loadExercises");
+    const statusBox = document.getElementById("exerciseStatus");
+    const exercisesContainer = document.getElementById("loadedExercises");
+
+    const allowedTypes = new Set([
+        "matching_definition",
+        "multiple_choice",
+        "fill_blank"
+    ]);
+
+    function showStatus(message, success) {
+        statusBox.textContent = message;
+        statusBox.className = success
+            ? "status-success"
+            : "status-error";
+    }
+
+    function validateExercise(exercise, index) {
+        if (!exercise || typeof exercise !== "object") {
+            throw new Error(`Exercise ${index + 1} must be an object.`);
+        }
+
+        if (!allowedTypes.has(exercise.type)) {
+            throw new Error(
+                `Exercise ${index + 1} uses an unsupported type: ${exercise.type}`
+            );
+        }
+
+        if (typeof exercise.question !== "string") {
+            throw new Error(
+                `Exercise ${index + 1} must contain a question.`
+            );
+        }
+
+        if (exercise.type === "multiple_choice") {
+            if (!Array.isArray(exercise.options) ||
+                exercise.options.length !== 4) {
+                throw new Error(
+                    `Multiple-choice exercise ${index + 1} must contain exactly four options.`
+                );
+            }
+
+            if (!Number.isInteger(exercise.answer) ||
+                exercise.answer < 0 ||
+                exercise.answer > 3) {
+                throw new Error(
+                    `Multiple-choice exercise ${index + 1} must have a valid zero-based answer index.`
+                );
+            }
+        }
+
+        if (exercise.type === "fill_blank") {
+            if (typeof exercise.sentence !== "string" ||
+                !exercise.sentence.includes("{{blank}}")) {
+                throw new Error(
+                    `Fill-blank exercise ${index + 1} must contain {{blank}} in its sentence.`
+                );
+            }
+
+            if (typeof exercise.answer !== "string") {
+                throw new Error(
+                    `Fill-blank exercise ${index + 1} must contain an answer.`
+                );
+            }
+        }
+
+        if (exercise.type === "matching_definition") {
+            if (!Array.isArray(exercise.items) ||
+                exercise.items.length === 0) {
+                throw new Error(
+                    `Matching exercise ${index + 1} must contain items.`
+                );
+            }
+
+            exercise.items.forEach((item, itemIndex) => {
+                if (!item ||
+                    typeof item.term !== "string" ||
+                    typeof item.definition !== "string") {
+                    throw new Error(
+                        `Matching exercise ${index + 1}, item ${itemIndex + 1} is invalid.`
+                    );
+                }
+            });
+        }
+    }
+
+    function displayExercises(exercises) {
+        exercisesContainer.innerHTML = "";
+
+        exercises.forEach((exercise, index) => {
+            const card = document.createElement("div");
+            card.className = "exercise-card";
+
+            const type = document.createElement("div");
+            type.className = "exercise-type";
+            type.textContent = exercise.type.replaceAll("_", " ");
+
+            const title = document.createElement("h3");
+            title.textContent = `Exercise ${index + 1}`;
+
+            const question = document.createElement("p");
+            question.textContent = exercise.question;
+
+            card.appendChild(type);
+            card.appendChild(title);
+            card.appendChild(question);
+
+            if (exercise.type === "multiple_choice") {
+                const list = document.createElement("ol");
+
+                exercise.options.forEach(option => {
+                    const item = document.createElement("li");
+                    item.textContent = option;
+                    list.appendChild(item);
+                });
+
+                card.appendChild(list);
+            }
+
+            if (exercise.type === "fill_blank") {
+                const sentence = document.createElement("p");
+                sentence.textContent = exercise.sentence;
+                card.appendChild(sentence);
+            }
+
+            if (exercise.type === "matching_definition") {
+                const list = document.createElement("ul");
+
+                exercise.items.forEach(item => {
+                    const entry = document.createElement("li");
+                    entry.innerHTML =
+                        `<strong>${escapeHTML(item.term)}</strong> — ` +
+                        `${escapeHTML(item.definition)}`;
+                    list.appendChild(entry);
+                });
+
+                card.appendChild(list);
+            }
+
+            exercisesContainer.appendChild(card);
+        });
+    }
+
+    function escapeHTML(value) {
+        return value
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    loadButton.addEventListener("click", () => {
+        const file = fileInput.files[0];
+
+        if (!file) {
+            showStatus("Please select a JSON file first.", false);
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = event => {
+            try {
+                const data = JSON.parse(event.target.result);
+
+                if (!data || typeof data !== "object") {
+                    throw new Error("The JSON root must be an object.");
+                }
+
+                if (!Array.isArray(data.exercises)) {
+                    throw new Error(
+                        'The JSON file must contain an "exercises" array.'
+                    );
+                }
+
+                data.exercises.forEach(validateExercise);
+
+                displayExercises(data.exercises);
+
+                showStatus(
+                    `Successfully loaded ${data.exercises.length} exercise(s).`,
+                    true
+                );
+
+            } catch (error) {
+                exercisesContainer.innerHTML = "";
+                showStatus(
+                    `Invalid exercise file: ${error.message}`,
+                    false
+                );
+            }
+        };
+
+        reader.onerror = () => {
+            showStatus("The file could not be read.", false);
+        };
+
+        reader.readAsText(file);
+    });
+</script>
+
+</body>
+</html>
